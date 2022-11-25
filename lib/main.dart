@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         title: 'سیراف',
         theme: ThemeData(
           primarySwatch: Colors.blue,
-          fontFamily: 'BYekan',
+          fontFamily: 'Vazir',
           backgroundColor: Themes.background,
           scaffoldBackgroundColor: Themes.background,
         ),
@@ -57,4 +57,3 @@ class MyBehavior extends ScrollBehavior {
     return child;
   }
 }
-
