@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:location/location.dart';
+import 'package:siraf3/bloc/get_cities_bloc.dart';
+import 'package:siraf3/helpers.dart';
+import 'package:siraf3/models/city.dart';
+import 'package:siraf3/models/province.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/accordion.dart';
 import 'package:siraf3/widgets/icon_asset.dart';
+import 'package:siraf3/widgets/loading.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
 
 class SelectCityScreen extends StatefulWidget {
@@ -15,6 +22,24 @@ class SelectCityScreen extends StatefulWidget {
 
 class _SelectCityScreenState extends State<SelectCityScreen> {
   bool onSearching = false;
+
+  List<Province> provinces = [];
+  List<City> selectedCities = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    getCities();
+
+    getCurrentCityName();
+  }
+
+  getCities() {
+    BlocProvider.of<GetCitiesBloc>(context).add(GetCitiesEvent());
+  }
+
+  getCurrentCityName() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -120,78 +145,47 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
             ),
       body: Column(
         children: [
-          SizedBox(
-            height: 10,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: [
-                Container(
-                  child: Row(children: [
-                    Text(
-                      "تهران",
-                      style: TextStyle(
-                        fontFamily: "Vazir",
-                        color: Color(0xff000000),
-                        fontSize: 17,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Icon(
-                      Typicons.delete,
-                      color: Color(0xff707070),
-                      size: 26,
-                    )
-                  ]),
-                ),
-                Container(
-                  margin: EdgeInsets.only(right: 10),
-                  child: Row(children: [
-                    Text(
-                      "اراک",
-                      style: TextStyle(
-                        fontFamily: "Vazir",
-                        color: Color(0xff000000),
-                        fontSize: 17,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Icon(
-                      Typicons.delete,
-                      color: Color(0xff707070),
-                      size: 26,
-                    )
-                  ]),
-                ),
-                Container(
-                  margin: EdgeInsets.only(right: 10),
-                  child: Row(children: [
-                    Text(
-                      "اردبیل",
-                      style: TextStyle(
-                        fontFamily: "Vazir",
-                        color: Color(0xff000000),
-                        fontSize: 17,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Icon(
-                      Typicons.delete,
-                      color: Color(0xff707070),
-                      size: 26,
-                    )
-                  ]),
-                ),
-              ],
+          if (selectedCities.isNotEmpty)
+            SizedBox(
+              height: 10,
             ),
-          ),
+          if (selectedCities.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: selectedCities
+                    .map<Widget>(
+                      (e) => Container(
+                        child: Row(children: [
+                          Text(
+                            e.name!,
+                            style: TextStyle(
+                              fontFamily: "Vazir",
+                              color: Color(0xff000000),
+                              fontSize: 17,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedCities.remove(e);
+                              });
+                            },
+                            child: Icon(
+                              Typicons.delete,
+                              color: Color(0xff707070),
+                              size: 26,
+                            ),
+                          )
+                        ]),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
           SizedBox(
             height: 10,
           ),
@@ -220,272 +214,8 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ListView(children: [
-                Accordion(
-                  title: Text(
-                    "آذربایجان شرقی",
-                    style: TextStyle(
-                      fontFamily: "Vazir",
-                      color: Color(0xff000000),
-                      fontSize: 17,
-                    ),
-                  ),
-                  content: Container(
-                    padding: EdgeInsets.only(top: 10, bottom: 15, right: 30),
-                    alignment: Alignment.centerRight,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff707070),
-                            fontSize: 17,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff707070),
-                            fontSize: 17,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff707070),
-                            fontSize: 17,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff000000),
-                            fontSize: 17,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff707070),
-                            fontSize: 17,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff707070),
-                            fontSize: 17,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Accordion(
-                  title: Text(
-                    "آذربایجان شرقی",
-                    style: TextStyle(
-                      fontFamily: "Vazir",
-                      color: Color(0xff000000),
-                      fontSize: 17,
-                    ),
-                  ),
-                  content: Container(
-                    padding: EdgeInsets.only(top: 10, bottom: 15, right: 30),
-                    alignment: Alignment.centerRight,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff707070),
-                            fontSize: 17,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff707070),
-                            fontSize: 17,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff707070),
-                            fontSize: 17,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff000000),
-                            fontSize: 17,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff707070),
-                            fontSize: 17,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff707070),
-                            fontSize: 17,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Accordion(
-                  title: Text(
-                    "آذربایجان شرقی",
-                    style: TextStyle(
-                      fontFamily: "Vazir",
-                      color: Color(0xff000000),
-                      fontSize: 17,
-                    ),
-                  ),
-                  content: Container(
-                    padding: EdgeInsets.only(top: 10, bottom: 15, right: 30),
-                    alignment: Alignment.centerRight,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff707070),
-                            fontSize: 17,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff707070),
-                            fontSize: 17,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff707070),
-                            fontSize: 17,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff000000),
-                            fontSize: 17,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff707070),
-                            fontSize: 17,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "آذربایجان شرقی",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: "Vazir",
-                            color: Color(0xff707070),
-                            fontSize: 17,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ]),
+              child: BlocBuilder<GetCitiesBloc, GetCitiesState>(
+                  builder: _buildCitiesState),
             ),
           ),
           Container(
@@ -510,5 +240,73 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
         ],
       ),
     );
+  }
+
+  Widget _buildCitiesState(BuildContext context, GetCitiesState state) {
+    if (state is GetCitiesInitialState || state is GetCitiesLoadingState) {
+      return Center(
+        child: Loading(),
+      );
+    }
+
+    if (state is GetCitiesErrorState) {
+      notify("خطایی در هنگام دریافت اطلاعات پیش آمد");
+      return Center();
+    }
+
+    state = state as GetCitiesLoadedState;
+
+    var cities = state.cities;
+
+    provinces = cities
+        .where((element) => element.parentId == null)
+        .map<Province>((e) => Province(
+              id: e.id!,
+              name: e.name!,
+              cities: cities.where((element) => element.parentId == e.id).toList(),
+            ))
+        .toList();
+
+    return ListView(
+        children: provinces.map<Widget>((e) {
+      return Accordion(
+        title: Text(
+          e.name,
+          style: TextStyle(
+            fontFamily: "Vazir",
+            color: Color(0xff000000),
+            fontSize: 17,
+          ),
+        ),
+        content: Container(
+          padding: EdgeInsets.only(top: 10, bottom: 15, right: 30),
+          alignment: Alignment.centerRight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: e.cities.map<Widget>((e) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedCities.add(e);
+                    });
+                  },
+                  child: Text(
+                    e.name!,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      fontFamily: "Vazir",
+                      color: Color(0xff707070),
+                      fontSize: 17,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      );
+    }).toList());
   }
 }
