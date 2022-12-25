@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:siraf3/bloc/get_cities_bloc.dart';
+import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
 
@@ -39,9 +40,6 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Themes.background,
         ),
         debugShowCheckedModeBanner: false,
-        routes: {
-          '/': (_) => SelectCityScreen(),
-        },
         builder: (context, child) {
           return MediaQuery(
             child: ScrollConfiguration(
@@ -51,6 +49,7 @@ class MyApp extends StatelessWidget {
             data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
           );
         },
+        home: HomeScreen(),
       ),
     );
   }

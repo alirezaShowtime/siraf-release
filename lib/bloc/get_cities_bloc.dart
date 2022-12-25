@@ -1,9 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:siraf3/helpers.dart';
 
-class GetCitiesEvent {}
+class GetCitiesEventBase {}
+
+class GetCitiesEvent extends GetCitiesEventBase {}
+
+class GetCitiesEmitState extends GetCitiesEventBase {
+  GetCitiesState state;
+
+  GetCitiesEmitState({required this.state});
+}
 
 class GetCitiesState {}
 
@@ -13,8 +21,9 @@ class GetCitiesLoadingState extends GetCitiesState {}
 
 class GetCitiesLoadedState extends GetCitiesState {
   List<City> cities;
+  bool searching;
 
-  GetCitiesLoadedState({required this.cities});
+  GetCitiesLoadedState({required this.cities, this.searching = false});
 }
 
 class GetCitiesErrorState extends GetCitiesState {
@@ -23,23 +32,27 @@ class GetCitiesErrorState extends GetCitiesState {
   GetCitiesErrorState({required this.response});
 }
 
-class GetCitiesBloc extends Bloc<GetCitiesEvent, GetCitiesState> {
+class GetCitiesBloc extends Bloc<GetCitiesEventBase, GetCitiesState> {
   GetCitiesBloc() : super(GetCitiesInitialState()) {
     on(_onEvent);
   }
 
   _onEvent(event, emit) async {
-    emit(GetCitiesLoadingState());
+    if (event is GetCitiesEvent) {
+      emit(GetCitiesLoadingState());
 
-    var response =
-        await http.get(Uri.http("188.121.106.229:8001/api/city/citys/"));
+      var response =
+          await http.get(Uri.parse("https://file.siraf.app/api/city/citys/"));
 
-    if (response.statusCode == 200) {
-      var json = jsonDecode(response.body);
-      var cities = City.fromList(json['data']);
-      emit(GetCitiesLoadedState(cities: cities));
-    } else {
-      emit(GetCitiesErrorState(response: response));
+      if (response.statusCode == 200) {
+        var json = jDecode(response.body);
+        var cities = City.fromList(json['data']);
+        emit(GetCitiesLoadedState(cities: cities));
+      } else {
+        emit(GetCitiesErrorState(response: response));
+      }
+    } else if (event is GetCitiesEmitState) {
+      emit(event.state);
     }
   }
 }

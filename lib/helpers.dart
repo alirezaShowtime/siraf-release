@@ -66,8 +66,12 @@ Map flipMap(Map map) {
   return newMap;
 }
 
-String convertUtf8(List<int> content) {
-  return Utf8Decoder(allowMalformed: true).convert(content);
+String convertUtf8(String content) {
+  return Utf8Decoder(allowMalformed: true).convert(content.codeUnits);
+}
+
+dynamic jDecode(String json) {
+  return jsonDecode(convertUtf8(json));
 }
 
 callToSupport() async {

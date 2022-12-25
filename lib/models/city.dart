@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
 class City {
   int? id;
   String? name;
@@ -35,11 +39,23 @@ class City {
 
   static List<City> fromList(List<dynamic> list) {
     var list2 = <City>[];
-    
+
     for (dynamic item in list) {
       list2.add(City.fromJson(item));
     }
 
     return list2;
+  }
+
+  static Future<bool> saveList(List<City> cities) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString("cities", jsonEncode(cities));
+  }
+
+  static Future<List<City>> getList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var list = jsonDecode(prefs.getString("cities") ?? '[]') as List<dynamic>;
+
+    return list.map<City>((e) => City.fromJson(e)).toList();
   }
 }
