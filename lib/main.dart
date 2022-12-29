@@ -4,7 +4,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:siraf3/bloc/get_cities_bloc.dart';
 import 'package:siraf3/screens/home_screen.dart';
-import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
 
 void main() {

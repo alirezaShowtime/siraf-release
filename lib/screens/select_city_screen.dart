@@ -14,7 +14,9 @@ import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
 
 class SelectCityScreen extends StatefulWidget {
-  const SelectCityScreen({super.key});
+  bool showSelected;
+
+  SelectCityScreen({super.key, this.showSelected = false});
 
   @override
   State<SelectCityScreen> createState() => _SelectCityScreenState();
@@ -42,10 +44,19 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
     getCities();
 
     getCurrentCityName();
+
+    if (widget.showSelected) showSelectedCities();
+  }
+
+  showSelectedCities() async {
+    var cities = await City.getList();
+
+    setState(() {
+      this.selectedCities = cities;
+    });
   }
 
   getCities() {
-    // var cities = await City.getList();
     setState(() {
       selectedCities.clear();
       provinces.clear();
@@ -173,7 +184,9 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                 leading: Padding(
                   padding: const EdgeInsets.only(right: 20),
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     icon: Image(
                       image: AssetImage("assets/images/ic_back.png"),
                       width: 24,
@@ -185,11 +198,13 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
               ),
         body: Column(
           children: [
-            if (selectedCities.isNotEmpty)
+            if (selectedCities.isNotEmpty &&
+                currentState is GetCitiesLoadedState)
               SizedBox(
                 height: 10,
               ),
-            if (selectedCities.isNotEmpty)
+            if (selectedCities.isNotEmpty &&
+                currentState is GetCitiesLoadedState)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(

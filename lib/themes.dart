@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 class Themes {
   static const primary = Color(0xff717171);
+  static const appBar = Color(0xffffffff);
   static const statusBar = Color(0xff215996);
+  static const blue = Color(0xff215996);
   static const background = Color(0xffffffff);
   static const background2 = Color(0xfff9f7f8);
   static const secondary = Color(0xff3d3d3d);
