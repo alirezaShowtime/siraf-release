@@ -7,7 +7,7 @@ class City {
   String? name;
   int? weight;
   int? countFile;
-  dynamic parentId;
+  int? parentId;
 
   City({this.id, this.name, this.weight, this.countFile, this.parentId});
 
@@ -24,7 +24,9 @@ class City {
     if (json["countFile"] is int) {
       countFile = json["countFile"];
     }
-    parentId = json["parent_id"];
+    if (json["parent_id"] is int) {
+      parentId = json["parent_id"];
+    }
   }
 
   Map<String, dynamic> toJson() {

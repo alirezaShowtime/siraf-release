@@ -41,8 +41,7 @@ class GetCitiesBloc extends Bloc<GetCitiesEventBase, GetCitiesState> {
     if (event is GetCitiesEvent) {
       emit(GetCitiesLoadingState());
 
-      var response =
-          await http.get(Uri.parse("https://file.siraf.app/api/city/citys/"));
+      var response = await http.get(getFileUrl("city/citys/"));
 
       if (response.statusCode == 200) {
         var json = jDecode(response.body);

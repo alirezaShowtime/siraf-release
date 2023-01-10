@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/models/file.dart';
 import 'package:siraf3/themes.dart';
 
 class FileHorizontalItem extends StatefulWidget {
-  const FileHorizontalItem({super.key});
+  File file;
+
+  FileHorizontalItem({required this.file, super.key});
 
   @override
   State<FileHorizontalItem> createState() => _FileHorizontalItemState();
@@ -31,127 +34,128 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Image(
-              image: AssetImage(
-                "assets/images/1.jpg",
-              ),
+              image: NetworkImage(widget.file.images?.first.path ?? ""),
               width: imageSize,
               height: imageSize,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Image(
+                image: AssetImage("assets/images/1.jpg"),
+                width: imageSize,
+                height: imageSize,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           SizedBox(
             width: 5,
           ),
           Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Stack(
+              alignment: Alignment.center,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '300,000,000 ودیعه',
-                          style: TextStyle(
-                            color: Themes.text,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'BYekan',
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  left: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '300,000,000 ودیعه',
+                            style: TextStyle(
+                              color: Themes.text,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'BYekan',
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 3,
-                        ),
-                        Text(
-                          '4,000,000 کرایه',
-                          style: TextStyle(
-                            color: Themes.text,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'BYekan',
+                          SizedBox(
+                            height: 3,
                           ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      '10 دقیقه پیش | تهران',
-                      style: TextStyle(
-                        color: Themes.text,
-                        fontSize: 9,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: 'BYekan',
+                          Text(
+                            '4,000,000 کرایه',
+                            style: TextStyle(
+                              color: Themes.text,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: 'BYekan',
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-                Text(
-                  'اجاره ای | آپارتمان 145 متری در آجودانیه',
-                  style: TextStyle(
-                    color: Themes.primary,
-                    fontSize: 13.5,
-                    fontFamily: 'BYekan',
+                      Text(
+                        widget.file.publishedAgo! + ' | ' + widget.file.city!,
+                        style: TextStyle(
+                          color: Themes.text,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'BYekan',
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Column(
-                  children: [
-                    Text(
-                      '',
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  top: 0,
+                  child: Center(
+                    child: Text(
+                      widget.file.name!,
                       style: TextStyle(
-                        color: Themes.text,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
+                        color: Themes.primary,
+                        fontSize: 13.5,
                         fontFamily: 'BYekan',
                       ),
+                      maxLines: 2,
                     ),
-                    SizedBox(
-                      height: 3,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '145 متــری',
-                          style: TextStyle(
-                            color: Themes.primary,
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'BYekan',
-                          ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  left: 0,
+                  child: Column(
+                    children: [
+                      Text(
+                        '',
+                        style: TextStyle(
+                          color: Themes.text,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'BYekan',
                         ),
-                        Text(
-                          '2 خــوابه',
-                          style: TextStyle(
-                            color: Themes.primary,
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'BYekan',
-                          ),
-                        ),
-                        Text(
-                          '2 آسانسور',
-                          style: TextStyle(
-                            color: Themes.primary,
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'BYekan',
-                          ),
-                        ),
-                        Text(
-                          'با پارکـینگ',
-                          style: TextStyle(
-                            color: Themes.primary,
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'BYekan',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      SizedBox(
+                        height: 3,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: widget.file.propertys
+                                ?.where((element) =>
+                                    element.weightList == 1 ||
+                                    element.weightList == 2 ||
+                                    element.weightList == 3 ||
+                                    element.weightList == 4)
+                                .toList()
+                                .map<Widget>((e) => Text(
+                                      "${e.name} ${e.value}",
+                                      style: TextStyle(
+                                        color: Themes.primary,
+                                        fontSize: 10.5,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: 'BYekan',
+                                      ),
+                                    ))
+                                .toList() ??
+                            [],
+                      ),
+                    ],
+                  ),
                 )
               ],
             ),

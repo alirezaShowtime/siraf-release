@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart' as fr;
 import 'package:oktoast/oktoast.dart';
 import 'package:path/path.dart' as p;
-import 'package:intl/intl.dart' as fr;
 import 'package:siraf3/config.dart';
 import 'package:siraf3/themes.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -98,4 +99,45 @@ bool isNumeric(String? s) {
     return false;
   }
   return double.parse(s, (e) => -1) != -1;
+}
+
+Uri getFileUrl(String endpoint) {
+  return Uri.parse("https://file.siraf.app/api/${endpoint}");
+}
+
+String getImageUrl(String file) {
+  return "https://master.siraf.biz/${file}";
+}
+
+bool isResponseOk(http.Response response) {
+  if (response.statusCode >= 400) {
+    return false;
+  }
+
+  var json = jsonDecode(response.body);
+  if (json['status'] != 1) {
+    return false;
+  }
+
+  return true;
+}
+
+const API_HOST = 'api.siraf.app';
+
+Uri createAuthUrlByEndPoint(String endPoint,
+    {Map<String, dynamic>? queryParams = null}) {
+  return Uri.https(API_HOST, "api/v1/account/${endPoint}", queryParams);
+}
+
+String phoneFormat(String numberPhone) {
+  var zeroPrefix = numberPhone.startsWith("09");
+
+  if (!zeroPrefix) {
+    numberPhone = "0$numberPhone";
+  }
+
+  var formatted =
+      "${numberPhone.substring(0, 4)}  ${numberPhone.substring(4, 7)}  ${numberPhone.substring(7, 11)}";
+
+  return zeroPrefix ? formatted : formatted.replaceFirst("09", "9");
 }
