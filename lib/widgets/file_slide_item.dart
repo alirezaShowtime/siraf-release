@@ -62,6 +62,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                         .toList() ??
                     [],
                 height: 250,
+                autoPlay: false,
                 indicatorsCenterAlign: true,
                 viewportFraction: 1.0,
                 itemMargin: EdgeInsets.only(bottom: 15),

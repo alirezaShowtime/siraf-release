@@ -50,7 +50,7 @@ class HSBloc extends Bloc<HSEvent, HSState> {
 
       if (await User.hasToken()) {
         response = await get(url, headers: {
-          "Authorization": await User.getBearerToken(),
+          // "Authorization": await User.getBearerToken(),
         });
       } else {
         response = await get(url);
@@ -63,7 +63,7 @@ class HSBloc extends Bloc<HSEvent, HSState> {
         var json = jDecode(response.body);
 
         if (json['code'] == 205) {
-          // User.remove();
+          User.remove();
 
           response = await get(url);
 

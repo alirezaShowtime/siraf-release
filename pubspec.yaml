@@ -75,6 +75,8 @@ dependencies:
   mask_input_formatter: ^0.0.3
   typicons_flutter: ^0.5.0
   package_info_plus: ^1.4.2
+  skeletons: ^0.0.3
+  flutter_rating_bar: ^4.0.1
 
 
 dev_dependencies:

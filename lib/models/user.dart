@@ -85,8 +85,8 @@ class User {
       u = User.fromMap(json.decode(userJson) as Map<String, dynamic>);
     }
 
-    u.token =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjczMzQxNjIyLCJpYXQiOjE2NzMxNjg4MjIsImp0aSI6ImM0ODkxZjYxMzY3MzQwNzZhYjllMTEwOTdmNmNmYzFiIiwidXNlcl9pZCI6Mn0.kOfsvHfcZ9t2ttiB4d27hyV35TmP0i_UEcHe_1r3muY";
+    u.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjczODU1MzA4LCJpYXQiOjE2NzM2ODI1MDgsImp0aSI6IjJhNGQyNGNlMGVkNjRiM2Y5MDE0Y2I1OTNlZjZhZTRlIiwidXNlcl9pZCI6MTB9.AnhHpzAF20VQGYmTjbYp1rq4ATur-brmm-SmNA2EvhE";
+
 
     return u;
   }

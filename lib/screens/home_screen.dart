@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
+import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/menu_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
@@ -98,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         leading: Padding(
           padding: const EdgeInsets.only(right: 15),
-          child: IconButton(
+          child: IconButton( 
             onPressed: () {
               openMenu();
             },
@@ -183,10 +184,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return ListView(
       children: state.files
-          .map<Widget>((file) => Padding(
-                padding: EdgeInsets.only(top: 5),
-                child: viewType == ViewType.List ? FileHorizontalItem(file: file) : FileSlideItem(file: file),
-              ))
+          .map<Widget>((file) => GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => FileScreen(id: file.id!)));
+            },
+            child: Padding(
+                  padding: EdgeInsets.only(top: 5),
+                  child: viewType == ViewType.List ? FileHorizontalItem(file: file) : FileSlideItem(file: file),
+                ),
+          ))
           .toList(),
     );
   }

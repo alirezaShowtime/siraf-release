@@ -12,9 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 const image_extensions = <String>["png", "jpg", "jpeg"];
 const video_extensions = <String>["mp4", "mov", "wmv", "avi", "mkv"];
 
-void notify(String msg,
-    {TextDirection textDirection = TextDirection.rtl,
-    Duration? duration = null}) {
+void notify(String msg, {TextDirection textDirection = TextDirection.rtl, Duration? duration = null}) {
   showToast(
     msg,
     textDirection: textDirection,
@@ -80,8 +78,7 @@ callToSupport() async {
   if (await canLaunch(url)) {
     await launch(url);
   } else {
-    notify(
-        'نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_PHONE + 'تماس بگیرید');
+    notify('نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_PHONE + 'تماس بگیرید');
   }
 }
 
@@ -105,6 +102,10 @@ Uri getFileUrl(String endpoint) {
   return Uri.parse("https://file.siraf.app/api/${endpoint}");
 }
 
+Uri getEstateUrl(String endpoint) {
+  return Uri.parse("https://estate.siraf.app/api/${endpoint}");
+}
+
 String getImageUrl(String file) {
   return "https://master.siraf.biz/${file}";
 }
@@ -124,8 +125,7 @@ bool isResponseOk(http.Response response) {
 
 const API_HOST = 'api.siraf.app';
 
-Uri createAuthUrlByEndPoint(String endPoint,
-    {Map<String, dynamic>? queryParams = null}) {
+Uri createAuthUrlByEndPoint(String endPoint, {Map<String, dynamic>? queryParams = null}) {
   return Uri.https(API_HOST, "api/v1/account/${endPoint}", queryParams);
 }
 
@@ -136,8 +136,11 @@ String phoneFormat(String numberPhone) {
     numberPhone = "0$numberPhone";
   }
 
-  var formatted =
-      "${numberPhone.substring(0, 4)}  ${numberPhone.substring(4, 7)}  ${numberPhone.substring(7, 11)}";
+  var formatted = "${numberPhone.substring(0, 4)}  ${numberPhone.substring(4, 7)}  ${numberPhone.substring(7, 11)}";
 
   return zeroPrefix ? formatted : formatted.replaceFirst("09", "9");
+}
+
+String icon(String iconName, {String extension = "png"}) {
+  return 'assets/images/ic_$iconName.$extension';
 }
