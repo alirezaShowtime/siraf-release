@@ -14,6 +14,6 @@ class Loading extends StatefulWidget {
 class __LoadingState extends State<Loading> {
   @override
   Widget build(BuildContext context) {
-    return SpinKitWave(size: widget.size, color: widget.color);
+    return SpinKitDualRing(size: widget.size, color: widget.color);
   }
 }

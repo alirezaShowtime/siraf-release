@@ -62,7 +62,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
               color: Themes.icon,
             ),
           ),
-          elevation: 0.5,
+          elevation: 0.7,
         ),
         body: BlocBuilder<FileConsulantsBloc, FileConsulantsState>(
             builder: _buildMainBloc),

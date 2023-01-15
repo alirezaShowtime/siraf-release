@@ -184,12 +184,11 @@ class _FileScreenState extends State<FileScreen> {
               IconButton(
                 onPressed: () async {
                   if (await User.hasToken()) {
-                    // if (await addOrRemoveFavorite(file.id)) {
-                    //   setState(() {
-                    //     isFavorite = !isFavorite;
-                    //   });
-                    // }
-                    // todo uncomment
+                    if (await addOrRemoveFavorite(widget.id)) {
+                      setState(() {
+                        isFavorite = !isFavorite;
+                      });
+                    }
                   } else {
                     Navigator.push(
                       context,
@@ -219,7 +218,7 @@ class _FileScreenState extends State<FileScreen> {
             child: Text(
               "t21617|پذیرایی 35 متری",
               style: TextStyle(
-                fontFamily: "BYekan",
+                fontFamily: "IranSans",
                 color: Color(0xff606060),
                 fontSize: 13,
               ),
@@ -256,7 +255,7 @@ class _FileScreenState extends State<FileScreen> {
                         file.name!.trim(),
                     style: TextStyle(
                         color: Themes.text,
-                        fontFamily: "BYekan",
+                        fontFamily: "IranSans",
                         fontSize: 14,
                         height: 1.3),
                     maxLines: 3,
@@ -267,7 +266,7 @@ class _FileScreenState extends State<FileScreen> {
                 file.publishedAgo! + ' | ' + file.city!,
                 style: TextStyle(
                   color: Themes.textGrey,
-                  fontFamily: "BYekan",
+                  fontFamily: "IranSans",
                   fontSize: 11,
                 ),
               ),
@@ -337,7 +336,7 @@ class _FileScreenState extends State<FileScreen> {
           value,
           style: TextStyle(
             color: Themes.text,
-            fontFamily: "BYekan",
+            fontFamily: "IranSans",
             fontSize: 14,
           ),
         ),
@@ -348,7 +347,7 @@ class _FileScreenState extends State<FileScreen> {
           label,
           style: TextStyle(
             color: Themes.textGrey,
-            fontFamily: "BYekan",
+            fontFamily: "IranSans",
             fontSize: 11,
           ),
         ),
@@ -374,7 +373,7 @@ class _FileScreenState extends State<FileScreen> {
           color: Themes.text,
           fontSize: 11.5,
           fontWeight: FontWeight.w400,
-          fontFamily: 'BYekan',
+          fontFamily: 'IranSans',
           height: 1.5,
         ),
       ),
@@ -387,7 +386,7 @@ class _FileScreenState extends State<FileScreen> {
       //           color: Themes.text,
       //           fontSize: 11,
       //           fontWeight: FontWeight.w400,
-      //           fontFamily: 'BYekan',
+      //           fontFamily: 'IranSans',
       //         ),
       //       ),
       //       TextSpan(
@@ -396,7 +395,7 @@ class _FileScreenState extends State<FileScreen> {
       //             color: Themes.blue,
       //             fontSize: 10.5,
       //             fontWeight: FontWeight.w400,
-      //             fontFamily: 'BYekan',
+      //             fontFamily: 'IranSans',
       //           ),
       //           recognizer: TapGestureRecognizer()
       //             ..onTap = () {
@@ -470,7 +469,7 @@ class _FileScreenState extends State<FileScreen> {
                 "سایر امکانات و ویژگی ها",
                 style: TextStyle(
                   fontSize: 13,
-                  fontFamily: "BYekan",
+                  fontFamily: "IranSans",
                   color: Color(0xff8c8c8c),
                 ),
               ),
@@ -496,7 +495,7 @@ class _FileScreenState extends State<FileScreen> {
               "پارکینگ : 1" + "\n" + "انباری : 2" + "\n" + "آسانسور : 1",
               style: TextStyle(
                   fontSize: 12,
-                  fontFamily: "BYekan",
+                  fontFamily: "IranSans",
                   color: Color(0xff8c8c8c),
                   height: 1.3),
             ),
@@ -639,8 +638,7 @@ class _FileScreenState extends State<FileScreen> {
 
     try {
       var response = await get(
-          getFileUrl(
-              'file/addFileFavorite/' + id.toString() + '/'),
+          getFileUrl('file/addFileFavorite/' + id.toString() + '/'),
           headers: {
             "Authorization": await User.getBearerToken(),
           });
@@ -671,8 +669,7 @@ class _FileScreenState extends State<FileScreen> {
 
     try {
       var response = await get(
-          getFileUrl(
-              'file/deleteFileFavorite/' + id.toString() + '/'),
+          getFileUrl('file/deleteFileFavorite/' + id.toString() + '/'),
           headers: {
             "Authorization": await User.getBearerToken(),
           });

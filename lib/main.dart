@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:siraf3/bloc/categories_bloc.dart';
 import 'package:siraf3/bloc/get_cities_bloc.dart';
 import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/bloc/login_status.dart';
@@ -19,7 +20,9 @@ void main() {
     BlocProvider<LoginStatus>(
       create: (_) => LoginStatus(),
     ),
-    
+    BlocProvider<CategoriesBloc>(
+      create: (_) => CategoriesBloc(),
+    ),
   ], child: MyApp()));
 }
 
@@ -43,7 +46,7 @@ class MyApp extends StatelessWidget {
         title: 'سیراف',
         theme: ThemeData(
           primarySwatch: Colors.blue,
-          fontFamily: 'Vazir',
+          fontFamily: 'IranSans',
           backgroundColor: Themes.background,
           scaffoldBackgroundColor: Themes.background,
         ),

@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
+import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/menu_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
@@ -65,6 +66,16 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  changeViewType() async {
+    var sh = await SharedPreferences.getInstance();
+    sh.setString(
+        "FILE_VIEW_TYPE", viewType == ViewType.List ? "slide" : "list");
+
+    await getViewType();
+
+    getFiles();
+  }
+
   goSelectCity({showSelected = false}) {
     Navigator.push(
         context,
@@ -99,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         leading: Padding(
           padding: const EdgeInsets.only(right: 15),
-          child: IconButton( 
+          child: IconButton(
             onPressed: () {
               openMenu();
             },
@@ -114,13 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             onPressed: () async {
-              var sh = await SharedPreferences.getInstance();
-              sh.setString("FILE_VIEW_TYPE",
-                  viewType == ViewType.List ? "slide" : "list");
-
-              await getViewType();
-
-              getFiles();
+              Navigator.push(context, MaterialPageRoute(builder: (_) => CreateFileFirst()));
             },
             icon: Image(
               image: AssetImage("assets/images/ic_filter.png"),
@@ -185,14 +190,19 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListView(
       children: state.files
           .map<Widget>((file) => GestureDetector(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => FileScreen(id: file.id!)));
-            },
-            child: Padding(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => FileScreen(id: file.id!)));
+                },
+                child: Padding(
                   padding: EdgeInsets.only(top: 5),
-                  child: viewType == ViewType.List ? FileHorizontalItem(file: file) : FileSlideItem(file: file),
+                  child: viewType == ViewType.List
+                      ? FileHorizontalItem(file: file)
+                      : FileSlideItem(file: file),
                 ),
-          ))
+              ))
           .toList(),
     );
   }

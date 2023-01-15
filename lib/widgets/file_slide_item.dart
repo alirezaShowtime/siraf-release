@@ -91,7 +91,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                             widget.file.getFirstPrice(),
                             style: TextStyle(
                               color: Themes.textLight,
-                              fontFamily: "BYekan",
+                              fontFamily: "IranSans",
                               fontSize: 15,
                             ),
                           ),
@@ -105,7 +105,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                             widget.file.getSecondPrice(),
                             style: TextStyle(
                               color: Themes.textLight,
-                              fontFamily: "BYekan",
+                              fontFamily: "IranSans",
                               fontSize: 13,
                             ),
                           ),
@@ -130,7 +130,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                           "توافقی",
                           style: TextStyle(
                             color: Themes.textLight,
-                            fontFamily: "BYekan",
+                            fontFamily: "IranSans",
                             fontSize: 15,
                           ),
                         ),
@@ -190,7 +190,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                               widget.file.name!,
                           style: TextStyle(
                             color: Themes.text,
-                            fontFamily: "BYekan",
+                            fontFamily: "IranSans",
                             fontSize: 14,
                           ),
                           maxLines: 2,
@@ -199,7 +199,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                           widget.file.publishedAgo! + ' | ' + widget.file.city!,
                           style: TextStyle(
                             color: Themes.textGrey,
-                            fontFamily: "BYekan",
+                            fontFamily: "IranSans",
                             fontSize: 11,
                           ),
                         ),
@@ -244,7 +244,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                         color: Themes.primary,
                         fontSize: 10.5,
                         fontWeight: FontWeight.w400,
-                        fontFamily: 'BYekan',
+                        fontFamily: 'IranSans',
                       ),
                     );
                   }).toList() ??
@@ -262,7 +262,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                       color: Themes.primary,
                       fontSize: 10.5,
                       fontWeight: FontWeight.w400,
-                      fontFamily: 'BYekan',
+                      fontFamily: 'IranSans',
                     ),
                   ),
                   TextSpan(
@@ -271,7 +271,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                         color: Themes.blue,
                         fontSize: 10.5,
                         fontWeight: FontWeight.w400,
-                        fontFamily: 'BYekan',
+                        fontFamily: 'IranSans',
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {

@@ -127,12 +127,24 @@ flutter:
     - family: Vazir
       fonts:
         - asset: assets/fonts/Vazir.ttf
-    - family: BYekan
-      fonts:
-        - asset: assets/fonts/BYEKAN.TTF
     - family: KalamehBlack
       fonts:
         - asset: assets/fonts/KALAMEH_BLACK.TTF
+    - family: IranSans
+      fonts:
+        - asset: assets/fonts/IRANSansXFaNumRegular.TTF
+    - family: IranSansBold
+      fonts:
+        - asset: assets/fonts/IRANSansXFaNumBold.TTF
+    - family: IranSansLight
+      fonts:
+        - asset: assets/fonts/IRANSansXFaNumLight.TTF
+    - family: IranSansBlack
+      fonts:
+        - asset: assets/fonts/IRANSansXFaNumBlack.TTF
+    - family: IranSansMedium
+      fonts:
+        - asset: assets/fonts/IRANSansXFaNumMedium.TTF
     # - family: Trajan Pro
     #   fonts:
     #     - asset: fonts/TrajanPro.ttf

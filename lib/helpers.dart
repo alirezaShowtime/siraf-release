@@ -12,14 +12,16 @@ import 'package:url_launcher/url_launcher.dart';
 const image_extensions = <String>["png", "jpg", "jpeg"];
 const video_extensions = <String>["mp4", "mov", "wmv", "avi", "mkv"];
 
-void notify(String msg, {TextDirection textDirection = TextDirection.rtl, Duration? duration = null}) {
+void notify(String msg,
+    {TextDirection textDirection = TextDirection.rtl,
+    Duration? duration = null}) {
   showToast(
     msg,
     textDirection: textDirection,
     duration: duration,
     textPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
     textStyle: TextStyle(
-      fontFamily: 'BYekan',
+      fontFamily: 'IranSans',
       color: Themes.textLight,
       fontSize: 15.5,
     ),
@@ -78,7 +80,8 @@ callToSupport() async {
   if (await canLaunch(url)) {
     await launch(url);
   } else {
-    notify('نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_PHONE + 'تماس بگیرید');
+    notify(
+        'نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_PHONE + 'تماس بگیرید');
   }
 }
 
@@ -125,7 +128,8 @@ bool isResponseOk(http.Response response) {
 
 const API_HOST = 'api.siraf.app';
 
-Uri createAuthUrlByEndPoint(String endPoint, {Map<String, dynamic>? queryParams = null}) {
+Uri createAuthUrlByEndPoint(String endPoint,
+    {Map<String, dynamic>? queryParams = null}) {
   return Uri.https(API_HOST, "api/v1/account/${endPoint}", queryParams);
 }
 
@@ -136,7 +140,8 @@ String phoneFormat(String numberPhone) {
     numberPhone = "0$numberPhone";
   }
 
-  var formatted = "${numberPhone.substring(0, 4)}  ${numberPhone.substring(4, 7)}  ${numberPhone.substring(7, 11)}";
+  var formatted =
+      "${numberPhone.substring(0, 4)}  ${numberPhone.substring(4, 7)}  ${numberPhone.substring(7, 11)}";
 
   return zeroPrefix ? formatted : formatted.replaceFirst("09", "9");
 }

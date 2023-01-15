@@ -15,8 +15,17 @@ import 'package:typicons_flutter/typicons_flutter.dart';
 
 class SelectCityScreen extends StatefulWidget {
   bool showSelected;
+  bool saveCity;
+  int? max;
+  bool force;
 
-  SelectCityScreen({super.key, this.showSelected = false});
+  SelectCityScreen({
+    super.key,
+    this.showSelected = false,
+    this.saveCity = true,
+    this.force = false,
+    this.max = null,
+  });
 
   @override
   State<SelectCityScreen> createState() => _SelectCityScreenState();
@@ -422,9 +431,17 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
   }
 
   _onTapSubmit() async {
-    await City.saveList(selectedCities);
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (_) => HomeScreen()));
+    if (widget.force && selectedCities.isEmpty)
+      return notify("شهری انتخاب نکرده اید");
+
+    if (widget.saveCity) {
+      await City.saveList(selectedCities);
+
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (_) => HomeScreen()));
+    } else {
+      Navigator.pop(context, selectedCities);
+    }
   }
 
   Widget getContentWidget(GetCitiesState state) {
@@ -483,8 +500,16 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                       setState(() {
                         if (selectedCities.asMap().containsValue(e)) {
                           selectedCities.remove(e);
-                        } else
-                          selectedCities.add(e);
+                        } else {
+                          if (widget.max != null &&
+                              selectedCities.length == widget.max) {
+                            notify("حداکثر " +
+                                widget.max.toString() +
+                                " شهر میتوانید انتخاب کنید");
+                          } else {
+                            selectedCities.add(e);
+                          }
+                        }
                       });
                     },
                     child: Row(

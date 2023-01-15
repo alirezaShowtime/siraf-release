@@ -70,7 +70,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                               color: Themes.text,
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              fontFamily: 'BYekan',
+                              fontFamily: 'IranSans',
                             ),
                           ),
                           SizedBox(
@@ -82,7 +82,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                               color: Themes.text,
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
-                              fontFamily: 'BYekan',
+                              fontFamily: 'IranSans',
                             ),
                           ),
                         ],
@@ -93,7 +93,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                           color: Themes.text,
                           fontSize: 9,
                           fontWeight: FontWeight.w400,
-                          fontFamily: 'BYekan',
+                          fontFamily: 'IranSans',
                         ),
                       ),
                     ],
@@ -109,7 +109,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                       style: TextStyle(
                         color: Themes.primary,
                         fontSize: 13.5,
-                        fontFamily: 'BYekan',
+                        fontFamily: 'IranSans',
                       ),
                       maxLines: 2,
                     ),
@@ -127,7 +127,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                           color: Themes.text,
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
-                          fontFamily: 'BYekan',
+                          fontFamily: 'IranSans',
                         ),
                       ),
                       SizedBox(
@@ -148,7 +148,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                                         color: Themes.primary,
                                         fontSize: 10.5,
                                         fontWeight: FontWeight.w400,
-                                        fontFamily: 'BYekan',
+                                        fontFamily: 'IranSans',
                                       ),
                                     ))
                                 .toList() ??
