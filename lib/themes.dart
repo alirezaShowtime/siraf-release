@@ -2,13 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Themes {
-  static const primary = Color(0xff717171);
+  static const primary = Color(0xff0067A5);
   static const appBar = Color(0xffffffff);
-  static const statusBar = Color(0xff215996);
-  static const blue = Color(0xff215996);
-  static const background = Color(0xffffffff);
-  static const background2 = Color(0xfff9f7f8);
-  static const secondary = Color(0xff3d3d3d);
+  static const statusBar = Color(0xff0067A5);
+  static const blue = Color(0xff0067A5);
+  static const background = Color(0xfffafbfd);
+  static const background2 = Color(0xffffffff);
+  static const secondary = Color(0xff0067A5);
   static const text = Color(0xff3d3d3d);
   static const textGrey = Color(0xff707070);
   static const textLight = Color(0xffffffff);

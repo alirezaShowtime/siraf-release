@@ -8,6 +8,7 @@ import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/widgets/try_again.dart';
 
 import '../helpers.dart';
 
@@ -82,26 +83,11 @@ class _SupportFileScreen extends State<SupportFileScreen> {
       String? message = jDecode(state.response?.body ?? "")['message'];
 
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(message ?? "خطایی در هنگام دریافت اطلاعات پیش آمد"),
-            SizedBox(
-              height: 10,
-            ),
-            RawMaterialButton(
-              onPressed: () {
-                bloc.add(FileConsulantsLoadEvent());
-              },
-              child: Text(
-                "تلاش مجدد",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              fillColor: Themes.primary,
-            )
-          ],
+        child: TryAgain(
+          onPressed: () {
+            bloc.add(FileConsulantsLoadEvent());
+          },
+          message: message,
         ),
       );
     }

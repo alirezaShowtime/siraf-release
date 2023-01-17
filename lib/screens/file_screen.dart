@@ -17,6 +17,7 @@ import 'package:siraf3/screens/support_file_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/widgets/try_again.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart';
 
@@ -75,29 +76,12 @@ class _FileScreenState extends State<FileScreen> {
     }
 
     if (state is FileErrorState) {
-      String? message = jDecode(state.response?.body ?? "")['message'];
-
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(message ?? "خطایی در هنگام دریافت اطلاعات پیش آمد"),
-            SizedBox(
-              height: 10,
-            ),
-            RawMaterialButton(
-              onPressed: () {
-                fileBloc.add(FileFetchEvent(id: widget.id));
-              },
-              child: Text(
-                "تلاش مجدد",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              fillColor: Themes.primary,
-            )
-          ],
+        child: TryAgain(
+          onPressed: () {
+            fileBloc.add(FileFetchEvent(id: widget.id));
+          },
+          message: jDecode(state.response?.body ?? "")['message'],
         ),
       );
     }

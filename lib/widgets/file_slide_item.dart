@@ -11,7 +11,6 @@ import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/themes.dart';
-import 'package:siraf3/themes2.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:http/http.dart';
@@ -217,7 +216,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                       isFavorite
                           ? CupertinoIcons.bookmark_fill
                           : CupertinoIcons.bookmark,
-                      color: Themes2.icon,
+                      color: Themes.icon,
                     ),
                   ),
                   Container(
@@ -265,7 +264,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                 },
                 icon: Icon(
                   CupertinoIcons.paperplane,
-                  color: Themes2.icon,
+                  color: Themes.icon,
                 ),
               ),
             ],
@@ -285,7 +284,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                     return Text(
                       "${e.name} ${e.value}",
                       style: TextStyle(
-                        color: Themes.primary,
+                        color: Themes.text,
                         fontSize: 10.5,
                         fontWeight: FontWeight.w400,
                         fontFamily: 'IranSans',
@@ -303,7 +302,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                   TextSpan(
                     text: showSummary ? summary : description,
                     style: TextStyle(
-                      color: Themes.primary,
+                      color: Themes.text,
                       fontSize: 10.5,
                       fontWeight: FontWeight.w400,
                       fontFamily: 'IranSans',

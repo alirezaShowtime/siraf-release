@@ -6,7 +6,6 @@ import 'package:location/location.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/themes.dart';
-import 'package:siraf3/themes2.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
 
 class MarkInMapScreen extends StatefulWidget {
@@ -186,7 +185,7 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
                           Icon(
                             Typicons.location_outline,
                             size: 30,
-                            color: Themes2.secondary,
+                            color: Themes.secondary,
                           ),
                           Padding(
                             padding: const EdgeInsets.only(right: 2.0),

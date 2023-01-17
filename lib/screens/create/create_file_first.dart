@@ -18,9 +18,9 @@ import 'package:siraf3/screens/select_category_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:siraf3/themes2.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
+import 'package:siraf3/widgets/try_again.dart';
 
 class CreateFileFirst extends StatefulWidget {
   const CreateFileFirst({super.key});
@@ -189,32 +189,14 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
     }
 
     if (state is PropertyErrorState) {
-      String? message = jDecode(state.response?.body ?? "")['message'];
-
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(message ?? "خطایی در هنگام دریافت اطلاعات پیش آمد"),
-            SizedBox(
-              height: 10,
-            ),
-            RawMaterialButton(
-              onPressed: () {
-                if (category == null) return;
+        child: TryAgain(
+          onPressed: () {
+            if (category == null) return;
 
-                propertyBloc
-                    .add(PropertyInsertEvent(category_id: category!.id!));
-              },
-              child: Text(
-                "تلاش مجدد",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              fillColor: Themes.primary,
-            )
-          ],
+            propertyBloc.add(PropertyInsertEvent(category_id: category!.id!));
+          },
+          message: jDecode(state.response?.body ?? "")['message'],
         ),
       );
     }
@@ -621,7 +603,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
           height: 5,
         ),
         Divider(
-          color: Themes.primary.withOpacity(0.5),
+          color: Themes.textGrey.withOpacity(0.5),
           height: 1,
         ),
       ],
@@ -1397,12 +1379,12 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
     if (isProp) {
       color = (selectedMainProps.containsKey(property.value!) &&
               selectedMainProps[property.value!] == e.value.toString())
-          ? Themes2.secondary
+          ? Themes.secondary
           : Themes.text;
     } else {
       color = (selectedMainFeatures.containsKey(property.value!) &&
               selectedMainFeatures[property.value!] == e.value.toString())
-          ? Themes2.secondary
+          ? Themes.secondary
           : Themes.text;
     }
 
@@ -1428,7 +1410,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
             bottom: isLast
                 ? BorderSide.none
                 : BorderSide(
-                    color: Themes.primary.withOpacity(0.5),
+                    color: Themes.textGrey.withOpacity(0.5),
                     width: 0.7,
                   ),
           ),

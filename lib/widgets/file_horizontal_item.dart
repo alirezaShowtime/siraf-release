@@ -17,9 +17,9 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
     double imageSize = (MediaQuery.of(context).size.width - 20) / 3.5;
     if (imageSize > 140) imageSize = 140;
     return Container(
-      decoration: BoxDecoration(color: Themes.background, boxShadow: [
+      decoration: BoxDecoration(color: Themes.background2, boxShadow: [
         BoxShadow(
-          color: Themes.background2,
+          color: Themes.background,
           blurRadius: 2,
           spreadRadius: 2,
           offset: Offset(0, -3),
@@ -100,7 +100,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                     Text(
                       widget.file.name!,
                       style: TextStyle(
-                        color: Themes.primary,
+                        color: Themes.text,
                         fontSize: 12,
                         fontFamily: 'IranSans',
                       ),
@@ -132,7 +132,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                                   .map<Widget>((e) => Text(
                                         "${e.name} ${e.value}",
                                         style: TextStyle(
-                                          color: Themes.primary,
+                                          color: Themes.text,
                                           fontSize: 10.5,
                                           fontWeight: FontWeight.w400,
                                           fontFamily: 'IranSans',

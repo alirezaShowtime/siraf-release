@@ -10,11 +10,12 @@ import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/menu_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
-import 'package:siraf3/themes2.dart';
+import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
 import 'package:siraf3/widgets/file_slide_item.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:siraf3/widgets/try_again.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -100,12 +101,12 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Text(
             getTitle(cities),
             style: TextStyle(
-              color: Themes2.text,
+              color: Themes.textLight,
               fontSize: 15,
             ),
           ),
         ),
-        backgroundColor: Themes2.primary,
+        backgroundColor: Themes.primary,
         centerTitle: true,
         leading: Padding(
           padding: const EdgeInsets.only(right: 15),
@@ -117,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
               image: AssetImage("assets/images/ic_menu.png"),
               width: 30,
               height: 30,
-              color: Themes2.icon,
+              color: Themes.iconLight,
             ),
           ),
         ),
@@ -128,18 +129,18 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             icon: FaIcon(
               OctIcons.image_24,
-              color: Themes2.icon,
+              color: Themes.iconLight,
               size: 20,
             ),
           ),
           IconButton(
-            onPressed: () async {
+            onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (_) => CreateFileFirst()));
             },
             icon: FaIcon(
               OctIcons.sliders_16,
-              color: Themes2.icon,
+              color: Themes.iconLight,
               size: 20,
             ),
           ),
@@ -147,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {},
             icon: FaIcon(
               CupertinoIcons.search,
-              color: Themes2.icon,
+              color: Themes.iconLight,
             ),
           ),
           SizedBox(
@@ -167,31 +168,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     if (state is HSErrorState) {
-      String? message = state.response != null
-          ? jDecode(state.response!.body)['message']
-          : null;
-
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(message ?? "خطایی در هنگام دریافت اطلاعات پیش آمد"),
-            SizedBox(
-              height: 10,
-            ),
-            RawMaterialButton(
-              onPressed: () {
-                getFiles();
-              },
-              child: Text(
-                "تلاش مجدد",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              fillColor: Themes2.primary,
-            )
-          ],
+        child: TryAgain(
+          onPressed: getFiles,
+          message: state.response != null
+              ? jDecode(state.response!.body)['message']
+              : null,
         ),
       );
     }

@@ -1,9 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
+import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/accordion.dart';
+import 'package:typicons_flutter/typicons_flutter.dart';
 
 import '../helpers.dart';
 
@@ -53,9 +57,13 @@ class _MenuScreenState extends State<MenuScreen> {
                     padding: EdgeInsets.only(bottom: 50),
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                          image:
-                              AssetImage("assets/images/menu_background.png"),
-                          fit: BoxFit.cover),
+                        image: AssetImage("assets/images/menu_background.png"),
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(
+                          Themes.primary,
+                          BlendMode.hardLight,
+                        ),
+                      ),
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -113,42 +121,27 @@ class _MenuScreenState extends State<MenuScreen> {
                       child: Wrap(
                         children: [
                           _item(
-                              title: "پیام ها",
-                              image: "assets/images/ic_messages.png",
-                              onClick: () {},
-                              height: 30,
-                              width: 30),
-                          const SizedBox(width: 20),
-                          GestureDetector(
-                            onTap: () {},
-                            child: Padding(
-                              padding:
-                                  EdgeInsets.only(left: 8, right: 8, bottom: 5),
-                              child: Column(
-                                children: [
-                                  Icon(
-                                    Icons.add,
-                                    size: 30,
-                                  ),
-                                  Text(
-                                    "ثبت فایل",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            title: "پیام ها",
+                            icon: CupertinoIcons.envelope,
+                            onClick: () {},
                           ),
-                          const SizedBox(width: 20),
                           _item(
-                              title: "نشان ها",
-                              image: "assets/images/ic_save.png",
-                              height: 22,
-                              width: 22,
-                              bottom: 2,
-                              top: 6,
-                              onClick: () {}),
+                            title: "ثبت فایل",
+                            icon: CupertinoIcons.add,
+                            onClick: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => CreateFileFirst(),
+                                ),
+                              );
+                            },
+                          ),
+                          _item(
+                            title: "نشان ها",
+                            icon: CupertinoIcons.bookmark,
+                            onClick: () {},
+                          ),
                         ],
                       ),
                     ),
@@ -302,20 +295,18 @@ class _MenuScreenState extends State<MenuScreen> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Image(
-                        image: AssetImage("assets/images/ic_back.png"),
-                        width: 16,
-                        height: 16,
+                      icon: Icon(
+                        CupertinoIcons.back,
                         color: Themes.iconLight,
+                        size: 20,
                       ),
                     ),
                     IconButton(
                       onPressed: () {},
-                      icon: Image(
-                        image: AssetImage("assets/images/ic_setting.png"),
-                        width: 18,
-                        height: 18,
+                      icon: Icon(
+                        CupertinoIcons.settings,
                         color: Themes.iconLight,
+                        size: 20,
                       ),
                     ),
                   ],
@@ -343,12 +334,8 @@ class _MenuScreenState extends State<MenuScreen> {
 
   Widget _item({
     required String title,
-    required String image,
+    required IconData icon,
     required GestureTapCallback onClick,
-    double height = 24,
-    double width = 24,
-    double bottom = 0,
-    double top = 0,
   }) {
     return GestureDetector(
       onTap: onClick,
@@ -356,12 +343,13 @@ class _MenuScreenState extends State<MenuScreen> {
         padding: EdgeInsets.only(left: 8, right: 8),
         child: Column(
           children: [
-            SizedBox(
-              height: top,
+            Icon(
+              icon,
+              size: 27,
+              color: Themes.icon,
             ),
-            Image.asset(image, width: width, height: height),
             SizedBox(
-              height: bottom,
+              height: 2,
             ),
             Text(
               title,

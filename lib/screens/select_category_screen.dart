@@ -5,6 +5,7 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/category.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/widgets/try_again.dart';
 
 class CategorySelectScreen extends StatefulWidget {
   bool filterIsAllCategories;
@@ -79,13 +80,8 @@ class _CategorySelectScreenState extends State<CategorySelectScreen> {
     }
     if (state is CategoriesBlocError) {
       notify("خطای غیر منتظره ای رخ داد لطفا مجدد تلاش کنید");
-      return MaterialButton(
+      return TryAgain(
         onPressed: _onTryAgain,
-        child: Text(
-          "تلاش مجدد",
-          style: TextStyle(color: Themes.textLight, fontSize: 15),
-        ),
-        color: Themes.primary,
       );
     }
 

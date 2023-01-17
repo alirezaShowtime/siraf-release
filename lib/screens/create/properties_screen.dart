@@ -5,7 +5,6 @@ import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:siraf3/models/category.dart';
 import 'package:siraf3/models/property_insert.dart';
 import 'package:siraf3/themes.dart';
-import 'package:siraf3/themes2.dart';
 
 import '../../money_input_formatter.dart';
 import '../../widgets/text_field_2.dart';
@@ -921,12 +920,12 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
     if (isProp) {
       color = (selectedProps.containsKey(property.value!) &&
               selectedProps[property.value!] == e.value.toString())
-          ? Themes2.secondary
+          ? Themes.secondary
           : Themes.text;
     } else {
       color = (selectedFeatures.containsKey(property.value!) &&
               selectedFeatures[property.value!] == e.value.toString())
-          ? Themes2.secondary
+          ? Themes.secondary
           : Themes.text;
     }
 

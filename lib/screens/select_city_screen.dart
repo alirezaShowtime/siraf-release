@@ -7,11 +7,12 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/province.dart';
 import 'package:siraf3/screens/home_screen.dart';
-import 'package:siraf3/themes2.dart';
+import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/accordion.dart';
 import 'package:siraf3/widgets/icon_asset.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
+import 'package:siraf3/widgets/try_again.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
 
 class SelectCityScreen extends StatefulWidget {
@@ -94,10 +95,10 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
         return true;
       },
       child: Scaffold(
-        backgroundColor: Themes2.background,
+        backgroundColor: Themes.background,
         appBar: onSearching
             ? AppBar(
-                backgroundColor: Themes2.appBar,
+                backgroundColor: Themes.appBar,
                 elevation: 0.7,
                 title: TextField2(
                   decoration: InputDecoration(
@@ -125,13 +126,13 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                   },
                   icon: Icon(
                     CupertinoIcons.back,
-                    color: Themes2.icon,
+                    color: Themes.icon,
                     size: 20,
                   ),
                 ),
               )
             : AppBar(
-                backgroundColor: Themes2.appBar,
+                backgroundColor: Themes.appBar,
                 shadowColor: Color(0x50000000),
                 elevation: 0.7,
                 actions: [
@@ -141,7 +142,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                     },
                     icon: Icon(
                       CupertinoIcons.refresh,
-                      color: Themes2.icon,
+                      color: Themes.icon,
                     ),
                   ),
                   IconButton(
@@ -152,7 +153,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                     },
                     icon: Icon(
                       CupertinoIcons.search,
-                      color: Themes2.icon,
+                      color: Themes.icon,
                     ),
                   ),
                   SizedBox(
@@ -162,7 +163,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                 title: Text(
                   "انتخاب شهر",
                   style: TextStyle(
-                    color: Themes2.text,
+                    color: Themes.text,
                     fontFamily: "IranSansMedium",
                     fontSize: 15,
                   ),
@@ -175,7 +176,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                   },
                   icon: Icon(
                     CupertinoIcons.back,
-                    color: Themes2.icon,
+                    color: Themes.icon,
                     size: 20,
                   ),
                 ),
@@ -233,7 +234,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                 child: Row(children: [
                   Icon(
                     Typicons.location_outline,
-                    color: Themes2.secondary,
+                    color: Themes.secondary,
                   ),
                   SizedBox(
                     width: 3,
@@ -244,7 +245,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                         TextSpan(
                           text: "انتخاب لوکیشن فعلی من (",
                           style: TextStyle(
-                            color: Themes2.text,
+                            color: Themes.text,
                             fontSize: 15,
                             fontFamily: "IranSansMedium",
                           ),
@@ -252,7 +253,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                         TextSpan(
                           text: "تهران",
                           style: TextStyle(
-                            color: Themes2.secondary,
+                            color: Themes.secondary,
                             fontSize: 15,
                             fontFamily: "IranSansMedium",
                           ),
@@ -260,7 +261,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                         TextSpan(
                           text: ")",
                           style: TextStyle(
-                            color: Themes2.text,
+                            color: Themes.text,
                             fontSize: 15,
                             fontFamily: "IranSansMedium",
                           ),
@@ -286,7 +287,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                 child: Text(
                   "تایید",
                   style: TextStyle(
-                    color: Themes2.text,
+                    color: Themes.textLight,
                     fontSize: 17,
                     fontFamily: "IranSansMedium",
                   ),
@@ -299,7 +300,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                   minHeight: 60,
                   minWidth: double.infinity,
                 ),
-                fillColor: Themes2.primary,
+                fillColor: Themes.primary,
               ),
             )
           ],
@@ -427,24 +428,8 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
 
     if (state is GetCitiesErrorState) {
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("خطایی در هنگام دریافت اطلاعات پیش آمد"),
-            SizedBox(
-              height: 10,
-            ),
-            RawMaterialButton(
-              onPressed: getCities,
-              child: Text(
-                "تلاش مجدد",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              fillColor: Themes2.primary,
-            )
-          ],
+        child: TryAgain(
+          onPressed: getCities,
         ),
       );
     }

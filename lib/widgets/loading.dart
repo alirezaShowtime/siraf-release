@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/themes.dart';
-import 'package:siraf3/themes2.dart';
 
 class Loading extends StatefulWidget {
   var color;
   var size;
 
-  Loading({this.color = Themes2.secondary, this.size = 50.0});
+  Loading({this.color = Themes.secondary, this.size = 50.0});
   @override
   State<Loading> createState() => __LoadingState();
 }

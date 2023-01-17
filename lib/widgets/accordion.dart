@@ -38,7 +38,7 @@ class _AccordionState extends State<Accordion> {
               icon: widget.open ? "ic_arrow_top.png" : "ic_arrow_bottom.png",
               width: 14,
               height: 8,
-              color: Themes.primary,
+              color: Themes.icon,
               fit: BoxFit.fill,
               onPressed: _onClick,
             ),
