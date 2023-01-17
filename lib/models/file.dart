@@ -97,7 +97,10 @@ class File {
   String getFirstPrice() {
     if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 5);
-      return number_format(int.parse(prop.value!)) + " " + prop.name!;
+
+      if (prop.value == null || prop.name == null) return "";
+
+      return prop.name! + " " + number_format(int.parse(prop.value!));
     } else {
       return "";
     }
@@ -106,7 +109,8 @@ class File {
   String getSecondPrice() {
     if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 6);
-      return number_format(int.parse(prop.value!)) + " " + prop.name!;
+
+      return prop.name! + " " + number_format(int.parse(prop.value!));
     } else {
       return "";
     }

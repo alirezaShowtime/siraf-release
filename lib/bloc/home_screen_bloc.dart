@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart';
@@ -28,7 +29,7 @@ class HSLoadedState extends HSState {
 }
 
 class HSErrorState extends HSState {
-  Response response;
+  Response? response;
 
   HSErrorState({required this.response});
 }
@@ -48,12 +49,20 @@ class HSBloc extends Bloc<HSEvent, HSState> {
           jsonEncode(event.cities.map((e) => e.id).toList()) +
           '&lastId=0');
 
-      if (await User.hasToken()) {
-        response = await get(url, headers: {
-          // "Authorization": await User.getBearerToken(),
-        });
-      } else {
-        response = await get(url);
+      try {
+        if (await User.hasToken()) {
+          response = await get(url, headers: {
+            // "Authorization": await User.getBearerToken(), //todo uncomment
+          });
+        } else {
+          response = await get(url);
+        }
+      } on HttpException catch (e) {
+        emit(HSErrorState(response: null));
+        return;
+      } on SocketException catch (e) {
+        emit(HSErrorState(response: null));
+        return;
       }
 
       if (isResponseOk(response)) {

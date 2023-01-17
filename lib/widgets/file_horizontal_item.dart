@@ -26,7 +26,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
         ),
       ]),
       padding: EdgeInsets.all(10),
-      height: imageSize + 20,
+      // height: imageSize + 20,
       constraints: BoxConstraints(maxHeight: 160),
       width: double.infinity,
       child: Row(
@@ -39,7 +39,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
               height: imageSize,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) => Image(
-                image: AssetImage("assets/images/1.jpg"),
+                image: AssetImage("assets/images/image_not_avialable_2.png"),
                 width: imageSize,
                 height: imageSize,
                 fit: BoxFit.cover,
@@ -50,113 +50,101 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
             width: 5,
           ),
           Expanded(
-            child: Stack(
-              alignment: Alignment.center,
+            child: Wrap(
               children: [
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  left: 0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '300,000,000 ودیعه',
-                            style: TextStyle(
-                              color: Themes.text,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'IranSans',
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '300,000,000 ودیعه',
+                              style: TextStyle(
+                                color: Themes.text,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'IranSans',
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Text(
-                            '4,000,000 کرایه',
-                            style: TextStyle(
-                              color: Themes.text,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                              fontFamily: 'IranSans',
+                            SizedBox(
+                              height: 3,
                             ),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        widget.file.publishedAgo! + ' | ' + widget.file.city!,
-                        style: TextStyle(
-                          color: Themes.text,
-                          fontSize: 9,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: 'IranSans',
+                            Text(
+                              '4,000,000 کرایه',
+                              style: TextStyle(
+                                color: Themes.text,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'IranSans',
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  right: 0,
-                  bottom: 0,
-                  top: 0,
-                  child: Center(
-                    child: Text(
+                        Text(
+                          widget.file.publishedAgo! + ' | ' + widget.file.city!,
+                          style: TextStyle(
+                            color: Themes.text,
+                            fontSize: 9,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'IranSans',
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
                       widget.file.name!,
                       style: TextStyle(
                         color: Themes.primary,
-                        fontSize: 13.5,
+                        fontSize: 12,
                         fontFamily: 'IranSans',
                       ),
                       maxLines: 2,
                     ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  left: 0,
-                  child: Column(
-                    children: [
-                      Text(
-                        '',
-                        style: TextStyle(
-                          color: Themes.text,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: 'IranSans',
+                    Column(
+                      children: [
+                        Text(
+                          '',
+                          style: TextStyle(
+                            color: Themes.text,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'IranSans',
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 3,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: widget.file.propertys
-                                ?.where((element) =>
-                                    element.weightList == 1 ||
-                                    element.weightList == 2 ||
-                                    element.weightList == 3 ||
-                                    element.weightList == 4)
-                                .toList()
-                                .map<Widget>((e) => Text(
-                                      "${e.name} ${e.value}",
-                                      style: TextStyle(
-                                        color: Themes.primary,
-                                        fontSize: 10.5,
-                                        fontWeight: FontWeight.w400,
-                                        fontFamily: 'IranSans',
-                                      ),
-                                    ))
-                                .toList() ??
-                            [],
-                      ),
-                    ],
-                  ),
-                )
+                        SizedBox(
+                          height: 3,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: widget.file.propertys
+                                  ?.where((element) =>
+                                      element.weightList == 1 ||
+                                      element.weightList == 2 ||
+                                      element.weightList == 3 ||
+                                      element.weightList == 4)
+                                  .toList()
+                                  .map<Widget>((e) => Text(
+                                        "${e.name} ${e.value}",
+                                        style: TextStyle(
+                                          color: Themes.primary,
+                                          fontSize: 10.5,
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: 'IranSans',
+                                        ),
+                                      ))
+                                  .toList() ??
+                              [],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ],
             ),
           )

@@ -24,7 +24,7 @@ class _AccordionState extends State<Accordion> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 0,
+      elevation: 0.3,
       shape: BeveledRectangleBorder(
         borderRadius: BorderRadius.circular(5),
       ),
@@ -36,14 +36,18 @@ class _AccordionState extends State<Accordion> {
             title: GestureDetector(onTap: _onClick, child: widget.title),
             trailing: IconAsset(
               icon: widget.open ? "ic_arrow_top.png" : "ic_arrow_bottom.png",
-              width: 17,
-              height: 10,
+              width: 14,
+              height: 8,
               color: Themes.primary,
               fit: BoxFit.fill,
               onPressed: _onClick,
             ),
           ),
-          widget.open ? Padding(padding: const EdgeInsets.only(bottom: 9), child: widget.content) : Container()
+          widget.open
+              ? Padding(
+                  padding: const EdgeInsets.only(bottom: 9),
+                  child: widget.content)
+              : Container()
         ],
       ),
     );

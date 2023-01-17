@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/helpers.dart';
@@ -8,10 +10,11 @@ import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/menu_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
-import 'package:siraf3/themes.dart';
+import 'package:siraf3/themes2.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
 import 'package:siraf3/widgets/file_slide_item.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -91,22 +94,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
+        elevation: 0.7,
         title: GestureDetector(
           onTap: () => goSelectCity(showSelected: true),
-          child: Container(
-            color: Themes.appBar,
-            padding: const EdgeInsets.all(10),
-            child: Text(
-              getTitle(cities),
-              style: TextStyle(
-                color: Themes.text,
-                fontSize: 14,
-              ),
+          child: Text(
+            getTitle(cities),
+            style: TextStyle(
+              color: Themes2.text,
+              fontSize: 15,
             ),
           ),
         ),
-        backgroundColor: Themes.appBar,
+        backgroundColor: Themes2.primary,
         centerTitle: true,
         leading: Padding(
           padding: const EdgeInsets.only(right: 15),
@@ -118,29 +117,37 @@ class _HomeScreenState extends State<HomeScreen> {
               image: AssetImage("assets/images/ic_menu.png"),
               width: 30,
               height: 30,
-              color: Themes.primary,
+              color: Themes2.icon,
             ),
           ),
         ),
         actions: [
           IconButton(
             onPressed: () async {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => CreateFileFirst()));
+              changeViewType();
             },
-            icon: Image(
-              image: AssetImage("assets/images/ic_filter.png"),
-              width: 24,
-              height: 24,
-              color: Themes.primary,
+            icon: FaIcon(
+              OctIcons.image_24,
+              color: Themes2.icon,
+              size: 20,
+            ),
+          ),
+          IconButton(
+            onPressed: () async {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => CreateFileFirst()));
+            },
+            icon: FaIcon(
+              OctIcons.sliders_16,
+              color: Themes2.icon,
+              size: 20,
             ),
           ),
           IconButton(
             onPressed: () {},
-            icon: Image(
-              image: AssetImage("assets/images/ic_search.png"),
-              width: 24,
-              height: 24,
-              color: Themes.primary,
+            icon: FaIcon(
+              CupertinoIcons.search,
+              color: Themes2.icon,
             ),
           ),
           SizedBox(
@@ -160,7 +167,9 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     if (state is HSErrorState) {
-      String? message = jDecode(state.response.body)['message'];
+      String? message = state.response != null
+          ? jDecode(state.response!.body)['message']
+          : null;
 
       return Center(
         child: Column(
@@ -171,14 +180,16 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 10,
             ),
             RawMaterialButton(
-              onPressed: () {},
+              onPressed: () {
+                getFiles();
+              },
               child: Text(
                 "تلاش مجدد",
                 style: TextStyle(
                   color: Colors.white,
                 ),
               ),
-              fillColor: Themes.primary,
+              fillColor: Themes2.primary,
             )
           ],
         ),
@@ -192,12 +203,16 @@ class _HomeScreenState extends State<HomeScreen> {
           .map<Widget>((file) => GestureDetector(
                 onTap: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => FileScreen(id: file.id!)));
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => FileScreen(id: file.id!),
+                    ),
+                  );
                 },
                 child: Padding(
-                  padding: EdgeInsets.only(top: 5),
+                  padding: EdgeInsets.only(
+                      top:
+                          (state as HSLoadedState).files.first == file ? 0 : 5),
                   child: viewType == ViewType.List
                       ? FileHorizontalItem(file: file)
                       : FileSlideItem(file: file),

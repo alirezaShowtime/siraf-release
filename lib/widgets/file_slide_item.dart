@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:dotted_border/dotted_border.dart';
+import 'package:dotted_line/dotted_line.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
@@ -8,6 +11,7 @@ import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/themes2.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:http/http.dart';
@@ -60,12 +64,12 @@ class _FileSlideItemState extends State<FileSlideItem> {
                 images: widget.file.images
                         ?.map<String>((e) => e.path ?? "")
                         .toList() ??
-                    [],
+                    ["no_image_provided"],
                 height: 250,
                 autoPlay: false,
                 indicatorsCenterAlign: true,
                 viewportFraction: 1.0,
-                itemMargin: EdgeInsets.only(bottom: 15),
+                itemMargin: EdgeInsets.only(bottom: 15, top: 1),
                 indicatorPosition:
                     EdgeInsets.only(left: 0, right: 0, bottom: 0),
                 itemBorderRadius: BorderRadius.zero,
@@ -81,6 +85,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                   child: Container(
                     decoration: BoxDecoration(
                       color: Color(0xff6c6c6c).withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                     padding: EdgeInsets.all(5),
                     child: Column(
@@ -92,7 +97,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                             style: TextStyle(
                               color: Themes.textLight,
                               fontFamily: "IranSans",
-                              fontSize: 15,
+                              fontSize: 14,
                             ),
                           ),
                         if (widget.file.getFirstPrice().isEmpty &&
@@ -106,7 +111,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                             style: TextStyle(
                               color: Themes.textLight,
                               fontFamily: "IranSans",
-                              fontSize: 13,
+                              fontSize: 12,
                             ),
                           ),
                       ],
@@ -121,6 +126,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                   child: Container(
                     decoration: BoxDecoration(
                       color: Color(0xff6c6c6c).withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                     padding: EdgeInsets.all(5),
                     child: Column(
@@ -138,7 +144,49 @@ class _FileSlideItemState extends State<FileSlideItem> {
                     ),
                   ),
                 ),
+              Positioned(
+                bottom: 14,
+                left: 0,
+                right: 0,
+                child: DottedLine(
+                  direction: Axis.horizontal,
+                  lineLength: double.infinity,
+                  lineThickness: 1.0,
+                  dashLength: 4.0,
+                  dashColor: Colors.black,
+                  dashGradient: [Colors.red, Colors.blue],
+                  dashRadius: 0.0,
+                  dashGapLength: 4.0,
+                  dashGapColor: Colors.transparent,
+                  dashGapGradient: [Colors.red, Colors.blue],
+                  dashGapRadius: 0.0,
+                ),
+              ),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: DottedLine(
+                  direction: Axis.horizontal,
+                  lineLength: double.infinity,
+                  lineThickness: 1.0,
+                  dashLength: 4.0,
+                  dashColor: Colors.black,
+                  dashGradient: [Colors.red, Colors.blue],
+                  dashRadius: 0.0,
+                  dashGapLength: 4.0,
+                  dashGapColor: Colors.transparent,
+                  dashGapGradient: [Colors.red, Colors.blue],
+                  dashGapRadius: 0.0,
+                ),
+              ),
             ],
+          ),
+          SizedBox(
+            height: 4,
+          ),
+          SizedBox(
+            height: 4,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -165,13 +213,11 @@ class _FileSlideItemState extends State<FileSlideItem> {
                         );
                       }
                     },
-                    icon: Image(
-                      image: AssetImage("assets/images/" +
-                          (isFavorite ? "ic_save_filled" : "ic_save") +
-                          ".png"),
-                      width: 22,
-                      height: 22,
-                      color: Themes.primary,
+                    icon: Icon(
+                      isFavorite
+                          ? CupertinoIcons.bookmark_fill
+                          : CupertinoIcons.bookmark,
+                      color: Themes2.icon,
                     ),
                   ),
                   Container(
@@ -187,11 +233,11 @@ class _FileSlideItemState extends State<FileSlideItem> {
                                           .trim() +
                                       " | "
                                   : "") +
-                              widget.file.name!,
+                              widget.file.name!.trim(),
                           style: TextStyle(
                             color: Themes.text,
                             fontFamily: "IranSans",
-                            fontSize: 14,
+                            fontSize: 13,
                           ),
                           maxLines: 2,
                         ),
@@ -217,17 +263,15 @@ class _FileSlideItemState extends State<FileSlideItem> {
                     chooserTitle: 'اشتراک گذاری در',
                   );
                 },
-                icon: Image(
-                  image: AssetImage("assets/images/ic_share.png"),
-                  width: 16,
-                  height: 16,
-                  color: Themes.primary,
+                icon: Icon(
+                  CupertinoIcons.paperplane,
+                  color: Themes2.icon,
                 ),
               ),
             ],
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15, bottom: 12),
+            padding: const EdgeInsets.only(left: 15, right: 15, bottom: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: widget.file.propertys

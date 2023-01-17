@@ -44,11 +44,12 @@ class _CategorySelectScreenState extends State<CategorySelectScreen> {
         title: Text(
           widget.category != null ? widget.category!.name! : 'انتخاب دسته بندی',
           style: TextStyle(
-            fontWeight: FontWeight.normal,
             color: Themes.text,
-            fontSize: 16,
+            fontSize: 15,
           ),
         ),
+        titleSpacing: 0,
+        automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);

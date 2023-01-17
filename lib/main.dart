@@ -7,7 +7,7 @@ import 'package:siraf3/bloc/get_cities_bloc.dart';
 import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/bloc/login_status.dart';
 import 'package:siraf3/screens/home_screen.dart';
-import 'package:siraf3/themes.dart';
+import 'package:siraf3/themes2.dart';
 
 void main() {
   runApp(MultiBlocProvider(providers: [
@@ -47,8 +47,8 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
           fontFamily: 'IranSans',
-          backgroundColor: Themes.background,
-          scaffoldBackgroundColor: Themes.background,
+          backgroundColor: Themes2.background,
+          scaffoldBackgroundColor: Themes2.background,
         ),
         debugShowCheckedModeBanner: false,
         builder: (context, child) {

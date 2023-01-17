@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:siraf3/helpers.dart';
 import 'package:siraf3/themes.dart';
 import 'slider.dart' as slider;
 
@@ -173,6 +174,15 @@ class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> {
                 width: MediaQuery.of(context).size.width,
                 fit: widget.imageFit ?? BoxFit.cover,
                 height: MediaQuery.of(context).size.height,
+                errorBuilder: (_, _1, _2) {
+                  return Image(
+                    image: AssetImage("assets/images/image_not_avialable.png"),
+                    width: MediaQuery.of(context).size.width,
+                    fit: widget.imageFit ?? BoxFit.cover,
+                    height: MediaQuery.of(context).size.height,
+                    color: Color(0x757f8c8d),
+                  );
+                },
               ),
             ),
           )

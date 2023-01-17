@@ -162,6 +162,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0+3"
+  dotted_line:
+    dependency: "direct main"
+    description:
+      name: dotted_line
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.0"
   dropdown_button2:
     dependency: "direct main"
     description:
@@ -326,6 +333,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.9.7"
+  flutter_octicons:
+    dependency: "direct main"
+    description:
+      name: flutter_octicons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.21.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -364,6 +378,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  font_awesome_flutter:
+    dependency: "direct main"
+    description:
+      name: font_awesome_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "10.3.0"
   google_maps_cluster_manager:
     dependency: "direct main"
     description:

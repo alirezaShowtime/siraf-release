@@ -43,6 +43,9 @@ class FileConsulantsBloc
     } on HttpException catch (_) {
       emit(FileConsulantsErrorState(response: null));
       return;
+    } on SocketException catch (e) {
+      emit(FileConsulantsErrorState(response: null));
+      return;
     }
 
     if (isResponseOk(response)) {

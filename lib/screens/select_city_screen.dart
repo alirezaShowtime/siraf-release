@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,7 +7,7 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/province.dart';
 import 'package:siraf3/screens/home_screen.dart';
-import 'package:siraf3/themes.dart';
+import 'package:siraf3/themes2.dart';
 import 'package:siraf3/widgets/accordion.dart';
 import 'package:siraf3/widgets/icon_asset.dart';
 import 'package:siraf3/widgets/loading.dart';
@@ -93,76 +94,54 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
         return true;
       },
       child: Scaffold(
-        backgroundColor: Themes.background2,
+        backgroundColor: Themes2.background,
         appBar: onSearching
             ? AppBar(
-                backgroundColor: Color(0xffffffff),
-                shadowColor: Color(0x50000000),
-                actions: [
-                  // IconButton(
-                  //   onPressed: () {
-                  //     if (_searchFieldCtrl.text.trim().isNotEmpty) {
-                  //       doSearch(_searchFieldCtrl.text.trim());
-                  //     }
-                  //     setState(() {
-                  //       onSearching = false;
-                  //     });
-                  //   },
-                  //   icon: Image(
-                  //     image: AssetImage("assets/images/ic_search.png"),
-                  //     width: 24,
-                  //     height: 24,
-                  //     color: Themes.primary,
-                  //   ),
-                  // ),
-                  // SizedBox(
-                  //   width: 10,
-                  // ),
-                ],
+                backgroundColor: Themes2.appBar,
+                elevation: 0.7,
                 title: TextField2(
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "جستجو در شهر ها",
-                    hintStyle: TextStyle(fontSize: 17, fontFamily: "Vazir"),
+                    hintStyle: TextStyle(
+                      fontSize: 15,
+                    ),
                   ),
-                  style: TextStyle(fontSize: 17, fontFamily: "Vazir"),
+                  style: TextStyle(fontSize: 15),
                   controller: _searchFieldCtrl,
                   onChanged: ((value) {
                     doSearch(value.trim());
                   }),
                 ),
-                leading: Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _searchFieldCtrl.clear();
-                        doSearch("");
-                        onSearching = false;
-                      });
-                    },
-                    icon: Image(
-                      image: AssetImage("assets/images/ic_back.png"),
-                      width: 24,
-                      height: 24,
-                      color: Themes.primary,
-                    ),
+                automaticallyImplyLeading: false,
+                titleSpacing: 0,
+                leading: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _searchFieldCtrl.clear();
+                      doSearch("");
+                      onSearching = false;
+                    });
+                  },
+                  icon: Icon(
+                    CupertinoIcons.back,
+                    color: Themes2.icon,
+                    size: 20,
                   ),
                 ),
               )
             : AppBar(
-                backgroundColor: Color(0xffffffff),
+                backgroundColor: Themes2.appBar,
                 shadowColor: Color(0x50000000),
+                elevation: 0.7,
                 actions: [
                   IconButton(
                     onPressed: () {
                       getCities();
                     },
-                    icon: Image(
-                      image: AssetImage("assets/images/ic_reload.png"),
-                      width: 24,
-                      height: 24,
-                      color: Themes.primary,
+                    icon: Icon(
+                      CupertinoIcons.refresh,
+                      color: Themes2.icon,
                     ),
                   ),
                   IconButton(
@@ -171,11 +150,9 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                         onSearching = true;
                       });
                     },
-                    icon: Image(
-                      image: AssetImage("assets/images/ic_search.png"),
-                      width: 24,
-                      height: 24,
-                      color: Themes.primary,
+                    icon: Icon(
+                      CupertinoIcons.search,
+                      color: Themes2.icon,
                     ),
                   ),
                   SizedBox(
@@ -185,23 +162,21 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                 title: Text(
                   "انتخاب شهر",
                   style: TextStyle(
-                    color: Themes.primary,
-                    fontFamily: "Vazir",
-                    fontSize: 18,
+                    color: Themes2.text,
+                    fontFamily: "IranSansMedium",
+                    fontSize: 15,
                   ),
                 ),
-                leading: Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: Image(
-                      image: AssetImage("assets/images/ic_back.png"),
-                      width: 24,
-                      height: 24,
-                      color: Themes.primary,
-                    ),
+                automaticallyImplyLeading: false,
+                titleSpacing: 0,
+                leading: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    CupertinoIcons.back,
+                    color: Themes2.icon,
+                    size: 20,
                   ),
                 ),
               ),
@@ -224,9 +199,8 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                             Text(
                               e.name!,
                               style: TextStyle(
-                                fontFamily: "Vazir",
                                 color: Color(0xff000000),
-                                fontSize: 17,
+                                fontSize: 16,
                               ),
                             ),
                             SizedBox(
@@ -239,9 +213,9 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                                 });
                               },
                               child: Icon(
-                                Typicons.delete,
+                                Typicons.delete_outline,
                                 color: Color(0xff707070),
-                                size: 26,
+                                size: 22,
                               ),
                             )
                           ]),
@@ -257,54 +231,54 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
               Container(
                 margin: EdgeInsets.only(right: 10),
                 child: Row(children: [
-                  IconAsset(
-                    icon: "ic_location_circle.png",
-                    color: Color(0xff707070),
-                    width: 22,
-                    height: 22,
+                  Icon(
+                    Typicons.location_outline,
+                    color: Themes2.secondary,
                   ),
                   SizedBox(
                     width: 3,
                   ),
-                  Text(
-                    "انتخاب لوکیشن فعلی من (تهران)",
-                    style: TextStyle(
-                      fontFamily: "Vazir",
-                      color: Color(0xff000000),
-                      fontSize: 17,
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "انتخاب لوکیشن فعلی من (",
+                          style: TextStyle(
+                            color: Themes2.text,
+                            fontSize: 15,
+                            fontFamily: "IranSansMedium",
+                          ),
+                        ),
+                        TextSpan(
+                          text: "تهران",
+                          style: TextStyle(
+                            color: Themes2.secondary,
+                            fontSize: 15,
+                            fontFamily: "IranSansMedium",
+                          ),
+                        ),
+                        TextSpan(
+                          text: ")",
+                          style: TextStyle(
+                            color: Themes2.text,
+                            fontSize: 15,
+                            fontFamily: "IranSansMedium",
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ]),
               ),
+            SizedBox(
+              height: 5,
+            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: getContentWidget(currentState),
               ),
             ),
-            // Container(
-            //   height: 60,
-            //   width: double.infinity,
-            //   margin: EdgeInsets.all(10),
-            //   decoration: BoxDecoration(
-            //     color: Themes.primary,
-            //     borderRadius: BorderRadius.circular(10),
-            //   ),
-            //   child: GestureDetector(
-            //     onTap: _onTapSubmit(),
-            //     child: Center(
-            //       child: Text(
-            //         "تایید",
-            // style: TextStyle(
-            //   color: Colors.white,
-            //   fontSize: 17,
-            //   fontFamily: "Vazir",
-            // ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-
             Padding(
               padding: const EdgeInsets.all(10),
               child: RawMaterialButton(
@@ -312,9 +286,9 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                 child: Text(
                   "تایید",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Themes2.text,
                     fontSize: 17,
-                    fontFamily: "Vazir",
+                    fontFamily: "IranSansMedium",
                   ),
                 ),
                 shape: RoundedRectangleBorder(
@@ -325,7 +299,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                   minHeight: 60,
                   minWidth: double.infinity,
                 ),
-                fillColor: Themes.primary,
+                fillColor: Themes2.primary,
               ),
             )
           ],
@@ -468,7 +442,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                   color: Colors.white,
                 ),
               ),
-              fillColor: Themes.primary,
+              fillColor: Themes2.primary,
             )
           ],
         ),
@@ -482,9 +456,8 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
           title: Text(
             e.name,
             style: TextStyle(
-              fontFamily: "Vazir",
               color: Color(0xff000000),
-              fontSize: 17,
+              fontSize: 15,
             ),
           ),
           content: Container(
@@ -518,11 +491,10 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                           e.name!,
                           textAlign: TextAlign.start,
                           style: TextStyle(
-                            fontFamily: "Vazir",
                             color: selectedCities.asMap().containsValue(e)
                                 ? Color(0xff3d3d3d)
                                 : Color(0xff707070),
-                            fontSize: 17,
+                            fontSize: 15,
                           ),
                         ),
                       ],

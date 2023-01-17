@@ -6,6 +6,8 @@ import 'package:location/location.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/themes2.dart';
+import 'package:typicons_flutter/typicons_flutter.dart';
 
 class MarkInMapScreen extends StatefulWidget {
   LatLng? position;
@@ -67,21 +69,25 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Themes.primary,
           title: Text(
             "موقعیت فایل",
             style: TextStyle(
-              fontWeight: FontWeight.normal,
+              color: Themes.text,
+              fontSize: 15,
             ),
           ),
           leading: IconButton(
-            onPressed: _popAndSendResult,
+            onPressed: () {
+              Navigator.pop(context);
+            },
             icon: Icon(
               Icons.arrow_back,
-              color: Colors.white,
+              color: Themes.icon,
+              size: 22,
             ),
           ),
+          automaticallyImplyLeading: false,
+          titleSpacing: 0,
           actions: [
             if (markers.isNotEmpty)
               Center(
@@ -96,8 +102,9 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
                     child: Text(
                       "پاک کردن",
                       style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
+                        fontSize: 14,
+                        color: Themes.text,
+                        fontFamily: "IranSansBold",
                       ),
                     ),
                   ),
@@ -107,18 +114,23 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
               child: GestureDetector(
                 onTap: _popAndSendResult,
                 child: Padding(
-                  padding: EdgeInsets.only(left: 20, top: 20, bottom: 20),
+                  padding: EdgeInsets.only(
+                    left: 20,
+                  ),
                   child: Text(
                     "تایید",
                     style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
+                      fontSize: 14,
+                      color: Themes.text,
+                      fontFamily: "IranSansBold",
                     ),
                   ),
                 ),
               ),
             ),
           ],
+          backgroundColor: Themes.background,
+          elevation: 0.7,
         ),
         body: SafeArea(
           child: Stack(
@@ -138,45 +150,57 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
                   MarkerLayer(markers: markers),
                 ],
               ),
-              Positioned(
-                bottom: 20,
-                left: MediaQuery.of(context).size.width / 2 - 60,
-                child: GestureDetector(
-                  onTap: _onMyLocationClicked,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Themes.background,
-                      borderRadius: BorderRadius.circular(100),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(-2, 2),
-                          blurRadius: 4,
-                        ),
-                        BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(2, -2),
-                          blurRadius: 4,
-                        ),
-                      ],
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                    alignment: Alignment.center,
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.my_location,
-                          size: 30,
-                          color: Themes.icon,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Text(
-                            "مکان من",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+              Align(
+                // bottom: 20,
+                // left: MediaQuery.of(context).size.width / 2 - 55,
+                // left: 0,
+                // right: 0,
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: GestureDetector(
+                    onTap: _onMyLocationClicked,
+                    child: Container(
+                      constraints: BoxConstraints(maxWidth: 120, maxHeight: 50),
+                      decoration: BoxDecoration(
+                        color: Themes.background,
+                        borderRadius: BorderRadius.circular(100),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            offset: Offset(-2, 2),
+                            blurRadius: 4,
                           ),
-                        ),
-                      ],
+                          BoxShadow(
+                            color: Colors.black12,
+                            offset: Offset(2, -2),
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                      alignment: Alignment.center,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Typicons.location_outline,
+                            size: 30,
+                            color: Themes2.secondary,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 2.0),
+                            child: Text(
+                              "مکان من",
+                              style: TextStyle(
+                                color: Themes.text,
+                                fontSize: 14,
+                                fontFamily: "IranSansBold",
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
