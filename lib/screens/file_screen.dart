@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as m;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -158,10 +159,8 @@ class _FileScreenState extends State<FileScreen> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: m.Image(
-                  image: AssetImage("assets/images/ic_back.png"),
-                  width: 14,
-                  height: 14,
+                icon: Icon(
+                  CupertinoIcons.back,
                   color: Themes.iconLight,
                 ),
               ),

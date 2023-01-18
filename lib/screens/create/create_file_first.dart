@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -82,7 +83,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
               Navigator.pop(context);
             },
             child: Icon(
-              Icons.arrow_back,
+              CupertinoIcons.back,
               color: Themes.icon,
             ),
           ),
@@ -777,6 +778,10 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                           Expanded(
                             child: MaterialButton(
                               onPressed: () {
+                                if (_controller.text.length < 10) {
+                                  return notify(
+                                      "آدرس باید حداقل 10 کاراکتر باشد");
+                                }
                                 setState(() {
                                   address = _controller.text.trim().isNotEmpty
                                       ? _controller.text.trim()

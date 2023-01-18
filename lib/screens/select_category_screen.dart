@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/categories_bloc.dart';
@@ -56,7 +57,7 @@ class _CategorySelectScreenState extends State<CategorySelectScreen> {
             Navigator.pop(context);
           },
           icon: Icon(
-            Icons.arrow_back,
+            CupertinoIcons.back,
             color: Themes.icon,
             size: 22,
           ),

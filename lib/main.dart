@@ -29,7 +29,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return OKToast(
@@ -49,6 +48,8 @@ class MyApp extends StatelessWidget {
           fontFamily: 'IranSans',
           backgroundColor: Themes.background,
           scaffoldBackgroundColor: Themes.background,
+          accentColor: Themes.secondary,
+          secondaryHeaderColor: Themes.secondary,
         ),
         debugShowCheckedModeBanner: false,
         builder: (context, child) {

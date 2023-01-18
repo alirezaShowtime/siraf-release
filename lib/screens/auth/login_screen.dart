@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -57,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.pop(context);
                         },
                         icon: Icon(
-                          Icons.arrow_back,
+                          CupertinoIcons.back,
                           color: Colors.white,
                           size: 25,
                         ),

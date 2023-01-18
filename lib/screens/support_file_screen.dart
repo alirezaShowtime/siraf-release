@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -59,7 +60,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
               Navigator.pop(context);
             },
             child: Icon(
-              Icons.arrow_back,
+              CupertinoIcons.back,
               color: Themes.icon,
             ),
           ),

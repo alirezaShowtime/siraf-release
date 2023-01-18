@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
@@ -80,7 +81,7 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
               Navigator.pop(context);
             },
             icon: Icon(
-              Icons.arrow_back,
+              CupertinoIcons.back,
               color: Themes.icon,
               size: 22,
             ),

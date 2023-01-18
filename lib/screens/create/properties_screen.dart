@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:siraf3/models/category.dart';
@@ -92,7 +93,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
               Navigator.pop(context, [selectedProps, selectedFeatures]);
             },
             child: Icon(
-              Icons.arrow_back,
+              CupertinoIcons.back,
               color: Themes.icon,
             ),
           ),
@@ -110,7 +111,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                             height: 20,
                           ),
                           Text(
-                            "ویژگی ها و امکانات",
+                            "سایر ویژگی ها",
                             style: TextStyle(
                               fontSize: 14,
                               color: Themes.text,
@@ -184,7 +185,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                             height: 20,
                           ),
                           Text(
-                            "امکانات",
+                            "سایر امکانات",
                             style: TextStyle(
                               fontSize: 14,
                               color: Themes.text,
@@ -330,7 +331,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
           height: 5,
         ),
         Divider(
-          color: Themes.primary.withOpacity(0.5),
+          color: Themes.textGrey.withOpacity(0.5),
           height: 1,
         ),
       ],
