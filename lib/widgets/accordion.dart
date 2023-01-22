@@ -85,7 +85,7 @@ class _AccordionItem extends State<AccordionItem> {
           widget.title,
           style: TextStyle(
             fontSize: 12,
-            color: Colors.grey.shade500,
+            color: Themes.text,
           ),
         ),
       ),

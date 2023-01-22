@@ -143,7 +143,7 @@ class _CategorySelectScreenState extends State<CategorySelectScreen> {
             bottom: isLast
                 ? BorderSide.none
                 : BorderSide(
-                    color: Themes.primary.withOpacity(0.5),
+                    color: Themes.textGrey.withOpacity(0.5),
                     width: 0.7,
                   ),
           ),

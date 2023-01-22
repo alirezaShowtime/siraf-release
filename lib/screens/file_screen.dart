@@ -166,22 +166,13 @@ class _FileScreenState extends State<FileScreen> {
               ),
               IconButton(
                 onPressed: () async {
-                  if (await User.hasToken()) {
+                  doWithLogin(context, () async {
                     if (await addOrRemoveFavorite(widget.id)) {
                       setState(() {
                         isFavorite = !isFavorite;
                       });
                     }
-                  } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => LoginScreen(
-                          pop: true,
-                        ),
-                      ),
-                    );
-                  }
+                  });
                 },
                 icon: Icon(
                   isFavorite ? Icons.bookmark : Icons.bookmark_border,

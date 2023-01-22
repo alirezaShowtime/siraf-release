@@ -195,22 +195,13 @@ class _FileSlideItemState extends State<FileSlideItem> {
                 children: [
                   IconButton(
                     onPressed: () async {
-                      if (await User.hasToken()) {
+                      doWithLogin(context, () async {
                         if (await addOrRemoveFavorite()) {
                           setState(() {
                             isFavorite = !isFavorite;
                           });
                         }
-                      } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => LoginScreen(
-                              pop: true,
-                            ),
-                          ),
-                        );
-                      }
+                      });
                     },
                     icon: Icon(
                       isFavorite

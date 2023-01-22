@@ -46,6 +46,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Form(
         key: _formKey,
         child: Column(
@@ -206,17 +207,17 @@ class _VerifyScreenState extends State<VerifyScreen> {
   }
 
   void _onSendCodeAgain() async {
-    final url = createAuthUrlByEndPoint('sendcode');
-
-    var response = await http
-        .post(url, body: jsonEncode({'PhoneNumber': mobile}), headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json",
-    });
+    var response = await http.post(createAuthUrlByEndPoint('login/'),
+        body: jsonEncode({'mobile': mobile, 'type': 1}),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        });
 
     var resBody = jsonDecode(response.body);
 
-    if (resBody['isSuccess'] == true) {
+    if (response.statusCode == 200) {
+      notify(resBody['data'].toString());
       _startTimer();
       notify("کد تایید مجدد ارسال شد");
     } else {
@@ -239,12 +240,12 @@ class _VerifyScreenState extends State<VerifyScreen> {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      final url = createAuthUrlByEndPoint('Verification');
+      final url = createAuthUrlByEndPoint('confirm/');
 
       BlocProvider.of<LoginStatus>(context).add(true);
 
       var response = await http.post(url,
-          body: jsonEncode({'PhoneNumber': mobile, 'code': code}),
+          body: jsonEncode({'mobile': mobile, 'code': code}),
           headers: {
             "Content-Type": "application/json",
             "Accept": "application/json",
@@ -252,16 +253,15 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
       BlocProvider.of<LoginStatus>(context).add(false);
 
-      var resBody = jsonDecode(response.body);
+      var resBody = jDecode(response.body);
 
-      if (resBody['isSuccess'] == true) {
-        if (resBody['data']['type'] == 100) {
-          notify(
-              'این شماره مطعلق به مشاور است لطفا با شماره ای دیگر وارد شوید');
-          Navigator.pop(context);
-          return;
-        }
-        User.fromMap(resBody['data']).save();
+      print(resBody);
+
+      if (response.statusCode == 200) {
+        var user = User.fromJson(resBody['data']['user']);
+
+        user.token = resBody['data']['token']['access'];
+        user.save();
         if (widget.pop) {
           Navigator.pop(context, 'ok_pop');
         } else {
@@ -281,7 +281,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
   void _startTimer() {
     setState(() {
-      _timeLeft = 60;
+      _timeLeft = 120;
     });
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (_isDisposed) {

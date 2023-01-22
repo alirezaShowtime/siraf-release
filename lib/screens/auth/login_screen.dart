@@ -31,6 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Form(
         key: _formKey,
         child: Column(
@@ -203,8 +204,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
       BlocProvider.of<LoginStatus>(context).add(true);
 
-      var response = await http.post(createAuthUrlByEndPoint('sendcode'),
-          body: jsonEncode({'PhoneNumber': mobile}),
+      var response = await http.post(createAuthUrlByEndPoint('login/'),
+          body: jsonEncode({'mobile': mobile, 'type': 1}),
           headers: {
             "Content-Type": "application/json",
             "Accept": "application/json",
@@ -212,11 +213,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
       BlocProvider.of<LoginStatus>(context).add(false);
 
-      var resBody = jsonDecode(response.body);
+      var resBody = jDecode(response.body);
 
-      if (resBody['isSuccess'] == true) {
+      print(resBody);
+
+      if (response.statusCode == 200) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('mobile', mobile);
+
+        notify(resBody['data'].toString(), duration: Duration(seconds: 3));
+
         var result = await Navigator.push(
           context,
           MaterialPageRoute(

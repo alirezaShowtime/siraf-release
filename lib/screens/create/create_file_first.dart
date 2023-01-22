@@ -78,11 +78,11 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
               ),
             ),
           ],
-          leading: GestureDetector(
-            onTap: () {
+          leading: IconButton(
+            onPressed: () {
               Navigator.pop(context);
             },
-            child: Icon(
+            icon: Icon(
               CupertinoIcons.back,
               color: Themes.icon,
             ),
@@ -217,7 +217,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: (mainProps.isNotEmpty ? <Widget>[
             SizedBox(
               height: 20,
             ),
@@ -232,7 +232,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
             SizedBox(
               height: 14,
             ),
-          ] +
+          ] : <Widget>[]) +
           mainProps.map<Widget>((e) {
             String? text;
             if (selectedMainProps.containsKey(e.value!)) {
@@ -288,7 +288,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
               ],
             );
           }).toList() +
-          [
+          (mainFeature.isNotEmpty ? <Widget>[
             SizedBox(
               height: 20,
             ),
@@ -303,7 +303,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
             SizedBox(
               height: 14,
             ),
-          ] +
+          ] : <Widget>[]) +
           mainFeature.map<Widget>((e) {
             String? text;
             if (selectedMainFeatures.containsKey(e.value!)) {
@@ -552,6 +552,10 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
       location: location!,
       address: address!,
       properties: properties,
+      description: "",
+      title: "",
+      files: [],
+      estates: [],
     );
 
     Navigator.push(

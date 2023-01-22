@@ -1,17 +1,17 @@
 import 'package:siraf3/helpers.dart';
 
-class File {
+class MyFile {
   int? id;
   String? name;
   String? description;
   List<Images>? images;
   bool? favorite;
   String? publishedAgo;
-  List<Property>? propertys;
-  FullCategory? fullCategory;
+  List<Propertys>? propertys;
+  Category? category;
   String? city;
 
-  File(
+  MyFile(
       {this.id,
       this.name,
       this.description,
@@ -19,10 +19,10 @@ class File {
       this.favorite,
       this.publishedAgo,
       this.propertys,
-      this.fullCategory,
+      this.category,
       this.city});
 
-  File.fromJson(Map<String, dynamic> json) {
+  MyFile.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
       id = json["id"];
     }
@@ -47,20 +47,15 @@ class File {
       propertys = json["propertys"] == null
           ? null
           : (json["propertys"] as List)
-              .map((e) => Property.fromJson(e))
+              .map((e) => Propertys.fromJson(e))
               .toList();
     }
     if (json["category"] is Map) {
-      fullCategory = json["category"] == null
-          ? null
-          : FullCategory.fromJson(json["category"]);
+      category =
+          json["category"] == null ? null : Category.fromJson(json["category"]);
     }
     if (json["city"] is String) {
       city = json["city"];
-    }
-
-    if (propertys != null) {
-      propertys!.sort((a, b) => a.weightList!.compareTo(b.weightList!));
     }
   }
 
@@ -77,18 +72,18 @@ class File {
     if (propertys != null) {
       _data["propertys"] = propertys?.map((e) => e.toJson()).toList();
     }
-    if (fullCategory != null) {
-      _data["category"] = fullCategory?.toJson();
+    if (category != null) {
+      _data["category"] = category?.toJson();
     }
     _data["city"] = city;
     return _data;
   }
 
-  static List<File> fromList(List<dynamic> list) {
-    var list2 = <File>[];
+  static List<MyFile> fromList(List<dynamic> list) {
+    var list2 = <MyFile>[];
 
     for (dynamic item in list) {
-      list2.add(File.fromJson(item));
+      list2.add(MyFile.fromJson(item));
     }
 
     return list2;
@@ -100,7 +95,7 @@ class File {
 
       if (prop.value == null || prop.name == null) return "";
 
-      return number_format(int.parse(prop.value!)) + " " + prop.name!;
+      return number_format(prop.value!) + " " + prop.name!;
     } else {
       return "";
     }
@@ -110,14 +105,14 @@ class File {
     if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 6);
 
-      return number_format(int.parse(prop.value!)) + " " + prop.name!;
+      return number_format(prop.value!) + " " + prop.name!;
     } else {
       return "";
     }
   }
 }
 
-class FullCategory {
+class Category {
   int? id;
   String? name;
   dynamic image;
@@ -125,7 +120,7 @@ class FullCategory {
   bool? isAll;
   int? parentId;
 
-  FullCategory(
+  Category(
       {this.id,
       this.name,
       this.image,
@@ -133,7 +128,7 @@ class FullCategory {
       this.isAll,
       this.parentId});
 
-  FullCategory.fromJson(Map<String, dynamic> json) {
+  Category.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
       id = json["id"];
     }
@@ -168,20 +163,20 @@ class FullCategory {
   }
 }
 
-class Property {
+class Propertys {
   String? name;
-  String? value;
+  int? value;
   bool? list;
   int? weightList;
 
-  Property({this.name, this.value, this.list, this.weightList});
+  Propertys({this.name, this.value, this.list, this.weightList});
 
-  Property.fromJson(Map<String, dynamic> json) {
+  Propertys.fromJson(Map<String, dynamic> json) {
     if (json["name"] is String) {
       name = json["name"];
     }
-    if (json["value"] is int || json["value"] is String) {
-      value = json["value"].toString();
+    if (json["value"] is int) {
+      value = json["value"];
     }
     if (json["list"] is bool) {
       list = json["list"];

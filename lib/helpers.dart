@@ -1,16 +1,19 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart' as fr;
 import 'package:oktoast/oktoast.dart';
 import 'package:path/path.dart' as p;
 import 'package:siraf3/config.dart';
+import 'package:siraf3/models/user.dart';
+import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-const image_extensions = <String>["png", "jpg", "jpeg"];
-const video_extensions = <String>["mp4", "mov", "wmv", "avi", "mkv"];
+const image_extensions = <String>["png", "jpg", "jpeg", "tif", 'webp'];
+const video_extensions = <String>["mp4", "mov", "3gp", "avi", "mkv"];
 
 void notify(String msg,
     {TextDirection textDirection = TextDirection.rtl,
@@ -43,6 +46,14 @@ bool checkVideoExtension(String path) {
     if (p.extension(path).replaceAll('.', '').toLowerCase() == ext) {
       return true;
     }
+  }
+
+  return false;
+}
+
+bool checkVirtualTourExtension(String path) {
+  if (p.extension(path).replaceAll('.', '').toLowerCase() == "zip") {
+    return true;
   }
 
   return false;
@@ -110,7 +121,7 @@ Uri getEstateUrl(String endpoint) {
 }
 
 String getImageUrl(String file) {
-  return "https://master.siraf.biz/${file}";
+  return "https://auth.siraf.app${file}";
 }
 
 bool isResponseOk(http.Response response) {
@@ -126,11 +137,11 @@ bool isResponseOk(http.Response response) {
   return true;
 }
 
-const API_HOST = 'api.siraf.app';
+const API_HOST = 'auth.siraf.app';
 
 Uri createAuthUrlByEndPoint(String endPoint,
     {Map<String, dynamic>? queryParams = null}) {
-  return Uri.https(API_HOST, "api/v1/account/${endPoint}", queryParams);
+  return Uri.https(API_HOST, "api/user/${endPoint}", queryParams);
 }
 
 String phoneFormat(String numberPhone) {
@@ -148,4 +159,20 @@ String phoneFormat(String numberPhone) {
 
 String icon(String iconName, {String extension = "png"}) {
   return 'assets/images/ic_$iconName.$extension';
+}
+
+doWithLogin(BuildContext context, void Function() onLoggedIn,
+    {bool pop = true}) async {
+  if (await User.hasToken()) {
+    onLoggedIn();
+  } else {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => LoginScreen(
+          pop: pop,
+        ),
+      ),
+    );
+  }
 }

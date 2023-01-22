@@ -3,75 +3,67 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class User {
-  String? id;
-  String? fullName;
-  dynamic phone;
-  String? phoneNumber;
-  String? profileSource;
-  String? bio;
-  int? gender;
-  dynamic birthDate;
   String? token;
-  int? type;
-  bool? hasProfile;
+
+  int? id;
+  String? name;
+  dynamic email;
+  String? phone;
+  dynamic birthDate;
+  String? avatar;
+  List<dynamic>? roles;
 
   User({
     this.id,
-    this.fullName,
+    this.name,
     this.phone,
-    this.phoneNumber,
-    this.profileSource,
-    this.bio,
-    this.gender,
+    this.email,
+    this.avatar,
     this.birthDate,
     this.token,
-    this.type,
-    this.hasProfile,
   });
 
-  factory User.fromMap(Map<String, dynamic> data) => User(
-        id: data['id'] as String?,
-        fullName: data['fullName'] as String?,
-        phone: data['phone'] as dynamic,
-        phoneNumber: data['phoneNumber'] as String?,
-        profileSource: data['profileSource'] as String?,
-        bio: data['bio'] as String?,
-        gender: data['gender'] as int?,
-        birthDate: data['birthDate'] as dynamic,
-        token: data['token'] as String?,
-        type: data['type'] as int?,
-        hasProfile: data['hasProfile'] as bool?,
-      );
-
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'fullName': fullName,
-        'phone': phone,
-        'phoneNumber': phoneNumber,
-        'profileSource': profileSource,
-        'bio': bio,
-        'gender': gender,
-        'birthDate': birthDate,
-        'token': token,
-        'type': type,
-        'hasProfile': hasProfile,
-      };
-
-  /// `dart:convert`
-  ///
-  /// Parses the string and returns the resulting Json object as [User].
-  factory User.fromJson(String data) {
-    return User.fromMap(json.decode(data) as Map<String, dynamic>);
+  User.fromJson(Map<String, dynamic> json) {
+    if (json["id"] is int) {
+      id = json["id"];
+    }
+    if (json["name"] is String) {
+      name = json["name"];
+    }
+    email = json["email"];
+    if (json["phone"] is String) {
+      phone = json["phone"];
+    }
+    birthDate = json["birth_date"];
+    if (json["avatar"] is String) {
+      avatar = json["avatar"];
+    }
+    if (json["roles"] is List) {
+      roles = json["roles"] ?? [];
+    }
+    if (json["token"] is String) {
+      token = json["token"];
+    }
   }
 
-  /// `dart:convert`
-  ///
-  /// Converts [User] to a JSON string.
-  String toJson() => json.encode(toMap());
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["id"] = id;
+    _data["name"] = name;
+    _data["email"] = email;
+    _data["phone"] = phone;
+    _data["birth_date"] = birthDate;
+    _data["avatar"] = avatar;
+    if (roles != null) {
+      _data["roles"] = roles;
+    }
+    _data["token"] = token;
+    return _data;
+  }
 
   Future<bool> save() async {
     final pref = await SharedPreferences.getInstance();
-    return await pref.setString("user", toJson());
+    return await pref.setString("user", jsonEncode(toJson()));
   }
 
   static Future<User> fromLocal() async {
@@ -82,11 +74,8 @@ class User {
     if (userJson == null) {
       u = User();
     } else {
-      u = User.fromMap(json.decode(userJson) as Map<String, dynamic>);
+      u = User.fromJson(json.decode(userJson));
     }
-
-    u.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjczODU1MzA4LCJpYXQiOjE2NzM2ODI1MDgsImp0aSI6IjJhNGQyNGNlMGVkNjRiM2Y5MDE0Y2I1OTNlZjZhZTRlIiwidXNlcl9pZCI6MTB9.AnhHpzAF20VQGYmTjbYp1rq4ATur-brmm-SmNA2EvhE";
-
 
     return u;
   }
@@ -119,10 +108,6 @@ class User {
 
   static Future<bool> hasToken() async {
     return ((await User.fromLocal()).token ?? '').trim().isNotEmpty;
-  }
-
-  bool isConsultant() {
-    return type == 100; // type 100 is consultant
   }
 
   static Future<String> getBearerToken() async {

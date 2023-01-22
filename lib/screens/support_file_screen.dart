@@ -55,11 +55,11 @@ class _SupportFileScreen extends State<SupportFileScreen> {
               ),
             ),
           ],
-          leading: GestureDetector(
-            onTap: () {
+          leading: IconButton(
+            onPressed: () {
               Navigator.pop(context);
             },
-            child: Icon(
+            icon: Icon(
               CupertinoIcons.back,
               color: Themes.icon,
             ),
@@ -107,7 +107,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(
-          bottom: BorderSide(color: Themes.primary.withOpacity(0.2), width: 1),
+          bottom: BorderSide(color: Themes.textGrey.withOpacity(0.2), width: 1),
         ),
       ),
       padding: EdgeInsets.symmetric(horizontal: 15),
@@ -174,18 +174,9 @@ class _SupportFileScreen extends State<SupportFileScreen> {
             children: [
               GestureDetector(
                 onTap: () async {
-                  if (await User.hasToken()) {
+                  doWithLogin(context, () {
                     createChat();
-                  } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => LoginScreen(
-                          pop: true,
-                        ),
-                      ),
-                    );
-                  }
+                  });
                 },
                 child: Image.asset(
                   icon('chat'),

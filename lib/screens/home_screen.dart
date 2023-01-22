@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
+import 'package:siraf3/screens/create/create_file_final.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/menu_screen.dart';
@@ -135,8 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => CreateFileFirst()));
+              
             },
             icon: FaIcon(
               OctIcons.sliders_16,

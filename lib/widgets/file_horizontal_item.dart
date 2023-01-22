@@ -12,6 +12,7 @@ class FileHorizontalItem extends StatefulWidget {
 }
 
 class _FileHorizontalItemState extends State<FileHorizontalItem> {
+
   @override
   Widget build(BuildContext context) {
     double imageSize = (MediaQuery.of(context).size.width - 20) / 3.5;
@@ -64,7 +65,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '300,000,000 ودیعه',
+                              widget.file.getFirstPrice(),
                               style: TextStyle(
                                 color: Themes.text,
                                 fontSize: 14,
@@ -76,7 +77,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                               height: 3,
                             ),
                             Text(
-                              '4,000,000 کرایه',
+                              widget.file.getSecondPrice(),
                               style: TextStyle(
                                 color: Themes.text,
                                 fontSize: 12,

@@ -1,9 +1,27 @@
+import 'dart:io';
+
+import 'package:dotted_border/dotted_border.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/create_file_form_data.dart';
+import 'package:siraf3/screens/create/create_file_final.dart';
 import 'package:siraf3/screens/create/upload_media_guide.dart';
 import 'package:siraf3/themes.dart';
-import 'package:siraf3/widgets/text_form_field_2.dart';
+import 'package:siraf3/widgets/text_field_2.dart';
+import 'dart:io' as io;
+import 'package:path/path.dart' as p;
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'dart:async';
+import 'dart:typed_data';
+
+import 'package:flutter/material.dart';
+import 'dart:io';
+
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:path_provider/path_provider.dart';
 
 class CreateFileSecond extends StatefulWidget {
   CreateFileFormData formData;
@@ -36,6 +54,9 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
     17: "مثال : پیش فروش آپارتمان 135 متری، شهرک غرب",
   };
 
+  TextEditingController _titleController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,11 +83,11 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
             ),
           ),
         ],
-        leading: GestureDetector(
-          onTap: () {
+        leading: IconButton(
+          onPressed: () {
             Navigator.pop(context);
           },
-          child: Icon(
+          icon: Icon(
             CupertinoIcons.back,
             color: Themes.icon,
           ),
@@ -140,7 +161,53 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                         ),
                       ),
                       SizedBox(
-                        height: 160,
+                        height: 5,
+                      ),
+                      Container(
+                        child: GridView(
+                          shrinkWrap: true,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount:
+                                MediaQuery.of(context).size.width < 330 ? 4 : 5,
+                          ),
+                          children: <Widget>[
+                                Container(
+                                  padding: EdgeInsets.all(5),
+                                  alignment: Alignment.center,
+                                  child: DottedBorder(
+                                    color: Themes.iconGrey,
+                                    borderType: BorderType.RRect,
+                                    radius: Radius.circular(5),
+                                    child: Container(
+                                      color: Colors.transparent,
+                                      alignment: Alignment.center,
+                                      child: IconButton(
+                                        highlightColor: Colors.transparent,
+                                        splashColor: Colors.transparent,
+                                        onPressed: _addMedia,
+                                        icon: Icon(
+                                          CupertinoIcons.plus,
+                                          size: 28,
+                                          color: Themes.iconGrey,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ] +
+                              mediaBoxes
+                                  .map<Widget>(
+                                    (e) => GestureDetector(
+                                      onTap: () {
+                                        showOptionsDialog(
+                                            mediaBoxes.indexOf(e));
+                                      },
+                                      child: e,
+                                    ),
+                                  )
+                                  .toList(),
+                        ),
                       ),
                       Text(
                         "عنوان",
@@ -164,7 +231,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       SizedBox(
                         height: 4,
                       ),
-                      TextFormField2(
+                      TextFormField(
                         decoration: InputDecoration(
                           hintText:
                               hints.containsKey(widget.formData.category.id!)
@@ -221,7 +288,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                           if (value == null) {
                             return "عنوان فایل را وارد کنید";
                           }
-                          if (value.length >= 10) {
+                          if (value.length <= 10) {
                             return "حداقل باید 10 کاراکتر بنویسید";
                           }
                         },
@@ -230,6 +297,18 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             title = newValue;
                           });
                         }),
+                        controller: _titleController,
+                        onTap: () {
+                          var txtSelection = TextSelection.fromPosition(
+                              TextPosition(
+                                  offset: _titleController.text.length - 1));
+
+                          if (_titleController.selection == txtSelection) {
+                            _titleController.selection =
+                                TextSelection.fromPosition(TextPosition(
+                                    offset: _titleController.text.length));
+                          }
+                        },
                       ),
                       SizedBox(
                         height: 14,
@@ -256,7 +335,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       SizedBox(
                         height: 4,
                       ),
-                      TextFormField2(
+                      TextFormField(
                         decoration: InputDecoration(
                           hintText: "توضیحات را بنویسید.",
                           border: OutlineInputBorder(
@@ -309,10 +388,10 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                         minLines: 6,
                         validator: (value) {
                           if (value == null) {
-                            return "عنوان فایل را وارد کنید";
+                            return "توضیحات فایل را وارد کنید";
                           }
-                          if (value.length >= 10) {
-                            return "حداقل باید 10 کاراکتر بنویسید";
+                          if (value.length <= 40) {
+                            return "حداقل باید 40 کاراکتر بنویسید";
                           }
                         },
                         onSaved: ((newValue) {
@@ -320,6 +399,21 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             description = newValue;
                           });
                         }),
+                        controller: _descriptionController,
+                        onTap: () {
+                          var txtSelection = TextSelection.fromPosition(
+                              TextPosition(
+                                  offset:
+                                      _descriptionController.text.length - 1));
+
+                          if (_descriptionController.selection ==
+                              txtSelection) {
+                            _descriptionController.selection =
+                                TextSelection.fromPosition(TextPosition(
+                                    offset:
+                                        _descriptionController.text.length));
+                          }
+                        },
                       ),
                     ],
                   ),
@@ -477,5 +571,431 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
         context, MaterialPageRoute(builder: (_) => UploadMediaGuide()));
   }
 
-  next() {}
+  next() {
+    if (!(formKey.currentState?.validate() ?? false)) {
+      return;
+    }
+
+    widget.formData.files = files;
+    widget.formData.title = title!;
+    widget.formData.description = description!;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CreateFileFinal(formData: widget.formData),
+      ),
+    );
+  }
+
+  List<Widget> mediaBoxes = [];
+  List<Map<String, dynamic>> files = [];
+
+  void _addMedia() async {
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(allowMultiple: true);
+
+    if (result != null) {
+      for (PlatformFile pFile in result.files) {
+        io.File file = io.File(pFile.path!);
+        if (!checkImageExtension(file.path) &&
+            !checkVideoExtension(file.path) &&
+            p.extension(file.path).replaceAll('.', '').toLowerCase() != "zip") {
+          notify(
+              'فرمت فایل انتخابی باید یکی از فرمت های ' +
+                  image_extensions.join(", ") +
+                  video_extensions.join(", ") +
+                  ", zip" +
+                  " باشد",
+              duration: Duration(seconds: 4));
+
+          return;
+        }
+        FileType2 type;
+
+        if (checkImageExtension(file.path)) {
+          type = FileType2.image;
+        } else if (checkVideoExtension(file.path)) {
+          type = FileType2.video;
+        } else {
+          type = FileType2.tour;
+        }
+
+        var mediaBox = await buildMediaBox(file, type);
+
+        setState(() {
+          files.add({
+            "file": file,
+            "title": null,
+          });
+          mediaBoxes.add(mediaBox);
+        });
+      }
+    }
+  }
+
+  BuildContext? optionsDialog;
+
+  showOptionsDialog(int index) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) {
+        optionsDialog = _;
+        return AlertDialog(
+          contentPadding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          backgroundColor: Themes.background,
+          content: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Wrap(
+              children: [
+                Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 40,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(5),
+                                  topRight: Radius.circular(5),
+                                ),
+                                color: Themes.primary,
+                              ),
+                              height: 40,
+                              alignment: Alignment.center,
+                              child: Text(
+                                "تنظیمات امکانات تصویری",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontFamily: "IranSansBold",
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    ListView(
+                      shrinkWrap: true,
+                      physics: BouncingScrollPhysics(),
+                      children: [
+                        if (!checkVirtualTourExtension(
+                            (files[index]["file"] as io.File).path))
+                          optionItem(
+                            value: "عنوان را وارد کنید (اختیاری)",
+                            isLast: false,
+                            onTap: () => _showAddTitleDialog(index),
+                          ),
+                        if (!checkVirtualTourExtension(
+                            (files[index]["file"] as io.File).path))
+                          optionItem(
+                            value: "انتخاب به عنوان نمایش اول",
+                            isLast: false,
+                            onTap: () => _moveFirst(index),
+                          ),
+                        optionItem(
+                          value: "ویرایش",
+                          isLast: false,
+                          onTap: () => _editFile(index),
+                        ),
+                        optionItem(
+                          value: "حذف",
+                          isLast: true,
+                          onTap: () => _deleteMedia(index),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  dismissOptionsDialog() {
+    if (optionsDialog != null) {
+      Navigator.pop(optionsDialog!);
+    }
+  }
+
+  Future<Widget> buildMediaBox(io.File file, FileType2 type) async {
+    ImageProvider<Object> image;
+    Widget? icon;
+
+    switch (type) {
+      case FileType2.image:
+        image = FileImage(file);
+        break;
+      case FileType2.video:
+        final byteData = await file.readAsBytes();
+        Directory tempDir = await getTemporaryDirectory();
+
+        File tempVideo =
+            File("${tempDir.path}/assets/" + file.uri.pathSegments.last)
+              ..createSync(recursive: true)
+              ..writeAsBytesSync(byteData.buffer
+                  .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+
+        final fileName = await VideoThumbnail.thumbnailFile(
+          video: tempVideo.path,
+          thumbnailPath: (await getTemporaryDirectory()).path,
+          imageFormat: ImageFormat.PNG,
+          quality: 100,
+        );
+        image = FileImage(io.File(fileName!));
+        icon = Icon(
+          Icons.play_arrow_outlined,
+          color: Colors.white,
+          size: 27,
+        );
+        break;
+      case FileType2.tour:
+        image = AssetImage("assets/images/blue.png");
+        icon = Image(
+          image: AssetImage("assets/images/virtual_tour.png"),
+          color: Colors.white,
+          width: 27,
+          height: 27,
+        );
+        break;
+    }
+
+    return Container(
+      padding: EdgeInsets.all(5),
+      alignment: Alignment.center,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(5),
+          image: DecorationImage(
+            image: image,
+            fit: BoxFit.cover,
+            colorFilter: type != FileType2.image
+                ? ColorFilter.mode(
+                    Themes.iconGrey,
+                    BlendMode.hardLight,
+                  )
+                : null,
+          ),
+        ),
+        alignment: Alignment.center,
+        child: icon,
+      ),
+    );
+  }
+
+  Widget optionItem(
+      {required String value, required bool isLast, void Function()? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: isLast
+                ? BorderSide.none
+                : BorderSide(
+                    color: Themes.textGrey.withOpacity(0.5),
+                    width: 0.7,
+                  ),
+          ),
+        ),
+        padding: EdgeInsets.symmetric(vertical: 10),
+        alignment: Alignment.center,
+        child: Center(
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: 13,
+              color: Themes.text,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  _deleteMedia(int index) {
+    setState(() {
+      files.removeAt(index);
+      mediaBoxes.removeAt(index);
+    });
+    if (optionsDialog != null) Navigator.pop(optionsDialog!);
+  }
+
+  _editFile(int index) async {
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(allowMultiple: false);
+
+    if (result != null) {
+      io.File file = io.File(result.files.first.path!);
+      if (!checkImageExtension(file.path) &&
+          !checkVideoExtension(file.path) &&
+          !checkVirtualTourExtension(file.path)) {
+        notify(
+            'فرمت فایل انتخابی باید یکی از فرمت های ' +
+                image_extensions.join(", ") +
+                video_extensions.join(", ") +
+                ", zip" +
+                " باشد",
+            duration: Duration(seconds: 4));
+
+        return;
+      }
+      FileType2 type;
+
+      if (checkImageExtension(file.path)) {
+        type = FileType2.image;
+      } else if (checkVideoExtension(file.path)) {
+        type = FileType2.video;
+      } else {
+        type = FileType2.tour;
+      }
+
+      var mediaBox = await buildMediaBox(file, type);
+
+      setState(() {
+        files[index] = {
+          "file": file,
+          "title": files[index]['title'],
+        };
+        mediaBoxes[index] = mediaBox;
+      });
+    }
+
+    if (optionsDialog != null) Navigator.pop(optionsDialog!);
+  }
+
+  _moveFirst(int index) {
+    var file = files[index];
+    var mediaBox = mediaBoxes[index];
+
+    setState(() {
+      files.removeAt(index);
+      mediaBoxes.removeAt(index);
+
+      files = [file] + files;
+      mediaBoxes = [mediaBox] + mediaBoxes;
+    });
+
+    if (optionsDialog != null) Navigator.pop(optionsDialog!);
+  }
+
+  BuildContext? mediaTitleDialogContext;
+
+  _showAddTitleDialog(int index) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) {
+        mediaTitleDialogContext = _;
+        TextEditingController _controller =
+            TextEditingController(text: files[index]['title']);
+        return AlertDialog(
+          contentPadding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          backgroundColor: Themes.background,
+          content: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Wrap(
+              children: [
+                Column(
+                  children: [
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      child: TextField2(
+                        maxLines: 1,
+                        controller: _controller,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "عنوان را وارد کنید",
+                          hintStyle: TextStyle(
+                            color: Themes.textGrey,
+                            fontSize: 13,
+                            fontFamily: "IranSans",
+                          ),
+                        ),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Themes.text,
+                          fontSize: 13,
+                          fontFamily: "IranSansMedium",
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 40,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: MaterialButton(
+                              onPressed: () {
+                                setState(() {
+                                  files[index] = {
+                                    "file": files[index]["file"],
+                                    "title": _controller.text.trim().isNotEmpty
+                                        ? _controller.text.trim()
+                                        : null,
+                                  };
+                                });
+
+                                dismissMediaTitleDialog();
+                              },
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(5),
+                                  bottomRight: Radius.circular(5),
+                                ),
+                              ),
+                              color: Themes.primary,
+                              elevation: 1,
+                              height: 40,
+                              child: Text(
+                                "تایید",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontFamily: "IranSansBold",
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  dismissMediaTitleDialog() {
+    if (mediaTitleDialogContext != null)
+      Navigator.pop(mediaTitleDialogContext!);
+    if (optionsDialog != null) Navigator.pop(optionsDialog!);
+
+    print(files);
+  }
 }
+
+enum FileType2 { image, video, tour }

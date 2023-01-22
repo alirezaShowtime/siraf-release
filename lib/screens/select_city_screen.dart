@@ -192,37 +192,44 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                 currentState is GetCitiesLoadedState)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: selectedCities
-                      .map<Widget>(
-                        (e) => Container(
-                          child: Row(children: [
-                            Text(
-                              e.name!,
-                              style: TextStyle(
-                                color: Color(0xff000000),
-                                fontSize: 16,
-                              ),
+                child: Container(
+                  width: double.infinity,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: selectedCities
+                          .map<Widget>(
+                            (e) => Container(
+                              child: Row(children: [
+                                Text(
+                                  e.name!,
+                                  style: TextStyle(
+                                    color: Color(0xff000000),
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedCities.remove(e);
+                                    });
+                                  },
+                                  child: Icon(
+                                    Typicons.delete_outline,
+                                    color: Color(0xff707070),
+                                    size: 22,
+                                  ),
+                                )
+                              ]),
                             ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  selectedCities.remove(e);
-                                });
-                              },
-                              child: Icon(
-                                Typicons.delete_outline,
-                                color: Color(0xff707070),
-                                size: 22,
-                              ),
-                            )
-                          ]),
-                        ),
-                      )
-                      .toList(),
+                          )
+                          .toList(),
+                    ),
+                  ),
                 ),
               ),
             SizedBox(

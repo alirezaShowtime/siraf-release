@@ -1,13 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
+import 'package:siraf3/screens/my_files_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/accordion.dart';
-import 'package:typicons_flutter/typicons_flutter.dart';
 
 import '../helpers.dart';
 
@@ -31,11 +30,11 @@ class _MenuScreenState extends State<MenuScreen> {
 
   getUser() async {
     var user = await User.fromLocal();
+    print(user.token);
+    print(user.toJson());
     setState(() {
       this.user = user;
     });
-
-    print(user.profileSource);
   }
 
   @override
@@ -70,8 +69,8 @@ class _MenuScreenState extends State<MenuScreen> {
                       children: [
                         ClipRRect(
                           child: Image(
-                            image: NetworkImage(
-                                getImageUrl(user?.profileSource ?? "")),
+                            image: NetworkImage(getImageUrl(user?.avatar ??
+                                "")), // todo use dynamic avatar link
                             errorBuilder: (context, error, stackTrace) => Image(
                               image: AssetImage("assets/images/profile.png"),
                               width: 80,
@@ -86,7 +85,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            if (user == null || user!.phoneNumber == null) {
+                            if (user == null || user!.phone == null) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -96,14 +95,14 @@ class _MenuScreenState extends State<MenuScreen> {
                             }
                           },
                           child: Text(
-                            user?.fullName ?? "ورود به حساب",
+                            user?.token != null
+                                ? (user?.name ?? "")
+                                : "ورود به حساب",
                             style: TextStyle(color: Colors.white, fontSize: 15),
                           ),
                         ),
                         Text(
-                          user?.phoneNumber != null
-                              ? phoneFormat(user!.phoneNumber!)
-                              : "",
+                          user?.phone != null ? phoneFormat(user!.phone!) : "",
                           textDirection: TextDirection.ltr,
                           style: TextStyle(color: Colors.white, fontSize: 15),
                         ),
@@ -128,13 +127,15 @@ class _MenuScreenState extends State<MenuScreen> {
                           _item(
                             title: "ثبت فایل",
                             icon: CupertinoIcons.add,
-                            onClick: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => CreateFileFirst(),
-                                ),
-                              );
+                            onClick: () async {
+                              doWithLogin(context, () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => CreateFileFirst(),
+                                  ),
+                                );
+                              });
                             },
                           ),
                           _item(
@@ -159,7 +160,17 @@ class _MenuScreenState extends State<MenuScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               AccordionItem(
-                                  onClick: () {}, title: "فایل های من"),
+                                  onClick: () {
+                                    doWithLogin(context, () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => MyFilesScreen(),
+                                        ),
+                                      );
+                                    });
+                                  },
+                                  title: "فایل های من"),
                               AccordionItem(
                                   onClick: () {}, title: "ثبت در خواست"),
                               AccordionItem(
@@ -255,7 +266,10 @@ class _MenuScreenState extends State<MenuScreen> {
                               child: Text(
                                 "درباره سیراف و قوانین استفاده",
                                 style: TextStyle(
-                                    fontSize: 15, color: Colors.grey.shade500),
+                                  fontSize: 15,
+                                  color: Themes.text,
+                                  fontFamily: "IranSansMedium",
+                                ),
                               ),
                             ),
                           ),
@@ -273,7 +287,10 @@ class _MenuScreenState extends State<MenuScreen> {
                               child: Text(
                                 "معرفی برنامه به دیگران(${VERSION})",
                                 style: TextStyle(
-                                    fontSize: 15, color: Colors.grey.shade500),
+                                  fontSize: 15,
+                                  color: Themes.text,
+                                  fontFamily: "IranSansMedium",
+                                ),
                               ),
                             ),
                           ),
@@ -328,8 +345,14 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 
   Widget _accordionTitle(String title) {
-    return Text(title,
-        style: TextStyle(color: Colors.grey.shade500, fontSize: 15));
+    return Text(
+      title,
+      style: TextStyle(
+        color: Themes.text,
+        fontSize: 15,
+        fontFamily: "IranSansMedium",
+      ),
+    );
   }
 
   Widget _item({

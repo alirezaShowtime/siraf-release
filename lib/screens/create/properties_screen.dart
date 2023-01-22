@@ -88,11 +88,11 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
           ),
           automaticallyImplyLeading: false,
           titleSpacing: 0,
-          leading: GestureDetector(
-            onTap: () {
+          leading: IconButton(
+            onPressed: () {
               Navigator.pop(context, [selectedProps, selectedFeatures]);
             },
-            child: Icon(
+            icon: Icon(
               CupertinoIcons.back,
               color: Themes.icon,
             ),
@@ -551,24 +551,11 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
   BuildContext? listDialog;
 
   showListDialog(PropertyInsert property) {
-    //todo implement
-
-    StreamController<String> persianNumberText = StreamController();
-    persianNumberText.add(
-        ((selectedProps[property.value!] ?? '').replaceAll(',', '') as String)
-            .toWord());
-
-    StreamController<String?> value = StreamController();
-    value.add(selectedProps[property.value!]);
-
     showDialog(
       context: context,
       barrierDismissible: true,
       builder: (_) {
         listDialog = _;
-        TextEditingController _controller = TextEditingController(
-          text: selectedProps[property.value!],
-        );
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -952,7 +939,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
             bottom: isLast
                 ? BorderSide.none
                 : BorderSide(
-                    color: Themes.primary.withOpacity(0.5),
+                    color: Themes.textGrey.withOpacity(0.5),
                     width: 0.7,
                   ),
           ),
