@@ -123,6 +123,29 @@ class FileDetail {
   }
 
   bool isRental() => rent != null;
+
+  List<Property> getMainProperties() {
+    var list = property
+            ?.where((element) => element.section == 1 && element.value != null)
+            .take(6)
+            .toList() ??
+        [];
+
+    list.sort((a, b) => a.weightSection!.compareTo(b.weightSection!));
+
+    return list;
+  }
+
+  List<Property> getOtherProperties() {
+    var list = property
+            ?.where((element) => element.section == 2 && element.value != null)
+            .toList() ??
+        [];
+
+    list.sort((a, b) => a.weightSection!.compareTo(b.weightSection!));
+
+    return list;
+  }
 }
 
 class Media {

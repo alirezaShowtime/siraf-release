@@ -30,8 +30,6 @@ class _MenuScreenState extends State<MenuScreen> {
 
   getUser() async {
     var user = await User.fromLocal();
-    print(user.token);
-    print(user.toJson());
     setState(() {
       this.user = user;
     });

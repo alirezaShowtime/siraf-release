@@ -2,6 +2,8 @@ import 'package:siraf3/helpers.dart';
 
 class MyFile {
   int? id;
+  int? viewCount;
+  int? progress;
   String? name;
   String? description;
   List<Images>? images;
@@ -13,6 +15,8 @@ class MyFile {
 
   MyFile(
       {this.id,
+      this.progress,
+      this.viewCount,
       this.name,
       this.description,
       this.images,
@@ -25,6 +29,12 @@ class MyFile {
   MyFile.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
       id = json["id"];
+    }
+    if (json["progress"] is int) {
+      progress = json["progress"];
+    }
+    if (json["viewCount"] is int) {
+      viewCount = json["viewCount"];
     }
     if (json["name"] is String) {
       name = json["name"];
@@ -62,6 +72,7 @@ class MyFile {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["id"] = id;
+    _data["progress"] = progress;
     _data["name"] = name;
     _data["description"] = description;
     if (images != null) {

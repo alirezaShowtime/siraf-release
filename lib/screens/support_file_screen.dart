@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,18 +8,22 @@ import 'package:siraf3/bloc/file_consulants_bloc.dart';
 import 'package:siraf3/models/file_consulant.dart';
 import 'package:siraf3/models/file_detail.dart' as file_detail;
 import 'package:siraf3/models/user.dart';
-import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:http/http.dart';
 
 import '../helpers.dart';
 
 class SupportFileScreen extends StatefulWidget {
+  bool isFavorite;
+  int id;
+
   @override
   State<StatefulWidget> createState() => _SupportFileScreen();
 
-  SupportFileScreen({required this.file});
+  SupportFileScreen(
+      {required this.file, required this.isFavorite, required this.id});
 
   file_detail.FileDetail file;
 }
@@ -36,38 +42,53 @@ class _SupportFileScreen extends State<SupportFileScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => bloc,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Themes.background,
-          title: Text(
-            "مشاوران | ${widget.file.name}",
-            style: TextStyle(
-              fontSize: 12,
-              color: Themes.text,
+      child: WillPopScope(
+        onWillPop: () async {
+          Navigator.pop(context, widget.isFavorite);
+
+          return false;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Themes.background,
+            title: Text(
+              "مشاوران | ${widget.file.name}",
+              style: TextStyle(
+                fontSize: 12,
+                color: Themes.text,
+              ),
             ),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () {},
+            actions: [
+              IconButton(
+                onPressed: () {
+                  doWithLogin(context, () async {
+                    if (await addOrRemoveFavorite(widget.id)) {
+                      setState(() {
+                        widget.isFavorite = !widget.isFavorite;
+                      });
+                    }
+                  });
+                },
+                icon: Icon(
+                  widget.isFavorite ? Icons.bookmark: Icons.bookmark_border,
+                  color: Themes.icon,
+                ),
+              ),
+            ],
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context, widget.isFavorite);
+              },
               icon: Icon(
-                Icons.bookmark_border,
+                CupertinoIcons.back,
                 color: Themes.icon,
               ),
             ),
-          ],
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              CupertinoIcons.back,
-              color: Themes.icon,
-            ),
+            elevation: 0.7,
           ),
-          elevation: 0.7,
+          body: BlocBuilder<FileConsulantsBloc, FileConsulantsState>(
+              builder: _buildMainBloc),
         ),
-        body: BlocBuilder<FileConsulantsBloc, FileConsulantsState>(
-            builder: _buildMainBloc),
       ),
     );
   }
@@ -144,7 +165,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
                       ),
                     ),
                     Text(
-                      "(املاک خرم)",
+                      "(${item.estateName.toString()})",
                       style: TextStyle(
                         color: Themes.textGrey,
                         fontSize: 10,
@@ -163,7 +184,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
                           size: 10,
                         );
                       },
-                      rating: 4.2,
+                      rating: item.consultantId?.rate ?? 5.0,
                     ),
                   ],
                 ),
@@ -178,10 +199,9 @@ class _SupportFileScreen extends State<SupportFileScreen> {
                     createChat();
                   });
                 },
-                child: Image.asset(
-                  icon('chat'),
-                  height: 40,
-                  width: 40,
+                child: Icon(
+                  CupertinoIcons.chat_bubble_2,
+                  size: 35,
                   color: Themes.primary,
                 ),
               ),
@@ -192,10 +212,9 @@ class _SupportFileScreen extends State<SupportFileScreen> {
                 onTap: () {
                   callTo(item.consultantId!.phone!);
                 },
-                child: Image.asset(
-                  icon('call'),
-                  height: 33,
-                  width: 33,
+                child: Icon(
+                  CupertinoIcons.phone_circle,
+                  size: 35,
                   color: Themes.primary,
                 ),
               ),
@@ -262,5 +281,75 @@ class _SupportFileScreen extends State<SupportFileScreen> {
     await Future.delayed(Duration(seconds: 2));
 
     dissmisLoadingDialog();
+  }
+
+  Future<bool> addOrRemoveFavorite(int id) async {
+    if (widget.isFavorite) {
+      return await removeFavorite(id);
+    } else {
+      return await addFavorite(id);
+    }
+  }
+
+  Future<bool> addFavorite(int id) async {
+    showLoadingDialog();
+
+    var result = false;
+
+    try {
+      var response = await get(
+          getFileUrl('file/addFileFavorite/' + id.toString() + '/'),
+          headers: {
+            "Authorization": await User.getBearerToken(),
+          });
+
+      if (isResponseOk(response)) {
+        result = true;
+      } else {
+        var json = jDecode(response.body);
+        notify(json['message'] ??
+            "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
+        result = false;
+      }
+    } on HttpException {
+      notify("خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
+    } catch (e) {
+      notify("خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
+    }
+
+    dissmisLoadingDialog();
+
+    return result;
+  }
+
+  Future<bool> removeFavorite(int id) async {
+    showLoadingDialog();
+
+    var result = false;
+
+    try {
+      var response = await get(
+          getFileUrl('file/deleteFileFavorite/' + id.toString() + '/'),
+          headers: {
+            "Authorization": await User.getBearerToken(),
+          });
+
+      if (isResponseOk(response)) {
+        result = true;
+      } else {
+        var json = jDecode(response.body);
+        notify(json['message'] ??
+            "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
+        result = false;
+      }
+    } on HttpException {
+      notify("خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
+    } on SocketException catch (e) {
+      notify("خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
+    }
+
+    dissmisLoadingDialog();
+
+    return result;
   }
 }

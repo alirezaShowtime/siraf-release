@@ -52,7 +52,7 @@ class HSBloc extends Bloc<HSEvent, HSState> {
       try {
         if (await User.hasToken()) {
           response = await get(url, headers: {
-            // "Authorization": await User.getBearerToken(), //todo uncomment
+            "Authorization": await User.getBearerToken(),
           });
         } else {
           response = await get(url);

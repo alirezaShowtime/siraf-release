@@ -39,7 +39,7 @@ class MyFilesBloc extends Bloc<MyFilesEvent, MyFilesState> {
     Response response;
 
     try {
-      response = await get(getFileUrl("file/myFile"), headers: {
+      response = await get(getFileUrl("file/myFiles"), headers: {
         "Authorization": await User.getBearerToken(),
       });
     } on HttpException catch (e) {

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -53,6 +54,13 @@ class _FileScreenState extends State<FileScreen> {
             summary = summary.substring(0, 128) + "...";
           }
         });
+
+        if (event.file.media!.image![0].name == null ||
+            event.file.media!.image![0].name == "") {
+          imageName.add(null);
+        } else {
+          imageName.add(" | ${event.file.media!.image![0].name!.trim()}");
+        }
       }
     });
   }
@@ -99,8 +107,10 @@ class _FileScreenState extends State<FileScreen> {
               SizedBox(height: 10),
               _buildTitle(state.file),
               SizedBox(height: 15),
-              _buildMainProps(state.file),
-              SizedBox(height: 15),
+              if (state.file.getMainProperties().isNotEmpty)
+                _buildMainProps(state.file),
+              if (state.file.getMainProperties().isNotEmpty)
+                SizedBox(height: 15),
               _buildDescription(state.file),
               SizedBox(height: 15),
               Divider(
@@ -130,6 +140,8 @@ class _FileScreenState extends State<FileScreen> {
     );
   }
 
+  StreamController<String?> imageName = StreamController();
+
   Widget _buildSliders(FileDetail file) {
     return Stack(
       children: [
@@ -147,6 +159,16 @@ class _FileScreenState extends State<FileScreen> {
           imageFit: BoxFit.cover,
           indicatorSelectedColor: Themes.blue,
           indicatorColor: Colors.grey,
+          onPageChanged: (i) {
+            setState(() {
+              if (file.media!.image![i].name == null ||
+                  file.media!.image![i].name == "") {
+                imageName.add(null);
+              } else {
+                imageName.add(" | ${file.media!.image![i].name!.trim()}");
+              }
+            });
+          },
         ),
         Positioned(
           top: 0,
@@ -186,17 +208,23 @@ class _FileScreenState extends State<FileScreen> {
         Positioned(
           bottom: 25,
           right: 10,
-          child: Container(
-            color: Colors.white60,
-            padding: EdgeInsets.all(5),
-            child: Text(
-              "t21617|پذیرایی 35 متری",
-              style: TextStyle(
-                fontFamily: "IranSans",
-                color: Color(0xff606060),
-                fontSize: 13,
-              ),
-            ),
+          child: StreamBuilder(
+            builder: (context, snapshot) {
+              return Container(
+                color: Colors.white60,
+                padding: EdgeInsets.all(5),
+                child: Text(
+                  widget.id.toString() +
+                      (snapshot.data != null ? snapshot.data.toString() : ""),
+                  style: TextStyle(
+                    fontFamily: "IranSans",
+                    color: Color(0xff606060),
+                    fontSize: 13,
+                  ),
+                ),
+              );
+            },
+            stream: imageName.stream,
           ),
         ),
       ],
@@ -260,7 +288,7 @@ class _FileScreenState extends State<FileScreen> {
             image: AssetImage("assets/images/ic_share.png"),
             width: 16,
             height: 16,
-            color: Themes.primary,
+            color: Themes.icon,
           ),
         ),
       ],
@@ -268,37 +296,29 @@ class _FileScreenState extends State<FileScreen> {
   }
 
   Widget _buildMainProps(FileDetail file) {
+    List<Widget> items = [];
+
+    var a = file
+        .getMainProperties()
+        .map<List<Widget>>(
+          (e) => [
+            _buildPropItem(e.value.toString(), e.name!),
+            if (file.getMainProperties().last != e)
+              VerticalDivider(
+                width: 0.7,
+                color: Themes.textGrey,
+              ),
+          ],
+        )
+        .toList();
+    for (List<Widget> item in a) {
+      items += item;
+    }
+
     return IntrinsicHeight(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildPropItem("85", "متراژ (متر)"),
-          VerticalDivider(
-            width: 0.7,
-            color: Themes.textGrey,
-          ),
-          _buildPropItem("2", "تعداد اتاق"),
-          VerticalDivider(
-            width: 0.7,
-            color: Themes.textGrey,
-          ),
-          _buildPropItem("2", "تعداد اسانسور"),
-          VerticalDivider(
-            width: 0.7,
-            color: Themes.textGrey,
-          ),
-          _buildPropItem("85", "متراژ (متر)"),
-          VerticalDivider(
-            width: 0.7,
-            color: Themes.textGrey,
-          ),
-          _buildPropItem("2", "تعداد اتاق"),
-          VerticalDivider(
-            width: 0.7,
-            color: Themes.textGrey,
-          ),
-          _buildPropItem("2", "تعداد اسانسور"),
-        ],
+        children: items,
       ),
     );
   }
@@ -318,7 +338,7 @@ class _FileScreenState extends State<FileScreen> {
           height: 10,
         ),
         Text(
-          label,
+          label.split(r" ").take(2).join(" "),
           style: TextStyle(
             color: Themes.textGrey,
             fontFamily: "IranSans",
@@ -392,11 +412,6 @@ class _FileScreenState extends State<FileScreen> {
           options: MapOptions(
             center: LatLng(double.parse(file.lat!), double.parse(file.long!)),
             zoom: 13.0,
-            // enableScrollWheel: false,
-            // allowPanning: false,
-            // swPanBoundary:
-            //     LatLng(file.lat!, file.long!), // bottom left boundary
-            // nePanBoundary: LatLng(file.lat! + 1, file.long! + 1),
             onTap: (_, _1) {
               // MapsLauncher.launchCoordinates(file.lat!, file.long!);
               launchUrl(Uri.parse('geo:0,0?q=${file.lat!},${file.long!}'));
@@ -465,13 +480,26 @@ class _FileScreenState extends State<FileScreen> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            child: Text(
-              "پارکینگ : 1" + "\n" + "انباری : 2" + "\n" + "آسانسور : 1",
-              style: TextStyle(
-                  fontSize: 12,
-                  fontFamily: "IranSans",
-                  color: Color(0xff8c8c8c),
-                  height: 1.3),
+            child: Column(
+              children: file
+                  .getOtherProperties()
+                  .map<Widget>(
+                    (e) => Padding(
+                      padding: EdgeInsets.only(
+                          bottom:
+                              (file.getOtherProperties().last != e ? 5 : 0)),
+                      child: Text(
+                        e.name.toString() + " : " + e.value.toString(),
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontFamily: "IranSans",
+                          color: Color(0xff8c8c8c),
+                          height: 1.3,
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
             ),
           ),
         ],
@@ -567,14 +595,22 @@ class _FileScreenState extends State<FileScreen> {
           ),
           Expanded(
             child: GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(
+              onTap: () async {
+                var result = await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => SupportFileScreen(
                       file: file,
+                      isFavorite: isFavorite,
+                      id: widget.id,
                     ),
                   ),
                 );
+
+                if (result is bool) {
+                  setState(() {
+                    isFavorite = result;
+                  });
+                }
               },
               child: Container(
                 alignment: Alignment.center,

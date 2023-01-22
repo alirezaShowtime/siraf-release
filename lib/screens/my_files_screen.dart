@@ -36,156 +36,174 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => bloc,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Themes.background,
-          title: Text(
-            "فایل های من",
-            style: TextStyle(
-              fontSize: 15,
-              color: Themes.text,
+      child: WillPopScope(
+        onWillPop: () async {
+          if (isSelectable) {
+            setState(() {
+              isSelectable = false;
+            });
+            return false;
+          }
+          return true;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Themes.background,
+            title: Text(
+              "فایل های من",
+              style: TextStyle(
+                fontSize: 15,
+                color: Themes.text,
+              ),
             ),
-          ),
-          titleSpacing: 0,
-          automaticallyImplyLeading: false,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              CupertinoIcons.back,
-              color: Themes.icon,
-            ),
-          ),
-          elevation: 0.7,
-          actions: [
-            IconButton(
+            titleSpacing: 0,
+            automaticallyImplyLeading: false,
+            leading: IconButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => CreateFileFirst()));
+                if (isSelectable) {
+                  setState(() {
+                    isSelectable = false;
+                  });
+                } else {
+                  Navigator.pop(context);
+                }
               },
               icon: Icon(
-                CupertinoIcons.add,
+                CupertinoIcons.back,
                 color: Themes.icon,
               ),
             ),
-            IconButton(
-              onPressed: selectedFiles.isNotEmpty ? () {} : null,
-              icon: Icon(
-                CupertinoIcons.delete,
-                color: selectedFiles.isNotEmpty ? Themes.icon : Themes.iconGrey,
+            elevation: 0.7,
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => CreateFileFirst()));
+                },
+                icon: Icon(
+                  CupertinoIcons.add,
+                  color: Themes.icon,
+                ),
               ),
-              disabledColor: Themes.iconGrey,
-            ),
-            PopupMenuButton(
-              itemBuilder: (context) {
-                return [
-                  PopupMenuItem<int>(
-                    value: 0,
-                    child: Text(
-                      "جدید ترین",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Themes.text,
-                      ),
-                    ),
-                    height: 35,
-                  ),
-                  PopupMenuItem<int>(
-                    value: 0,
-                    child: Text(
-                      "قدیمی ترین",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Themes.text,
-                      ),
-                    ),
-                    height: 35,
-                  ),
-                  PopupMenuItem<int>(
-                    value: 0,
-                    child: Text(
-                      "در انتظار تایید",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Themes.text,
-                      ),
-                    ),
-                    height: 35,
-                  ),
-                  PopupMenuItem<int>(
-                    value: 0,
-                    child: Text(
-                      "در انتظار پذیرش",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Themes.text,
-                      ),
-                    ),
-                    height: 35,
-                  ),
-                  PopupMenuItem<int>(
-                    value: 0,
-                    child: Text(
-                      "پذیرش شده",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Themes.text,
-                      ),
-                    ),
-                    height: 35,
-                  ),
-                  PopupMenuItem<int>(
-                    value: 0,
-                    child: Text(
-                      "رد شده",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Themes.text,
-                      ),
-                    ),
-                    height: 35,
-                  ),
-                ];
-              },
-              onSelected: (value) {},
-              icon: Icon(
-                CupertinoIcons.sort_down,
-                color: Themes.icon,
+              IconButton(
+                onPressed: selectedFiles.isNotEmpty ? () {} : null,
+                icon: Icon(
+                  CupertinoIcons.delete,
+                  color:
+                      selectedFiles.isNotEmpty ? Themes.icon : Themes.iconGrey,
+                ),
+                disabledColor: Themes.iconGrey,
               ),
-            ),
-            PopupMenuButton(
-              itemBuilder: (context) {
-                return [
-                  PopupMenuItem<int>(
-                    value: 0,
-                    child: Text(
-                      "انتخاب همه",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Themes.text,
+              PopupMenuButton(
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem<int>(
+                      value: 0,
+                      child: Text(
+                        "جدید ترین",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Themes.text,
+                        ),
                       ),
+                      height: 35,
                     ),
-                    height: 35,
-                  ),
-                ];
-              },
-              onSelected: (value) {
-                setState(() {
-                  selectedFiles.clear();
-                  selectedFiles.addAll(files);
-                  isSelectable = true;
-                });
-              },
-              icon: Icon(
-                Icons.more_vert,
-                color: Themes.icon,
+                    PopupMenuItem<int>(
+                      value: 0,
+                      child: Text(
+                        "قدیمی ترین",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Themes.text,
+                        ),
+                      ),
+                      height: 35,
+                    ),
+                    PopupMenuItem<int>(
+                      value: 0,
+                      child: Text(
+                        "در انتظار تایید",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Themes.text,
+                        ),
+                      ),
+                      height: 35,
+                    ),
+                    PopupMenuItem<int>(
+                      value: 0,
+                      child: Text(
+                        "در انتظار پذیرش",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Themes.text,
+                        ),
+                      ),
+                      height: 35,
+                    ),
+                    PopupMenuItem<int>(
+                      value: 0,
+                      child: Text(
+                        "پذیرش شده",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Themes.text,
+                        ),
+                      ),
+                      height: 35,
+                    ),
+                    PopupMenuItem<int>(
+                      value: 0,
+                      child: Text(
+                        "رد شده",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Themes.text,
+                        ),
+                      ),
+                      height: 35,
+                    ),
+                  ];
+                },
+                onSelected: (value) {},
+                icon: Icon(
+                  CupertinoIcons.sort_down,
+                  color: Themes.icon,
+                ),
               ),
-            ),
-          ],
-        ),
-        body: BlocBuilder<MyFilesBloc, MyFilesState>(
-          builder: _buildMainBloc,
+              PopupMenuButton(
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem<int>(
+                      value: 0,
+                      child: Text(
+                        "انتخاب همه",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Themes.text,
+                        ),
+                      ),
+                      height: 35,
+                    ),
+                  ];
+                },
+                onSelected: (value) {
+                  setState(() {
+                    selectedFiles.clear();
+                    selectedFiles.addAll(files);
+                    isSelectable = true;
+                  });
+                },
+                icon: Icon(
+                  Icons.more_vert,
+                  color: Themes.icon,
+                ),
+              ),
+            ],
+          ),
+          body: BlocBuilder<MyFilesBloc, MyFilesState>(
+            builder: _buildMainBloc,
+          ),
         ),
       ),
     );

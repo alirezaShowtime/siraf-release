@@ -21,6 +21,16 @@ class MyFileHorizontalItem extends StatefulWidget {
 }
 
 class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
+  Map<int, String> progress_fa = {
+    1: "در انتظار پذیرش",
+    2: "در حال پردازش",
+    3: "رد شده",
+    4: "پذیرش شده",
+    5: "در انتظار پذیرش",
+    6: "پذیرش نشده",
+    7: "پذیرش شده",
+  };
+
   @override
   Widget build(BuildContext context) {
     double imageSize = (MediaQuery.of(context).size.width - 20) / 3.5;
@@ -100,7 +110,7 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                               ],
                             ),
                             Text(
-                              "در انتظار تایید...",
+                              progress_fa[widget.file.progress] ?? "نامشخص",
                               style: TextStyle(
                                 color: Themes.text,
                                 fontSize: 11,
@@ -159,7 +169,7 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                                   ),
                                 ),
                                 Text(
-                                  "بازدید : 497",
+                                  "بازدید : ${widget.file.viewCount}",
                                   style: TextStyle(
                                     color: Themes.text,
                                     fontSize: 10.5,
