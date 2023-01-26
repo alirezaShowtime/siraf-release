@@ -9,7 +9,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:siraf3/bloc/add_violation_bloc.dart';
 import 'package:siraf3/bloc/file_bloc.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
@@ -20,24 +19,21 @@ import 'package:siraf3/screens/support_file_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/loading.dart';
-import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart';
 
-class FileScreen extends StatefulWidget {
+class MyFileScreen extends StatefulWidget {
   int id;
 
-  FileScreen({required this.id, super.key});
+  MyFileScreen({required this.id, super.key});
 
   @override
-  State<FileScreen> createState() => _FileScreenState();
+  State<MyFileScreen> createState() => _MyFileScreenState();
 }
 
-class _FileScreenState extends State<FileScreen> {
+class _MyFileScreenState extends State<MyFileScreen> {
   FileBloc fileBloc = FileBloc();
-
-  AddViolationBloc addViolationBloc = AddViolationBloc();
 
   bool isFavorite = false;
 
@@ -65,19 +61,6 @@ class _FileScreenState extends State<FileScreen> {
         } else {
           imageName.add(" | ${event.file.media!.image![0].name!.trim()}");
         }
-      }
-    });
-
-    addViolationBloc.stream.listen((event) {
-      if (event is AddViolationInitState || event is AddViolationLoadingState) {
-        showLoadingDialog();
-      } else if (event is AddViolationErrorState) {
-        dissmisLoadingDialog();
-        notify("خطا در ثبت اطلاعات رخ داد");
-      } else if (event is AddViolationSuccessState) {
-        dissmisLoadingDialog();
-        dismissViolationDialog();
-        notify("تخلف با موفقیت ثبت شد");
       }
     });
   }
@@ -143,30 +126,6 @@ class _FileScreenState extends State<FileScreen> {
               ),
               if (state.file.lat != null || state.file.long != null)
                 _buildMap(state.file),
-              SizedBox(
-                height: 10,
-              ),
-              GestureDetector(
-                onTap: () {
-                  doWithLogin(context, () {
-                    showViolationDialog();
-                  });
-                },
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 15),
-                    child: Text(
-                      "ثبت تخلف و مشکل فایل",
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontFamily: "IranSans",
-                        color: Color(0xff8c8c8c),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
               SizedBox(height: 65),
             ],
           ),
@@ -792,155 +751,4 @@ class _FileScreenState extends State<FileScreen> {
   }
 
   BuildContext? loadingDContext;
-
-  BuildContext? violationDialogContext;
-
-  showViolationDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (_) {
-        violationDialogContext = _;
-        TextEditingController _controller = TextEditingController();
-        TextEditingController _controller2 = TextEditingController();
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
-          content: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Wrap(
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      child: TextField2(
-                        maxLines: 1,
-                        controller: _controller,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide:
-                                BorderSide(color: Themes.textGrey, width: 1),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide:
-                                BorderSide(color: Themes.text, width: 1),
-                          ),
-                          hintText: "عنوان",
-                          hintStyle: TextStyle(
-                            color: Themes.textGrey,
-                            fontSize: 13,
-                            fontFamily: "IranSans",
-                          ),
-                        ),
-                        style: TextStyle(
-                          color: Themes.text,
-                          fontSize: 13,
-                          fontFamily: "IranSansMedium",
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      child: TextField2(
-                        minLines: 6,
-                        maxLines: 10,
-                        controller: _controller2,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide:
-                                BorderSide(color: Themes.textGrey, width: 1),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide:
-                                BorderSide(color: Themes.text, width: 1),
-                          ),
-                          hintText: "توضیحات",
-                          hintStyle: TextStyle(
-                            color: Themes.textGrey,
-                            fontSize: 13,
-                            fontFamily: "IranSans",
-                          ),
-                        ),
-                        style: TextStyle(
-                          color: Themes.text,
-                          fontSize: 13,
-                          fontFamily: "IranSansMedium",
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    SizedBox(
-                      height: 40,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: () async {
-                                if (_controller.text.trim().isEmpty) {
-                                  return notify("لطفا عنوان را وارد کنید");
-                                }
-                                if (_controller2.text.trim().isEmpty) {
-                                  return notify("لطفا توضیحات را وارد کنید");
-                                }
-
-                                addViolationBloc.add(
-                                  AddViolationEvent(
-                                    title: _controller.text,
-                                    body: _controller2.text,
-                                    fileId: widget.id,
-                                  ),
-                                );
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "تایید",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  dismissViolationDialog() {
-    if (violationDialogContext != null) {
-      Navigator.pop(violationDialogContext!);
-    }
-  }
 }
