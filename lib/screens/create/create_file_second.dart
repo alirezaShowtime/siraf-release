@@ -34,6 +34,8 @@ class CreateFileSecond extends StatefulWidget {
 
 class _CreateFileSecondState extends State<CreateFileSecond> {
   String? title;
+  String? visitPhone;
+  String? ownerPhone;
   String? description;
   GlobalKey<FormState> formKey = GlobalKey();
 
@@ -55,6 +57,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   };
 
   TextEditingController _titleController = TextEditingController();
+  TextEditingController _ownerPhoneController = TextEditingController();
+  TextEditingController _visitPhoneController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
 
   @override
@@ -282,10 +286,11 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             title = value;
                           });
                         },
+                        textInputAction: TextInputAction.next,
                         cursorColor: Themes.primary,
                         maxLines: 1,
                         validator: (value) {
-                          if (value == null) {
+                          if (value == null || value.isEmpty) {
                             return "عنوان فایل را وارد کنید";
                           }
                           if (value.length <= 10) {
@@ -310,9 +315,191 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                           }
                         },
                       ),
+                      SizedBox(height: 14),
+                      Text(
+                        "شماره تماس مالک",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Themes.text,
+                          fontFamily: "IranSansBold",
+                        ),
+                      ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: "شماره تماس صاحب ملک را بنویسید.",
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.icon,
+                              width: 0.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.primary,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.textGrey,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          hintStyle: TextStyle(fontSize: 14),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                        ),
+                        keyboardType: TextInputType.number,
+                        style: TextStyle(fontSize: 14, color: Themes.text),
+                        onChanged: (value) {
+                          setState(() {
+                            ownerPhone = value;
+                          });
+                        },
+                        textInputAction: TextInputAction.next,
+                        cursorColor: Themes.primary,
+                        maxLines: 1,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "شماره تماس مالک را وارد کنید";
+                          }
+                          if (value.length != 11) {
+                            return "شماره تماس باید 11 کاراکتر باشد";
+                          }
+                        },
+                        onSaved: ((newValue) {
+                          setState(() {
+                            ownerPhone = newValue;
+                          });
+                        }),
+                        controller: _ownerPhoneController,
+                        onTap: () {
+                          var txtSelection = TextSelection.fromPosition(
+                              TextPosition(
+                                  offset:
+                                      _ownerPhoneController.text.length - 1));
+
+                          if (_ownerPhoneController.selection == txtSelection) {
+                            _ownerPhoneController.selection =
+                                TextSelection.fromPosition(TextPosition(
+                                    offset: _ownerPhoneController.text.length));
+                          }
+                        },
+                      ),
                       SizedBox(
                         height: 14,
                       ),
+                      Text(
+                        "شماره تماس بازدید",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Themes.text,
+                          fontFamily: "IranSansBold",
+                        ),
+                      ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: "شماره تماس جهت هماهنگی بازدید را بنویسید.",
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.icon,
+                              width: 0.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.primary,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.textGrey,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          hintStyle: TextStyle(fontSize: 14),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                        ),
+                        keyboardType: TextInputType.number,
+                        style: TextStyle(fontSize: 14, color: Themes.text),
+                        onChanged: (value) {
+                          setState(() {
+                            visitPhone = value;
+                          });
+                        },
+                        textInputAction: TextInputAction.next,
+                        cursorColor: Themes.primary,
+                        maxLines: 1,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "شماره تماس بازدید را وارد کنید";
+                          }
+                          if (value.length != 11) {
+                            return "شماره تماس باید 11 کاراکتر باشد";
+                          }
+                        },
+                        onSaved: ((newValue) {
+                          setState(() {
+                            visitPhone = newValue;
+                          });
+                        }),
+                        controller: _visitPhoneController,
+                        onTap: () {
+                          var txtSelection = TextSelection.fromPosition(
+                              TextPosition(
+                                  offset:
+                                      _visitPhoneController.text.length - 1));
+
+                          if (_visitPhoneController.selection == txtSelection) {
+                            _visitPhoneController.selection =
+                                TextSelection.fromPosition(TextPosition(
+                                    offset: _visitPhoneController.text.length));
+                          }
+                        },
+                      ),
+                      SizedBox(height: 14),
                       Text(
                         "توضیحات",
                         style: TextStyle(
@@ -387,7 +574,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                         maxLines: 50,
                         minLines: 6,
                         validator: (value) {
-                          if (value == null) {
+                          if (value == null || value.isEmpty) {
                             return "توضیحات فایل را وارد کنید";
                           }
                           if (value.length <= 40) {
@@ -563,7 +750,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   }
 
   _resetData() {
-    Navigator.pop(context);
+    Navigator.pop(context, {"result"});
   }
 
   _openHelp() {
@@ -571,21 +758,27 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
         context, MaterialPageRoute(builder: (_) => UploadMediaGuide()));
   }
 
-  next() {
+  next() async {
     if (!(formKey.currentState?.validate() ?? false)) {
       return;
     }
 
     widget.formData.files = files;
     widget.formData.title = title!;
+    widget.formData.ownerPhone = ownerPhone!;
+    widget.formData.visitPhone = visitPhone!;
     widget.formData.description = description!;
 
-    Navigator.push(
+    var result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => CreateFileFinal(formData: widget.formData),
       ),
     );
+
+    if (result == "reset") {
+      print("reset");
+    }
   }
 
   List<Widget> mediaBoxes = [];

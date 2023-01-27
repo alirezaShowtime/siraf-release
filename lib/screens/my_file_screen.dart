@@ -7,12 +7,17 @@ import 'package:flutter/material.dart' as m;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:siraf3/bloc/delete_file_bloc.dart';
 import 'package:siraf3/bloc/file_bloc.dart';
+import 'package:siraf3/bloc/my_file_bloc.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/models/file_consulant.dart';
 import 'package:siraf3/models/file_detail.dart';
+import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/support_file_screen.dart';
@@ -22,31 +27,41 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart';
+import 'package:siraf3/widgets/slider.dart' as s;
 
 class MyFileScreen extends StatefulWidget {
   int id;
+  int progress;
 
-  MyFileScreen({required this.id, super.key});
+  MyFileScreen({required this.id, required this.progress, super.key});
 
   @override
   State<MyFileScreen> createState() => _MyFileScreenState();
 }
 
 class _MyFileScreenState extends State<MyFileScreen> {
-  FileBloc fileBloc = FileBloc();
+  MyFileBloc fileBloc = MyFileBloc();
+  DeleteFileBloc deleteFileBloc = DeleteFileBloc();
 
-  bool isFavorite = false;
+  Map<int, String> progress_fa = {
+    1: "در انتظار تایید",
+    2: "در حال پردازش",
+    3: "رد شده",
+    4: "تایید شده",
+    5: "در انتظار پذیرش",
+    6: "پذیرش نشده",
+    7: "پذیرش شده",
+  };
 
   @override
   void initState() {
     super.initState();
 
-    fileBloc.add(FileFetchEvent(id: widget.id));
+    fileBloc.add(MyFileFetchEvent(id: widget.id, progress: widget.progress));
     fileBloc.stream.listen((event) {
-      if (event is FileLoadedState) {
+      if (event is MyFileLoadedState) {
+        setSliders(event.file);
         setState(() {
-          isFavorite = event.favorite ?? false;
-
           description = event.file.description ?? "";
           summary = event.file.description ?? "";
 
@@ -63,6 +78,29 @@ class _MyFileScreenState extends State<MyFileScreen> {
         }
       }
     });
+
+    deleteFileBloc.stream.listen((event) {
+      if (event is DeleteFileLoadingState) {
+        showLoadingDialog(message: "در حال حذف فایل هستیم لطفا شکیبا باشید");
+      } else if (event is DeleteFileErrorState) {
+        dissmisLoadingDialog();
+        notify("خطا در حذف فایل رخ داد لطفا مجدد تلاش کنید");
+      } else if (event is DeleteFileSuccessState) {
+        dissmisLoadingDialog();
+        dismissDeleteDialog();
+
+        notify("حذف فایل با موفقیت انجام شد");
+
+        Navigator.pop(context, "refresh");
+      }
+    });
+  }
+
+  setSliders(MyFileDetail file) async {
+    var data = await file.getSliders();
+    setState(() {
+      sliders = data;
+    });
   }
 
   @override
@@ -71,31 +109,36 @@ class _MyFileScreenState extends State<MyFileScreen> {
       create: (context) => fileBloc,
       child: Scaffold(
         body: SafeArea(
-          child: BlocBuilder<FileBloc, FileState>(builder: buildBaseBloc),
+          child: BlocBuilder<MyFileBloc, MyFileState>(builder: buildBaseBloc),
         ),
       ),
     );
   }
 
-  Widget buildBaseBloc(_co, FileState state) {
-    if (state is FileInitState || state is FileLoadingState) {
+  Widget buildBaseBloc(_co, MyFileState state) {
+    if (state is MyFileInitState || state is MyFileLoadingState) {
       return Center(
         child: Loading(),
       );
     }
 
-    if (state is FileErrorState) {
+    if (state is MyFileErrorState) {
       return Center(
         child: TryAgain(
           onPressed: () {
-            fileBloc.add(FileFetchEvent(id: widget.id));
+            fileBloc.add(
+              MyFileFetchEvent(
+                id: widget.id,
+                progress: widget.progress,
+              ),
+            );
           },
           message: jDecode(state.response?.body ?? "")['message'],
         ),
       );
     }
 
-    state = state as FileLoadedState;
+    state = state as MyFileLoadedState;
 
     //ops
     return Stack(
@@ -103,38 +146,171 @@ class _MyFileScreenState extends State<MyFileScreen> {
         SingleChildScrollView(
           child: Column(
             children: [
-              _buildSliders(state.file),
-              SizedBox(height: 10),
-              _buildTitle(state.file),
-              SizedBox(height: 15),
-              if (state.file.getMainProperties().isNotEmpty)
-                _buildMainProps(state.file),
-              if (state.file.getMainProperties().isNotEmpty)
-                SizedBox(height: 15),
-              _buildDescription(state.file),
-              SizedBox(height: 15),
-              Divider(
-                height: 0.7,
-                color: Themes.textGrey,
-              ),
-              SizedBox(height: 15),
-              _buildProps(state.file),
-              SizedBox(height: 15),
-              Divider(
-                height: 0.7,
-                color: Themes.textGrey,
-              ),
-              if (state.file.lat != null || state.file.long != null)
-                _buildMap(state.file),
-              SizedBox(height: 65),
-            ],
+                  _buildSliders(state.file),
+                  SizedBox(height: 10),
+                  _buildTitle(state.file),
+                  SizedBox(height: 15),
+                  if (state.file.getMainProperties().isNotEmpty)
+                    _buildMainProps(state.file),
+                  if (state.file.getMainProperties().isNotEmpty)
+                    SizedBox(height: 15),
+                  _buildDescription(state.file),
+                  SizedBox(height: 15),
+                  if (state.file.getOtherProperties().isNotEmpty)
+                    Divider(
+                      height: 0.7,
+                      color: Themes.textGrey,
+                    ),
+                  if (state.file.getOtherProperties().isNotEmpty)
+                    SizedBox(height: 15),
+                  if (state.file.getOtherProperties().isNotEmpty)
+                    _buildProps(state.file),
+                  SizedBox(height: 15),
+                  Divider(
+                    height: 0.7,
+                    color: Themes.textGrey,
+                  ),
+                  if (state.file.lat != null || state.file.long != null)
+                    _buildMap(state.file),
+                  SizedBox(height: 10),
+                  Divider(
+                    height: 0.7,
+                    color: Themes.textGrey,
+                  ),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: EdgeInsets.all(9),
+                    child: !state.file.isRental()
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "قیمت",
+                                    style: TextStyle(
+                                        color: Colors.grey.shade500,
+                                        fontSize: 12),
+                                  ),
+                                  Text(
+                                    state.file.getPrice()?.value != null
+                                        ? number_format(
+                                            state.file.getPrice()!.value)
+                                        : "توافقی",
+                                    style: TextStyle(
+                                        color: Themes.text,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "قیمت هر متر",
+                                    style: TextStyle(
+                                        color: greyColor, fontSize: 10.5),
+                                  ),
+                                  Text(
+                                    state.file.getPricePerMetter(),
+                                    style: TextStyle(
+                                        color: Colors.grey.shade500,
+                                        fontSize: 11.5),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "ودیعه",
+                                    style: TextStyle(
+                                        color: greyColor,
+                                        fontSize: 12,
+                                        height: 1),
+                                  ),
+                                  Text(
+                                    state.file.getPrice()?.value != null
+                                        ? number_format(
+                                            state.file.getPrice()?.value)
+                                        : "توافقی",
+                                    style: TextStyle(
+                                        color: Themes.text,
+                                        fontSize: 13,
+                                        height: 1,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "اجاره ماهانه",
+                                    style: TextStyle(
+                                        color: greyColor, fontSize: 10.5),
+                                  ),
+                                  Text(
+                                    state.file.getRent()?.value != null
+                                        ? number_format(
+                                            state.file.getRent()?.value)
+                                        : "توافقی",
+                                    style: TextStyle(
+                                        color: Colors.grey.shade500,
+                                        fontSize: 11.5),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                  ),
+                  SizedBox(height: 10),
+                  Divider(
+                    height: 0.7,
+                    color: Themes.textGrey,
+                  ),
+                  SizedBox(height: 10),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 15),
+                      child: Text(
+                        "وضعیت : " + (progress_fa[widget.progress] ?? "نامشخص"),
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontFamily: "IranSans",
+                          color: Color(0xff8c8c8c),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                ] +
+                state.consulants
+                    .map<Widget>((element) => _item(element))
+                    .toList() +
+                <Widget>[
+                  SizedBox(height: 10),
+                ],
           ),
-        ),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: _buildPriceSection(state.file),
         ),
       ],
     );
@@ -142,13 +318,13 @@ class _MyFileScreenState extends State<MyFileScreen> {
 
   StreamController<String?> imageName = StreamController();
 
-  Widget _buildSliders(FileDetail file) {
+  List<s.Slider> sliders = [];
+
+  Widget _buildSliders(MyFileDetail file) {
     return Stack(
       children: [
         CarouselSliderCustom(
-          images:
-              file.media?.image?.map<String>((e) => e.path ?? "").toList() ??
-                  [],
+          sliders: sliders,
           autoPlay: false,
           height: 250,
           indicatorsCenterAlign: true,
@@ -174,35 +350,68 @@ class _MyFileScreenState extends State<MyFileScreen> {
           top: 0,
           left: 0,
           right: 0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-                  CupertinoIcons.back,
-                  color: Themes.iconLight,
+          child: Container(
+            color: Themes.textGrey.withOpacity(0.3),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    CupertinoIcons.back,
+                    color: Themes.iconLight,
+                  ),
                 ),
-              ),
-              IconButton(
-                onPressed: () async {
-                  doWithLogin(context, () async {
-                    if (await addOrRemoveFavorite(widget.id)) {
-                      setState(() {
-                        isFavorite = !isFavorite;
-                      });
-                    }
-                  });
-                },
-                icon: Icon(
-                  isFavorite ? Icons.bookmark : Icons.bookmark_border,
-                  size: 22,
-                  color: Colors.white,
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () async {
+                        showDeleteDialog();
+                      },
+                      icon: Icon(
+                        CupertinoIcons.delete,
+                        color: Colors.white,
+                      ),
+                    ),
+                    PopupMenuButton(
+                      itemBuilder: (context) {
+                        return [
+                          PopupMenuItem<int>(
+                            value: 0,
+                            child: Text(
+                              "ویرایش",
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Themes.text,
+                              ),
+                            ),
+                            height: 35,
+                          ),
+                          PopupMenuItem<int>(
+                            value: 0,
+                            child: Text(
+                              "آمار بازدید",
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Themes.text,
+                              ),
+                            ),
+                            height: 35,
+                          ),
+                        ];
+                      },
+                      onSelected: (value) {},
+                      icon: Icon(
+                        Icons.more_vert,
+                        color: Themes.iconLight,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         Positioned(
@@ -231,7 +440,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
     );
   }
 
-  Widget _buildTitle(FileDetail file) {
+  Widget _buildTitle(MyFileDetail file) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -295,7 +504,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
     );
   }
 
-  Widget _buildMainProps(FileDetail file) {
+  Widget _buildMainProps(MyFileDetail file) {
     List<Widget> items = [];
 
     var a = file
@@ -355,7 +564,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
 
   bool showSummary = true;
 
-  Widget _buildDescription(FileDetail file) {
+  Widget _buildDescription(MyFileDetail file) {
     if (file.description == null) {
       return Container();
     }
@@ -403,7 +612,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
     );
   }
 
-  Widget _buildMap(FileDetail file) {
+  Widget _buildMap(MyFileDetail file) {
     return GestureDetector(
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
@@ -446,7 +655,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
 
   bool isPropOpen = true;
 
-  Widget _buildProps(FileDetail file) {
+  Widget _buildProps(MyFileDetail file) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
@@ -508,203 +717,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
     );
   }
 
-  Widget _buildPriceSection(FileDetail file) {
-    return Container(
-      width: double.infinity,
-      height: 60,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade200,
-            offset: const Offset(0, -1),
-            blurRadius: 2,
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(9),
-              child: !file.isRental()
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            "قیمت",
-                            style: TextStyle(
-                                color: Colors.grey.shade500, fontSize: 12),
-                          ),
-                        ),
-                        Text(
-                          file.prices != null
-                              ? number_format(file.prices)
-                              : "توافقی",
-                          style: TextStyle(
-                              color: Themes.text,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "ودیعه",
-                              style: TextStyle(
-                                  color: greyColor, fontSize: 10, height: 1),
-                            ),
-                            Text(
-                              file.prices != null
-                                  ? number_format(file.prices)
-                                  : "توافقی",
-                              style: TextStyle(
-                                  color: Themes.text,
-                                  fontSize: 12,
-                                  height: 1,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "اجاره ماهانه",
-                              style: TextStyle(color: greyColor, fontSize: 13),
-                            ),
-                            Text(
-                              number_format(file.rent),
-                              style: TextStyle(
-                                  color: Colors.grey.shade500, fontSize: 11),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-            ),
-          ),
-          Expanded(
-            child: GestureDetector(
-              onTap: () async {
-                var result = await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => SupportFileScreen(
-                      file: file,
-                      isFavorite: isFavorite,
-                      id: widget.id,
-                    ),
-                  ),
-                );
-
-                if (result is bool) {
-                  setState(() {
-                    isFavorite = result;
-                  });
-                }
-              },
-              child: Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Themes.primary,
-                ),
-                child: Text(
-                  "تماس | پیام",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<bool> addOrRemoveFavorite(int id) async {
-    if (isFavorite) {
-      return await removeFavorite(id);
-    } else {
-      return await addFavorite(id);
-    }
-  }
-
-  Future<bool> addFavorite(int id) async {
-    showLoadingDialog();
-
-    var result = false;
-
-    try {
-      var response = await get(
-          getFileUrl('file/addFileFavorite/' + id.toString() + '/'),
-          headers: {
-            "Authorization": await User.getBearerToken(),
-          });
-
-      if (isResponseOk(response)) {
-        result = true;
-      } else {
-        var json = jDecode(response.body);
-        notify(json['message'] ??
-            "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
-        result = false;
-      }
-    } on HttpException {
-      notify("خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
-    } catch (e) {
-      notify("خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
-    }
-
-    dissmisLoadingDialog();
-
-    return result;
-  }
-
-  Future<bool> removeFavorite(int id) async {
-    showLoadingDialog();
-
-    var result = false;
-
-    try {
-      var response = await get(
-          getFileUrl('file/deleteFileFavorite/' + id.toString() + '/'),
-          headers: {
-            "Authorization": await User.getBearerToken(),
-          });
-
-      if (isResponseOk(response)) {
-        result = true;
-      } else {
-        var json = jDecode(response.body);
-        notify(json['message'] ??
-            "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
-        result = false;
-      }
-    } on HttpException {
-      notify("خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
-    } catch (e) {
-      notify("خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
-    }
-
-    dissmisLoadingDialog();
-
-    return result;
-  }
-
-  showLoadingDialog() {
+  showLoadingDialog({String? message}) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -724,10 +737,10 @@ class _MyFileScreenState extends State<MyFileScreen> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 5),
                   child: Text(
-                    'در حال ارسال درخواست صبور باشید',
+                    message ?? 'در حال ارسال درخواست صبور باشید',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 16,
+                      fontSize: 13,
                       fontWeight: FontWeight.normal,
                     ),
                   ),
@@ -751,4 +764,235 @@ class _MyFileScreenState extends State<MyFileScreen> {
   }
 
   BuildContext? loadingDContext;
+
+  Widget _item(FileConsulant item) {
+    return Container(
+      height: 80,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          bottom: BorderSide(color: Themes.textGrey.withOpacity(0.2), width: 1),
+        ),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: m.Image.network(
+                  item.consultantId?.avatar ?? '',
+                  height: 50,
+                  width: 50,
+                  errorBuilder: (_, _1, _2) => m.Image.asset(
+                    "assets/images/profile.png",
+                    height: 50,
+                    width: 50,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(right: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      item.consultantId?.name ?? "؟؟؟",
+                      style: TextStyle(
+                        color: Themes.text,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Text(
+                      "(${item.estateName.toString()})",
+                      style: TextStyle(
+                        color: Themes.textGrey,
+                        fontSize: 10,
+                      ),
+                    ),
+                    RatingBarIndicator(
+                      direction: Axis.horizontal,
+                      itemCount: 5,
+                      itemSize: 14,
+                      unratedColor: Colors.grey,
+                      itemPadding: EdgeInsets.symmetric(horizontal: .2),
+                      itemBuilder: (context, _) {
+                        return Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                          size: 10,
+                        );
+                      },
+                      rating: item.consultantId?.rate ?? 5.0,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  doWithLogin(context, () {
+                    createChat();
+                  });
+                },
+                child: Icon(
+                  CupertinoIcons.chat_bubble_2,
+                  size: 35,
+                  color: Themes.primary,
+                ),
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              GestureDetector(
+                onTap: () {
+                  callTo(item.consultantId!.phone!);
+                },
+                child: Icon(
+                  CupertinoIcons.phone_circle,
+                  size: 35,
+                  color: Themes.primary,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  createChat() async {
+    showLoadingDialog(message: "درحال ایجاد گفتگو هستیم شکیبا باشید");
+
+    //todo: implement
+
+    await Future.delayed(Duration(seconds: 2));
+
+    dissmisLoadingDialog();
+  }
+
+  BuildContext? deleteDialogContext;
+
+  showDeleteDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) {
+        deleteDialogContext = _;
+        return AlertDialog(
+          contentPadding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          backgroundColor: Themes.background,
+          content: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Wrap(
+              children: [
+                Column(
+                  children: [
+                    SizedBox(
+                      height: 25,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                      ),
+                      child: Text(
+                        'آیا مایل به حذف فایل هستید؟',
+                        style: TextStyle(
+                          color: Themes.textGrey,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    SizedBox(
+                      height: 40,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: MaterialButton(
+                              onPressed: dismissDeleteDialog,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomRight: Radius.circular(5),
+                                ),
+                              ),
+                              color: Themes.primary,
+                              elevation: 1,
+                              height: 40,
+                              child: Text(
+                                "خیر",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontFamily: "IranSansBold",
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 0.5,
+                          ),
+                          Expanded(
+                            child: MaterialButton(
+                              onPressed: () async {
+                                deleteFileBloc.add(
+                                  DeleteFileSingleEvent(
+                                    id: widget.id,
+                                    token: await User.getBearerToken(),
+                                  ),
+                                );
+                              },
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(5),
+                                ),
+                              ),
+                              color: Themes.primary,
+                              elevation: 1,
+                              height: 40,
+                              child: Text(
+                                "بله",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontFamily: "IranSansBold",
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  dismissDeleteDialog() {
+    if (deleteDialogContext != null) {
+      Navigator.pop(deleteDialogContext!);
+    }
+  }
 }

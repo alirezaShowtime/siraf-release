@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -204,12 +205,28 @@ class _LoginScreenState extends State<LoginScreen> {
 
       BlocProvider.of<LoginStatus>(context).add(true);
 
-      var response = await http.post(createAuthUrlByEndPoint('login/'),
-          body: jsonEncode({'mobile': mobile, 'type': 1}),
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-          });
+      http.Response response;
+
+      try {
+        response = await http.post(createAuthUrlByEndPoint('login/'),
+            body: jsonEncode({'mobile': mobile, 'type': 1}),
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+            });
+      } on HttpException catch (e) {
+        BlocProvider.of<LoginStatus>(context).add(false);
+        notify(
+            "خطا در ارسال درخواست پیش آمد لطفا اتصال اینترنت خود را بررسی کنید");
+        return;
+      } on SocketException catch (e) {
+        BlocProvider.of<LoginStatus>(context).add(false);
+        notify(
+            "خطا در ارسال درخواست پیش آمد لطفا اتصال اینترنت خود را بررسی کنید");
+        return;
+      }
+
+      print(response.body);
 
       BlocProvider.of<LoginStatus>(context).add(false);
 

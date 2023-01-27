@@ -125,6 +125,10 @@ String getImageUrl(String file) {
 }
 
 bool isResponseOk(http.Response response) {
+  if (response.statusCode == 401) {
+    User.remove();
+  }
+
   if (response.statusCode >= 400) {
     return false;
   }

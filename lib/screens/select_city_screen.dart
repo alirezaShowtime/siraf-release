@@ -9,7 +9,6 @@ import 'package:siraf3/models/province.dart';
 import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/accordion.dart';
-import 'package:siraf3/widgets/icon_asset.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
@@ -418,6 +417,9 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
 
     if (widget.saveCity) {
       await City.saveList(selectedCities);
+
+      await (await SharedPreferences.getInstance())
+          .setBool("isFirstOpen", false);
 
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (_) => HomeScreen()));

@@ -8,6 +8,8 @@ class CreateFileFormData {
   City city;
   LatLng location;
   String address;
+  String visitPhone;
+  String ownerPhone;
   Map<String, String> properties;
   List<Map<String, dynamic>> files;
   String title;
@@ -19,6 +21,8 @@ class CreateFileFormData {
     required this.city,
     required this.location,
     required this.address,
+    required this.visitPhone,
+    required this.ownerPhone,
     required this.properties,
     required this.files,
     required this.title,

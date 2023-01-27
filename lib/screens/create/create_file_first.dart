@@ -217,22 +217,24 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: (mainProps.isNotEmpty ? <Widget>[
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              "ویژگی ها",
-              style: TextStyle(
-                fontSize: 14,
-                color: Themes.text,
-                fontFamily: "IranSansBold",
-              ),
-            ),
-            SizedBox(
-              height: 14,
-            ),
-          ] : <Widget>[]) +
+      children: (mainProps.isNotEmpty
+              ? <Widget>[
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    "ویژگی ها",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Themes.text,
+                      fontFamily: "IranSansBold",
+                    ),
+                  ),
+                  SizedBox(
+                    height: 14,
+                  ),
+                ]
+              : <Widget>[]) +
           mainProps.map<Widget>((e) {
             String? text;
             if (selectedMainProps.containsKey(e.value!)) {
@@ -240,6 +242,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                 text = selectedMainProps[e.value!] as String;
 
                 if (priceFields.contains(e.value!)) {
+                  text = number_format(int.parse(text));
                   text += " تومان";
                 }
 
@@ -288,22 +291,24 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
               ],
             );
           }).toList() +
-          (mainFeature.isNotEmpty ? <Widget>[
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              "امکانات",
-              style: TextStyle(
-                fontSize: 14,
-                color: Themes.text,
-                fontFamily: "IranSansBold",
-              ),
-            ),
-            SizedBox(
-              height: 14,
-            ),
-          ] : <Widget>[]) +
+          (mainFeature.isNotEmpty
+              ? <Widget>[
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    "امکانات",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Themes.text,
+                      fontFamily: "IranSansBold",
+                    ),
+                  ),
+                  SizedBox(
+                    height: 14,
+                  ),
+                ]
+              : <Widget>[]) +
           mainFeature.map<Widget>((e) {
             String? text;
             if (selectedMainFeatures.containsKey(e.value!)) {
@@ -311,6 +316,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                 text = selectedMainFeatures[e.value!] as String;
 
                 if (priceFields.contains(e.value!)) {
+                  text = number_format(int.parse(text));
                   text += " تومان";
                 }
 
@@ -512,6 +518,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
   }
 
   next() {
+    print(selectedMainProps);
     if (category == null) return notify("دسته بندی را انتخاب نمایید");
     if (city == null) return notify("شهر را انتخاب نمایید");
     if (location == null) return notify("موقعیت را روی نقشه انتخاب کنید");
@@ -538,6 +545,31 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
       }
     }
 
+    for (PropertyInsert pr in otherProps) {
+      if ((pr.require ?? false) && !selectedOtherProps.containsKey(pr.value!)) {
+        return notify(
+            "لطفا وارد سایر امکانات و ویژگی ها شوید و " +
+                pr.name! +
+                " را " +
+                (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") +
+                " کنید",
+            duration: Duration(seconds: 4));
+      }
+    }
+
+    for (PropertyInsert pr in otherFeature) {
+      if ((pr.require ?? false) &&
+          !selectedOtherFeatures.containsKey(pr.value!)) {
+        return notify(
+            "لطفا وارد سایر امکانات و ویژگی ها شوید و " +
+                pr.name! +
+                " را " +
+                (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") +
+                " کنید",
+            duration: Duration(seconds: 4));
+      }
+    }
+
     var properties = <String, String>{};
 
     properties
@@ -554,16 +586,26 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
       properties: properties,
       description: "",
       title: "",
+      ownerPhone: "",
+      visitPhone: "",
       files: [],
       estates: [],
     );
 
-    Navigator.push(
+    push(formData);
+  }
+
+  push(formData) async {
+    var result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => CreateFileSecond(formData: formData),
       ),
     );
+
+    if (result == "reset") {
+      _resetData();
+    }
   }
 
   Widget section(
@@ -850,7 +892,11 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
       builder: (_) {
         numberDialog = _;
         TextEditingController _controller = TextEditingController(
-          text: selectedMainProps[property.value!],
+          text: property.value != "age" &&
+                  selectedMainProps[property.value!] != null
+              ? number_format(
+                  int.parse(selectedMainProps[property.value!].toString()))
+              : selectedMainProps[property.value!],
         );
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
@@ -980,7 +1026,9 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                                 setState(() {
                                   if (_controller.text.trim().isNotEmpty) {
                                     selectedMainProps[property.value!] =
-                                        _controller.text.trim();
+                                        _controller.text
+                                            .trim()
+                                            .replaceAll(',', '');
                                   } else {
                                     selectedMainProps.remove(property.value!);
                                   }

@@ -14,6 +14,7 @@ import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:http/http.dart';
+import 'package:siraf3/widgets/slider.dart' as s;
 
 class FileSlideItem extends StatefulWidget {
   File file;
@@ -60,10 +61,16 @@ class _FileSlideItemState extends State<FileSlideItem> {
           Stack(
             children: [
               CarouselSliderCustom(
-                images: widget.file.images
-                        ?.map<String>((e) => e.path ?? "")
+                sliders: widget.file.images
+                        ?.map<s.Slider>(
+                          (e) => s.Slider(
+                            image: NetworkImage(e.path ?? ""),
+                            type: s.SliderType.image,
+                            link: e.path ?? "",
+                          ),
+                        )
                         .toList() ??
-                    ["no_image_provided"],
+                    [],
                 height: 250,
                 autoPlay: false,
                 indicatorsCenterAlign: true,

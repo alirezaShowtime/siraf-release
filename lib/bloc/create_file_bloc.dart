@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:http/http.dart';
+import 'package:dio/dio.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/create_file_form_data.dart';
 import 'dart:io' as io;
@@ -24,7 +24,7 @@ class CreateFileLoadingState extends CreateFileState {}
 class CreateFileLoadedState extends CreateFileState {}
 
 class CreateFileErrorState extends CreateFileState {
-  StreamedResponse? response;
+  Response? response;
 
   CreateFileErrorState({this.response});
 }
@@ -37,21 +37,13 @@ class CreateFileBloc extends Bloc<CreateFileEvent, CreateFileState> {
   _onEvent(CreateFileEvent event, emit) async {
     emit(CreateFileLoadingState());
 
-    StreamedResponse response;
+    Response response;
 
     try {
       var headers = {
-        'Content-Type': 'application/json',
+        "content-type": "multipart/form-data",
         "Authorization": await User.getBearerToken(),
       };
-
-      var request = MultipartRequest(
-          'POST',
-          event.data.estates.isEmpty
-              ? getFileUrl("file/addFileSiraf/")
-              : getFileUrl("file/addFileEstate/"));
-
-      request.headers.addAll(headers);
 
       var videos = event.data.files
           .where((element) =>
@@ -69,7 +61,7 @@ class CreateFileBloc extends Bloc<CreateFileEvent, CreateFileState> {
           .toList();
       var tour = tours.isNotEmpty ? tours.first : null;
 
-      request.fields.addAll({
+      var formData = FormData.fromMap({
         'name': event.data.title,
         'long': event.data.location.longitude.toString(),
         'lat': event.data.location.latitude.toString(),
@@ -78,45 +70,66 @@ class CreateFileBloc extends Bloc<CreateFileEvent, CreateFileState> {
         'category_id': event.data.category.id!.toString(),
         'fetcher': jsonEncode(event.data.properties),
         if (videos.isNotEmpty)
-          'videosName':
-              jsonEncode(videos.map((e) => e['title'] as String?).toList()),
+          'videosName': jsonEncode(
+              videos.map((e) => (e['title'] as String?) ?? "").toList()),
         if (images.isNotEmpty)
-          'imagesName':
-              jsonEncode(images.map((e) => e['title'] as String?).toList()),
+          'imagesName': jsonEncode(
+              images.map((e) => (e['title'] as String?) ?? "ta").toList()),
         'description': event.data.description,
-        'visitPhoneNumber': '09127777777',
-        'ownerPhoneNumber': '09127777777'
+        'visitPhoneNumber': event.data.visitPhone,
+        'ownerPhoneNumber': event.data.ownerPhone,
+        if (event.data.estates.isNotEmpty)
+          'estateIds':
+              jsonEncode(event.data.estates.map((e) => e.id!).toList()),
       });
-      if (images.isNotEmpty) {
-        for (Map<String, dynamic> item in images) {
-          request.files.add(await MultipartFile.fromPath(
-              'images', (item['file'] as io.File).path));
-        }
-      }
-      if (videos.isEmpty) {
-        for (Map<String, dynamic> item in videos) {
-          request.files.add(await MultipartFile.fromPath(
-              'videos', (item['file'] as io.File).path));
-        }
-      }
 
-      if (tour != null) {
-        request.files.add(await MultipartFile.fromPath(
-            'virtualTour', (tour['file'] as io.File).path));
-      }
+      formData.files.addAll([
+        for (Map<String, dynamic> item in images)
+          MapEntry<String, MultipartFile>("images",
+              await MultipartFile.fromFile((item['file'] as io.File).path)),
+        for (Map<String, dynamic> item in videos)
+          MapEntry<String, MultipartFile>("videos",
+              await MultipartFile.fromFile((item['file'] as io.File).path)),
+        if (tour != null)
+          MapEntry("virtualTour",
+              await MultipartFile.fromFile((tour['file'] as io.File).path)),
+      ]);
 
-      response = await request.send();
+      var url = event.data.estates.isEmpty
+          ? getFileUrl("file/addFileSiraf/").toString()
+          : getFileUrl("file/addFileEstate/").toString();
+
+      print(url);
+      print(headers);
+      print(formData.fields);
+      print(formData.files);
+
+      response = await Dio().post(
+        url,
+        options: Options(
+          validateStatus: (status) {
+            return true;
+          },
+          headers: headers,
+        ),
+        data: formData,
+      );
     } on HttpException catch (e) {
       emit(CreateFileErrorState());
       return;
     } on SocketException catch (e) {
       emit(CreateFileErrorState());
       return;
+    } on DioError catch (e) {
+      emit(CreateFileErrorState());
+      return;
     }
 
-    print(response.reasonPhrase);
+    print(response.statusCode);
+    print(response.statusMessage);
+    print(response.data);
 
-    if (response.statusCode < 400) {
+    if (response.data['status'] == 1) {
       emit(CreateFileLoadedState());
     } else {
       emit(CreateFileErrorState(response: response));

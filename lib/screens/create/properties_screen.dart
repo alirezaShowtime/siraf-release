@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
+import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/category.dart';
 import 'package:siraf3/models/property_insert.dart';
 import 'package:siraf3/themes.dart';
@@ -263,6 +264,31 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                   Expanded(
                     child: MaterialButton(
                       onPressed: () {
+                        for (PropertyInsert pr in widget.properties) {
+                          if ((pr.require ?? false) &&
+                              !selectedProps.containsKey(pr.value!)) {
+                            return notify("لطفا " +
+                                pr.name! +
+                                " را " +
+                                (pr.type!.toLowerCase() == "list"
+                                    ? "انتخاب"
+                                    : "تعیین") +
+                                " کنید");
+                          }
+                        }
+
+                        for (PropertyInsert pr in widget.features) {
+                          if ((pr.require ?? false) &&
+                              !selectedFeatures.containsKey(pr.value!)) {
+                            return notify("لطفا " +
+                                pr.name! +
+                                " را " +
+                                (pr.type!.toLowerCase() == "list"
+                                    ? "انتخاب"
+                                    : "تعیین") +
+                                " کنید");
+                          }
+                        }
                         Navigator.pop(
                             context, [selectedProps, selectedFeatures]);
                       },

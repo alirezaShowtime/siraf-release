@@ -7,6 +7,7 @@ import 'package:siraf3/models/estate.dart';
 import 'package:siraf3/screens/create/estate_guide.dart';
 import 'package:siraf3/screens/create/estate_screen.dart';
 import 'package:siraf3/screens/home_screen.dart';
+import 'package:siraf3/screens/my_files_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
 
@@ -273,28 +274,6 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
                               padding: EdgeInsets.symmetric(vertical: 9),
                             ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Expanded(
-                                child: MaterialButton(
-                                  onPressed: () {},
-                                  color: Themes.primary,
-                                  child: Text(
-                                    "ثبت نهایی",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  minWidth: 100,
-                                  height: 45,
-                                ),
-                              )
-                            ],
-                          )
                         ],
                       ),
                     ),
@@ -315,7 +294,7 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
   }
 
   _resetData() {
-    Navigator.pop(context);
+    Navigator.pop(context, "reset");
   }
 
   _openHelp() {
@@ -350,10 +329,10 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
       String message = "";
 
       dissmisLoadingDialog();
-      if (event.response?.reasonPhrase != null) {
+      if (event.response?.data != null) {
         try {
-          message = jDecode(event.response!.reasonPhrase!)['message'];
-        } on FormatException catch (e) {
+          message = event.response!.data!['message'];
+        } on Exception catch (e) {
           message = "خطایی در ایجاد فایل پیش آمد لطفا بعدا مجدد تلاش کنید";
         }
       } else {
@@ -366,7 +345,11 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
       notify("فایل با موفقیت ایجاد شد");
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (_) => HomeScreen()),
+          MaterialPageRoute(
+              builder: (_) => HomeScreen(
+                    nextScreen:
+                        MaterialPageRoute(builder: (_) => MyFilesScreen()),
+                  )),
           (Route<dynamic> route) => false);
     }
   }

@@ -1,14 +1,13 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:http/http.dart';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:siraf3/helpers.dart';
+import 'package:siraf3/models/file_detail.dart';
+import 'package:siraf3/widgets/slider.dart' as s;
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'dart:io' as io;
-import 'package:siraf3/widgets/slider.dart' as s;
 
-class FileDetail {
+class MyFileDetail {
+  int? id;
   String? name;
   int? elevator;
   int? countRoom;
@@ -27,8 +26,9 @@ class FileDetail {
   Media? media;
   bool? favorite;
 
-  FileDetail(
-      {this.name,
+  MyFileDetail(
+      {this.id,
+      this.name,
       this.elevator,
       this.countRoom,
       this.meter,
@@ -46,7 +46,10 @@ class FileDetail {
       this.media,
       this.favorite});
 
-  FileDetail.fromJson(Map<String, dynamic> json) {
+  MyFileDetail.fromJson(Map<String, dynamic> json) {
+    if (json["id"] is int) {
+      id = json["id"];
+    }
     if (json["name"] is String) {
       name = json["name"];
     }
@@ -62,7 +65,9 @@ class FileDetail {
     if (json["parking"] is int) {
       parking = json["parking"];
     }
-    rent = json["rent"];
+    if (json["rent"] is int) {
+      rent = json["rent"];
+    }
     if (json["prices"] is int) {
       prices = json["prices"];
     }
@@ -106,6 +111,7 @@ class FileDetail {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["id"] = id;
     _data["name"] = name;
     _data["elevator"] = elevator;
     _data["countRoom"] = countRoom;
@@ -154,6 +160,7 @@ class FileDetail {
       property?.where((element) => element.section == 3).toList() ??
       <Property>[];
 
+
   List<Property> getMainProperties() {
     var list = property
             ?.where((element) => element.section == 1 && element.value != null)
@@ -175,6 +182,22 @@ class FileDetail {
     list.sort((a, b) => a.weightSection!.compareTo(b.weightSection!));
 
     return list;
+  }
+
+  String getPricePerMetter() {
+    var metter =
+        property?.firstWhere((element) => element.weightSection == 1).value ??
+            -1;
+
+    if (getPrice()?.value == null) {
+      return "توافقی";
+    }
+
+    if (metter == -1 || metter == null) {
+      return "متراژ نامشخص";
+    }
+
+    return number_format(getPrice()!.value! / metter);
   }
 
   Future<List<s.Slider>> getSliders() async {
@@ -217,30 +240,30 @@ class FileDetail {
 }
 
 class Media {
-  List<Video>? video;
+  List<dynamic>? video;
   List<Image>? image;
-  dynamic virtualTour;
+  String? virtualTour;
 
   Media({this.video, this.image, this.virtualTour});
 
   Media.fromJson(Map<String, dynamic> json) {
     if (json["Video"] is List) {
-      video = json["Video"] == null
-          ? null
-          : (json["Video"] as List).map((e) => Video.fromJson(e)).toList();
+      video = json["Video"] ?? [];
     }
     if (json["Image"] is List) {
       image = json["Image"] == null
           ? null
           : (json["Image"] as List).map((e) => Image.fromJson(e)).toList();
     }
-    virtualTour = json["virtualTour"];
+    if (json["virtualTour"] is String) {
+      virtualTour = json["virtualTour"];
+    }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     if (video != null) {
-      _data["Video"] = video?.map((e) => e.toJson()).toList();
+      _data["Video"] = video;
     }
     if (image != null) {
       _data["Image"] = image?.map((e) => e.toJson()).toList();
@@ -300,61 +323,6 @@ class Image {
     _data["status"] = status;
     _data["weight"] = weight;
     _data["name"] = name;
-    _data["file_id"] = fileId;
-    return _data;
-  }
-}
-
-class Video {
-  int? id;
-  String? name;
-  String? path;
-  String? createData;
-  bool? status;
-  int? weight;
-  int? fileId;
-
-  Video(
-      {this.id,
-      this.name,
-      this.path,
-      this.createData,
-      this.status,
-      this.weight,
-      this.fileId});
-
-  Video.fromJson(Map<String, dynamic> json) {
-    if (json["id"] is int) {
-      id = json["id"];
-    }
-    if (json["name"] is String) {
-      name = json["name"];
-    }
-    if (json["path"] is String) {
-      path = json["path"];
-    }
-    if (json["createData"] is String) {
-      createData = json["createData"];
-    }
-    if (json["status"] is bool) {
-      status = json["status"];
-    }
-    if (json["weight"] is int) {
-      weight = json["weight"];
-    }
-    if (json["file_id"] is int) {
-      fileId = json["file_id"];
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["id"] = id;
-    _data["name"] = name;
-    _data["path"] = path;
-    _data["createData"] = createData;
-    _data["status"] = status;
-    _data["weight"] = weight;
     _data["file_id"] = fileId;
     return _data;
   }

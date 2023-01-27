@@ -19,7 +19,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  MaterialPageRoute? nextScreen;
+
+  HomeScreen({this.nextScreen, super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -29,6 +31,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.nextScreen != null) {
+      Navigator.push(context, widget.nextScreen!);
+      return;
+    }
 
     homeScreenBloc = BlocProvider.of<HSBloc>(context);
 
@@ -135,9 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           IconButton(
-            onPressed: () {
-              
-            },
+            onPressed: () {},
             icon: FaIcon(
               OctIcons.sliders_16,
               color: Themes.iconLight,

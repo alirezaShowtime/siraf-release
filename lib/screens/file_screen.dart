@@ -24,6 +24,7 @@ import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart';
+import 'package:siraf3/widgets/slider.dart' as s;
 
 class FileScreen extends StatefulWidget {
   int id;
@@ -48,6 +49,8 @@ class _FileScreenState extends State<FileScreen> {
     fileBloc.add(FileFetchEvent(id: widget.id));
     fileBloc.stream.listen((event) {
       if (event is FileLoadedState) {
+        setSliders(event.file);
+
         setState(() {
           isFavorite = event.favorite ?? false;
 
@@ -69,7 +72,7 @@ class _FileScreenState extends State<FileScreen> {
     });
 
     addViolationBloc.stream.listen((event) {
-      if (event is AddViolationInitState || event is AddViolationLoadingState) {
+      if (event is AddViolationLoadingState) {
         showLoadingDialog();
       } else if (event is AddViolationErrorState) {
         dissmisLoadingDialog();
@@ -79,6 +82,13 @@ class _FileScreenState extends State<FileScreen> {
         dismissViolationDialog();
         notify("تخلف با موفقیت ثبت شد");
       }
+    });
+  }
+
+  setSliders(FileDetail file) async {
+    var data = await file.getSliders();
+    setState(() {
+      sliders = data;
     });
   }
 
@@ -130,12 +140,15 @@ class _FileScreenState extends State<FileScreen> {
                 SizedBox(height: 15),
               _buildDescription(state.file),
               SizedBox(height: 15),
-              Divider(
-                height: 0.7,
-                color: Themes.textGrey,
-              ),
-              SizedBox(height: 15),
-              _buildProps(state.file),
+              if (state.file.getOtherProperties().isNotEmpty)
+                Divider(
+                  height: 0.7,
+                  color: Themes.textGrey,
+                ),
+              if (state.file.getOtherProperties().isNotEmpty)
+                SizedBox(height: 15),
+              if (state.file.getOtherProperties().isNotEmpty)
+                _buildProps(state.file),
               SizedBox(height: 15),
               Divider(
                 height: 0.7,
@@ -183,13 +196,13 @@ class _FileScreenState extends State<FileScreen> {
 
   StreamController<String?> imageName = StreamController();
 
+  List<s.Slider> sliders = [];
+
   Widget _buildSliders(FileDetail file) {
     return Stack(
       children: [
         CarouselSliderCustom(
-          images:
-              file.media?.image?.map<String>((e) => e.path ?? "").toList() ??
-                  [],
+          sliders: sliders,
           autoPlay: false,
           height: 250,
           indicatorsCenterAlign: true,
@@ -215,35 +228,38 @@ class _FileScreenState extends State<FileScreen> {
           top: 0,
           left: 0,
           right: 0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-                  CupertinoIcons.back,
-                  color: Themes.iconLight,
+          child: Container(
+            color: Themes.textGrey.withOpacity(0.3),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    CupertinoIcons.back,
+                    color: Themes.iconLight,
+                  ),
                 ),
-              ),
-              IconButton(
-                onPressed: () async {
-                  doWithLogin(context, () async {
-                    if (await addOrRemoveFavorite(widget.id)) {
-                      setState(() {
-                        isFavorite = !isFavorite;
-                      });
-                    }
-                  });
-                },
-                icon: Icon(
-                  isFavorite ? Icons.bookmark : Icons.bookmark_border,
-                  size: 22,
-                  color: Colors.white,
+                IconButton(
+                  onPressed: () async {
+                    doWithLogin(context, () async {
+                      if (await addOrRemoveFavorite(widget.id)) {
+                        setState(() {
+                          isFavorite = !isFavorite;
+                        });
+                      }
+                    });
+                  },
+                  icon: Icon(
+                    isFavorite ? Icons.bookmark : Icons.bookmark_border,
+                    size: 22,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         Positioned(
@@ -581,8 +597,8 @@ class _FileScreenState extends State<FileScreen> {
                           ),
                         ),
                         Text(
-                          file.prices != null
-                              ? number_format(file.prices)
+                          file.getPrice()?.value != null
+                              ? number_format(file.getPrice()!.value)
                               : "توافقی",
                           style: TextStyle(
                               color: Themes.text,
@@ -605,8 +621,8 @@ class _FileScreenState extends State<FileScreen> {
                                   color: greyColor, fontSize: 10, height: 1),
                             ),
                             Text(
-                              file.prices != null
-                                  ? number_format(file.prices)
+                              file.getRent()?.value != null
+                                  ? number_format(file.getRent()!.value)
                                   : "توافقی",
                               style: TextStyle(
                                   color: Themes.text,

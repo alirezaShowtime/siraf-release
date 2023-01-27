@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:siraf3/bloc/estate_bloc.dart';
+import 'package:siraf3/config.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/estate.dart';
 import 'package:siraf3/themes.dart';
@@ -10,6 +13,7 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
+import 'package:latlong2/latlong.dart';
 
 class EstateScreen extends StatefulWidget {
   List<Estate> estates;
@@ -29,6 +33,14 @@ class _EstateScreenState extends State<EstateScreen> {
 
     getCities();
     setEstates();
+
+    bloc.stream.listen((event) {
+      if (event is EstateLoadedState) {
+        setState(() {
+          currentSortType = event.sort_type;
+        });
+      }
+    });
   }
 
   getCities() async {
@@ -46,6 +58,8 @@ class _EstateScreenState extends State<EstateScreen> {
     });
   }
 
+  String? currentSortType;
+
   List<Estate> selectedEstates = [];
 
   EstateBloc bloc = EstateBloc();
@@ -53,6 +67,8 @@ class _EstateScreenState extends State<EstateScreen> {
   TextEditingController _searchController = TextEditingController();
 
   bool mapEnabled = false;
+
+  LatLng defaultLocation = LatLng(34.08892074204623, 49.7009108491914);
 
   @override
   Widget build(BuildContext context) {
@@ -95,9 +111,131 @@ class _EstateScreenState extends State<EstateScreen> {
               width: 10,
             ),
             if (!mapEnabled)
-              GestureDetector(
-                onTap: () {},
-                child: Icon(
+              PopupMenuButton(
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem<String>(
+                      value: "alphabet",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "بر اساس حروف الفبا",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Themes.text,
+                            ),
+                          ),
+                          if (currentSortType == "alphabet")
+                            Icon(
+                              Icons.check,
+                              color: Themes.icon,
+                              size: 20,
+                            ),
+                        ],
+                      ),
+                      height: 35,
+                    ),
+                    PopupMenuItem<String>(
+                      value: "topRate",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "بالاترین امتیاز",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Themes.text,
+                            ),
+                          ),
+                          if (currentSortType == "topRate")
+                            Icon(
+                              Icons.check,
+                              color: Themes.icon,
+                              size: 20,
+                            ),
+                        ],
+                      ),
+                      height: 35,
+                    ),
+                    PopupMenuItem<String>(
+                      value: "new",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "جدید ترین",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Themes.text,
+                            ),
+                          ),
+                          if (currentSortType == "new")
+                            Icon(
+                              Icons.check,
+                              color: Themes.icon,
+                              size: 20,
+                            ),
+                        ],
+                      ),
+                      height: 35,
+                    ),
+                    PopupMenuItem<String>(
+                      value: "old",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "قدیمی ترین",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Themes.text,
+                            ),
+                          ),
+                          if (currentSortType == "old")
+                            Icon(
+                              Icons.check,
+                              color: Themes.icon,
+                              size: 20,
+                            ),
+                        ],
+                      ),
+                      height: 35,
+                    ),
+                    PopupMenuItem<String>(
+                      value: "random",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "تصادفی",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Themes.text,
+                            ),
+                          ),
+                          if (currentSortType == "random")
+                            Icon(
+                              Icons.check,
+                              color: Themes.icon,
+                              size: 20,
+                            ),
+                        ],
+                      ),
+                      height: 35,
+                    ),
+                  ];
+                },
+                onSelected: (String? value) {
+                  bloc.add(
+                    EstateLoadEvent(
+                      city_ids: cities.map((e) => e.id!).toList(),
+                      search: _searchController.text,
+                      sort: value,
+                    ),
+                  );
+                },
+                icon: Icon(
                   CupertinoIcons.sort_down,
                   color: Themes.icon,
                 ),
@@ -134,57 +272,57 @@ class _EstateScreenState extends State<EstateScreen> {
             ),
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            children: [
-              Expanded(
-                child: BlocBuilder<EstateBloc, EstateState>(
-                    builder: _buildMainBloc),
-              ),
-              if (selectedEstates.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Container(
-                    width: double.infinity,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                          children: selectedEstates.map<Widget>((e) {
-                        return Container(
-                          child: Row(children: [
-                            Text(
-                              e.name!,
-                              style: TextStyle(
-                                color: Color(0xff000000),
-                                fontSize: 13,
-                              ),
+        body: Column(
+          children: [
+            Expanded(
+              child:
+                  BlocBuilder<EstateBloc, EstateState>(builder: _buildMainBloc),
+            ),
+            if (selectedEstates.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Container(
+                  width: double.infinity,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                        children: selectedEstates.map<Widget>((e) {
+                      return Container(
+                        child: Row(children: [
+                          Text(
+                            e.name!,
+                            style: TextStyle(
+                              color: Color(0xff000000),
+                              fontSize: 13,
                             ),
-                            SizedBox(
-                              width: 5,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedEstates.remove(e);
+                              });
+                            },
+                            child: Icon(
+                              Typicons.delete_outline,
+                              color: Color(0xff707070),
+                              size: 22,
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  selectedEstates.remove(e);
-                                });
-                              },
-                              child: Icon(
-                                Typicons.delete_outline,
-                                color: Color(0xff707070),
-                                size: 22,
-                              ),
-                            )
-                          ]),
-                        );
-                      }).toList()),
-                    ),
+                          )
+                        ]),
+                      );
+                    }).toList()),
                   ),
                 ),
-              SizedBox(
-                height: 10,
               ),
-              Row(
+            SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Expanded(
@@ -211,11 +349,11 @@ class _EstateScreenState extends State<EstateScreen> {
                   )
                 ],
               ),
-              SizedBox(
-                height: 10,
-              ),
-            ],
-          ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+          ],
         ),
       ),
     );
@@ -257,12 +395,146 @@ class _EstateScreenState extends State<EstateScreen> {
       );
     }
 
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: state.estates.map<Widget>((e) => buildItem(e)).toList(),
-      ),
-    );
+    if (!mapEnabled) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: state.estates.map<Widget>((e) => buildItem(e)).toList(),
+          ),
+        ),
+      );
+    } else {
+      return Padding(
+        padding: EdgeInsets.only(bottom: 10),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: FlutterMap(
+            options: MapOptions(
+              center: defaultLocation,
+              zoom: 13.0,
+              onTap: (_, _1) {
+                // MapsLauncher.launchCoordinates(file.lat!, file.long!);
+                // launchUrl(Uri.parse('geo:0,0?q=${file.lat!},${file.long!}'));
+              },
+            ),
+            children: [
+              TileLayer(
+                urlTemplate:
+                    "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+              ),
+              MarkerLayer(
+                markers: state.estates
+                    .map<Marker>((e) => Marker(
+                          width: 240,
+                          height: 100,
+                          point: LatLng(
+                              double.parse(e.lat!), double.parse(e.long!)),
+                          builder: (_) {
+                            // return Icon(
+                            //   Typicons.location,
+                            //   color: Colors.red,
+                            // );
+                            return GestureDetector(
+                              onTap: () {
+                                showDetailsDialog(e);
+                              },
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                    bottom: 30,
+                                    child: Container(
+                                      height: 60,
+                                      width: 122,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xff707070),
+                                        border: Border.all(
+                                          color: Themes.icon,
+                                          width: 3,
+                                        ),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Text(
+                                            e.name!,
+                                            style: TextStyle(
+                                              color: Themes.textLight,
+                                              fontSize: 11,
+                                            ),
+                                          ),
+                                          Text(
+                                            "مدیریت : ${e.managerName}",
+                                            style: TextStyle(
+                                              color: Themes.textLight,
+                                              fontSize: 8,
+                                            ),
+                                          ),
+                                          RatingBarIndicator(
+                                            direction: Axis.horizontal,
+                                            itemCount: 5,
+                                            itemSize: 14,
+                                            unratedColor: Colors.grey,
+                                            itemPadding: EdgeInsets.symmetric(
+                                                horizontal: .2),
+                                            itemBuilder: (context, _) {
+                                              return Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                                size: 6,
+                                              );
+                                            },
+                                            rating: e.rate ?? 5.0,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 100,
+                                    width: 240,
+                                    alignment: Alignment.center,
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Icon(
+                                          Typicons.location,
+                                          size: 40,
+                                          color: Colors.white,
+                                        ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          width: 20,
+                                          height: 20,
+                                        ),
+                                        Icon(
+                                          Typicons.location_outline,
+                                          size: 40,
+                                          color: Themes.icon,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ))
+                    .toList(),
+              )
+            ],
+          ),
+        ),
+      );
+    }
   }
 
   Widget buildItem(Estate estate) {
@@ -450,8 +722,13 @@ class _EstateScreenState extends State<EstateScreen> {
                             child: MaterialButton(
                               onPressed: () {
                                 setState(() {
-                                  if (selectedEstates.contains(estate)) {
-                                    selectedEstates.remove(estate);
+                                  if (selectedEstates
+                                      .where(
+                                          (element) => element.id == estate.id)
+                                      .isNotEmpty) {
+                                    selectedEstates.removeWhere(
+                                      (element) => element.id == estate.id,
+                                    );
                                   } else {
                                     selectedEstates.add(estate);
                                   }
@@ -468,7 +745,10 @@ class _EstateScreenState extends State<EstateScreen> {
                               elevation: 1,
                               height: 40,
                               child: Text(
-                                selectedEstates.contains(estate)
+                                selectedEstates
+                                        .where((element) =>
+                                            element.id == estate.id)
+                                        .isNotEmpty
                                     ? "حذف"
                                     : "افزودن",
                                 style: TextStyle(

@@ -7,7 +7,11 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/my_file.dart';
 import 'package:siraf3/models/user.dart';
 
-class MyFilesEvent {}
+class MyFilesEvent {
+  String? sort;
+
+  MyFilesEvent({this.sort});
+}
 
 class MyFilesState {}
 
@@ -17,8 +21,9 @@ class MyFilesLoadingState extends MyFilesState {}
 
 class MyFilesLoadedState extends MyFilesState {
   List<MyFile> files;
+  String? sort;
 
-  MyFilesLoadedState({required this.files});
+  MyFilesLoadedState({required this.files, this.sort});
 }
 
 class MyFilesErrorState extends MyFilesState {
@@ -39,9 +44,14 @@ class MyFilesBloc extends Bloc<MyFilesEvent, MyFilesState> {
     Response response;
 
     try {
-      response = await get(getFileUrl("file/myFiles"), headers: {
-        "Authorization": await User.getBearerToken(),
-      });
+      response = await get(
+          getFileUrl(
+            "file/myFiles" +
+                (event.sort?.isNotEmpty ?? false ? "?sort=${event.sort!}" : ""),
+          ),
+          headers: {
+            "Authorization": await User.getBearerToken(),
+          });
     } on HttpException catch (e) {
       emit(MyFilesErrorState(response: null));
       return;
@@ -55,7 +65,7 @@ class MyFilesBloc extends Bloc<MyFilesEvent, MyFilesState> {
 
       var files = MyFile.fromList(json['data']);
 
-      emit(MyFilesLoadedState(files: files));
+      emit(MyFilesLoadedState(files: files, sort: event.sort));
     } else {
       emit(MyFilesErrorState(response: response));
     }

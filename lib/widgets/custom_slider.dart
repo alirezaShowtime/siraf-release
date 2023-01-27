@@ -1,11 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/models/file_detail.dart';
 import 'package:siraf3/themes.dart';
 import 'slider.dart' as slider;
+import 'package:flutter/material.dart' as m;
+import 'slider.dart' as s;
 
 class CarouselSliderCustom extends StatefulWidget {
-  List<String> images;
   double height;
   EdgeInsets itemMargin;
   bool autoPlay;
@@ -18,14 +20,14 @@ class CarouselSliderCustom extends StatefulWidget {
   Color indicatorSelectedColor;
   Color indicatorColor;
   EdgeInsets indicatorPosition;
-  List<slider.Slider>? sliders;
+  List<slider.Slider> sliders;
   BoxFit? imageFit;
   bool indicatorsCenterAlign;
   Function(int)? onImageTap;
   Function(int)? onPageChanged;
 
   CarouselSliderCustom(
-      {required this.images,
+      {required this.sliders,
       required this.height,
       required this.itemMargin,
       required this.indicatorPosition,
@@ -41,7 +43,6 @@ class CarouselSliderCustom extends StatefulWidget {
       this.initialPage = 0,
       this.enlargeCenterPage = false,
       this.viewportFraction,
-      this.sliders,
       this.onPageChanged,
       Key? key})
       : super(key: key);
@@ -81,23 +82,23 @@ class _CarouselSliderCustomState extends State<CarouselSliderCustom> {
             },
           ),
           carouselController: _controller,
-          items: widget.images.map((imageUrl) {
+          items: widget.sliders.map((image) {
             return Builder(
               builder: (BuildContext context) {
                 var sliders = widget.sliders
-                        ?.where((element) => element.image == imageUrl) ??
-                    [];
+                    .where((element) => image.image == element.image);
                 return GestureDetector(
                   onTap: sliders.isNotEmpty && sliders.first.link != null
                       ? () {}
                       : null,
                   child: CarouselSliderItemCustom(
-                    imageUrl: imageUrl,
+                    image: image.image,
+                    slide: image,
                     imageFit: widget.imageFit,
                     margin: widget.itemMargin,
                     borderRadius: widget.itemBorderRadius,
                     onImageTap: widget.onImageTap,
-                    index: widget.images.indexOf(imageUrl),
+                    index: widget.sliders.indexOf(image),
                   ),
                 );
               },
@@ -112,7 +113,7 @@ class _CarouselSliderCustomState extends State<CarouselSliderCustom> {
             mainAxisAlignment: widget.indicatorsCenterAlign
                 ? MainAxisAlignment.center
                 : MainAxisAlignment.end,
-            children: widget.images.asMap().entries.map((entry) {
+            children: widget.sliders.asMap().entries.map((entry) {
               return GestureDetector(
                 onTap: () => _controller.animateToPage(entry.key),
                 child: Container(
@@ -136,18 +137,20 @@ class _CarouselSliderCustomState extends State<CarouselSliderCustom> {
 }
 
 class CarouselSliderItemCustom extends StatefulWidget {
-  String imageUrl;
+  ImageProvider<Object> image;
   EdgeInsets margin;
   BorderRadius borderRadius;
   Function(int)? onImageTap;
   BoxFit? imageFit;
   int index;
+  s.Slider slide;
 
   CarouselSliderItemCustom(
-      {required this.imageUrl,
+      {required this.image,
       required this.margin,
       required this.borderRadius,
       required this.index,
+      required this.slide,
       this.onImageTap,
       this.imageFit,
       Key? key})
@@ -161,48 +164,68 @@ class CarouselSliderItemCustom extends StatefulWidget {
 class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> {
   @override
   Widget build(BuildContext context) {
-    return widget.onImageTap == null
-        ? Container(
-            width: MediaQuery.of(context).size.width,
-            margin: widget.margin,
-            child: ClipRRect(
-              borderRadius: widget.borderRadius,
-              child: Image(
-                image: NetworkImage(
-                  widget.imageUrl,
-                ),
+    return Stack(
+      children: [
+        widget.onImageTap == null
+            ? Container(
                 width: MediaQuery.of(context).size.width,
-                fit: widget.imageFit ?? BoxFit.cover,
-                height: MediaQuery.of(context).size.height,
-                errorBuilder: (_, _1, _2) {
-                  return Image(
-                    image: AssetImage("assets/images/image_not_avialable.png"),
+                margin: widget.margin,
+                child: ClipRRect(
+                  borderRadius: widget.borderRadius,
+                  child: m.Image(
+                    image: widget.image,
                     width: MediaQuery.of(context).size.width,
                     fit: widget.imageFit ?? BoxFit.cover,
                     height: MediaQuery.of(context).size.height,
-                    color: Color(0x757f8c8d),
-                  );
-                },
-              ),
-            ),
-          )
-        : GestureDetector(
-            onTap: () => widget.onImageTap!(widget.index),
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              margin: widget.margin,
-              child: ClipRRect(
-                borderRadius: widget.borderRadius,
-                child: Image(
-                  image: NetworkImage(
-                    widget.imageUrl,
+                    errorBuilder: (_, _1, _2) {
+                      return m.Image(
+                        image:
+                            AssetImage("assets/images/image_not_avialable.png"),
+                        width: MediaQuery.of(context).size.width,
+                        fit: widget.imageFit ?? BoxFit.cover,
+                        height: MediaQuery.of(context).size.height,
+                        color: Color(0x757f8c8d),
+                      );
+                    },
                   ),
+                ),
+              )
+            : GestureDetector(
+                onTap: () => widget.onImageTap!(widget.index),
+                child: Container(
                   width: MediaQuery.of(context).size.width,
-                  fit: widget.imageFit ?? BoxFit.cover,
-                  height: MediaQuery.of(context).size.height,
+                  margin: widget.margin,
+                  child: ClipRRect(
+                    borderRadius: widget.borderRadius,
+                    child: m.Image(
+                      image: widget.image,
+                      width: MediaQuery.of(context).size.width,
+                      fit: widget.imageFit ?? BoxFit.cover,
+                      height: MediaQuery.of(context).size.height,
+                    ),
+                  ),
                 ),
               ),
+        if (widget.slide.type == s.SliderType.video)
+          Align(
+            alignment: Alignment.center,
+            child: Icon(
+              Icons.play_arrow_outlined,
+              color: Colors.white,
+              size: 60,
             ),
-          );
+          ),
+        if (widget.slide.type == s.SliderType.virtual_tour)
+          Align(
+            alignment: Alignment.center,
+            child: m.Image(
+              image: AssetImage("assets/images/virtual_tour.png"),
+              color: Colors.white,
+              width: 90,
+              height: 90,
+            ),
+          ),
+      ],
+    );
   }
 }

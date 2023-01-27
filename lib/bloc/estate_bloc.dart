@@ -11,8 +11,9 @@ class EstateEvent {}
 class EstateLoadEvent extends EstateEvent {
   List<int> city_ids;
   String? search;
+  String? sort;
 
-  EstateLoadEvent({required this.city_ids, this.search});
+  EstateLoadEvent({required this.city_ids, this.search, this.sort});
 }
 
 class EstateState {}
@@ -23,8 +24,9 @@ class EstateLoadingState extends EstateState {}
 
 class EstateLoadedState extends EstateState {
   List<Estate> estates;
+  String? sort_type;
 
-  EstateLoadedState({required this.estates});
+  EstateLoadedState({required this.estates, this.sort_type});
 }
 
 class EstateErrorState extends EstateState {
@@ -44,19 +46,17 @@ class EstateBloc extends Bloc<EstateEvent, EstateState> {
 
     Response response;
 
-    print(getEstateUrl("estate/estates?city_id=" +
+    try {
+      var url = getEstateUrl(
+        "estate/estates?city_id=" +
             jsonEncode(event.city_ids.toList()) +
             "&name=" +
-            (event.search ?? ""))
-        .toString());
+            (event.sort != null ? "&sort=" + event.sort! : ""),
+      );
 
-    print(jsonEncode(event.city_ids.toList()));
+      print(url.toString());
 
-    try {
-      response = await get(getEstateUrl("estate/estates?city_id=" +
-          jsonEncode(event.city_ids.toList()) +
-          "&name=" +
-          (event.search ?? "")));
+      response = await get(url);
     } on HttpException catch (e) {
       emit(EstateErrorState(response: null));
       return;
@@ -68,7 +68,7 @@ class EstateBloc extends Bloc<EstateEvent, EstateState> {
     if (isResponseOk(response)) {
       var json = jDecode(response.body);
 
-      emit(EstateLoadedState(estates: Estate.fromList(json['data'])));
+      emit(EstateLoadedState(estates: Estate.fromList(json['data']['estats']), sort_type: event.sort));
     } else {
       emit(EstateErrorState(response: response));
     }
