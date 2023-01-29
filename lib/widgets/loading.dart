@@ -5,8 +5,10 @@ import 'package:siraf3/themes.dart';
 class Loading extends StatefulWidget {
   var color;
   var size;
+  Color? backgroundColor;
 
-  Loading({this.color = Themes.secondary, this.size = 50.0});
+  Loading(
+      {this.color = Themes.secondary, this.backgroundColor, this.size = 50.0});
   @override
   State<Loading> createState() => __LoadingState();
 }
@@ -18,7 +20,7 @@ class __LoadingState extends State<Loading> {
       width: 100,
       height: 100,
       decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.7),
+          color: widget.backgroundColor ?? Colors.white.withOpacity(0.7),
           borderRadius: BorderRadius.circular(20)),
       child: SpinKitRing(
         size: widget.size,

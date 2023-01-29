@@ -2,20 +2,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_octicons/flutter_octicons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
-import 'package:siraf3/screens/create/create_file_final.dart';
-import 'package:siraf3/screens/create/create_file_first.dart';
+import 'package:siraf3/models/file.dart';
 import 'package:siraf3/screens/file_screen.dart';
+import 'package:siraf3/screens/filter_screen.dart';
 import 'package:siraf3/screens/menu_screen.dart';
+import 'package:siraf3/screens/search_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
 import 'package:siraf3/widgets/file_slide_item.dart';
 import 'package:siraf3/widgets/loading.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -42,7 +43,66 @@ class _HomeScreenState extends State<HomeScreen> {
     checkIsCitySelected();
 
     getViewType();
+
+    scrollController.addListener(pagination);
+
+    homeScreenBloc.stream.listen((event) {
+      if (event is HSLoadedState) {
+        print(event.files.length);
+        setState(() {
+          _hasNewFiles = event.files.isNotEmpty;
+          lastId = event.lastId;
+        });
+      }
+    });
+
+    _moreBloc.stream.listen(_loadMoreEvent);
   }
+
+  HSBloc _moreBloc = HSBloc();
+
+  int? lastId;
+
+  bool _isLoadingMore = false;
+
+  List<File> files = [];
+
+  bool _hasNewFiles = true;
+
+  bool _canLoadMore() {
+    return (scrollController.position.pixels == scrollController.position.maxScrollExtent) && lastId != null && _hasNewFiles && !_isLoadingMore;
+  }
+
+  void pagination() async {
+    if (_canLoadMore()) {
+      // scrollController.animateTo(scrollController.position.maxScrollExtent,
+      //     duration: const Duration(milliseconds: 1),
+      //     curve: Curves.fastOutSlowIn);
+      _moreBloc.add(HSLoadEvent(cities: cities, lastId: lastId!));
+    }
+  }
+
+  void _loadMoreEvent(HSState event) {
+    setState(() {
+      _isLoadingMore = event is HSLoadingState;
+    });
+
+    if (event is HSLoadedState) {
+      setState(() {
+        _hasNewFiles = event.files.isNotEmpty;
+
+        files += event.files;
+
+        lastId = event.lastId;
+
+        print(files.length);
+      });
+    } else if (event is HSErrorState) {
+      notify("خطا در بارگزاری ادامه فایل ها رخ داد لطفا مجدد تلاش کنید");
+    }
+  }
+
+  ScrollController scrollController = ScrollController();
 
   List<City> cities = [];
 
@@ -80,8 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   changeViewType() async {
     var sh = await SharedPreferences.getInstance();
-    sh.setString(
-        "FILE_VIEW_TYPE", viewType == ViewType.List ? "slide" : "list");
+    sh.setString("FILE_VIEW_TYPE", viewType == ViewType.List ? "slide" : "list");
 
     await getViewType();
 
@@ -89,10 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   goSelectCity({showSelected = false}) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (_) => SelectCityScreen(showSelected: showSelected)));
+    Navigator.push(context, MaterialPageRoute(builder: (_) => SelectCityScreen(showSelected: showSelected)));
   }
 
   openMenu() {
@@ -142,7 +198,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => FilterScreen()));
+            },
             icon: FaIcon(
               OctIcons.sliders_16,
               color: Themes.iconLight,
@@ -150,7 +208,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => SearchScreen()));
+            },
             icon: FaIcon(
               CupertinoIcons.search,
               color: Themes.iconLight,
@@ -176,36 +236,42 @@ class _HomeScreenState extends State<HomeScreen> {
       return Center(
         child: TryAgain(
           onPressed: getFiles,
-          message: state.response != null
-              ? jDecode(state.response!.body)['message']
-              : null,
+          message: state.response != null ? jDecode(state.response!.body)['message'] : null,
         ),
       );
     }
 
     state = state as HSLoadedState;
 
+    files = state.files;
+
     return ListView(
-      children: state.files
-          .map<Widget>((file) => GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => FileScreen(id: file.id!),
+      controller: scrollController,
+      children: files
+              .map<Widget>((file) => GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => FileScreen(id: file.id!),
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(top: (state as HSLoadedState).files.first == file ? 0 : 5),
+                      child: viewType == ViewType.List ? FileHorizontalItem(file: file) : FileSlideItem(file: file),
                     ),
-                  );
-                },
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      top:
-                          (state as HSLoadedState).files.first == file ? 0 : 5),
-                  child: viewType == ViewType.List
-                      ? FileHorizontalItem(file: file)
-                      : FileSlideItem(file: file),
+                  ))
+              .toList() +
+          [
+            if (_isLoadingMore)
+              Align(
+                alignment: Alignment.center,
+                child: Loading(
+                  backgroundColor: Colors.transparent,
                 ),
-              ))
-          .toList(),
+              )
+          ],
     );
   }
 

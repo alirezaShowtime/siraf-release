@@ -15,9 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 const image_extensions = <String>["png", "jpg", "jpeg", "tif", 'webp'];
 const video_extensions = <String>["mp4", "mov", "3gp", "avi", "mkv"];
 
-void notify(String msg,
-    {TextDirection textDirection = TextDirection.rtl,
-    Duration? duration = null}) {
+void notify(String msg, {TextDirection textDirection = TextDirection.rtl, Duration? duration = null}) {
   showToast(
     msg,
     textDirection: textDirection,
@@ -91,8 +89,7 @@ callToSupport() async {
   if (await canLaunch(url)) {
     await launch(url);
   } else {
-    notify(
-        'نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_PHONE + 'تماس بگیرید');
+    notify('نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_PHONE + 'تماس بگیرید');
   }
 }
 
@@ -143,8 +140,7 @@ bool isResponseOk(http.Response response) {
 
 const API_HOST = 'auth.siraf.app';
 
-Uri createAuthUrlByEndPoint(String endPoint,
-    {Map<String, dynamic>? queryParams = null}) {
+Uri createAuthUrlByEndPoint(String endPoint, {Map<String, dynamic>? queryParams = null}) {
   return Uri.https(API_HOST, "api/user/${endPoint}", queryParams);
 }
 
@@ -155,8 +151,7 @@ String phoneFormat(String numberPhone) {
     numberPhone = "0$numberPhone";
   }
 
-  var formatted =
-      "${numberPhone.substring(0, 4)}  ${numberPhone.substring(4, 7)}  ${numberPhone.substring(7, 11)}";
+  var formatted = "${numberPhone.substring(0, 4)}  ${numberPhone.substring(4, 7)}  ${numberPhone.substring(7, 11)}";
 
   return zeroPrefix ? formatted : formatted.replaceFirst("09", "9");
 }
@@ -165,8 +160,7 @@ String icon(String iconName, {String extension = "png"}) {
   return 'assets/images/ic_$iconName.$extension';
 }
 
-doWithLogin(BuildContext context, void Function() onLoggedIn,
-    {bool pop = true}) async {
+doWithLogin(BuildContext context, void Function() onLoggedIn, {bool pop = true}) async {
   if (await User.hasToken()) {
     onLoggedIn();
   } else {
@@ -179,4 +173,8 @@ doWithLogin(BuildContext context, void Function() onLoggedIn,
       ),
     );
   }
+}
+
+back(BuildContext context) {
+  Navigator.of(context).pop();
 }

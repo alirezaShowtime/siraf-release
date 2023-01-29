@@ -12,8 +12,9 @@ class HSEvent {}
 
 class HSLoadEvent extends HSEvent {
   List<City> cities;
+  int lastId;
 
-  HSLoadEvent({required this.cities});
+  HSLoadEvent({required this.cities, this.lastId = 0});
 }
 
 class HSState {}
@@ -24,8 +25,9 @@ class HSLoadingState extends HSState {}
 
 class HSLoadedState extends HSState {
   List<File> files;
+  int? lastId;
 
-  HSLoadedState({required this.files});
+  HSLoadedState({required this.files, this.lastId});
 }
 
 class HSErrorState extends HSState {
@@ -47,7 +49,10 @@ class HSBloc extends Bloc<HSEvent, HSState> {
 
       var url = getFileUrl('file/files/?cityIds=' +
           jsonEncode(event.cities.map((e) => e.id).toList()) +
-          '&lastId=0');
+          '&lastId=' +
+          event.lastId.toString());
+
+      print(url.toString());
 
       try {
         if (await User.hasToken()) {
@@ -67,7 +72,10 @@ class HSBloc extends Bloc<HSEvent, HSState> {
 
       if (isResponseOk(response)) {
         var json = jDecode(response.body);
-        emit(HSLoadedState(files: File.fromList(json['data']['files'])));
+        var files = File.fromList(json['data']['files']).toList();
+
+        emit(
+            HSLoadedState(files: files, lastId: json['data']["lastId"] as int));
       } else {
         var json = jDecode(response.body);
 
@@ -78,8 +86,10 @@ class HSBloc extends Bloc<HSEvent, HSState> {
 
           if (isResponseOk(response)) {
             var json = jDecode(response.body);
+            var files = File.fromList(json['data']['files']);
 
-            emit(HSLoadedState(files: File.fromList(json['data']['files'])));
+            emit(HSLoadedState(
+                files: files, lastId: json['data']["lastId"] as int));
           } else {
             emit(HSErrorState(response: response));
           }

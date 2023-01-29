@@ -9,6 +9,7 @@ class Themes {
   static const background = Color(0xfffafbfd);
   static const background2 = Color(0xffffffff);
   static const secondary = Color(0xff0067A5);
+  static const secondary2 = Color(0xff707070);
   static const text = Color(0xff3d3d3d);
   static const textGrey = Color(0xff707070);
   static const textLight = Color(0xffffffff);
