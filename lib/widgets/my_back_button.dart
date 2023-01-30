@@ -15,8 +15,9 @@ class _MyBackButton extends State<MyBackButton> {
     return IconButton(
       onPressed: back(context),
       icon: FaIcon(
-        CupertinoIcons.arrow_right,
+        Icons.chevron_left_rounded,
         color: Themes.iconGrey,
+        size: 32,
       ),
     );
   }

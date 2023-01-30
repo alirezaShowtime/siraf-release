@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart' as fr;
 import 'package:oktoast/oktoast.dart';
@@ -156,10 +157,6 @@ String phoneFormat(String numberPhone) {
   return zeroPrefix ? formatted : formatted.replaceFirst("09", "9");
 }
 
-String icon(String iconName, {String extension = "png"}) {
-  return 'assets/images/ic_$iconName.$extension';
-}
-
 doWithLogin(BuildContext context, void Function() onLoggedIn, {bool pop = true}) async {
   if (await User.hasToken()) {
     onLoggedIn();
@@ -175,6 +172,16 @@ doWithLogin(BuildContext context, void Function() onLoggedIn, {bool pop = true})
   }
 }
 
-back(BuildContext context) {
-  Navigator.of(context).pop();
+VoidCallback back(BuildContext context) {
+  return () {
+    Navigator.of(context).pop();
+  };
+}
+
+FaIcon icon(IconData icon, {Color color = Themes.iconGrey, double size = 24}) {
+  return FaIcon(icon, color: color, size: size);
+}
+
+void navigateTo(BuildContext context, Widget page) {
+  Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
 }

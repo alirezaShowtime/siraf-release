@@ -209,7 +209,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => SearchScreen()));
+              print("search object");
+              Navigator.push(context, MaterialPageRoute(builder: (_) => SearchScreen()));
             },
             icon: FaIcon(
               CupertinoIcons.search,

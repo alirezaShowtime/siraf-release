@@ -10,3 +10,5 @@ const VERSION = "v3.0.0";
 
 //colors
 final greyColor = Colors.grey.shade500;
+
+const defaultElevation = 0.7;

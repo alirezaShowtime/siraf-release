@@ -83,7 +83,7 @@ dependencies:
   video_thumbnail: ^0.5.3
   platform: ^3.1.0
   path_provider: ^2.0.11
-
+  sqflite: ^2.2.4+1
 
 dev_dependencies:
   flutter_test:
