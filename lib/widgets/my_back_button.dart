@@ -16,8 +16,8 @@ class _MyBackButton extends State<MyBackButton> {
       onPressed: back(context),
       icon: FaIcon(
         Icons.chevron_left_rounded,
-        color: Themes.iconGrey,
-        size: 32,
+        color: Themes.text,
+        size: 28,
       ),
     );
   }
