@@ -201,9 +201,10 @@ class _MyFileScreenState extends State<MyFileScreen> {
                                             state.file.getPrice()!.value)
                                         : "توافقی",
                                     style: TextStyle(
-                                        color: Themes.text,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold),
+                                      color: Themes.text,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -216,13 +217,16 @@ class _MyFileScreenState extends State<MyFileScreen> {
                                   Text(
                                     "قیمت هر متر",
                                     style: TextStyle(
-                                        color: greyColor, fontSize: 10.5),
+                                      color: greyColor,
+                                      fontSize: 10.5,
+                                    ),
                                   ),
                                   Text(
                                     state.file.getPricePerMetter(),
                                     style: TextStyle(
-                                        color: Colors.grey.shade500,
-                                        fontSize: 11.5),
+                                      color: Colors.grey.shade500,
+                                      fontSize: 11.5,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -240,9 +244,10 @@ class _MyFileScreenState extends State<MyFileScreen> {
                                   Text(
                                     "ودیعه",
                                     style: TextStyle(
-                                        color: greyColor,
-                                        fontSize: 12,
-                                        height: 1),
+                                      color: greyColor,
+                                      fontSize: 12,
+                                      height: 1,
+                                    ),
                                   ),
                                   Text(
                                     state.file.getPrice()?.value != null

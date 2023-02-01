@@ -12,7 +12,6 @@ class FileHorizontalItem extends StatefulWidget {
 }
 
 class _FileHorizontalItemState extends State<FileHorizontalItem> {
-
   @override
   Widget build(BuildContext context) {
     double imageSize = (MediaQuery.of(context).size.width - 20) / 3.5;

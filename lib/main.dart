@@ -8,24 +8,31 @@ import 'package:siraf3/bloc/categories_bloc.dart';
 import 'package:siraf3/bloc/get_cities_bloc.dart';
 import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/bloc/login_status.dart';
+import 'package:siraf3/screens/bookmark_screen.dart';
+import 'package:siraf3/screens/compare_screen.dart';
 import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/themes.dart';
 
 void main() {
-  runApp(MultiBlocProvider(providers: [
-    BlocProvider<GetCitiesBloc>(
-      create: (_) => GetCitiesBloc(),
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<GetCitiesBloc>(
+          create: (_) => GetCitiesBloc(),
+        ),
+        BlocProvider<HSBloc>(
+          create: (_) => HSBloc(),
+        ),
+        BlocProvider<LoginStatus>(
+          create: (_) => LoginStatus(),
+        ),
+        BlocProvider<CategoriesBloc>(
+          create: (_) => CategoriesBloc(),
+        ),
+      ],
+      child: MyApp(),
     ),
-    BlocProvider<HSBloc>(
-      create: (_) => HSBloc(),
-    ),
-    BlocProvider<LoginStatus>(
-      create: (_) => LoginStatus(),
-    ),
-    BlocProvider<CategoriesBloc>(
-      create: (_) => CategoriesBloc(),
-    ),
-  ], child: MyApp()));
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -57,7 +64,8 @@ class MyApp extends StatelessWidget {
             data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
           );
         },
-        home: HomeScreen(),
+        // home: HomeScreen(),
+        home: CompareScreen(),
       ),
     );
   }
