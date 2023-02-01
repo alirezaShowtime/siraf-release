@@ -28,4 +28,16 @@ class Themes {
   static const inputBorderNormal = Color(0xffeae7e7);
 
   static const blueSky = Color(0x704abbff);
+
+  static ThemeData themeData() {
+    return ThemeData(
+      primarySwatch: Colors.blue,
+      fontFamily: 'IranSans',
+      backgroundColor: Themes.background,
+      scaffoldBackgroundColor: Themes.background,
+      accentColor: Themes.secondary,
+      secondaryHeaderColor: Themes.secondary,
+      primaryColor: Themes.primary,
+    );
+  }
 }
