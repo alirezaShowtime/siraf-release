@@ -4,6 +4,7 @@ import 'package:siraf3/config.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
+import 'package:siraf3/screens/inquiry_screen.dart';
 import 'package:siraf3/screens/my_files_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/accordion.dart';
@@ -205,7 +206,11 @@ class _MenuScreenState extends State<MenuScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               AccordionItem(
-                                  onClick: () {}, title: "استعلامات ثبتی"),
+                                  onClick: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (_) => InquiryScreen()));
+                                  },
+                                  title: "استعلامات ثبتی"),
                               AccordionItem(
                                   onClick: () {}, title: "استعلامات قرارداد"),
                             ],

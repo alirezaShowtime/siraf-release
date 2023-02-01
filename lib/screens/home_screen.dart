@@ -231,8 +231,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               );
 
-              print(result);
-
               if (result != null && result is FilterData) {
                 setState(() {
                   filterData = result;
@@ -246,6 +244,8 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: badges.Badge(
               badgeContent: Text(''),
               showBadge: filterData.hasFilter(),
+              position: badges.BadgePosition.custom(top: -15, start: -10),
+              badgeStyle: badges.BadgeStyle(badgeColor: Themes.iconLight),
               child: FaIcon(
                 OctIcons.sliders_16,
                 color: Themes.iconLight,
@@ -255,11 +255,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             onPressed: () {
-              print("search object");
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => SearchScreen(),
+                  builder: (_) => SearchScreen(
+                    originalFilterData: filterData,
+                    filterData: filterData,
+                  ),
                 ),
               );
             },

@@ -2,14 +2,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:siraf3/db/model/search_history.dart';
+import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/screens/filter_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
+import 'package:badges/badges.dart' as badges;
 
 import '../helpers.dart';
 
 class SearchScreen extends StatefulWidget {
+  FilterData originalFilterData;
+  FilterData filterData;
+
+  SearchScreen({required this.originalFilterData, required this.filterData});
+
   @override
   State<StatefulWidget> createState() => _SearchScreen();
 }
@@ -59,10 +66,35 @@ class _SearchScreen extends State<SearchScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              // navigateTo(context, FilterScreen());
+            onPressed: () async {
+              var result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => FilterScreen(
+                    originalFilterData: widget.originalFilterData,
+                    filterData: widget.filterData,
+                  ),
+                ),
+              );
+
+              if (result != null && result is FilterData) {
+                setState(() {
+                  widget.filterData = result;
+                });
+
+                print(widget.filterData.toQueryString());
+              }
             },
-            icon: icon(OctIcons.sliders_16, size: 20),
+            icon: badges.Badge(
+              badgeContent: Text(''),
+              showBadge: widget.filterData.hasFilter(),
+              position: badges.BadgePosition.custom(top: -15, start: -10),
+              badgeStyle: badges.BadgeStyle(badgeColor: Themes.primary),
+              child: icon(
+                OctIcons.sliders_16,
+                size: 20,
+              ),
+            ),
           ),
           IconButton(
             onPressed: () {
@@ -84,7 +116,10 @@ class _SearchScreen extends State<SearchScreen> {
                   children: [
                     Text(
                       "سابقه جستوجو",
-                      style: TextStyle(fontSize: 12, color: Themes.blue, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Themes.blue,
+                          fontWeight: FontWeight.bold),
                     ),
                     TextButton(
                       onPressed: () {

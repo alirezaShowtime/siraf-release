@@ -7,14 +7,17 @@ class FilterData {
   bool? hasVideo;
   bool? hasTour;
   Filters? filters;
+  String? search;
 
-  FilterData(
-      {this.categoryId,
-      this.cityIds,
-      this.hasImage,
-      this.hasVideo,
-      this.hasTour,
-      this.filters});
+  FilterData({
+    this.categoryId,
+    this.cityIds,
+    this.hasImage,
+    this.hasVideo,
+    this.hasTour,
+    this.filters,
+    this.search,
+  });
 
   FilterData.fromJson(Map<String, dynamic> json) {
     if (json["category_id"] is int) {
@@ -37,6 +40,9 @@ class FilterData {
       filters =
           json["filters"] == null ? null : Filters.fromJson(json["filters"]);
     }
+    if (json["search"] is String) {
+      hasVideo = json["search"];
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -51,6 +57,7 @@ class FilterData {
     if (filters != null) {
       _data["filters"] = filters?.toJson();
     }
+    _data["search"] = search;
     return _data;
   }
 
@@ -75,6 +82,10 @@ class FilterData {
 
     if (hasTour == true) {
       str += getDelimiter(str) + "hasTour=true";
+    }
+
+    if (search != null && search!.trim().isNotEmpty) {
+      str += getDelimiter(str) + "title=" + search;
     }
 
     if (canConvert(filters)) {
