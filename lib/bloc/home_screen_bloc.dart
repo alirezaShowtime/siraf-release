@@ -1,20 +1,19 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/file.dart';
+import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/models/user.dart';
 
 class HSEvent {}
 
 class HSLoadEvent extends HSEvent {
-  List<City> cities;
+  FilterData filterData;
   int lastId;
 
-  HSLoadEvent({required this.cities, this.lastId = 0});
+  HSLoadEvent({required this.filterData, this.lastId = 0});
 }
 
 class HSState {}
@@ -45,10 +44,10 @@ class HSBloc extends Bloc<HSEvent, HSState> {
     if (event is HSLoadEvent) {
       emit(HSLoadingState());
 
-      var response;
+      Response response;
 
-      var url = getFileUrl('file/files/?cityIds=' +
-          jsonEncode(event.cities.map((e) => e.id).toList()) +
+      var url = getFileUrl('file/files/' +
+          event.filterData.toQueryString() +
           '&lastId=' +
           event.lastId.toString());
 

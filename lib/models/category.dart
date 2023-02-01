@@ -1,4 +1,3 @@
-
 class Category {
   int? id;
   String? name;
@@ -7,26 +6,31 @@ class Category {
   bool? isAll;
   dynamic parentId;
 
-  Category({this.id, this.name, this.image, this.fullCategory, this.isAll, this.parentId});
+  Category(
+      {this.id,
+      this.name,
+      this.image,
+      this.fullCategory,
+      this.isAll,
+      this.parentId});
 
   Category.fromJson(Map<String, dynamic> json) {
-    if(json["id"] is int) {
+    if (json["id"] is int) {
       id = json["id"];
     }
-    if(json["name"] is String) {
+    if (json["name"] is String) {
       name = json["name"];
     }
     image = json["image"];
-    if(json["fullCategory"] is String) {
+    if (json["fullCategory"] is String) {
       fullCategory = json["fullCategory"];
     }
-    if(json["isAll"] is bool) {
+    if (json["isAll"] is bool) {
       isAll = json["isAll"];
     }
     parentId = json["parent_id"];
   }
 
-  
   static List<Category> fromList(List<dynamic> list) {
     var list2 = <Category>[];
 
@@ -46,5 +50,9 @@ class Category {
     _data["isAll"] = isAll;
     _data["parent_id"] = parentId;
     return _data;
+  }
+
+  int isAllInt() {
+    return (isAll ?? false) ? 0 : 1;
   }
 }

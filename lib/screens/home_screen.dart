@@ -8,6 +8,7 @@ import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/file.dart';
+import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
 import 'package:siraf3/screens/menu_screen.dart';
@@ -19,6 +20,8 @@ import 'package:siraf3/widgets/file_slide_item.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
+import 'package:badges/badges.dart' as badges;
+
 class HomeScreen extends StatefulWidget {
   MaterialPageRoute? nextScreen;
 
@@ -29,6 +32,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  FilterData filterData = FilterData();
+
   @override
   void initState() {
     super.initState();
@@ -52,6 +57,9 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           _hasNewFiles = event.files.isNotEmpty;
           lastId = event.lastId;
+          print(_hasNewFiles);
+          print(lastId);
+          print(files.length);
         });
       }
     });
@@ -70,7 +78,11 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _hasNewFiles = true;
 
   bool _canLoadMore() {
-    return (scrollController.position.pixels == scrollController.position.maxScrollExtent) && lastId != null && _hasNewFiles && !_isLoadingMore;
+    return (scrollController.position.pixels ==
+            scrollController.position.maxScrollExtent) &&
+        lastId != null &&
+        _hasNewFiles &&
+        !_isLoadingMore;
   }
 
   void pagination() async {
@@ -78,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // scrollController.animateTo(scrollController.position.maxScrollExtent,
       //     duration: const Duration(milliseconds: 1),
       //     curve: Curves.fastOutSlowIn);
-      _moreBloc.add(HSLoadEvent(cities: cities, lastId: lastId!));
+      _moreBloc.add(HSLoadEvent(filterData: filterData, lastId: lastId!));
     }
   }
 
@@ -95,6 +107,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
         lastId = event.lastId;
 
+        print(_hasNewFiles);
+        print(lastId);
         print(files.length);
       });
     } else if (event is HSErrorState) {
@@ -118,6 +132,9 @@ class _HomeScreenState extends State<HomeScreen> {
       var mCities = await City.getList();
       setState(() {
         cities = mCities;
+
+        filterData = filterData
+          ..cityIds = cities.map<int>((e) => e.id!).toList();
       });
 
       getFiles();
@@ -140,7 +157,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   changeViewType() async {
     var sh = await SharedPreferences.getInstance();
-    sh.setString("FILE_VIEW_TYPE", viewType == ViewType.List ? "slide" : "list");
+    sh.setString(
+        "FILE_VIEW_TYPE", viewType == ViewType.List ? "slide" : "list");
 
     await getViewType();
 
@@ -148,7 +166,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   goSelectCity({showSelected = false}) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => SelectCityScreen(showSelected: showSelected)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => SelectCityScreen(showSelected: showSelected)));
   }
 
   openMenu() {
@@ -199,18 +220,48 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             onPressed: () async {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => FilterScreen()));
+              var result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => FilterScreen(
+                    originalFilterData: FilterData(
+                        cityIds: cities.map<int>((e) => e.id!).toList()),
+                    filterData: filterData,
+                  ),
+                ),
+              );
+
+              print(result);
+
+              if (result != null && result is FilterData) {
+                setState(() {
+                  filterData = result;
+                });
+
+                print(filterData.toQueryString());
+
+                getFiles();
+              }
             },
-            icon: FaIcon(
-              OctIcons.sliders_16,
-              color: Themes.iconLight,
-              size: 20,
+            icon: badges.Badge(
+              badgeContent: Text(''),
+              showBadge: filterData.hasFilter(),
+              child: FaIcon(
+                OctIcons.sliders_16,
+                color: Themes.iconLight,
+                size: 20,
+              ),
             ),
           ),
           IconButton(
             onPressed: () {
               print("search object");
-              Navigator.push(context, MaterialPageRoute(builder: (_) => SearchScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => SearchScreen(),
+                ),
+              );
             },
             icon: FaIcon(
               CupertinoIcons.search,
@@ -237,7 +288,9 @@ class _HomeScreenState extends State<HomeScreen> {
       return Center(
         child: TryAgain(
           onPressed: getFiles,
-          message: state.response != null ? jDecode(state.response!.body)['message'] : null,
+          message: state.response != null
+              ? jDecode(state.response!.body)['message']
+              : null,
         ),
       );
     }
@@ -245,6 +298,18 @@ class _HomeScreenState extends State<HomeScreen> {
     state = state as HSLoadedState;
 
     files = state.files;
+
+    if (files.isEmpty) {
+      return Center(
+        child: Text(
+          "فایلی موجود نیست فیلتر را حدف کنید",
+          style: TextStyle(
+            color: Themes.text,
+            fontSize: 15,
+          ),
+        ),
+      );
+    }
 
     return ListView(
       controller: scrollController,
@@ -259,8 +324,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     child: Padding(
-                      padding: EdgeInsets.only(top: (state as HSLoadedState).files.first == file ? 0 : 5),
-                      child: viewType == ViewType.List ? FileHorizontalItem(file: file) : FileSlideItem(file: file),
+                      padding: EdgeInsets.only(
+                          top: (state as HSLoadedState).files.first == file
+                              ? 0
+                              : 5),
+                      child: viewType == ViewType.List
+                          ? FileHorizontalItem(file: file)
+                          : FileSlideItem(file: file),
                     ),
                   ))
               .toList() +
@@ -277,7 +347,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   getFiles() {
-    homeScreenBloc.add(HSLoadEvent(cities: cities));
+    homeScreenBloc.add(
+      HSLoadEvent(
+        filterData: filterData,
+      ),
+    );
   }
 
   String getTitle(List<City> cities) {

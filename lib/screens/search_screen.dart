@@ -60,7 +60,7 @@ class _SearchScreen extends State<SearchScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              navigateTo(context, FilterScreen());
+              // navigateTo(context, FilterScreen());
             },
             icon: icon(OctIcons.sliders_16, size: 20),
           ),

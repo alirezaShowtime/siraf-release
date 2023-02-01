@@ -149,7 +149,7 @@ class MyFileDetail {
 
     return prices.asMap().containsKey(0) ? prices[0] : null;
   }
-  
+
   Property? getRent() {
     var prices = getPrices();
 
@@ -159,7 +159,6 @@ class MyFileDetail {
   List<Property> getPrices() =>
       property?.where((element) => element.section == 3).toList() ??
       <Property>[];
-
 
   List<Property> getMainProperties() {
     var list = property
@@ -184,8 +183,8 @@ class MyFileDetail {
     return list;
   }
 
-  String getPricePerMetter() {
-    var metter =
+  String getPricePermater() {
+    var mater =
         property?.firstWhere((element) => element.weightSection == 1).value ??
             -1;
 
@@ -193,11 +192,11 @@ class MyFileDetail {
       return "توافقی";
     }
 
-    if (metter == -1 || metter == null) {
+    if (mater == -1 || mater == null) {
       return "متراژ نامشخص";
     }
 
-    return number_format(getPrice()!.value! / metter);
+    return number_format(getPrice()!.value! / mater);
   }
 
   Future<List<s.Slider>> getSliders() async {

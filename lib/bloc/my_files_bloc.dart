@@ -43,6 +43,8 @@ class MyFilesBloc extends Bloc<MyFilesEvent, MyFilesState> {
 
     Response response;
 
+    print(await User.getBearerToken());
+
     try {
       response = await get(
           getFileUrl(

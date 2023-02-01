@@ -320,6 +320,8 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
     }
 
     if (state is MyFilesErrorState) {
+      print(state.response!.body);
+      
       return Center(
         child: TryAgain(
           onPressed: _loadFiles,

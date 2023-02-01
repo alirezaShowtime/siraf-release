@@ -77,6 +77,16 @@ class PropertyInsert {
 
     return list2;
   }
+
+  bool isPrice() {
+    var prices = [
+      "price",
+      "prices",
+      "rent",
+    ];
+
+    return prices.any((element) => value == element);
+  }
 }
 
 class Items {

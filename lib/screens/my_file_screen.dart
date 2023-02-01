@@ -219,7 +219,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                                         color: greyColor, fontSize: 10.5),
                                   ),
                                   Text(
-                                    state.file.getPricePerMetter(),
+                                    state.file.getPricePermater(),
                                     style: TextStyle(
                                         color: Colors.grey.shade500,
                                         fontSize: 11.5),

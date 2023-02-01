@@ -8,9 +8,10 @@ import 'package:siraf3/models/property_insert.dart';
 class PropertyEvent {}
 
 class PropertyInsertEvent extends PropertyEvent {
-  int category_id;
+  int? category_id;
+  String type;
 
-  PropertyInsertEvent({required this.category_id});
+  PropertyInsertEvent({required this.category_id, this.type = "insert"});
 }
 
 class PropertyFilterEvent extends PropertyEvent {}
@@ -38,26 +39,33 @@ class PropertyBloc extends Bloc<PropertyEvent, PropertyState> {
     on(_onEvent);
   }
 
-  _onEvent(event, emit) async {
+  _onEvent(PropertyEvent event, emit) async {
     emit(PropertyLoadingState());
+
     if (event is PropertyInsertEvent) {
+      if (event.category_id == null) {
+        emit(PropertyLoadedState(iproperties: []));
+        return;
+      }
+
       Response response;
 
       try {
         response = await get(getFileUrl(
-            "property/propertyFields?catId=${event.category_id}&type=insert"));
+            "property/propertyFields?catId=${event.category_id}&type=${event.type}"));
       } on HttpException catch (e) {
         emit(PropertyErrorState());
         return;
       } on SocketException catch (e) {
         emit(PropertyErrorState());
         return;
-    }
+      }
 
       if (isResponseOk(response)) {
         var json = jDecode(response.body);
 
-        emit(PropertyLoadedState(iproperties: PropertyInsert.fromList(json['data'])));
+        emit(PropertyLoadedState(
+            iproperties: PropertyInsert.fromList(json['data'])));
       } else {
         emit(PropertyErrorState(response: response));
       }
