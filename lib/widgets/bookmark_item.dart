@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:siraf3/models/my_file.dart';
+import 'package:siraf3/models/file.dart';
 import 'package:siraf3/themes.dart';
 
-class MyFileHorizontalItem extends StatefulWidget {
-  MyFile file;
+class BookmarkItem extends StatefulWidget {
+  File file;
   bool isSelectable;
   bool isSelected;
   void Function(bool) onChanged;
 
-  MyFileHorizontalItem({
+  BookmarkItem({
     super.key,
     required this.file,
     required this.isSelectable,
@@ -17,10 +17,10 @@ class MyFileHorizontalItem extends StatefulWidget {
   });
 
   @override
-  State<MyFileHorizontalItem> createState() => _MyFileHorizontalItemState();
+  State<BookmarkItem> createState() => _BookmarkItem();
 }
 
-class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
+class _BookmarkItem extends State<BookmarkItem> {
   Map<int, String> progress_fa = {
     1: "در انتظار پذیرش",
     2: "در حال پردازش",
@@ -48,7 +48,6 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
             ),
           ]),
           padding: EdgeInsets.all(10),
-          // height: imageSize + 20,
           constraints: BoxConstraints(maxHeight: 160),
           width: double.infinity,
           child: Row(
@@ -92,7 +91,6 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                                     color: Themes.text,
                                     fontSize: 13,
                                     fontWeight: FontWeight.w600,
-                                    fontFamily: 'IranSans',
                                   ),
                                 ),
                                 SizedBox(
@@ -104,32 +102,17 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                                     color: Themes.text,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w400,
-                                    fontFamily: 'IranSans',
                                   ),
                                 ),
                               ],
                             ),
-                            Text(
-                              progress_fa[widget.file.progress] ?? "نامشخص",
-                              style: TextStyle(
-                                color: Themes.text,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: 'IranSans',
-                              ),
-                            ),
                           ],
                         ),
                         Text(
-                          widget.file.category!
-                                  .getMainCategoryName()
-                                  .toString() +
-                              " | " +
-                              widget.file.name!,
+                          "${widget.file.fullCategory!.name!} | ${widget.file.name!}",
                           style: TextStyle(
                             color: Themes.text,
                             fontSize: 12,
-                            fontFamily: 'IranSans',
                           ),
                           maxLines: 2,
                         ),
@@ -141,7 +124,6 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                                 color: Themes.text,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
-                                fontFamily: 'IranSans',
                               ),
                             ),
                             SizedBox(
@@ -156,7 +138,6 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                                     color: Themes.text,
                                     fontSize: 10.5,
                                     fontWeight: FontWeight.w400,
-                                    fontFamily: 'IranSans',
                                   ),
                                 ),
                                 Text(
@@ -165,16 +146,6 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                                     color: Themes.text,
                                     fontSize: 10.5,
                                     fontWeight: FontWeight.w400,
-                                    fontFamily: 'IranSans',
-                                  ),
-                                ),
-                                Text(
-                                  "بازدید : ${widget.file.viewCount}",
-                                  style: TextStyle(
-                                    color: Themes.text,
-                                    fontSize: 10.5,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: 'IranSans',
                                   ),
                                 ),
                               ],
@@ -185,7 +156,7 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
