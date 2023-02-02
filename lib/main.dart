@@ -12,6 +12,7 @@ import 'package:siraf3/screens/bookmark_screen.dart';
 import 'package:siraf3/screens/compare_screen.dart';
 import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/models/file.dart' as FileModel;
 
 void main() {
   runApp(
@@ -64,8 +65,7 @@ class MyApp extends StatelessWidget {
             data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
           );
         },
-        // home: HomeScreen(),
-        home: CompareScreen(),
+        home: HomeScreen(),
       ),
     );
   }
