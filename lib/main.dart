@@ -10,6 +10,9 @@ import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/bloc/login_status.dart';
 import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/screens/verify_contract/receive_screen.dart';
+
+import 'screens/verify_contract/inquiry_contract_screen.dart';
 
 void main() {
   runApp(
@@ -62,7 +65,7 @@ class MyApp extends StatelessWidget {
             data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
           );
         },
-        home: HomeScreen(),
+        home: InquiryContractScreen(),
       ),
     );
   }
