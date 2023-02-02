@@ -37,9 +37,11 @@ class Settings {
     });
   }
 
-  static void toggleShowNumberPhoneForAgent() async => setShowNumberPhoneForAgent(!(await showNumberPhoneForAgent));
+  static void toggleShowNumberPhoneForAgent() async =>
+      setShowNumberPhoneForAgent(!(await showNumberPhoneForAgent));
 
-  static void toggleShowNotification() async => setShowNotification(!(await showNotification));
+  static void toggleShowNotification() async =>
+      setShowNotification(!(await showNotification));
 
   static void toggleDarkMode() async => setDarkMode(!(await darkMode));
 }

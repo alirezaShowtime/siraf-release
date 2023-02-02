@@ -8,11 +8,8 @@ import 'package:siraf3/bloc/categories_bloc.dart';
 import 'package:siraf3/bloc/get_cities_bloc.dart';
 import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/bloc/login_status.dart';
-import 'package:siraf3/screens/bookmark_screen.dart';
-import 'package:siraf3/screens/compare_screen.dart';
 import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/themes.dart';
-import 'package:siraf3/models/file.dart' as FileModel;
 
 void main() {
   runApp(

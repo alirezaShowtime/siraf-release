@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/user.dart';
+import 'package:siraf3/settings.dart';
 import 'package:siraf3/themes.dart';
+import 'package:switcher_button/switcher_button.dart';
+
 import '../widgets/app_bar_title.dart';
 import '../widgets/my_back_button.dart';
-import 'package:switcher_button/switcher_button.dart';
-import 'package:siraf3/settings.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -23,19 +24,21 @@ class _SettingsScreen extends State<SettingsScreen> {
 
   @override
   void initState() {
-    super.initState();
-
     Settings.showNumberPhoneForAgent.then((value) {
       showNumberPhoneForAgent = value;
+      setState(() {});
     });
 
     Settings.showNotification.then((value) {
       showNotification = value;
+      setState(() {});
     });
 
     Settings.darkMode.then((value) {
       darkMode = value;
+      setState(() {});
     });
+    super.initState();
   }
 
   @override
@@ -70,15 +73,18 @@ class _SettingsScreen extends State<SettingsScreen> {
           ),
           item(
             title: "شماره همراه",
-            text: widget.user.phone != null ? phoneFormat(widget.user.phone!) : "",
+            text: widget.user.phone != null
+                ? phoneFormat(widget.user.phone!)
+                : "",
           ),
           item(
             title: "نمایش شماره همراه برای مشاوران",
             widget: SwitcherButton(
               onColor: Themes.blue,
               offColor: Colors.grey.shade300,
-              value: showNumberPhoneForAgent!,
+              value: showNumberPhoneForAgent ?? false,
               onChange: (value) {
+                print("showNumberPhoneForAgent");
                 Settings.toggleShowNumberPhoneForAgent();
               },
             ),
@@ -88,7 +94,7 @@ class _SettingsScreen extends State<SettingsScreen> {
             widget: SwitcherButton(
               onColor: Themes.blue,
               offColor: Colors.grey.shade300,
-              value: showNotification!,
+              value: showNotification ?? true,
               onChange: (value) {
                 Settings.toggleShowNotification();
               },
@@ -99,7 +105,7 @@ class _SettingsScreen extends State<SettingsScreen> {
             widget: SwitcherButton(
               onColor: Themes.blue,
               offColor: Colors.grey.shade300,
-              value: darkMode!,
+              value: darkMode ?? false,
               onChange: (value) {
                 Settings.toggleDarkMode();
               },
@@ -134,7 +140,11 @@ class _SettingsScreen extends State<SettingsScreen> {
     );
   }
 
-  Widget item({required String title, String? text, Widget? widget, GestureTapCallback? onTap}) {
+  Widget item(
+      {required String title,
+      String? text,
+      Widget? widget,
+      GestureTapCallback? onTap}) {
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -153,7 +163,10 @@ class _SettingsScreen extends State<SettingsScreen> {
           children: [
             Text(
               title,
-              style: TextStyle(fontSize: 13, color: Themes.text, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 13,
+                  color: Themes.text,
+                  fontWeight: FontWeight.bold),
             ),
             if (text != null && widget == null)
               Text(
