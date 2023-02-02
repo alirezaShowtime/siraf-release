@@ -10,6 +10,7 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/category.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/create_file_form_data.dart';
+import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/models/property_insert.dart';
 import 'package:siraf3/money_input_formatter.dart';
 import 'package:siraf3/screens/create/create_file_second.dart';
@@ -24,8 +25,8 @@ import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 class EditFileFirst extends StatefulWidget {
-  int id;
-  EditFileFirst({required this.id, super.key});
+  MyFileDetail file;
+  EditFileFirst({required this.file, super.key});
 
   @override
   State<EditFileFirst> createState() => _EditFileFirstState();

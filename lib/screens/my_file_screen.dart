@@ -20,6 +20,7 @@ import 'package:siraf3/models/file_detail.dart';
 import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
+import 'package:siraf3/screens/edit/edit_file_first.dart';
 import 'package:siraf3/screens/support_file_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
@@ -350,68 +351,121 @@ class _MyFileScreenState extends State<MyFileScreen> {
           top: 0,
           left: 0,
           right: 0,
-          child: Container(
-            color: Themes.textGrey.withOpacity(0.3),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    CupertinoIcons.back,
-                    color: Themes.iconLight,
-                  ),
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () async {
-                        showDeleteDialog();
-                      },
-                      icon: Icon(
-                        CupertinoIcons.delete,
-                        color: Colors.white,
-                      ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Stack(
+                  children: <Widget>[
+                    Positioned(
+                      left: 1.0,
+                      top: 2.0,
+                      child: Icon(CupertinoIcons.back, color: Colors.black26),
                     ),
-                    PopupMenuButton(
-                      itemBuilder: (context) {
-                        return [
-                          PopupMenuItem<int>(
-                            value: 0,
-                            child: Text(
-                              "ویرایش",
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Themes.text,
-                              ),
-                            ),
-                            height: 35,
-                          ),
-                          PopupMenuItem<int>(
-                            value: 0,
-                            child: Text(
-                              "آمار بازدید",
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Themes.text,
-                              ),
-                            ),
-                            height: 35,
-                          ),
-                        ];
-                      },
-                      onSelected: (value) {},
-                      icon: Icon(
-                        Icons.more_vert,
-                        color: Themes.iconLight,
-                      ),
+                    Positioned(
+                      right: 1.0,
+                      top: 2.0,
+                      child: Icon(CupertinoIcons.back, color: Colors.black26),
+                    ),
+                    Icon(
+                      CupertinoIcons.back,
+                      color: Themes.iconLight,
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () async {
+                      showDeleteDialog();
+                    },
+                    icon: Stack(
+                      children: <Widget>[
+                        Positioned(
+                          left: 0.5,
+                          top: 0.5,
+                          child: Icon(CupertinoIcons.delete,
+                              color: Colors.black26),
+                        ),
+                        Positioned(
+                          right: 0.5,
+                          top: 0.5,
+                          child: Icon(CupertinoIcons.delete,
+                              color: Colors.black26),
+                        ),
+                        Icon(
+                          CupertinoIcons.delete_solid,
+                          color: Themes.iconLight,
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuButton(
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem<int>(
+                          value: 0,
+                          child: Text(
+                            "ویرایش",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Themes.text,
+                            ),
+                          ),
+                          height: 35,
+                        ),
+                        PopupMenuItem<int>(
+                          value: 1,
+                          child: Text(
+                            "آمار بازدید",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Themes.text,
+                            ),
+                          ),
+                          height: 35,
+                        ),
+                      ];
+                    },
+                    onSelected: (int value) {
+                      switch (value) {
+                        case 0:
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => EditFileFirst(file: file),
+                            ),
+                          );
+
+                          break;
+                      }
+                    },
+                    icon: Stack(
+                      children: <Widget>[
+                        Positioned(
+                          left: 1.0,
+                          top: 1.0,
+                          child: Icon(Icons.more_vert, color: Colors.black26),
+                        ),
+                        Positioned(
+                          right: 1.0,
+                          top: 1.0,
+                          child: Icon(Icons.more_vert, color: Colors.black26),
+                        ),
+                        Icon(
+                          Icons.more_vert,
+                          color: Themes.iconLight,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
         Positioned(
@@ -770,7 +824,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
       height: 80,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.transparent,
         border: Border(
           bottom: BorderSide(color: Themes.textGrey.withOpacity(0.2), width: 1),
         ),

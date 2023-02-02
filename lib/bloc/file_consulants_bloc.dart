@@ -5,9 +5,15 @@ import 'package:http/http.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/file_consulant.dart';
 
-class FileConsulantsEvent {}
+class FileConsulantsEvent {
+  int id;
 
-class FileConsulantsLoadEvent extends FileConsulantsEvent {}
+  FileConsulantsEvent({required this.id});
+}
+
+class FileConsulantsLoadEvent extends FileConsulantsEvent {
+  FileConsulantsLoadEvent({required super.id});
+}
 
 class FileConsulantsState {}
 
@@ -33,13 +39,14 @@ class FileConsulantsBloc
     on(_onEvent);
   }
 
-  _onEvent(event, emit) async {
+  _onEvent(FileConsulantsEvent event, emit) async {
     emit(FileConsulantsLoadingState());
 
     var response;
 
     try {
-      response = await get(getEstateUrl("consultant/consultantsFile?fileId=1"));
+      response = await get(
+          getEstateUrl("consultant/consultantsFile?fileId=${event.id}"));
     } on HttpException catch (_) {
       emit(FileConsulantsErrorState(response: null));
       return;

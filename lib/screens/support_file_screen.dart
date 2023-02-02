@@ -35,7 +35,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
   void initState() {
     super.initState();
 
-    bloc.add(FileConsulantsLoadEvent());
+    bloc.add(FileConsulantsLoadEvent(id: widget.id));
   }
 
   @override
@@ -70,7 +70,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
                   });
                 },
                 icon: Icon(
-                  widget.isFavorite ? Icons.bookmark: Icons.bookmark_border,
+                  widget.isFavorite ? Icons.bookmark : Icons.bookmark_border,
                   color: Themes.icon,
                 ),
               ),
@@ -107,7 +107,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
       return Center(
         child: TryAgain(
           onPressed: () {
-            bloc.add(FileConsulantsLoadEvent());
+            bloc.add(FileConsulantsLoadEvent(id: widget.id));
           },
           message: message,
         ),

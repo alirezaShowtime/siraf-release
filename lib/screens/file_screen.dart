@@ -228,38 +228,71 @@ class _FileScreenState extends State<FileScreen> {
           top: 0,
           left: 0,
           right: 0,
-          child: Container(
-            color: Themes.textGrey.withOpacity(0.3),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    CupertinoIcons.back,
-                    color: Themes.iconLight,
-                  ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Stack(
+                  children: <Widget>[
+                    Positioned(
+                      left: 1.0,
+                      top: 2.0,
+                      child: Icon(CupertinoIcons.back, color: Colors.black26),
+                    ),
+                    Positioned(
+                      right: 1.0,
+                      top: 2.0,
+                      child: Icon(CupertinoIcons.back, color: Colors.black26),
+                    ),
+                    Icon(
+                      CupertinoIcons.back,
+                      color: Themes.iconLight,
+                    ),
+                  ],
                 ),
-                IconButton(
-                  onPressed: () async {
-                    doWithLogin(context, () async {
-                      if (await addOrRemoveFavorite(widget.id)) {
-                        setState(() {
-                          isFavorite = !isFavorite;
-                        });
-                      }
-                    });
-                  },
-                  icon: Icon(
-                    isFavorite ? Icons.bookmark : Icons.bookmark_border,
-                    size: 22,
-                    color: Colors.white,
-                  ),
+              ),
+              IconButton(
+                onPressed: () async {
+                  doWithLogin(context, () async {
+                    if (await addOrRemoveFavorite(widget.id)) {
+                      setState(() {
+                        isFavorite = !isFavorite;
+                      });
+                    }
+                  });
+                },
+                icon: Stack(
+                  children: [
+                    Positioned(
+                      top: 0.5,
+                      right: 0.5,
+                      child: Icon(
+                        Icons.bookmark_border,
+                        size: 22,
+                        color: Colors.black26,
+                      ),
+                    ),
+                    Positioned(
+                      top: 0.5,
+                      left: 0.5,
+                      child: Icon(
+                        Icons.bookmark_border,
+                        size: 22,
+                        color: Colors.black26,
+                      ),
+                    ),
+                    Icon(
+                      isFavorite ? Icons.bookmark : Icons.bookmark_border,
+                      size: 22,
+                      color: Colors.white,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         Positioned(
