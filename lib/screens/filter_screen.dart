@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/categories_bloc.dart';
 import 'package:siraf3/bloc/property_bloc.dart';
+import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/category.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/models/property_insert.dart';
@@ -13,6 +14,7 @@ import 'package:siraf3/money_input_formatter.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
+import 'package:siraf3/widgets/text_form_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 class FilterScreen extends StatefulWidget {
@@ -47,11 +49,31 @@ class _FilterScreenState extends State<FilterScreen> {
       if (event is CategoriesBlocLoaded) {
         categories = event.categories;
 
-        setMainCat(event.categories
-            .where((element) => element.parentId == null)
-            .first);
+        if (widget.filterData.category != null) {
+          print("sets");
+          setMainCat(widget.filterData.mainCategory);
+          _subCategory = widget.filterData.category;
+
+          propertyBloc.add(PropertyInsertEvent(
+              category_id: _subCategory!.id!, type: "filter"));
+
+          _hasImage = widget.filterData.hasImage ?? false;
+          _hasVideo = widget.filterData.hasVideo ?? false;
+          _hasTour = widget.filterData.hasTour ?? false;
+
+          filters = widget.filterData.filters ?? Filters();
+        } else {
+          print("nooooo");
+          setMainCat(event.categories
+              .where((element) => element.parentId == null)
+              .first);
+        }
       }
     });
+  }
+
+  setFilterData() {
+    setState(() {});
   }
 
   @override
@@ -484,36 +506,27 @@ class _FilterScreenState extends State<FilterScreen> {
                             SizedBox(
                               height: 10,
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                widget.filterData.filters = filters;
-                                widget.filterData.categoryId = _subCategory?.id;
-                                widget.filterData.hasImage = _hasImage;
-                                widget.filterData.hasVideo = _hasVideo;
-                                widget.filterData.hasTour = _hasTour;
-
-                                Navigator.pop(
-                                  context,
-                                  widget.filterData,
-                                );
-                              },
-                              child: Container(
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: Themes.primary,
-                                  borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(20),
-                                      bottomRight: Radius.circular(20)),
-                                ),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "اعمال فیلتر",
-                                  style: TextStyle(
-                                    color: Themes.textLight,
-                                    fontSize: 14,
-                                  ),
+                            RawMaterialButton(
+                              onPressed: _onTapSubmit,
+                              child: Text(
+                                "اعمال فیلتر",
+                                style: TextStyle(
+                                  color: Themes.textLight,
+                                  fontSize: 14,
+                                  fontFamily: "IranSansMedium",
                                 ),
                               ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(20),
+                                    bottomRight: Radius.circular(20)),
+                              ),
+                              elevation: 0,
+                              constraints: BoxConstraints(
+                                minHeight: 45,
+                                minWidth: double.infinity,
+                              ),
+                              fillColor: Themes.primary,
                             ),
                           ],
                         ),
@@ -548,7 +561,9 @@ class _FilterScreenState extends State<FilterScreen> {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(40),
-              color: _mainCategory == e ? Themes.primary : Colors.transparent,
+              color: _mainCategory?.id == e.id
+                  ? Themes.primary
+                  : Colors.transparent,
             ),
             padding: EdgeInsets.symmetric(
               vertical: 12,
@@ -557,7 +572,8 @@ class _FilterScreenState extends State<FilterScreen> {
             child: Text(
               e.name!,
               style: TextStyle(
-                color: _mainCategory == e ? Themes.textLight : Themes.text,
+                color:
+                    _mainCategory?.id == e.id ? Themes.textLight : Themes.text,
                 fontSize: 11,
               ),
             ),
@@ -573,8 +589,11 @@ class _FilterScreenState extends State<FilterScreen> {
     return Expanded(
       child: GestureDetector(
         onTap: () {
+          if (_subCategory?.id == e.id!) return;
           setState(() {
             _subCategory = e;
+
+            filters = Filters();
           });
 
           propertyBloc.add(PropertyInsertEvent(
@@ -593,7 +612,8 @@ class _FilterScreenState extends State<FilterScreen> {
               height: 10,
             ),
             Divider(
-              color: _subCategory == e ? Themes.primary : Themes.secondary2,
+              color:
+                  _subCategory?.id == e.id ? Themes.primary : Themes.secondary2,
               height: 1,
             ),
           ],
@@ -633,6 +653,30 @@ class _FilterScreenState extends State<FilterScreen> {
       var widgets = <Widget>[];
 
       for (PropertyInsert p in props) {
+        var data = [];
+
+        switch (p.value) {
+          case 'meter':
+            data = filters.mater ?? [];
+            break;
+          case 'price':
+            data = filters.price ?? [];
+            break;
+          case 'rent':
+            data = filters.rent ?? [];
+            break;
+          case 'prices':
+            data = filters.prices ?? [];
+        }
+
+        var minInitialValue =
+            data.asMap().containsKey(0) ? (data[0] == 0 ? "" : data[0]) : "";
+        var maxInitialValue = data.asMap().containsKey(1)
+            ? data[1] == 0
+                ? ""
+                : data[1]
+            : "";
+
         widgets.add(Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Row(
@@ -668,7 +712,7 @@ class _FilterScreenState extends State<FilterScreen> {
               Expanded(
                 child: SizedBox(
                   height: 40,
-                  child: TextField2(
+                  child: TextFormField2(
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(45),
@@ -691,6 +735,7 @@ class _FilterScreenState extends State<FilterScreen> {
                       ),
                       contentPadding: EdgeInsets.all(10),
                     ),
+                    initialValue: minInitialValue.toString(),
                     inputFormatters: [MoneyInputFormatter(mantissaLength: 0)],
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.number,
@@ -748,7 +793,7 @@ class _FilterScreenState extends State<FilterScreen> {
               Expanded(
                 child: SizedBox(
                   height: 40,
-                  child: TextField2(
+                  child: TextFormField2(
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(45),
@@ -771,6 +816,7 @@ class _FilterScreenState extends State<FilterScreen> {
                       ),
                       contentPadding: EdgeInsets.all(10),
                     ),
+                    initialValue: maxInitialValue.toString(),
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.number,
                     inputFormatters: [MoneyInputFormatter(mantissaLength: 0)],
@@ -796,7 +842,7 @@ class _FilterScreenState extends State<FilterScreen> {
                       if (v.isEmpty) {
                         data = [data.length > 0 ? data[0] : 0];
                       } else {
-                        data = [data.length > 1 ? data[1] : 0, int.parse(v)];
+                        data = [data.length > 0 ? data[0] : 0, int.parse(v)];
                       }
 
                       switch (p.value) {
@@ -854,6 +900,8 @@ class _FilterScreenState extends State<FilterScreen> {
     setState(() {
       _mainCategory = mainCategory;
 
+      filters = Filters();
+
       if (_mainCategory == null) {
         _subCategory = null;
 
@@ -877,5 +925,43 @@ class _FilterScreenState extends State<FilterScreen> {
       propertyBloc.add(
           PropertyInsertEvent(category_id: _subCategory!.id!, type: "filter"));
     });
+  }
+
+  void _onTapSubmit() {
+    if (filters.mater != null && filters.mater!.length == 2) {
+      if (filters.mater![0] > filters.mater![1]) {
+        return notify("حداقل متراژ از حداکثر متراژ بیشتر است");
+      }
+    }
+
+    if (filters.price != null && filters.price!.length == 2) {
+      if (filters.price![0] > filters.price![1]) {
+        return notify("حداقل ودیعه از حداکثر ودیعه بیشتر است");
+      }
+    }
+
+    if (filters.rent != null && filters.rent!.length == 2) {
+      if (filters.rent![0] > filters.rent![1]) {
+        return notify("حداقل اجاره از حداکثر متراژ اجاره است");
+      }
+    }
+
+    if (filters.prices != null && filters.prices!.length == 2) {
+      if (filters.prices![0] > filters.prices![1]) {
+        return notify("حداقل قیمت کل از حداکثر قیمت کل بیشتر است");
+      }
+    }
+
+    widget.filterData.filters = filters;
+    widget.filterData.mainCategory = _mainCategory;
+    widget.filterData.category = _subCategory;
+    widget.filterData.hasImage = _hasImage;
+    widget.filterData.hasVideo = _hasVideo;
+    widget.filterData.hasTour = _hasTour;
+
+    Navigator.pop(
+      context,
+      widget.filterData,
+    );
   }
 }

@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return OKToast(
       child: MaterialApp(
+        title: 'سیراف',
         localizationsDelegates: const [
           GlobalCupertinoLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -44,15 +45,7 @@ class MyApp extends StatelessWidget {
           Locale("fa", "IR"),
         ],
         locale: Locale("fa", "IR"),
-        title: 'سیراف',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          fontFamily: 'IranSans',
-          backgroundColor: Themes.background,
-          scaffoldBackgroundColor: Themes.background,
-          accentColor: Themes.secondary,
-          secondaryHeaderColor: Themes.secondary,
-        ),
+        theme: Themes.themeData(),
         debugShowCheckedModeBanner: false,
         builder: (context, child) {
           HttpOverrides.global = MyHttpOverrides();
@@ -72,7 +65,8 @@ class MyApp extends StatelessWidget {
 
 class MyBehavior extends ScrollBehavior {
   @override
-  Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
     return child;
   }
 }
@@ -80,6 +74,8 @@ class MyBehavior extends ScrollBehavior {
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

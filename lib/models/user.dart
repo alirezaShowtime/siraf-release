@@ -7,6 +7,7 @@ class User {
 
   int? id;
   String? name;
+  String? username;
   dynamic email;
   String? phone;
   dynamic birthDate;
@@ -44,12 +45,16 @@ class User {
     if (json["token"] is String) {
       token = json["token"];
     }
+    if (json["username"] is String) {
+      token = json["username"];
+    }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["id"] = id;
     _data["name"] = name;
+    _data["username"] = username;
     _data["email"] = email;
     _data["phone"] = phone;
     _data["birth_date"] = birthDate;

@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:dotted_border/dotted_border.dart';
-import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +7,6 @@ import 'package:flutter_share/flutter_share.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/user.dart';
-import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/loading.dart';
@@ -150,42 +147,6 @@ class _FileSlideItemState extends State<FileSlideItem> {
                     ),
                   ),
                 ),
-              Positioned(
-                bottom: 14,
-                left: 0,
-                right: 0,
-                child: DottedLine(
-                  direction: Axis.horizontal,
-                  lineLength: double.infinity,
-                  lineThickness: 1.0,
-                  dashLength: 4.0,
-                  dashColor: Colors.black,
-                  dashGradient: [Colors.red, Colors.blue],
-                  dashRadius: 0.0,
-                  dashGapLength: 4.0,
-                  dashGapColor: Colors.transparent,
-                  dashGapGradient: [Colors.red, Colors.blue],
-                  dashGapRadius: 0.0,
-                ),
-              ),
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: DottedLine(
-                  direction: Axis.horizontal,
-                  lineLength: double.infinity,
-                  lineThickness: 1.0,
-                  dashLength: 4.0,
-                  dashColor: Colors.black,
-                  dashGradient: [Colors.red, Colors.blue],
-                  dashRadius: 0.0,
-                  dashGapLength: 4.0,
-                  dashGapColor: Colors.transparent,
-                  dashGapGradient: [Colors.red, Colors.blue],
-                  dashGapRadius: 0.0,
-                ),
-              ),
             ],
           ),
           SizedBox(

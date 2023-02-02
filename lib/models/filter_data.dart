@@ -1,7 +1,10 @@
 import 'dart:convert';
 
+import 'package:siraf3/models/category.dart';
+
 class FilterData {
-  int? categoryId;
+  Category? mainCategory;
+  Category? category;
   List<int>? cityIds;
   bool? hasImage;
   bool? hasVideo;
@@ -10,7 +13,7 @@ class FilterData {
   String? search;
 
   FilterData({
-    this.categoryId,
+    this.category,
     this.cityIds,
     this.hasImage,
     this.hasVideo,
@@ -19,53 +22,11 @@ class FilterData {
     this.search,
   });
 
-  FilterData.fromJson(Map<String, dynamic> json) {
-    if (json["category_id"] is int) {
-      categoryId = json["category_id"];
-    }
-    if (json["city_ids"] is List) {
-      cityIds =
-          json["city_ids"] == null ? null : List<int>.from(json["city_ids"]);
-    }
-    if (json["hasImage"] is bool) {
-      hasImage = json["hasImage"];
-    }
-    if (json["hasVideo"] is bool) {
-      hasVideo = json["hasVideo"];
-    }
-    if (json["hasTour"] is bool) {
-      hasTour = json["hasTour"];
-    }
-    if (json["filters"] is Map) {
-      filters =
-          json["filters"] == null ? null : Filters.fromJson(json["filters"]);
-    }
-    if (json["search"] is String) {
-      hasVideo = json["search"];
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["category_id"] = categoryId;
-    if (cityIds != null) {
-      _data["city_ids"] = cityIds;
-    }
-    _data["hasImage"] = hasImage;
-    _data["hasVideo"] = hasVideo;
-    _data["hasTour"] = hasTour;
-    if (filters != null) {
-      _data["filters"] = filters?.toJson();
-    }
-    _data["search"] = search;
-    return _data;
-  }
-
   String toQueryString() {
     var str = "";
 
-    if (categoryId != null) {
-      str += getDelimiter(str) + "categoryId=${categoryId.toString()}";
+    if (category != null) {
+      str += getDelimiter(str) + "categoryId=${category!.id.toString()}";
     }
 
     if (cityIds != null) {
@@ -91,19 +52,24 @@ class FilterData {
     if (canConvert(filters)) {
       str += "&filters={";
       if (filters!.mater != null && filters!.mater!.isNotEmpty) {
-        str += "\"mater\": " + jsonEncode(filters!.mater) + ",";
+        str +=
+            "\"mater\":" + jsonEncode(filters!.mater).replaceAll(' ', '') + ",";
       }
 
       if (filters!.price != null && filters!.price!.isNotEmpty) {
-        str += "\"price\": " + jsonEncode(filters!.price) + ",";
+        str +=
+            "\"price\":" + jsonEncode(filters!.price).replaceAll(' ', '') + ",";
       }
 
       if (filters!.rent != null && filters!.rent!.isNotEmpty) {
-        str += "\"rent\": " + jsonEncode(filters!.rent) + ",";
+        str +=
+            "\"rent\":" + jsonEncode(filters!.rent).replaceAll(' ', '') + ",";
       }
 
       if (filters!.prices != null && filters!.prices!.isNotEmpty) {
-        str += "\"prices\": " + jsonEncode(filters!.prices) + ",";
+        str += "\"prices\":" +
+            jsonEncode(filters!.prices).replaceAll(' ', '') +
+            ",";
       }
 
       if (str.endsWith(",")) {
@@ -136,7 +102,7 @@ class FilterData {
   }
 
   bool hasFilter() {
-    return this.categoryId != null ||
+    return this.category?.id != null ||
         (this.hasImage ?? false) ||
         (this.hasVideo ?? false) ||
         (this.hasTour ?? false);
@@ -151,35 +117,4 @@ class Filters {
 
   Filters({this.mater, this.price, this.rent, this.prices});
 
-  Filters.fromJson(Map<String, dynamic> json) {
-    if (json["mater"] is List) {
-      mater = json["mater"] == null ? null : List<int>.from(json["mater"]);
-    }
-    if (json["price"] is List) {
-      price = json["price"] == null ? null : List<int>.from(json["price"]);
-    }
-    if (json["rent"] is List) {
-      rent = json["rent"] == null ? null : List<int>.from(json["rent"]);
-    }
-    if (json["prices"] is List) {
-      prices = json["prices"] == null ? null : List<int>.from(json["prices"]);
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    if (mater != null) {
-      _data["mater"] = mater;
-    }
-    if (price != null) {
-      _data["price"] = price;
-    }
-    if (rent != null) {
-      _data["rent"] = rent;
-    }
-    if (prices != null) {
-      _data["prices"] = prices;
-    }
-    return _data;
-  }
 }

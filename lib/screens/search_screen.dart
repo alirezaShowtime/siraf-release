@@ -4,6 +4,7 @@ import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:siraf3/db/model/search_history.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/screens/filter_screen.dart';
+import 'package:siraf3/screens/search_result_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
@@ -27,15 +28,23 @@ class _SearchScreen extends State<SearchScreen> {
   List<SearchHistory> keywords = [];
 
   Future<void> fillKeywords() async {
-    keywords = await SearchHistory.all();
+    var keywords = await SearchHistory.all();
+    setState(() {
+      this.keywords = keywords;
+    });
   }
 
   @override
   void initState() {
     super.initState();
 
-    fillKeywords();
     searchController = TextEditingController();
+
+    setKeywords();
+  }
+
+  setKeywords() {
+    fillKeywords();
   }
 
   @override
@@ -55,7 +64,7 @@ class _SearchScreen extends State<SearchScreen> {
           },
           decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: "جستوجو فایل",
+            hintText: "جستجو فایل",
             hintStyle: TextStyle(
               fontSize: 14,
             ),
@@ -115,7 +124,7 @@ class _SearchScreen extends State<SearchScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      "سابقه جستوجو",
+                      "سابقه جستجو",
                       style: TextStyle(
                           fontSize: 12,
                           color: Themes.blue,
@@ -151,27 +160,43 @@ class _SearchScreen extends State<SearchScreen> {
 
   Widget historyItem(SearchHistory searchHistory) {
     return InkWell(
-      onTap: () {
-        searchController.text = searchHistory.keyword;
-      },
+      onTap: () {},
       child: Container(
         padding: EdgeInsets.all(10),
         child: Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: icon(Icons.history_rounded),
+            GestureDetector(
+              onTap: () {
+                searchController.text = searchHistory.keyword;
+
+                onSubmittedSearchField(searchController.text);
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: icon(Icons.history_rounded),
+              ),
             ),
             Expanded(
-              child: Text(
-                searchHistory.keyword,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Themes.textGrey,
+              child: GestureDetector(
+                onTap: () {
+                  searchController.text = searchHistory.keyword;
+
+                  onSubmittedSearchField(searchController.text);
+                },
+                child: Text(
+                  searchHistory.keyword,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Themes.textGrey,
+                  ),
                 ),
               ),
             ),
-            icon(CupertinoIcons.arrow_up_left),
+            GestureDetector(
+                onTap: () {
+                  searchController.text = searchHistory.keyword;
+                },
+                child: icon(CupertinoIcons.arrow_up_left)),
           ],
         ),
       ),
@@ -186,6 +211,20 @@ class _SearchScreen extends State<SearchScreen> {
       fillKeywords();
       setState(() {});
     });
+
+    setState(() {
+      widget.filterData.search = searchedText;
+    });
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SearchResultScreen(
+          originalFilterData: widget.originalFilterData,
+          filterData: widget.filterData,
+        ),
+      ),
+    );
   }
 
   void emptyHistory() {

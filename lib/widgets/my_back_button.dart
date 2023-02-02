@@ -14,10 +14,9 @@ class _MyBackButton extends State<MyBackButton> {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: back(context),
-      icon: FaIcon(
-        Icons.chevron_left_rounded,
-        color: Themes.iconGrey,
-        size: 32,
+      icon: Icon(
+        CupertinoIcons.back,
+        color: Themes.text,
       ),
     );
   }

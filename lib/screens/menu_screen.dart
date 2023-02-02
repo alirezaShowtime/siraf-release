@@ -6,6 +6,8 @@ import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/inquiry_screen.dart';
 import 'package:siraf3/screens/my_files_screen.dart';
+import 'package:siraf3/screens/request_file_screen.dart';
+import 'package:siraf3/screens/settings_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/accordion.dart';
 
@@ -83,14 +85,16 @@ class _MenuScreenState extends State<MenuScreen> {
                           borderRadius: BorderRadius.circular(100),
                         ),
                         GestureDetector(
-                          onTap: () {
+                          onTap: () async {
                             if (user == null || user!.phone == null) {
-                              Navigator.push(
+                              await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => LoginScreen(),
                                 ),
                               );
+
+                              getUser();
                             }
                           },
                           child: Text(
@@ -127,7 +131,7 @@ class _MenuScreenState extends State<MenuScreen> {
                             title: "ثبت فایل",
                             icon: CupertinoIcons.add,
                             onClick: () async {
-                              doWithLogin(context, () {
+                              await doWithLogin(context, () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -135,6 +139,8 @@ class _MenuScreenState extends State<MenuScreen> {
                                   ),
                                 );
                               });
+
+                              getUser();
                             },
                           ),
                           _item(
@@ -159,8 +165,8 @@ class _MenuScreenState extends State<MenuScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               AccordionItem(
-                                  onClick: () {
-                                    doWithLogin(context, () {
+                                  onClick: () async {
+                                    await doWithLogin(context, () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -168,10 +174,24 @@ class _MenuScreenState extends State<MenuScreen> {
                                         ),
                                       );
                                     });
+
+                                    getUser();
                                   },
                                   title: "فایل های من"),
                               AccordionItem(
-                                  onClick: () {}, title: "ثبت در خواست"),
+                                  onClick: () async {
+                                    await doWithLogin(context, () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => RequestFileScreen(),
+                                        ),
+                                      );
+                                    });
+
+                                    getUser();
+                                  },
+                                  title: "ثبت در خواست"),
                               AccordionItem(
                                   onClick: () {}, title: "در خواست های من"),
                               AccordionItem(
@@ -207,8 +227,10 @@ class _MenuScreenState extends State<MenuScreen> {
                             children: [
                               AccordionItem(
                                   onClick: () {
-                                    Navigator.push(context,
-                                        MaterialPageRoute(builder: (_) => InquiryScreen()));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => InquiryScreen()));
                                   },
                                   title: "استعلامات ثبتی"),
                               AccordionItem(
@@ -322,7 +344,14 @@ class _MenuScreenState extends State<MenuScreen> {
                       ),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => SettingsScreen(user: user)));
+
+                        getUser();
+                      },
                       icon: Icon(
                         CupertinoIcons.settings,
                         color: Themes.iconLight,

@@ -137,7 +137,9 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                 actions: [
                   IconButton(
                     onPressed: () {
-                      getCities();
+                      setState(() {
+                        selectedCities = [];
+                      });
                     },
                     icon: Icon(
                       CupertinoIcons.refresh,
@@ -421,8 +423,11 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
       await (await SharedPreferences.getInstance())
           .setBool("isFirstOpen", false);
 
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (_) => HomeScreen()));
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => HomeScreen()),
+        (route) => false,
+      );
     } else {
       Navigator.pop(context, selectedCities);
     }
