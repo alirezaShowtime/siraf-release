@@ -17,7 +17,7 @@ class _BlockBtn extends State<BlockBtn> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: widget.padding ?? const EdgeInsets.all(10),
       child: MaterialButton(
         minWidth: double.infinity,
         onPressed: widget.onTap,
