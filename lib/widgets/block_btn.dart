@@ -7,24 +7,25 @@ class BlockBtn extends StatefulWidget {
   State<StatefulWidget> createState() => _BlockBtn();
 
   String text;
-  GestureTapCallback onTap;
+  Function() onTap;
+  EdgeInsets? padding;
 
-  BlockBtn({required this.text, required this.onTap});
+  BlockBtn({required this.text, required this.onTap, this.padding});
 }
 
 class _BlockBtn extends State<BlockBtn> {
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.onTap,
-      child: Container(
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: MaterialButton(
+        minWidth: double.infinity,
+        onPressed: widget.onTap,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         height: 60,
-        alignment: Alignment.center,
-        margin: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Themes.blue,
-          borderRadius: BorderRadius.circular(15),
-        ),
+        color: Themes.blue,
+        textColor: Colors.white,
+        elevation: 0,
         child: Text(
           widget.text,
           style: TextStyle(
