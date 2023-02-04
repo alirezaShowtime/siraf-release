@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/category.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/screens/select_category_screen.dart';
@@ -6,9 +7,9 @@ import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
-import 'package:siraf3/helpers.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
-import 'package:siraf3/widgets/text_form_field_2.dart';
+
+import '../widgets/section.dart';
 
 class RequestFileScreen extends StatefulWidget {
   @override
@@ -29,9 +30,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
         title: AppBarTitle("درخواست فایل"),
         automaticallyImplyLeading: false,
         elevation: 0.7,
-        actions: [
-          IconButton(onPressed: () {}, icon: icon(Icons.refresh_rounded))
-        ],
+        actions: [IconButton(onPressed: () {}, icon: icon(Icons.refresh_rounded))],
       ),
       body: Stack(
         children: [
@@ -46,8 +45,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                   padding: EdgeInsets.only(bottom: 10),
                   decoration: BoxDecoration(
                     border: Border(
-                      bottom: BorderSide(
-                          color: Themes.textGrey.withOpacity(0.5), width: 1),
+                      bottom: BorderSide(color: Themes.textGrey.withOpacity(0.5), width: 1),
                     ),
                   ),
                   child: Row(
@@ -84,25 +82,25 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                     color: Themes.blue,
                   ),
                 ),
-                section(
+                Section(
                   title: "دسته بندی",
                   hint: "انتخاب",
                   value: category?.name,
                   onTap: onClickCategoryItem,
                 ),
-                section(
+                Section(
                   title: "شهر",
                   hint: "انتخاب",
                   value: city?.name,
                   onTap: onClickCityItem,
                 ),
-                section(
+                Section(
                   title: "محدوده متراژ",
                   hint: "تعیین",
                   value: null,
                   onTap: onClickMeterageItem,
                 ),
-                section(
+                Section(
                   title: "محدوده قیمت",
                   hint: "تعیین",
                   value: null,
@@ -133,7 +131,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                     ),
                   ),
                 ),
-                section(
+                Section(
                   title: "دفتر/دفاتر املاک(اخیتاری)",
                   hint: "انتخاب",
                   value: null,
@@ -165,54 +163,6 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                       color: Colors.white,
                     ),
                   ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget section({
-    required String title,
-    required String hint,
-    required String? value,
-    required Function() onTap,
-  }) {
-    return Container(
-      margin: EdgeInsets.only(top: 10),
-      padding: EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Themes.textGrey.withOpacity(0.5), width: 1),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 13,
-              fontFamily: "IranSansMedium",
-              color: Themes.text,
-            ),
-          ),
-          GestureDetector(
-            onTap: onTap,
-            child: Container(
-              constraints: BoxConstraints(
-                minWidth: 30,
-              ),
-              color: Colors.transparent,
-              alignment: Alignment.centerLeft,
-              child: Text(
-                value ?? hint,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontFamily: "IranSansMedium",
-                  color: Themes.text,
                 ),
               ),
             ),
@@ -254,9 +204,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
   void onClickCityItem() {
     //todo: implement event listener
 
-    Navigator.push(
-            context, MaterialPageRoute(builder: (_) => SelectCityScreen()))
-        .then((result) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => SelectCityScreen())).then((result) {
       if (result != null && result == List<City>) {
         city = result.last;
       }
