@@ -3,8 +3,8 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/widgets/block_btn.dart';
+import 'package:siraf3/widgets/field_dialog.dart';
 import 'package:siraf3/widgets/list_dialog.dart';
-import 'package:siraf3/widgets/number_dialog.dart';
 import 'package:siraf3/widgets/simple_app_bar.dart';
 
 import '../widgets/section.dart';
@@ -54,11 +54,21 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
         padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
         child: Column(
           children: [
-            Section(title: "شهر", hint: selectedCity != null ? selectedCity!.name! : "تعیین", onTap: determineCity),
-            Section(title: "نوع معامله", hint: tradTypeLabel[selectedTradeType] ?? "تعیین", onTap: determineTradeType),
+            Section(
+              title: "شهر",
+              hint: "تعیین",
+              value: selectedCity?.name,
+              onTap: determineCity,
+            ),
+            Section(
+              title: "نوع معامله",
+              hint: "تعیین",
+              value: tradTypeLabel[selectedTradeType],
+              onTap: determineTradeType,
+            ),
             if (selectedTradeType == TradeType.buyAndSell) getBuyAndSellWidget(),
             if (selectedTradeType == TradeType.rentAndMortgage) getRentAndMortgageWidget(),
-            if (selectedTradeType != null) BlockBtn(text: "محاسبه سود", onTap: calculateCommission),
+            if (selectedTradeType != null) BlockBtn(text: "محاسبه سود", padding: EdgeInsets.only(top: 15), onTap: calculateCommission),
           ],
         ),
       ),
@@ -66,14 +76,29 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
   }
 
   Widget getBuyAndSellWidget() {
-    return Section(title: "مبلغ کل", hint: totalPriceController.value.text.isNotEmpty ? totalPriceController.value.text : "تعیین", onTap: determineTotalPrice);
+    return Section(
+      title: "مبلغ کل",
+      hint: "تعیین",
+      value: totalPriceController.value.text.isNotEmpty ? totalPriceController.value.text : null,
+      onTap: determineTotalPrice,
+    );
   }
 
   Widget getRentAndMortgageWidget() {
     return Column(
       children: [
-        Section(title: "مبلغ ودیعه", hint: depositController.value.text.isNotEmpty ? depositController.value.text : "تعیین", onTap: determineDeposit),
-        Section(title: "مبلغ اجاره", hint: rentController.value.text.isNotEmpty ? rentController.value.text : "تعیین", onTap: determineRent),
+        Section(
+          title: "مبلغ ودیعه",
+          hint: "تعیین",
+          value: depositController.value.text.isNotEmpty ? depositController.value.text : null,
+          onTap: determineDeposit,
+        ),
+        Section(
+          title: "مبلغ اجاره",
+          hint: "تعیین",
+          value: rentController.value.text.isNotEmpty ? rentController.value.text : null,
+          onTap: determineRent,
+        ),
       ],
     );
   }
@@ -84,8 +109,9 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
     showDialog(
       context: context,
       builder: (context) {
-        return NumberDialog(
+        return FieldDialog(
           numberFieldController: totalPriceController,
+          keyboardType: TextInputType.number,
           hintText: "مبلغ را وارد کنید",
           onPressed: () {
             totalPrice = double.parse(totalPriceController.value.text);
@@ -103,8 +129,9 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
     showDialog(
       context: context,
       builder: (context) {
-        return NumberDialog(
+        return FieldDialog(
           numberFieldController: depositController,
+          keyboardType: TextInputType.number,
           hintText: "مبلغ را وارد کنید",
           onPressed: () {
             deposit = double.parse(depositController.value.text);
@@ -121,8 +148,9 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
     showDialog(
       context: context,
       builder: (context) {
-        return NumberDialog(
+        return FieldDialog(
           numberFieldController: rentController,
+          keyboardType: TextInputType.number,
           hintText: "مبلغ را وارد کنید",
           onPressed: () {
             rent = double.parse(rentController.value.text);

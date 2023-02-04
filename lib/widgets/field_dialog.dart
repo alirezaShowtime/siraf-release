@@ -3,19 +3,20 @@ import 'package:siraf3/widgets/text_field_2.dart';
 
 import '../themes.dart';
 
-class NumberDialog extends StatefulWidget {
+class FieldDialog extends StatefulWidget {
   @override
-  State<NumberDialog> createState() => _NumberDialog();
+  State<FieldDialog> createState() => _FieldDialog();
 
   TextEditingController numberFieldController;
   String? hintText;
   Function(String)? onChanged;
   Function()? onPressed;
+  TextInputType? keyboardType;
 
-  NumberDialog({required this.numberFieldController, this.hintText = null, this.onChanged, this.onPressed});
+  FieldDialog({required this.numberFieldController, this.hintText = null, this.onChanged, this.onPressed, this.keyboardType});
 }
 
-class _NumberDialog extends State<NumberDialog> {
+class _FieldDialog extends State<FieldDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -46,7 +47,7 @@ class _NumberDialog extends State<NumberDialog> {
                         hintStyle: TextStyle(color: Colors.grey.shade300),
                       ),
                       onChanged: widget.onChanged,
-                      keyboardType: TextInputType.number,
+                      keyboardType: widget.keyboardType,
                       textAlign: TextAlign.center,
                     ),
                   ),
