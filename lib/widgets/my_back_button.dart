@@ -7,6 +7,10 @@ import 'package:siraf3/themes.dart';
 class MyBackButton extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _MyBackButton();
+
+  Color color;
+
+  MyBackButton({this.color = Themes.text});
 }
 
 class _MyBackButton extends State<MyBackButton> {
@@ -16,7 +20,7 @@ class _MyBackButton extends State<MyBackButton> {
       onPressed: back(context),
       icon: FaIcon(
         Icons.chevron_left_rounded,
-        color: Themes.text,
+        color: widget.color,
         size: 28,
       ),
     );

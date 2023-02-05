@@ -16,7 +16,9 @@ import 'package:url_launcher/url_launcher.dart';
 const image_extensions = <String>["png", "jpg", "jpeg", "tif", 'webp'];
 const video_extensions = <String>["mp4", "mov", "3gp", "avi", "mkv"];
 
-void notify(String msg, {TextDirection textDirection = TextDirection.rtl, Duration? duration = null}) {
+void notify(String msg,
+    {TextDirection textDirection = TextDirection.rtl,
+    Duration? duration = null}) {
   showToast(
     msg,
     textDirection: textDirection,
@@ -90,7 +92,8 @@ callToSupport() async {
   if (await canLaunch(url)) {
     await launch(url);
   } else {
-    notify('نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_PHONE + 'تماس بگیرید');
+    notify(
+        'نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_PHONE + 'تماس بگیرید');
   }
 }
 
@@ -141,7 +144,8 @@ bool isResponseOk(http.Response response) {
 
 const API_HOST = 'auth.siraf.app';
 
-Uri createAuthUrlByEndPoint(String endPoint, {Map<String, dynamic>? queryParams = null}) {
+Uri createAuthUrlByEndPoint(String endPoint,
+    {Map<String, dynamic>? queryParams = null}) {
   return Uri.https(API_HOST, "api/user/${endPoint}", queryParams);
 }
 
@@ -152,12 +156,14 @@ String phoneFormat(String numberPhone) {
     numberPhone = "0$numberPhone";
   }
 
-  var formatted = "${numberPhone.substring(0, 4)}  ${numberPhone.substring(4, 7)}  ${numberPhone.substring(7, 11)}";
+  var formatted =
+      "${numberPhone.substring(0, 4)}  ${numberPhone.substring(4, 7)}  ${numberPhone.substring(7, 11)}";
 
   return zeroPrefix ? formatted : formatted.replaceFirst("09", "9");
 }
 
-doWithLogin(BuildContext context, void Function() onLoggedIn, {bool pop = true}) async {
+doWithLogin(BuildContext context, void Function() onLoggedIn,
+    {bool pop = true}) async {
   if (await User.hasToken()) {
     onLoggedIn();
   } else {
@@ -188,4 +194,56 @@ void navigateTo(BuildContext context, Widget page) {
 
 bool isValidNumberPhone(String numberPhone) {
   return numberPhone.length == 11;
+}
+
+showPopupMenu(BuildContext context, TapDownDetails details) {
+  PopupMenuItem<String> item({
+    required String title,
+    required IconData iconDate,
+    required Function() onTap,
+  }) {
+    return PopupMenuItem<String>(
+      onTap: onTap,
+      child: Row(
+        children: [
+          icon(iconDate, size: 20),
+          SizedBox(width: 10),
+          Text(
+            title,
+            style: TextStyle(
+              color: Themes.text,
+              fontSize: 11,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  showMenu<String>(
+    context: context,
+    constraints: BoxConstraints(minWidth: 180),
+    elevation: 3,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(15),
+    ),
+    position: RelativeRect.fromLTRB(
+      details.globalPosition.dx,
+      details.globalPosition.dy,
+      0.0,
+      0.0,
+    ),
+    items: [
+      item(
+        title: "پاسخ",
+        iconDate: Icons.reply_rounded,
+        onTap: () {},
+      ),
+      item(
+        title: "حذف",
+        iconDate: CupertinoIcons.delete,
+        onTap: () {},
+      ),
+    ],
+  );
 }

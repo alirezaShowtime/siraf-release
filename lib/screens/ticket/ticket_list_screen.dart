@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
-import 'package:siraf3/widgets/badge.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
+import 'package:siraf3/widgets/my_badge.dart';
 
-class TicketListPage extends StatefulWidget {
+class TicketListScreen extends StatefulWidget {
   @override
-  State<TicketListPage> createState() => _TicketListPage();
+  State<TicketListScreen> createState() => _TicketListScreen();
 }
 
-class _TicketListPage extends State<TicketListPage> {
+class _TicketListScreen extends State<TicketListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +22,7 @@ class _TicketListPage extends State<TicketListPage> {
         title: Row(
           children: [
             AppBarTitle("تیک های پشتیبانی"),
-            Badge(text: "12"),
+            MyBadge(text: "12"),
           ],
         ),
       ),
@@ -56,7 +56,8 @@ class _TicketListPage extends State<TicketListPage> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(100),
                 child: Image(
-                  image: NetworkImage("https://www.seiu1000.org/sites/main/files/imagecache/hero/main-images/camera_lense_0.jpeg"),
+                  image: NetworkImage(
+                      "https://www.seiu1000.org/sites/main/files/imagecache/hero/main-images/camera_lense_0.jpeg"),
                   width: 50,
                   height: 50,
                   fit: BoxFit.fill,
@@ -123,7 +124,7 @@ class _TicketListPage extends State<TicketListPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Badge(text: "23"),
+              MyBadge(text: "23"),
               Text(
                 "12:54",
                 style: TextStyle(

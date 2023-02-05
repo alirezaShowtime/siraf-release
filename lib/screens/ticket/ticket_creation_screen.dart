@@ -13,12 +13,12 @@ enum SupportSection {
   report,
 }
 
-class TicketCreationPage extends StatefulWidget {
+class TicketCreationScreen extends StatefulWidget {
   @override
-  State<TicketCreationPage> createState() => _TicketCreationPage();
+  State<TicketCreationScreen> createState() => _TicketCreationScreen();
 }
 
-class _TicketCreationPage extends State<TicketCreationPage> {
+class _TicketCreationScreen extends State<TicketCreationScreen> {
   SupportSection? supportSection;
   String? title;
   String? fullName;
@@ -99,7 +99,10 @@ class _TicketCreationPage extends State<TicketCreationPage> {
   void createTicked() {
     //todo: implement event listener
 
-    if (supportSection != null || title != null || fullName != null || numberPhone != null) {
+    if (supportSection != null ||
+        title != null ||
+        fullName != null ||
+        numberPhone != null) {
       notify("فیلدها خالی هستند");
       return;
     }

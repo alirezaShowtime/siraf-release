@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/themes.dart';
 
-class Badge extends StatefulWidget {
+class MyBadge extends StatefulWidget {
   @override
-  State<Badge> createState() => _Badge();
+  State<MyBadge> createState() => _MyBadge();
 
   String text;
 
-  Badge({required this.text});
+  MyBadge({required this.text});
 }
 
-class _Badge extends State<Badge> {
+class _MyBadge extends State<MyBadge> {
   @override
   Widget build(BuildContext context) {
     return Container(
