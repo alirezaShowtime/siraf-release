@@ -208,16 +208,16 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         actions: [
-          IconButton(
-            onPressed: () async {
-              changeViewType();
-            },
-            icon: FaIcon(
-              OctIcons.image_24,
-              color: Themes.iconLight,
-              size: 20,
-            ),
-          ),
+          // IconButton(
+          //   onPressed: () async {
+          //     changeViewType();
+          //   },
+          //   icon: FaIcon(
+          //     OctIcons.image_24,
+          //     color: Themes.iconLight,
+          //     size: 20,
+          //   ),
+          // ),
           IconButton(
             onPressed: () async {
               var result = await Navigator.push(
