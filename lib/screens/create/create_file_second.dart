@@ -888,7 +888,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             isLast: false,
                             onTap: () => _showAddTitleDialog(index),
                           ),
-                        if (!checkVirtualTourExtension(
+                        if (checkImageExtension(
                             (files[index]["file"] as io.File).path))
                           optionItem(
                             value: "انتخاب به عنوان نمایش اول",

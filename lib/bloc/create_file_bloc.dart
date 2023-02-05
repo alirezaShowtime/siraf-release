@@ -74,7 +74,7 @@ class CreateFileBloc extends Bloc<CreateFileEvent, CreateFileState> {
               videos.map((e) => (e['title'] as String?) ?? "").toList()),
         if (images.isNotEmpty)
           'imagesName': jsonEncode(
-              images.map((e) => (e['title'] as String?) ?? "ta").toList()),
+              images.map((e) => (e['title'] as String?) ?? "").toList()),
         'description': event.data.description,
         'visitPhoneNumber': event.data.visitPhone,
         'ownerPhoneNumber': event.data.ownerPhone,

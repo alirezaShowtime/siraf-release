@@ -189,6 +189,8 @@ class _FilterScreenState extends State<FilterScreen> {
                             _hasVideo = false;
                             _hasTour = false;
                           });
+
+                          _onTapSubmit();
                         },
                         child: Padding(
                           padding: EdgeInsets.only(

@@ -22,6 +22,7 @@ import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/edit/edit_file_first.dart';
 import 'package:siraf3/screens/support_file_screen.dart';
+import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/loading.dart';
@@ -159,8 +160,8 @@ class _MyFileScreenState extends State<MyFileScreen> {
                   SizedBox(height: 15),
                   if (state.file.getOtherProperties().isNotEmpty)
                     Divider(
-                      height: 0.7,
-                      color: Themes.textGrey,
+                      height: 0.5,
+                      color: Themes.textGrey.withOpacity(0.5),
                     ),
                   if (state.file.getOtherProperties().isNotEmpty)
                     SizedBox(height: 15),
@@ -168,15 +169,15 @@ class _MyFileScreenState extends State<MyFileScreen> {
                     _buildProps(state.file),
                   SizedBox(height: 15),
                   Divider(
-                    height: 0.7,
-                    color: Themes.textGrey,
+                    height: 0.5,
+                    color: Themes.textGrey.withOpacity(0.5),
                   ),
                   if (state.file.lat != null || state.file.long != null)
                     _buildMap(state.file),
                   SizedBox(height: 10),
                   Divider(
-                    height: 0.7,
-                    color: Themes.textGrey,
+                    height: 0.5,
+                    color: Themes.textGrey.withOpacity(0.5),
                   ),
                   SizedBox(height: 10),
                   Padding(
@@ -285,8 +286,8 @@ class _MyFileScreenState extends State<MyFileScreen> {
                   ),
                   SizedBox(height: 10),
                   Divider(
-                    height: 0.7,
-                    color: Themes.textGrey,
+                    height: 0.5,
+                    color: Themes.textGrey.withOpacity(0.5),
                   ),
                   SizedBox(height: 10),
                   Align(
@@ -345,6 +346,19 @@ class _MyFileScreenState extends State<MyFileScreen> {
                 imageName.add(" | ${file.media!.image![i].name!.trim()}");
               }
             });
+          },
+          onImageTap: (s.Slider slider) {
+            if (slider.type == s.SliderType.virtual_tour) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => WebViewScreen(
+                    title: file.name ?? "",
+                    url: slider.link!,
+                  ),
+                ),
+              );
+            }
           },
         ),
         Positioned(
@@ -528,7 +542,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                 ),
               ),
               Text(
-                file.publishedAgo! + ' | ' + file.city!,
+                file.publishedAgo! + ' | ' + (file.city?.name ?? ""),
                 style: TextStyle(
                   color: Themes.textGrey,
                   fontFamily: "IranSans",

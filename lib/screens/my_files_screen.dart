@@ -6,6 +6,7 @@ import 'package:siraf3/bloc/my_files_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/my_file.dart';
 import 'package:siraf3/models/user.dart';
+import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/my_file_screen.dart';
 import 'package:siraf3/themes.dart';
@@ -320,8 +321,10 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
     }
 
     if (state is MyFilesErrorState) {
-      print(state.response!.body);
-      
+      if ((state.response?.statusCode ?? 0) == 401) {
+        logoutAndGoLogin();
+      }
+
       return Center(
         child: TryAgain(
           onPressed: _loadFiles,
@@ -567,5 +570,11 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
     if (deleteDialogContext != null) {
       Navigator.pop(deleteDialogContext!);
     }
+  }
+
+  void logoutAndGoLogin() async {
+    User.remove();
+    notify("لطفا مجددا وارد حساب کاربری شوید");
+    Navigator.pop(context);
   }
 }

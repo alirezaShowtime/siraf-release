@@ -5,6 +5,10 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/themes.dart';
 
 class MyBackButton extends StatefulWidget {
+  Color color;
+
+  MyBackButton({this.color = Themes.icon});
+
   @override
   State<StatefulWidget> createState() => _MyBackButton();
 }
@@ -16,7 +20,7 @@ class _MyBackButton extends State<MyBackButton> {
       onPressed: back(context),
       icon: Icon(
         CupertinoIcons.back,
-        color: Themes.text,
+        color: widget.color,
       ),
     );
   }

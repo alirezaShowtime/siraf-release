@@ -23,7 +23,7 @@ class CarouselSliderCustom extends StatefulWidget {
   List<slider.Slider> sliders;
   BoxFit? imageFit;
   bool indicatorsCenterAlign;
-  Function(int)? onImageTap;
+  Function(s.Slider)? onImageTap;
   Function(int)? onPageChanged;
 
   CarouselSliderCustom(
@@ -140,7 +140,7 @@ class CarouselSliderItemCustom extends StatefulWidget {
   ImageProvider<Object> image;
   EdgeInsets margin;
   BorderRadius borderRadius;
-  Function(int)? onImageTap;
+  Function(s.Slider)? onImageTap;
   BoxFit? imageFit;
   int index;
   s.Slider slide;
@@ -191,7 +191,7 @@ class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> {
                 ),
               )
             : GestureDetector(
-                onTap: () => widget.onImageTap!(widget.index),
+                onTap: () => widget.onImageTap!(widget.slide),
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   margin: widget.margin,
@@ -207,22 +207,37 @@ class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> {
                 ),
               ),
         if (widget.slide.type == s.SliderType.video)
-          Align(
-            alignment: Alignment.center,
-            child: Icon(
-              Icons.play_arrow_outlined,
-              color: Colors.white,
-              size: 60,
+          GestureDetector(
+            onTap: () => widget.onImageTap!(widget.slide),
+            child: Align(
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.play_arrow_outlined,
+                color: Colors.white,
+                size: 60,
+              ),
             ),
           ),
         if (widget.slide.type == s.SliderType.virtual_tour)
-          Align(
-            alignment: Alignment.center,
-            child: m.Image(
-              image: AssetImage("assets/images/virtual_tour.png"),
-              color: Colors.white,
-              width: 90,
-              height: 90,
+          GestureDetector(
+            onTap: () => widget.onImageTap!(widget.slide),
+            child: Align(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  m.Image(
+                    image: AssetImage("assets/images/virtual_tour.png"),
+                    color: Colors.white,
+                    width: 80,
+                    height: 80,
+                  ),
+                  Text(
+                    "جهت نمایش تور مجازی روی کلیک کنید",
+                    style: TextStyle(fontSize: 13, color: Themes.textLight),
+                  ),
+                ],
+              ),
             ),
           ),
       ],

@@ -7,22 +7,23 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:siraf3/bloc/property_bloc.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/models/category.dart';
 import 'package:siraf3/models/city.dart';
-import 'package:siraf3/models/create_file_form_data.dart';
+import 'package:siraf3/models/category.dart' as cat;
+import 'package:siraf3/models/edit_file_form_data.dart';
+import 'package:siraf3/models/my_file.dart';
 import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/models/property_insert.dart';
 import 'package:siraf3/money_input_formatter.dart';
-import 'package:siraf3/screens/create/create_file_second.dart';
 import 'package:siraf3/screens/create/properties_screen.dart';
+import 'package:siraf3/screens/edit/edit_file_second.dart';
 import 'package:siraf3/screens/mark_in_map_screen.dart';
 import 'package:siraf3/screens/select_category_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:siraf3/models/property.dart' as p;
 
 class EditFileFirst extends StatefulWidget {
   MyFileDetail file;
@@ -33,7 +34,7 @@ class EditFileFirst extends StatefulWidget {
 }
 
 class _EditFileFirstState extends State<EditFileFirst> {
-  Category? category;
+  cat.Category? category;
   City? city;
   LatLng? location;
   String? address;
@@ -52,6 +53,55 @@ class _EditFileFirstState extends State<EditFileFirst> {
   Map<String, String> selectedMainFeatures = {};
   Map<String, String> selectedOtherFeatures = {};
 
+  late EditFileFormData formData;
+
+  @override
+  void initState() {
+    super.initState();
+
+    setData();
+  }
+
+  setData() {
+    setState(() {
+      var c = widget.file.fullCategory;
+      category = cat.Category(
+        id: c?.id,
+        name: c?.name,
+        image: c?.image,
+        fullCategory: c?.fullCategory,
+        isAll: c?.isAll,
+        parentId: c?.parentId,
+      );
+
+      propertyBloc.add(PropertyInsertEvent(category_id: category!.id!));
+
+      city = widget.file.city;
+      address = widget.file.address;
+      location = LatLng(
+        double.parse(widget.file.lat!),
+        double.parse(widget.file.long!),
+      );
+
+      formData = EditFileFormData(
+        id: widget.file.id!,
+        category: category!,
+        city: city!,
+        location: location!,
+        address: address!,
+        properties: {},
+        description: widget.file.description ?? "",
+        title: widget.file.name ?? "",
+        ownerPhone: "",
+        visitPhone: "",
+        estates: [],
+        mediaData: MediaData(),
+      );
+    });
+  }
+
+  bool propertiesSetes = false;
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -61,7 +111,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
           backgroundColor: Themes.appBar,
           elevation: 0.7,
           title: Text(
-            "ثبت فایل",
+            "ویرایش فایل ${widget.file.id}",
             style: TextStyle(
               color: Themes.text,
               fontSize: 15,
@@ -216,6 +266,84 @@ class _EditFileFirstState extends State<EditFileFirst> {
     otherProps = props.where((element) => element.insert == 3).toList();
 
     otherFeature = props.where((element) => element.insert == 4).toList();
+
+    if (!propertiesSetes) {
+      var selectedProps = props
+          .where((e) =>
+              widget.file.property?.any((element) {
+                return element.key == e.value;
+              }) ??
+              false)
+          .toList();
+
+      selectedMainProps = selectedProps
+          .where((element) => element.insert == 1)
+          .toList()
+          .asMap()
+          .map(
+            (key, value) => MapEntry(
+              value.value ?? "",
+              widget.file.property!
+                  .firstWhere((element) => element.key! == value.value!)
+                  .value
+                  .toString(),
+            ),
+          );
+
+      selectedMainFeatures = selectedProps
+          .where((element) => element.insert == 2)
+          .toList()
+          .asMap()
+          .map(
+            (key, value) => MapEntry(
+              value.value ?? "",
+              widget.file.property!
+                  .firstWhere((element) => element.key! == value.value!)
+                  .value
+                  .toString(),
+            ),
+          );
+
+      selectedOtherProps = selectedProps
+          .where((element) => element.insert == 3)
+          .toList()
+          .asMap()
+          .map(
+            (key, value) => MapEntry(
+              value.value ?? "",
+              widget.file.property!
+                  .firstWhere((element) => element.key! == value.value!)
+                  .value
+                  .toString(),
+            ),
+          );
+
+      selectedOtherFeatures = selectedProps
+          .where((element) => element.insert == 4)
+          .toList()
+          .asMap()
+          .map(
+            (key, value) => MapEntry(
+              value.value ?? "",
+              widget.file.property!
+                  .firstWhere((element) => element.key! == value.value!)
+                  .value
+                  .toString(),
+            ),
+          );
+
+      var properties = <String, String>{};
+
+      properties
+        ..addAll(selectedMainProps)
+        ..addAll(selectedMainFeatures)
+        ..addAll(selectedOtherProps)
+        ..addAll(selectedOtherFeatures);
+
+      formData.properties = properties;
+
+      propertiesSetes = true;
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -404,11 +532,12 @@ class _EditFileFirstState extends State<EditFileFirst> {
     );
 
     if (result is List) {
-      print(result[0]);
-      print(result[1]);
       setState(() {
-        selectedOtherProps = result[0];
-        selectedOtherFeatures = result[1];
+        selectedOtherProps = Map<String, String>.from(result[0]);
+        selectedOtherFeatures = Map<String, String>.from(result[1]);
+
+        print(selectedOtherProps);
+        print(selectedOtherFeatures);
       });
     }
   }
@@ -460,6 +589,12 @@ class _EditFileFirstState extends State<EditFileFirst> {
     );
     if (result != null || result is List<Category>) {
       setState(() {
+        if (category?.id != result.last.id) {
+          selectedMainProps.clear();
+          selectedMainFeatures.clear();
+          selectedOtherProps.clear();
+          selectedOtherFeatures.clear();
+        }
         category = result.last;
 
         propertyBloc.add(PropertyInsertEvent(category_id: category!.id!));
@@ -520,7 +655,6 @@ class _EditFileFirstState extends State<EditFileFirst> {
   }
 
   next() {
-    print(selectedMainProps);
     if (category == null) return notify("دسته بندی را انتخاب نمایید");
     if (city == null) return notify("شهر را انتخاب نمایید");
     if (location == null) return notify("موقعیت را روی نقشه انتخاب کنید");
@@ -572,6 +706,13 @@ class _EditFileFirstState extends State<EditFileFirst> {
       }
     }
 
+    setState(() {
+      selectedMainProps.removeWhere((key, value) => value == "null");
+      selectedMainFeatures.removeWhere((key, value) => value == "null");
+      selectedOtherProps.removeWhere((key, value) => value == "null");
+      selectedOtherFeatures.removeWhere((key, value) => value == "null");
+    });
+
     var properties = <String, String>{};
 
     properties
@@ -580,19 +721,11 @@ class _EditFileFirstState extends State<EditFileFirst> {
       ..addAll(selectedOtherProps)
       ..addAll(selectedOtherFeatures);
 
-    var formData = CreateFileFormData(
-      category: category!,
-      city: city!,
-      location: location!,
-      address: address!,
-      properties: properties,
-      description: "",
-      title: "",
-      ownerPhone: "",
-      visitPhone: "",
-      files: [],
-      estates: [],
-    );
+    formData.category = category!;
+    formData.city = city!;
+    formData.location = location!;
+    formData.address = address!;
+    formData.properties = properties;
 
     push(formData);
   }
@@ -601,7 +734,10 @@ class _EditFileFirstState extends State<EditFileFirst> {
     var result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => CreateFileSecond(formData: formData),
+        builder: (_) => EditFileSecond(
+          formData: formData,
+          file: widget.file,
+        ),
       ),
     );
 
@@ -881,9 +1017,9 @@ class _EditFileFirstState extends State<EditFileFirst> {
 
   showNumberDialog(PropertyInsert property) {
     StreamController<String> persianNumberText = StreamController();
-    persianNumberText.add(((selectedMainProps[property.value!] ?? '')
-            .replaceAll(',', '') as String)
-        .toWord());
+    persianNumberText.add(
+        ((selectedMainProps[property.value!] ?? '').replaceAll(',', ''))
+            .toWord());
 
     StreamController<String?> value = StreamController();
     value.add(selectedMainProps[property.value!]);
@@ -1159,9 +1295,9 @@ class _EditFileFirstState extends State<EditFileFirst> {
 
   showFeatureNumberDialog(PropertyInsert property) {
     StreamController<String> persianNumberText = StreamController();
-    persianNumberText.add(((selectedMainProps[property.value!] ?? '')
-            .replaceAll(',', '') as String)
-        .toWord());
+    persianNumberText.add(
+        ((selectedMainProps[property.value!] ?? '').replaceAll(',', ''))
+            .toWord());
 
     StreamController<String?> value = StreamController();
     value.add(selectedMainProps[property.value!]);

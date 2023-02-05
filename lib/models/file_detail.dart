@@ -143,7 +143,7 @@ class FileDetail {
 
     return prices.asMap().containsKey(0) ? prices[0] : null;
   }
-  
+
   Property? getRent() {
     var prices = getPrices();
 
@@ -181,9 +181,11 @@ class FileDetail {
     var images = media?.image
             ?.map<s.Slider>(
               (e) => s.Slider(
-                  image: NetworkImage(e.path ?? ""),
-                  link: e.path ?? "",
-                  type: s.SliderType.image),
+                image: NetworkImage(e.path ?? ""),
+                link: e.path ?? "",
+                type: s.SliderType.image,
+                name: e.name,
+              ),
             )
             .toList() ??
         [];
@@ -198,18 +200,21 @@ class FileDetail {
         quality: 100,
       );
       videos.add(s.Slider(
-          image: FileImage(io.File(fileName!)),
-          type: s.SliderType.video,
-          link: video.path!));
+        image: FileImage(io.File(fileName!)),
+        type: s.SliderType.video,
+        link: video.path!,
+        name: video.name,
+      ));
     }
 
     var virtualTours = <s.Slider>[];
 
     if (media?.virtualTour != null) {
       virtualTours.add(s.Slider(
-          image: AssetImage("assets/images/blue.png"),
-          type: s.SliderType.virtual_tour,
-          link: null));
+        image: AssetImage("assets/images/blue.png"),
+        type: s.SliderType.virtual_tour,
+        link: media?.virtualTour,
+      ));
     }
 
     return images + videos + virtualTours;
@@ -219,7 +224,7 @@ class FileDetail {
 class Media {
   List<Video>? video;
   List<Image>? image;
-  dynamic virtualTour;
+  String? virtualTour;
 
   Media({this.video, this.image, this.virtualTour});
 
@@ -234,7 +239,9 @@ class Media {
           ? null
           : (json["Image"] as List).map((e) => Image.fromJson(e)).toList();
     }
-    virtualTour = json["virtualTour"];
+    if (json["virtualTour"] is String) {
+      virtualTour = json["virtualTour"];
+    }
   }
 
   Map<String, dynamic> toJson() {

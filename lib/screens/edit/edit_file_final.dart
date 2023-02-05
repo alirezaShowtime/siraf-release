@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:siraf3/bloc/create_file_bloc.dart';
+import 'package:siraf3/bloc/edit_file_bloc.dart';
+import 'package:siraf3/bloc/upload_file_media_bloc.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/models/create_file_form_data.dart';
+import 'package:siraf3/models/edit_file_form_data.dart';
 import 'package:siraf3/models/estate.dart';
+import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/screens/create/estate_guide.dart';
 import 'package:siraf3/screens/create/estate_screen.dart';
 import 'package:siraf3/screens/home_screen.dart';
@@ -12,9 +14,10 @@ import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
 
 class EditFileFinal extends StatefulWidget {
-  CreateFileFormData formData;
+  EditFileFormData formData;
+  MyFileDetail file;
 
-  EditFileFinal({required this.formData, super.key});
+  EditFileFinal({required this.formData, required this.file, super.key});
 
   @override
   State<EditFileFinal> createState() => _EditFileFinalState();
@@ -22,13 +25,23 @@ class EditFileFinal extends StatefulWidget {
 
 class _EditFileFinalState extends State<EditFileFinal> {
   List<Estate> selectedEstates = [];
-  CreateFileBloc bloc = CreateFileBloc();
+  EditFileBloc editBloc = EditFileBloc();
+  UFMBloc ufmBloc = UFMBloc();
 
   @override
   void initState() {
     super.initState();
 
-    bloc.stream.listen(_listenBloc);
+    setEstates();
+
+    editBloc.stream.listen(_listenEditBloc);
+    ufmBloc.stream.listen(_listenUploadMediaBloc);
+  }
+
+  setEstates() {
+    setState(() {
+      selectedEstates = widget.formData.estates;
+    });
   }
 
   @override
@@ -38,7 +51,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
           backgroundColor: Themes.appBar,
           elevation: 0.7,
           title: Text(
-            "ثبت نهایی",
+            "تایید نهایی",
             style: TextStyle(
               color: Themes.text,
               fontSize: 15,
@@ -159,7 +172,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
                     onPressed: _finalize,
                     color: Themes.primary,
                     child: Text(
-                      "ثبت نهایی",
+                      "ویرایش",
                       style: TextStyle(
                         color: Colors.white,
                       ),
@@ -319,13 +332,13 @@ class _EditFileFinalState extends State<EditFileFinal> {
 
   _finalize() {
     widget.formData.estates = selectedEstates;
-    bloc.add(CreateFileEvent(data: widget.formData));
+    editBloc.add(EditFileEvent(data: widget.formData));
   }
 
-  _listenBloc(CreateFileState event) {
-    if (event is CreateFileLoadingState) {
-      showLoadingDialog();
-    } else if (event is CreateFileErrorState) {
+  _listenEditBloc(EditFileState event) {
+    if (event is EditFileLoadingState) {
+      showLoadingDialog(message: 'در حال ویرایش فایل لطفا شکیبا باشید');
+    } else if (event is EditFileErrorState) {
       String message = "";
 
       dissmisLoadingDialog();
@@ -333,28 +346,22 @@ class _EditFileFinalState extends State<EditFileFinal> {
         try {
           message = event.response!.data!['message'];
         } on Exception catch (e) {
-          message = "خطایی در ایجاد فایل پیش آمد لطفا بعدا مجدد تلاش کنید";
+          message = "خطایی در ویرایش فایل پیش آمد لطفا بعدا مجدد تلاش کنید";
         }
       } else {
-        message = "خطایی در ایجاد فایل پیش آمد لطفا بعدا مجدد تلاش کنید";
+        message = "خطایی در ویرایش فایل پیش آمد لطفا بعدا مجدد تلاش کنید";
       }
 
       showErrorDialog(message);
-    } else if (event is CreateFileLoadedState) {
+    } else if (event is EditFileSuccessState) {
       dissmisLoadingDialog();
-      notify("فایل با موفقیت ایجاد شد");
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: (_) => HomeScreen(
-                    nextScreen:
-                        MaterialPageRoute(builder: (_) => MyFilesScreen()),
-                  )),
-          (Route<dynamic> route) => false);
+      notify("اطلاعات فایل با موفقیت ویرایش شد");
+      ufmBloc.add(
+          UFMEvent(id: widget.formData.id, media: widget.formData.mediaData));
     }
   }
 
-  showLoadingDialog() {
+  showLoadingDialog({String? message}) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -374,7 +381,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 5),
                   child: Text(
-                    'در حال ایجاد فایل لطفا شکیبا باشید',
+                    message ?? 'در حال انجام عملیات هستیم لطفا شکیبا باشید.',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 16,
@@ -450,5 +457,38 @@ class _EditFileFinalState extends State<EditFileFinal> {
         );
       },
     );
+  }
+
+  _listenUploadMediaBloc(UFMState event) {
+    if (event is UFMLoadingState) {
+      showLoadingDialog(
+          message: 'در حال آپلود رسانه های تصویری هستیم کمی صبر کنید');
+    } else if (event is UFMErrorState) {
+      String message = "";
+
+      dissmisLoadingDialog();
+      if (event.response?.data != null) {
+        try {
+          message = event.response!.data!['message'];
+        } on Exception catch (e) {
+          message = "خطایی در آپلود رسانه ها پیش آمد لطفا بعدا مجدد تلاش کنید";
+        }
+      } else {
+        message = "خطایی در آپلود رسانه ها پیش آمد لطفا بعدا مجدد تلاش کنید";
+      }
+
+      showErrorDialog(message);
+    } else if (event is UFMSuccessState) {
+      dissmisLoadingDialog();
+      notify("رسانه های با موفقیت آپلود شد");
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (_) => HomeScreen(
+                    nextScreen:
+                        MaterialPageRoute(builder: (_) => MyFilesScreen()),
+                  )),
+          (Route<dynamic> route) => false);
+    }
   }
 }

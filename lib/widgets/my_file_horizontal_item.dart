@@ -198,32 +198,6 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(50),
-                boxShadow: [
-                  BoxShadow(
-                    color: Themes.textGrey.withOpacity(0.2),
-                    blurRadius: 2,
-                    spreadRadius: 0.2,
-                    offset: Offset(0, -1),
-                  ),
-                  BoxShadow(
-                    color: Themes.textGrey.withOpacity(0.2),
-                    blurRadius: 2,
-                    spreadRadius: 0.2,
-                    offset: Offset(-1, 0),
-                  ),
-                  BoxShadow(
-                    color: Themes.textGrey.withOpacity(0.2),
-                    blurRadius: 2,
-                    spreadRadius: 0.2,
-                    offset: Offset(1, 0),
-                  ),
-                  BoxShadow(
-                    color: Themes.textGrey.withOpacity(0.2),
-                    blurRadius: 2,
-                    spreadRadius: 0.2,
-                    offset: Offset(0, 1),
-                  ),
-                ],
               ),
               child: Checkbox(
                 value: widget.isSelected,

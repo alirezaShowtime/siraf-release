@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -85,7 +86,12 @@ class _InquiryScreenState extends State<InquiryScreen> {
   Widget item(String title, String url) {
     return GestureDetector(
       onTap: () {
-        launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => WebViewScreen(title: title, url: url),
+          ),
+        );
       },
       child: Container(
         padding: EdgeInsets.all(20),

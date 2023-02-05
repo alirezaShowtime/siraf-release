@@ -4,29 +4,27 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/models/create_file_form_data.dart';
-import 'package:siraf3/screens/create/create_file_final.dart';
+import 'package:siraf3/models/edit_file_form_data.dart';
+import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/screens/create/upload_media_guide.dart';
+import 'package:siraf3/screens/edit/edit_file_final.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/widgets/slider.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'dart:io' as io;
 import 'package:path/path.dart' as p;
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'dart:async';
-import 'dart:typed_data';
-
-import 'package:flutter/material.dart';
 import 'dart:io';
-
-import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter/material.dart' as m;
 
 class EditFileSecond extends StatefulWidget {
-  CreateFileFormData formData;
+  EditFileFormData formData;
+  MyFileDetail file;
 
-  EditFileSecond({required this.formData, super.key});
+  EditFileSecond({required this.formData, required this.file, super.key});
 
   @override
   State<EditFileSecond> createState() => _EditFileSecondState();
@@ -37,6 +35,13 @@ class _EditFileSecondState extends State<EditFileSecond> {
   String? visitPhone;
   String? ownerPhone;
   String? description;
+
+  List<Widget> mediaBoxes = [];
+  List<Map<String, dynamic>> files = [];
+
+  List<int> deleteImages = [];
+  List<int> deleteVideos = [];
+
   GlobalKey<FormState> formKey = GlobalKey();
 
   Map<int, String> hints = {
@@ -62,13 +67,78 @@ class _EditFileSecondState extends State<EditFileSecond> {
   TextEditingController _descriptionController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+
+    setData();
+  }
+
+  setData() async {
+    var sliders = await widget.file.getSliders();
+
+    setState(() {
+      _titleController.text = widget.file.name ?? "";
+      _descriptionController.text = widget.file.description ?? "";
+      // _ownerPhoneController.text = widget.file.ownerPhoneNumber ?? "";
+      // _visitPhoneController.text = widget.file.visitPhoneNumber ?? "";
+
+      files = sliders.map<Map<String, dynamic>>((e) {
+        FileType2 type;
+
+        switch (e.type) {
+          case SliderType.image:
+            type = FileType2.image;
+            break;
+          case SliderType.video:
+            type = FileType2.video;
+            break;
+          case SliderType.virtual_tour:
+            type = FileType2.tour;
+            break;
+          default:
+            type = FileType2.image;
+        }
+
+        return {
+          "isNew": false,
+          "title": e.name,
+          "path": e.link,
+          "file": e.image,
+          "type": type,
+          "id": e.id,
+        };
+      }).toList();
+
+      mediaBoxes = sliders.map<Widget>((e) {
+        FileType2 type;
+
+        switch (e.type) {
+          case SliderType.image:
+            type = FileType2.image;
+            break;
+          case SliderType.video:
+            type = FileType2.video;
+            break;
+          case SliderType.virtual_tour:
+            type = FileType2.tour;
+            break;
+          default:
+            type = FileType2.image;
+        }
+
+        return buildMediaBoxFromImage(e.image, type);
+      }).toList();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Themes.appBar,
         elevation: 0.7,
         title: Text(
-          "ثبت فایل",
+          "ویرایش فایل ${widget.file.id!}",
           style: TextStyle(
             color: Themes.text,
             fontSize: 15,
@@ -290,7 +360,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         cursorColor: Themes.primary,
                         maxLines: 1,
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
+                          if (value == null || value.trim().isEmpty) {
                             return "عنوان فایل را وارد کنید";
                           }
                           if (value.length <= 10) {
@@ -303,6 +373,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           });
                         }),
                         controller: _titleController,
+                        minLines: 1,
                         onTap: () {
                           var txtSelection = TextSelection.fromPosition(
                               TextPosition(
@@ -369,6 +440,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           contentPadding: EdgeInsets.symmetric(
                               horizontal: 10, vertical: 10),
                         ),
+                        minLines: 1,
                         keyboardType: TextInputType.number,
                         style: TextStyle(fontSize: 14, color: Themes.text),
                         onChanged: (value) {
@@ -380,7 +452,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         cursorColor: Themes.primary,
                         maxLines: 1,
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
+                          if (value == null || value.trim().isEmpty) {
                             return "شماره تماس مالک را وارد کنید";
                           }
                           if (value.length != 11) {
@@ -462,6 +534,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           contentPadding: EdgeInsets.symmetric(
                               horizontal: 10, vertical: 10),
                         ),
+                        minLines: 1,
                         keyboardType: TextInputType.number,
                         style: TextStyle(fontSize: 14, color: Themes.text),
                         onChanged: (value) {
@@ -473,7 +546,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         cursorColor: Themes.primary,
                         maxLines: 1,
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
+                          if (value == null || value.trim().isEmpty) {
                             return "شماره تماس بازدید را وارد کنید";
                           }
                           if (value.length != 11) {
@@ -574,7 +647,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         maxLines: 50,
                         minLines: 6,
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
+                          if (value == null || value.trim().isEmpty) {
                             return "توضیحات فایل را وارد کنید";
                           }
                           if (value.length <= 40) {
@@ -763,16 +836,38 @@ class _EditFileSecondState extends State<EditFileSecond> {
       return;
     }
 
-    widget.formData.files = files;
-    widget.formData.title = title!;
-    widget.formData.ownerPhone = ownerPhone!;
-    widget.formData.visitPhone = visitPhone!;
-    widget.formData.description = description!;
+    widget.formData.mediaData = MediaData(
+      deleteImages: deleteImages,
+      deleteVideos: deleteVideos,
+      newImages: files
+          .where((element) =>
+              (element["isNew"] ?? false) && element["type"] == FileType2.image)
+          .toList(),
+      newVideos: files
+          .where((element) =>
+              (element["isNew"] ?? false) && element["type"] == FileType2.video)
+          .toList(),
+      imagesWeight: files
+          .where((element) =>
+              (element["path"] != null) && element["type"] == FileType2.image)
+          .map<String>((e) => e["path"].toString())
+          .toList(),
+      videosWeight: files
+          .where((element) =>
+              (element["path"] != null) && element["type"] == FileType2.video)
+          .map<String>((e) => e["path"].toString())
+          .toList(),
+    );
+    widget.formData.title = _titleController.text;
+    widget.formData.ownerPhone = _ownerPhoneController.text;
+    widget.formData.visitPhone = _visitPhoneController.text;
+    widget.formData.description = _descriptionController.text;
 
     var result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => CreateFileFinal(formData: widget.formData),
+        builder: (_) =>
+            EditFileFinal(formData: widget.formData, file: widget.file),
       ),
     );
 
@@ -780,9 +875,6 @@ class _EditFileSecondState extends State<EditFileSecond> {
       print("reset");
     }
   }
-
-  List<Widget> mediaBoxes = [];
-  List<Map<String, dynamic>> files = [];
 
   void _addMedia() async {
     FilePickerResult? result =
@@ -818,8 +910,12 @@ class _EditFileSecondState extends State<EditFileSecond> {
 
         setState(() {
           files.add({
+            "isNew": true,
             "file": file,
             "title": null,
+            "path": file.path,
+            "type": type,
+            "id": null,
           });
           mediaBoxes.add(mediaBox);
         });
@@ -881,15 +977,13 @@ class _EditFileSecondState extends State<EditFileSecond> {
                       shrinkWrap: true,
                       physics: BouncingScrollPhysics(),
                       children: [
-                        if (!checkVirtualTourExtension(
-                            (files[index]["file"] as io.File).path))
+                        if (files[index]["type"] != FileType2.tour)
                           optionItem(
                             value: "عنوان را وارد کنید (اختیاری)",
                             isLast: false,
                             onTap: () => _showAddTitleDialog(index),
                           ),
-                        if (!checkVirtualTourExtension(
-                            (files[index]["file"] as io.File).path))
+                        if (files[index]["type"] == FileType2.image)
                           optionItem(
                             value: "انتخاب به عنوان نمایش اول",
                             isLast: false,
@@ -956,12 +1050,60 @@ class _EditFileSecondState extends State<EditFileSecond> {
         break;
       case FileType2.tour:
         image = AssetImage("assets/images/blue.png");
-        icon = Image(
+        icon = m.Image(
           image: AssetImage("assets/images/virtual_tour.png"),
           color: Colors.white,
           width: 27,
           height: 27,
         );
+        break;
+    }
+
+    return Container(
+      padding: EdgeInsets.all(5),
+      alignment: Alignment.center,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(5),
+          image: DecorationImage(
+            image: image,
+            fit: BoxFit.cover,
+            colorFilter: type != FileType2.image
+                ? ColorFilter.mode(
+                    Themes.iconGrey,
+                    BlendMode.hardLight,
+                  )
+                : null,
+          ),
+        ),
+        alignment: Alignment.center,
+        child: icon,
+      ),
+    );
+  }
+
+  Widget buildMediaBoxFromImage(ImageProvider<Object> image, FileType2 type) {
+    Widget? icon;
+
+    switch (type) {
+      case FileType2.video:
+        icon = Icon(
+          Icons.play_arrow_outlined,
+          color: Colors.white,
+          size: 27,
+        );
+        break;
+      case FileType2.tour:
+        icon = m.Image(
+          image: AssetImage("assets/images/virtual_tour.png"),
+          color: Colors.white,
+          width: 27,
+          height: 27,
+        );
+        break;
+      default:
+        icon = null;
         break;
     }
 
@@ -1020,6 +1162,17 @@ class _EditFileSecondState extends State<EditFileSecond> {
   }
 
   _deleteMedia(int index) {
+    if (files[index]['id'] != null) {
+      if (files[index]['type'] == FileType2.image &&
+          !deleteImages.contains(files[index]['id'])) {
+        deleteImages.add(files[index]['id']);
+      }
+      if (files[index]['type'] == FileType2.video &&
+          !deleteVideos.contains(files[index]['id'])) {
+        deleteVideos.add(files[index]['id']);
+      }
+    }
+
     setState(() {
       files.removeAt(index);
       mediaBoxes.removeAt(index);
@@ -1058,10 +1211,23 @@ class _EditFileSecondState extends State<EditFileSecond> {
 
       var mediaBox = await buildMediaBox(file, type);
 
+      if (files[index]['id'] != null) {
+        if (files[index]['type'] == FileType2.image) {
+          deleteImages.add(files[index]['id']);
+        }
+        if (files[index]['type'] == FileType2.video) {
+          deleteVideos.add(files[index]['id']);
+        }
+      }
+
       setState(() {
         files[index] = {
+          "isNew": true,
           "file": file,
           "title": files[index]['title'],
+          "path": file.path,
+          "type": type,
+          "id": null,
         };
         mediaBoxes[index] = mediaBox;
       });
@@ -1139,12 +1305,10 @@ class _EditFileSecondState extends State<EditFileSecond> {
                             child: MaterialButton(
                               onPressed: () {
                                 setState(() {
-                                  files[index] = {
-                                    "file": files[index]["file"],
-                                    "title": _controller.text.trim().isNotEmpty
-                                        ? _controller.text.trim()
-                                        : null,
-                                  };
+                                  files[index]["title"] =
+                                      _controller.text.trim().isNotEmpty
+                                          ? _controller.text.trim()
+                                          : null;
                                 });
 
                                 dismissMediaTitleDialog();

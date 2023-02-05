@@ -17,6 +17,7 @@ import 'package:siraf3/models/file_detail.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/support_file_screen.dart';
+import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/loading.dart';
@@ -222,6 +223,19 @@ class _FileScreenState extends State<FileScreen> {
                 imageName.add(" | ${file.media!.image![i].name!.trim()}");
               }
             });
+          },
+          onImageTap: (s.Slider slider) {
+            if (slider.type == s.SliderType.virtual_tour) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => WebViewScreen(
+                    title: file.name ?? "",
+                    url: slider.link!,
+                  ),
+                ),
+              );
+            }
           },
         ),
         Positioned(

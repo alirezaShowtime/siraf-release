@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/file_detail.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
 import 'package:video_thumbnail/video_thumbnail.dart';
@@ -22,7 +23,7 @@ class MyFileDetail {
   List<Property>? property;
   FullCategory? fullCategory;
   String? publishedAgo;
-  String? city;
+  City? city;
   Media? media;
   bool? favorite;
 
@@ -98,8 +99,8 @@ class MyFileDetail {
     if (json["publishedAgo"] is String) {
       publishedAgo = json["publishedAgo"];
     }
-    if (json["city"] is String) {
-      city = json["city"];
+    if (json["city"] is Map) {
+      city = json["city"] == null ? null : City.fromJson(json['city']);
     }
     if (json["media"] is Map) {
       media = json["media"] == null ? null : Media.fromJson(json["media"]);
@@ -130,7 +131,7 @@ class MyFileDetail {
       _data["fullCategory"] = fullCategory?.toJson();
     }
     _data["publishedAgo"] = publishedAgo;
-    _data["city"] = city;
+    if (city != null) _data["city"] = city?.toJson();
     if (media != null) {
       _data["media"] = media?.toJson();
     }
@@ -203,9 +204,12 @@ class MyFileDetail {
     var images = media?.image
             ?.map<s.Slider>(
               (e) => s.Slider(
-                  image: NetworkImage(e.path ?? ""),
-                  link: e.path ?? "",
-                  type: s.SliderType.image),
+                image: NetworkImage(e.path ?? ""),
+                link: e.path ?? "",
+                type: s.SliderType.image,
+                name: e.name,
+                id: e.id,
+              ),
             )
             .toList() ??
         [];
@@ -220,18 +224,22 @@ class MyFileDetail {
         quality: 100,
       );
       videos.add(s.Slider(
-          image: FileImage(io.File(fileName!)),
-          type: s.SliderType.video,
-          link: video.path!));
+        image: FileImage(io.File(fileName!)),
+        type: s.SliderType.video,
+        link: video.path!,
+        name: video.name,
+        id: video.id,
+      ));
     }
 
     var virtualTours = <s.Slider>[];
 
     if (media?.virtualTour != null) {
       virtualTours.add(s.Slider(
-          image: AssetImage("assets/images/blue.png"),
-          type: s.SliderType.virtual_tour,
-          link: null));
+        image: AssetImage("assets/images/blue.png"),
+        type: s.SliderType.virtual_tour,
+        link: media?.virtualTour,
+      ));
     }
 
     return images + videos + virtualTours;
@@ -379,14 +387,28 @@ class FullCategory {
 }
 
 class Property {
+  int? id;
   String? name;
+  String? key;
   int? value;
   int? section;
   int? weightSection;
 
-  Property({this.name, this.value, this.section, this.weightSection});
+  Property(
+      {this.id,
+      this.name,
+      this.key,
+      this.value,
+      this.section,
+      this.weightSection});
 
   Property.fromJson(Map<String, dynamic> json) {
+    if (json["id"] is int) {
+      id = json["id"];
+    }
+    if (json["key"] is String) {
+      key = json["key"];
+    }
     if (json["name"] is String) {
       name = json["name"];
     }
@@ -403,8 +425,10 @@ class Property {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["id"] = id;
     _data["name"] = name;
     _data["value"] = value;
+    _data["key"] = key;
     _data["section"] = section;
     _data["weightSection"] = weightSection;
     return _data;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../themes.dart';
@@ -39,14 +40,25 @@ class _WebViewScreenState extends State<WebViewScreen> {
         appBar: widget.title.isNotEmpty
             ? AppBar(
                 title: Text(
-                  widget.title,
+                  widget.title.trim(),
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
+                    fontSize: 15,
                   ),
                 ),
                 elevation: 0,
                 backgroundColor: Themes.primary,
                 centerTitle: widget.centerTitle,
+                titleSpacing: 0,
+                automaticallyImplyLeading: false,
+                leading: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: MyBackButton(
+                    color: Themes.iconLight,
+                  ),
+                ),
               )
             : null,
         body: SafeArea(
