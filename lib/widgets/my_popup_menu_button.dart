@@ -8,17 +8,16 @@ class MyPopupMenuButton extends StatefulWidget {
 
   List<PopupMenuItem> items;
   Widget? icon;
+  String? tooltip;
 
-  MyPopupMenuButton({
-    required this.items,
-    this.icon,
-  });
+  MyPopupMenuButton({required this.items, this.icon, this.tooltip});
 }
 
 class _MyPopupMenuButton extends State<MyPopupMenuButton> {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
+      tooltip: widget.tooltip,
       color: Colors.white,
       icon: widget.icon ?? icon(Icons.more_vert, color: Themes.text),
       elevation: 3,
