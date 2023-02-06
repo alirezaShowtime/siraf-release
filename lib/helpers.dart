@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -196,54 +195,25 @@ bool isValidNumberPhone(String numberPhone) {
   return numberPhone.length == 11;
 }
 
-showPopupMenu(BuildContext context, TapDownDetails details) {
-  PopupMenuItem<String> item({
-    required String title,
-    required IconData iconDate,
-    required Function() onTap,
-  }) {
-    return PopupMenuItem<String>(
-      onTap: onTap,
-      child: Row(
-        children: [
-          icon(iconDate, size: 20),
-          SizedBox(width: 10),
-          Text(
-            title,
-            style: TextStyle(
-              color: Themes.text,
-              fontSize: 11,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  showMenu<String>(
-    context: context,
-    constraints: BoxConstraints(minWidth: 180),
-    elevation: 3,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(15),
+PopupMenuItem<String> popupMenuItemWithIcon({
+  required String title,
+  required IconData iconDate,
+  Function()? onTap,
+}) {
+  return PopupMenuItem<String>(
+    onTap: onTap,
+    child: Row(
+      children: [
+        icon(iconDate, size: 20),
+        SizedBox(width: 10),
+        Text(
+          title,
+          style: TextStyle(
+            color: Themes.text,
+            fontSize: 11,
+          ),
+        )
+      ],
     ),
-    position: RelativeRect.fromLTRB(
-      details.globalPosition.dx,
-      details.globalPosition.dy,
-      0.0,
-      0.0,
-    ),
-    items: [
-      item(
-        title: "پاسخ",
-        iconDate: Icons.reply_rounded,
-        onTap: () {},
-      ),
-      item(
-        title: "حذف",
-        iconDate: CupertinoIcons.delete,
-        onTap: () {},
-      ),
-    ],
   );
 }

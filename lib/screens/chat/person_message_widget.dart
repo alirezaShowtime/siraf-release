@@ -1,8 +1,7 @@
 import 'package:auto_direction/auto_direction.dart';
 import 'package:flutter/material.dart';
-import 'package:siraf3/helpers.dart';
+import 'package:siraf3/screens/chat/massage_action.dart';
 import 'package:siraf3/themes.dart';
-
 
 class PersonMessage extends StatefulWidget {
   @override
@@ -25,8 +24,13 @@ class _PersonMessage extends State<PersonMessage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown: (TapDownDetails  details){
-        showPopupMenu(context,details);
+      onTapDown: (TapDownDetails details) {
+        showMessageActionMenu(
+          context,
+          details,
+          onClickDeleteItem: () {},
+          onClickAnswerItem: () {},
+        );
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 2),
@@ -39,14 +43,6 @@ class _PersonMessage extends State<PersonMessage> {
             bottomRight: Radius.circular(18),
             bottomLeft: Radius.circular(0),
           ),
-          boxShadow: [
-            BoxShadow(
-              offset: Offset(-3, 3),
-              spreadRadius: -6,
-              blurRadius: 5,
-              color: Color.fromRGBO(227, 227, 227, 1),
-            )
-          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

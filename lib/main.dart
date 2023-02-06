@@ -8,9 +8,7 @@ import 'package:siraf3/bloc/categories_bloc.dart';
 import 'package:siraf3/bloc/get_cities_bloc.dart';
 import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/bloc/login_status.dart';
-import 'package:siraf3/screens/home_screen.dart';
-import 'package:siraf3/screens/ticket/chat_screen.dart';
-import 'package:siraf3/screens/ticket/ticket_list_screen.dart';
+import 'package:siraf3/screens/chat/chat_screen.dart';
 import 'package:siraf3/themes.dart';
 
 void main() {

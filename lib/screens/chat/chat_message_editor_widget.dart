@@ -7,35 +7,71 @@ class ChatMessageEditor extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ChatMessageEditor();
 
-  TextEditingController messageController;
+  TextEditingController _messageController;
 
   //todo: type of the replayingMessage variable is a test type, this variable is possible a model class
   String? replyingMessage;
 
+  //todo: type of the onSendMessage variable is a test type, this variable is possible a model class
+  void Function(String text)? onSendMessage;
+  void Function()? onRecordVoice;
+  void Function()? onAttachEmoji;
+  void Function()? onAttachFile;
+  void Function()? onCloseReply;
+
   ChatMessageEditor({
-    required this.messageController,
+    required TextEditingController messageController,
     this.replyingMessage,
-  });
+    this.onSendMessage,
+    this.onAttachEmoji,
+    this.onAttachFile,
+    this.onCloseReply,
+  }) : _messageController = messageController;
 }
 
-class _ChatMessageEditor extends State<ChatMessageEditor> {
+class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProviderStateMixin {
+  late AnimationController _replyingAnimationController;
+  late Animation<double> _replyingAnimation;
+
   bool showSendButton = false;
 
   @override
   void initState() {
     super.initState();
+    _initReplyingAnimation();
 
-    widget.messageController.addListener(() {
-      if (widget.messageController.value.text.length == 0) {
-        showSendButton = false;
-        setState(() {});
-      }
+    widget._messageController.addListener(_messageControlListener);
+  }
 
-      if (!showSendButton && widget.messageController.value.text.length > 1) {
-        showSendButton = true;
-        setState(() {});
-      }
-    });
+  void _initReplyingAnimation() {
+    _replyingAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+
+    _replyingAnimation = CurvedAnimation(parent: _replyingAnimationController, curve: Curves.fastOutSlowIn);
+
+    _replyingAnimationController.addListener(_replyingAnimationControlListener);
+
+    if (widget.replyingMessage != null) {
+      _replyingAnimationController.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget._messageController.removeListener(_messageControlListener);
+    _replyingAnimationController.removeListener(_replyingAnimationControlListener);
+  }
+
+  void _messageControlListener() {
+    if (widget._messageController.value.text.length == 0) {
+      showSendButton = false;
+      setState(() {});
+    }
+
+    if (!showSendButton && widget._messageController.value.text.length > 1) {
+      showSendButton = true;
+      setState(() {});
+    }
   }
 
   @override
@@ -57,9 +93,15 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
       ),
       child: Column(
         children: [
-          if (widget.replyingMessage != null) replayWidget(),
+          if (widget.replyingMessage != null)
+            SizeTransition(
+              sizeFactor: _replyingAnimation,
+              child: replayWidget(),
+              axisAlignment: 1.0,
+            ),
           Container(
             width: double.infinity,
+            height: 50,
             padding: EdgeInsets.symmetric(horizontal: 5),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -78,7 +120,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
                 if (!showSendButton)
                   btn(
                     iconData: Icons.keyboard_voice_outlined,
-                    onTap: voice,
+                    onTap: recordVoice,
                   ),
                 if (showSendButton)
                   Directionality(
@@ -91,7 +133,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
                   ),
                 Expanded(
                   child: TextField2(
-                    controller: widget.messageController,
+                    controller: widget._messageController,
                     maxLines: 7,
                     minLines: 1,
                     decoration: InputDecoration(
@@ -132,72 +174,87 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
   //event listeners
   void attachEmoji() {
     //todo: implement event listener
+    widget.onAttachEmoji?.call();
   }
 
   void attachFile() {
     //todo: implement event listener
+    widget.onAttachFile?.call();
   }
 
-  void voice() {
+  void recordVoice() {
     //todo: implement event listener
+    widget.onRecordVoice?.call();
   }
 
   void sendMessage() {
     //todo: implement event listener
+
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    widget.onSendMessage?.call(widget._messageController.value.text);
+  }
+
+  void closeReplaying() {
+    _replyingAnimationController.reverse();
+
+    widget.onCloseReply?.call();
   }
 
   Widget replayWidget() {
-    return Transform.translate(
-      offset: const Offset(0, 0),
-      child: Container(
-        padding: EdgeInsets.only(left: 10, right: 4),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: Colors.grey.shade300, width: 0.7),
-          ),
+    return Container(
+      height: 45,
+      padding: EdgeInsets.only(left: 10, right: 4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          bottom: BorderSide(color: Colors.grey.shade300, width: 0.7),
         ),
-        child: Row(
-          children: [
-            btn(iconData: Icons.close_rounded, onTap: closeReplaying),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 7),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      "Alireza",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Themes.primary,
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                      ),
+      ),
+      child: Row(
+        children: [
+          btn(iconData: Icons.close_rounded, onTap: closeReplaying),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 7),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    "Alireza",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Themes.primary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
                     ),
-                    Wrap(
-                      children: [
-                        Text(
-                          "  یسنحبجینس خبنیسحخ بنیحخسب",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: Colors.grey.shade400,
-                            fontSize: 11,
-                          ),
+                  ),
+                  Wrap(
+                    children: [
+                      Text(
+                        "  یسنحبجینس خبنیسحخ بنیحخسب",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.grey.shade400,
+                          fontSize: 11,
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            icon(Icons.reply_rounded, color: Themes.primary),
-          ],
-        ),
+          ),
+          icon(Icons.reply_rounded, color: Themes.primary),
+        ],
       ),
     );
   }
 
-  void closeReplaying() {}
+  void _replyingAnimationControlListener() {
+    setState(() {});
+  }
 }
