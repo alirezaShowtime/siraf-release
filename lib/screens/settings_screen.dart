@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/user.dart';
+import 'package:siraf3/settings.dart';
 import 'package:siraf3/themes.dart';
+import 'package:switcher_button/switcher_button.dart';
+
 import '../widgets/app_bar_title.dart';
 import '../widgets/my_back_button.dart';
-import 'package:switcher_button/switcher_button.dart';
-import 'package:siraf3/settings.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -23,20 +24,21 @@ class _SettingsScreen extends State<SettingsScreen> {
 
   @override
   void initState() {
-    super.initState();
-
-    setData();
-  }
-
-  setData() async {
-    var darkMode = await Settings.darkMode();
-    var showNotification = await Settings.showNotification();
-    var showNumberPhoneForAgent = await Settings.showNumberPhoneForAgent();
-    setState(() {
-      this.darkMode = darkMode;
-      this.showNumberPhoneForAgent = showNumberPhoneForAgent;
-      this.showNotification = showNotification;
+    Settings.showNumberPhoneForAgent().then((value) {
+      showNumberPhoneForAgent = value;
+      setState(() {});
     });
+
+    Settings.showNotification().then((value) {
+      showNotification = value;
+      setState(() {});
+    });
+
+    Settings.darkMode().then((value) {
+      darkMode = value;
+      setState(() {});
+    });
+    super.initState();
   }
 
   @override
@@ -90,7 +92,7 @@ class _SettingsScreen extends State<SettingsScreen> {
             widget: SwitcherButton(
               onColor: Themes.blue,
               offColor: Colors.grey.shade300,
-              value: showNotification ?? false,
+              value: showNotification ?? true,
               onChange: (value) {
                 Settings.setShowNotification(value);
               },

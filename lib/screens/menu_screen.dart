@@ -6,7 +6,8 @@ import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/inquiry_screen.dart';
 import 'package:siraf3/screens/my_files_screen.dart';
-import 'package:siraf3/screens/request_file_screen.dart';
+import 'package:siraf3/screens/request_file/request_file_screen.dart';
+import 'package:siraf3/screens/request_file/request_list_screen.dart';
 import 'package:siraf3/screens/settings_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/accordion.dart';
@@ -193,7 +194,19 @@ class _MenuScreenState extends State<MenuScreen> {
                                   },
                                   title: "ثبت در خواست"),
                               AccordionItem(
-                                  onClick: () {}, title: "در خواست های من"),
+                                  onClick: () async {
+                                    await doWithLogin(context, () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => RequestListScreen(),
+                                        ),
+                                      );
+                                    });
+
+                                    getUser();
+                                  },
+                                  title: "در خواست های من"),
                               AccordionItem(
                                   onClick: () {}, title: "ملک های اطراف من"),
                             ],

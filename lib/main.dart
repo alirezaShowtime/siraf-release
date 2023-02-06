@@ -12,20 +12,25 @@ import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/themes.dart';
 
 void main() {
-  runApp(MultiBlocProvider(providers: [
-    BlocProvider<GetCitiesBloc>(
-      create: (_) => GetCitiesBloc(),
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<GetCitiesBloc>(
+          create: (_) => GetCitiesBloc(),
+        ),
+        BlocProvider<HSBloc>(
+          create: (_) => HSBloc(),
+        ),
+        BlocProvider<LoginStatus>(
+          create: (_) => LoginStatus(),
+        ),
+        BlocProvider<CategoriesBloc>(
+          create: (_) => CategoriesBloc(),
+        ),
+      ],
+      child: MyApp(),
     ),
-    BlocProvider<HSBloc>(
-      create: (_) => HSBloc(),
-    ),
-    BlocProvider<LoginStatus>(
-      create: (_) => LoginStatus(),
-    ),
-    BlocProvider<CategoriesBloc>(
-      create: (_) => CategoriesBloc(),
-    ),
-  ], child: MyApp()));
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -65,8 +70,7 @@ class MyApp extends StatelessWidget {
 
 class MyBehavior extends ScrollBehavior {
   @override
-  Widget buildOverscrollIndicator(
-      BuildContext context, Widget child, ScrollableDetails details) {
+  Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
     return child;
   }
 }
@@ -74,8 +78,6 @@ class MyBehavior extends ScrollBehavior {
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+    return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }

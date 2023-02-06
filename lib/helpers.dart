@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -209,14 +208,17 @@ BuildContext? showLoadingDialog(
   return loadingDContext;
 }
 
-BuildContext? showErrorDialog({required BuildContext context, String? message}) {
+BuildContext? showErrorDialog(
+    {required BuildContext context, String? message}) {
   BuildContext? dialogContext;
   showDialog(
     context: context,
     barrierDismissible: true,
     builder: (_) {
       dialogContext = _;
-      return ErrorDialog(message: message ?? "خطایی در هنگام انجام عملیات رخ داد",);
+      return ErrorDialog(
+        message: message ?? "خطایی در هنگام انجام عملیات رخ داد",
+      );
     },
   );
 
@@ -227,4 +229,31 @@ dismissDialog({required BuildContext? dialogContext}) {
   if (dialogContext != null) {
     Navigator.pop(dialogContext);
   }
+}
+
+bool isValidNumberPhone(String numberPhone) {
+  return numberPhone.length == 11;
+}
+
+PopupMenuItem<String> popupMenuItemWithIcon({
+  required String title,
+  required IconData iconDate,
+  Function()? onTap,
+}) {
+  return PopupMenuItem<String>(
+    onTap: onTap,
+    child: Row(
+      children: [
+        icon(iconDate, size: 20),
+        SizedBox(width: 10),
+        Text(
+          title,
+          style: TextStyle(
+            color: Themes.text,
+            fontSize: 11,
+          ),
+        )
+      ],
+    ),
+  );
 }

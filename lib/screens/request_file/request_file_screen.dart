@@ -3,20 +3,22 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:siraf3/bloc/add_file_request_bloc.dart';
+import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/category.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/estate.dart';
 import 'package:siraf3/money_input_formatter.dart';
 import 'package:siraf3/screens/create/estate_screen.dart';
+import 'package:siraf3/screens/request_file/request_list_screen.dart';
 import 'package:siraf3/screens/select_category_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/screens/send_request_guide.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
-import 'package:siraf3/widgets/loading_dialog.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
-import 'package:siraf3/helpers.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
+import 'package:flutter/material.dart';
+import '../../widgets/section.dart';
 
 class RequestFileScreen extends StatefulWidget {
   @override
@@ -120,7 +122,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                     color: Themes.blue,
                   ),
                 ),
-                section(
+                Section(
                   title: "دسته بندی",
                   hint: "انتخاب",
                   value: category != null
@@ -128,19 +130,19 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                       : null,
                   onTap: onClickCategoryItem,
                 ),
-                section(
+                Section(
                   title: "شهر",
                   hint: "انتخاب",
                   value: city?.name,
                   onTap: onClickCityItem,
                 ),
-                section(
+                Section(
                   title: "محدوده متراژ",
                   hint: "تعیین",
                   value: createLabel(minMeter, maxMeter, 'متر'),
                   onTap: onClickMeterageItem,
                 ),
-                section(
+                Section(
                   title: "محدوده قیمت",
                   hint: "تعیین",
                   value: createLabel(minPrice, maxPrice, 'تومان'),
@@ -258,8 +260,8 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                     style: TextStyle(fontSize: 14),
                   ),
                 ),
-                section(
-                  title: "دفتر/دفاتر املاک (اختیاری)",
+                Section(
+                  title: "دفتر/دفاتر املاک(اخیتاری)",
                   hint: "انتخاب",
                   value: selectedEstates.isNotEmpty
                       ? "${selectedEstates.length} مورد"
@@ -302,54 +304,6 @@ class _RequestFileScreen extends State<RequestFileScreen> {
     );
   }
 
-  Widget section({
-    required String title,
-    required String hint,
-    required String? value,
-    required Function() onTap,
-  }) {
-    return Container(
-      margin: EdgeInsets.only(top: 10),
-      padding: EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Themes.textGrey.withOpacity(0.5), width: 1),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 13,
-              fontFamily: "IranSansMedium",
-              color: Themes.text,
-            ),
-          ),
-          GestureDetector(
-            onTap: onTap,
-            child: Container(
-              constraints: BoxConstraints(
-                minWidth: 30,
-              ),
-              color: Colors.transparent,
-              alignment: Alignment.centerLeft,
-              child: Text(
-                value ?? hint,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontFamily: "IranSansMedium",
-                  color: Themes.text,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget textButton(String text) {
     return Text(
       text,
@@ -361,10 +315,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
     );
   }
 
-  //event listeners
   void onClickCategoryItem() {
-    //todo: implement event listener
-
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -911,9 +862,8 @@ class _RequestFileScreen extends State<RequestFileScreen> {
       dismissDialog(dialogContext: loadingDContext);
       notify("درخواست فایل با موفقیت ثبت شد");
 
-      // todo go to requests screen
-      Navigator.pop(buildContext ?? context);
-      Navigator.pop(buildContext ?? context);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (_) => RequestListScreen()));
     }
   }
 
