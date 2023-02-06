@@ -11,6 +11,8 @@ import 'package:siraf3/config.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/widgets/error_dialog.dart';
+import 'package:siraf3/widgets/loading_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const image_extensions = <String>["png", "jpg", "jpeg", "tif", 'webp'];
@@ -167,7 +169,7 @@ doWithLogin(BuildContext context, void Function() onLoggedIn,
   if (await User.hasToken()) {
     onLoggedIn();
   } else {
-    Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => LoginScreen(
@@ -190,4 +192,39 @@ FaIcon icon(IconData icon, {Color color = Themes.text, double size = 24}) {
 
 void navigateTo(BuildContext context, Widget page) {
   Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+}
+
+BuildContext? showLoadingDialog(
+    {required BuildContext context, String? message}) {
+  BuildContext? loadingDContext;
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) {
+      loadingDContext = _;
+      return LoadingDialog();
+    },
+  );
+
+  return loadingDContext;
+}
+
+BuildContext? showErrorDialog({required BuildContext context, String? message}) {
+  BuildContext? dialogContext;
+  showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (_) {
+      dialogContext = _;
+      return ErrorDialog(message: message ?? "خطایی در هنگام انجام عملیات رخ داد",);
+    },
+  );
+
+  return dialogContext;
+}
+
+dismissDialog({required BuildContext? dialogContext}) {
+  if (dialogContext != null) {
+    Navigator.pop(dialogContext);
+  }
 }

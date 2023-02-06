@@ -19,6 +19,7 @@ class SelectCityScreen extends StatefulWidget {
   bool saveCity;
   int? max;
   bool force;
+  List<City>? selectedCities;
 
   SelectCityScreen({
     super.key,
@@ -26,6 +27,7 @@ class SelectCityScreen extends StatefulWidget {
     this.saveCity = true,
     this.force = false,
     this.max = null,
+    this.selectedCities,
   });
 
   @override
@@ -55,11 +57,17 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
 
     getCurrentCityName();
 
-    if (widget.showSelected) showSelectedCities();
+    if (widget.showSelected || (widget.selectedCities?.isNotEmpty ?? false))
+      showSelectedCities();
   }
 
   showSelectedCities() async {
-    var cities = await City.getList();
+    List<City> cities = [];
+    if (widget.selectedCities?.isNotEmpty ?? false) {
+      cities = widget.selectedCities!;
+    } else {
+      cities = await City.getList();
+    }
 
     setState(() {
       this.selectedCities = cities;
@@ -216,7 +224,8 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      selectedCities.remove(e);
+                                      selectedCities
+                                          .removeWhere((el) => el.id == e.id);
                                     });
                                   },
                                   child: Icon(
@@ -470,8 +479,9 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
-                        if (selectedCities.asMap().containsValue(e)) {
-                          selectedCities.remove(e);
+                        if (selectedCities
+                            .any((element) => element.id == e.id)) {
+                          selectedCities.removeWhere((el) => el.id == e.id);
                         } else {
                           if (widget.max != null &&
                               selectedCities.length == widget.max) {
@@ -490,7 +500,8 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                           e.name!,
                           textAlign: TextAlign.start,
                           style: TextStyle(
-                            color: selectedCities.asMap().containsValue(e)
+                            color: selectedCities
+                                    .any((element) => element.id == e.id)
                                 ? Color(0xff3d3d3d)
                                 : Color(0xff707070),
                             fontSize: 15,

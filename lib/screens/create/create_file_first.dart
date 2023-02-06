@@ -32,6 +32,7 @@ class CreateFileFirst extends StatefulWidget {
 
 class _CreateFileFirstState extends State<CreateFileFirst> {
   Category? category;
+  List<Category> categories = [];
   City? city;
   LatLng? location;
   String? address;
@@ -111,7 +112,9 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                       section(
                         title: "دسته بندی",
                         hint: "انتخاب",
-                        value: category?.name,
+                        value: category != null
+                            ? categories.map((e) => e.name).join(' > ')
+                            : null,
                         onTap: _selectCategory,
                       ),
                       SizedBox(
@@ -458,6 +461,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
     );
     if (result != null || result is List<Category>) {
       setState(() {
+        categories = result;
         category = result.last;
 
         propertyBloc.add(PropertyInsertEvent(category_id: category!.id!));
@@ -473,6 +477,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
           max: 1,
           saveCity: false,
           force: true,
+          selectedCities: city != null ? [city!] : null,
         ),
       ),
     );
