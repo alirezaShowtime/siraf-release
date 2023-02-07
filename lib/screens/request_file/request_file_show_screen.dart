@@ -6,6 +6,7 @@ import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/my_alert_dialog.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
+import 'package:siraf3/widgets/my_badge.dart';
 import 'package:siraf3/widgets/my_content_dialog.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
@@ -129,12 +130,21 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                       fontSize: 9,
                     ),
                   ),
-                  Text(
-                    "کد رهگیری: #",
-                    style: TextStyle(
-                      color: Themes.textGrey,
-                      fontSize: 9,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        "کد رهگیری",
+                        style: TextStyle(
+                          color: Themes.textGrey,
+                          fontSize: 9,
+                        ),
+                      ),
+                      MyBadge(
+                        text: "842745353",
+                        padding: EdgeInsets.symmetric(vertical: 1, horizontal: 6),
+                        margin: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -149,6 +159,18 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                 fontSize: 12,
               ),
             ),
+            //todo: if status is pending, show blow widget
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: Text(
+                "لطفا تا پذیرش  درخواست فایل توسط دفتر/دفاتر املاک شکیبا باشید. این وضعیت نهایتا تا ۲۴ ساعت زمان خواهد برد.",
+                style: TextStyle(
+                  color: Themes.textGrey,
+                  fontSize: 10,
+                ),
+              ),
+            ),
+            //todo: if status is accepted, show blow widget
             SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
