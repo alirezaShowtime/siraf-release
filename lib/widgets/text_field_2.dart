@@ -57,7 +57,9 @@ class TextField2 extends m.TextField {
   }) : super(
           controller: controller,
           focusNode: focusNode,
-          decoration: decoration,
+          decoration: decoration?.copyWith(
+            contentPadding: EdgeInsets.symmetric(vertical: 1, horizontal: 5),
+          ),
           keyboardType: keyboardType,
           textCapitalization: textCapitalization,
           textInputAction: textInputAction,
@@ -84,12 +86,10 @@ class TextField2 extends m.TextField {
           onChanged: onChanged,
           onTap: () {
             if (controller != null) {
-              var txtSelection = TextSelection.fromPosition(
-                  TextPosition(offset: controller.text.length - 1));
+              var txtSelection = TextSelection.fromPosition(TextPosition(offset: controller.text.length - 1));
 
               if (controller.selection == txtSelection) {
-                controller.selection = TextSelection.fromPosition(
-                    TextPosition(offset: controller.text.length));
+                controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
               }
             }
             if (onTap != null) onTap();

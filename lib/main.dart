@@ -8,6 +8,7 @@ import 'package:siraf3/bloc/categories_bloc.dart';
 import 'package:siraf3/bloc/get_cities_bloc.dart';
 import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/bloc/login_status.dart';
+import 'package:siraf3/screens/register_agency/agency_registration_form_screen.dart';
 import 'package:siraf3/screens/request_file/request_file_show_screen.dart';
 import 'package:siraf3/themes.dart';
 
@@ -62,7 +63,7 @@ class MyApp extends StatelessWidget {
             data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
           );
         },
-        home: RequestFileShowScreen(),
+        home: AgencyRegistrationFormScreen(),
       ),
     );
   }
