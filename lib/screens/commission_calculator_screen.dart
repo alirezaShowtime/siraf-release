@@ -7,6 +7,7 @@ import 'package:siraf3/widgets/field_dialog.dart';
 import 'package:siraf3/widgets/list_dialog.dart';
 import 'package:siraf3/widgets/simple_app_bar.dart';
 
+import 'package:siraf3/dialog.dart';
 import '../widgets/section.dart';
 
 enum TradeType {

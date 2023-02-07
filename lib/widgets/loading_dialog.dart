@@ -3,7 +3,8 @@ import 'package:siraf3/widgets/loading.dart';
 
 class LoadingDialog extends StatefulWidget {
   String? message;
-  LoadingDialog({this.message, super.key});
+  bool showMessage;
+  LoadingDialog({this.message, this.showMessage = true, super.key});
 
   @override
   State<LoadingDialog> createState() => _LoadingDialogState();
@@ -13,33 +14,43 @@ class _LoadingDialogState extends State<LoadingDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      contentPadding: EdgeInsets.all(0),
+      contentPadding: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+      backgroundColor: Colors.white,
+      insetPadding: EdgeInsets.symmetric(
+        horizontal: widget.showMessage
+            ? 0
+            : (MediaQuery.of(context).size.width - 100) / 2,
+      ),
       content: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
         ),
-        height: 170,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5),
-              child: Text(
-                widget.message ?? 'در حال ارسال درخواست صبور باشید',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 13,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Loading(),
-          ],
-        ),
+        height: widget.showMessage ? 170 : 100,
+        alignment: Alignment.center,
+        child: widget.showMessage
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: Text(
+                      widget.message ?? 'در حال ارسال درخواست صبور باشید',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 13,
+                        fontWeight: FontWeight.normal,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Loading(),
+                ],
+              )
+            : Loading(),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart';
+import 'package:siraf3/http2.dart' as http2;
 import 'package:bloc/bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/user.dart';
@@ -42,16 +43,14 @@ class AddViolationBloc extends Bloc<AddViolationEvent, AddViolationState> {
     Response response;
 
     try {
-      response = await post(getFileUrl("violation/addViolation/"),
-          body: jsonEncode({
-            "fileId": event.fileId,
-            "title": event.title,
-            "body": event.body,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": await User.getBearerToken(),
-          });
+      response = await http2.postJsonWithToken(
+        getFileUrl("violation/addViolation/"),
+        body: {
+          "fileId": event.fileId,
+          "title": event.title,
+          "body": event.body,
+        },
+      );
 
       print(response.statusCode);
       print(jDecode(response.body));

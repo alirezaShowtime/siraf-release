@@ -14,6 +14,7 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_file_horizontal_item.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:siraf3/dialog.dart';
 
 class MyFilesScreen extends StatefulWidget {
   const MyFilesScreen({super.key});

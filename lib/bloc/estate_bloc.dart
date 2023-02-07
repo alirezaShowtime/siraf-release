@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart';
+import 'package:siraf3/http2.dart' as http2;
 import 'package:bloc/bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/estate.dart';
@@ -56,7 +57,7 @@ class EstateBloc extends Bloc<EstateEvent, EstateState> {
 
       print(url.toString());
 
-      response = await get(url);
+      response = await http2.get(url);
     } on HttpException catch (e) {
       emit(EstateErrorState(response: null));
       return;

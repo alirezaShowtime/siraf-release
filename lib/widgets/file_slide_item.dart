@@ -1,17 +1,13 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/file.dart';
-import 'package:siraf3/models/user.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
-import 'package:siraf3/widgets/loading.dart';
-import 'package:http/http.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
+import 'package:siraf3/bookmark.dart';
 
 class FileSlideItem extends StatefulWidget {
   File file;
@@ -31,6 +27,8 @@ class _FileSlideItemState extends State<FileSlideItem> {
 
   bool isFavorite = false;
 
+  late Bookmark bookmark;
+
   @override
   void initState() {
     super.initState();
@@ -46,6 +44,15 @@ class _FileSlideItemState extends State<FileSlideItem> {
       } else if (summary.length > 128) {
         summary = summary.substring(0, 128) + "...";
       }
+    });
+
+    bookmark =
+        Bookmark(id: widget.file.id!, isFavorite: isFavorite, context: context);
+
+    bookmark.favoriteStream.stream.listen((bool data) {
+      setState(() {
+        isFavorite = data;
+      });
     });
   }
 
@@ -164,11 +171,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                   IconButton(
                     onPressed: () async {
                       doWithLogin(context, () async {
-                        if (await addOrRemoveFavorite()) {
-                          setState(() {
-                            isFavorite = !isFavorite;
-                          });
-                        }
+                        bookmark.addOrRemoveFavorite();
                       });
                     },
                     icon: Icon(
@@ -290,124 +293,4 @@ class _FileSlideItemState extends State<FileSlideItem> {
       ),
     );
   }
-
-  Future<bool> addOrRemoveFavorite() async {
-    if (isFavorite) {
-      return await removeFavorite();
-    } else {
-      return await addFavorite();
-    }
-  }
-
-  Future<bool> addFavorite() async {
-    showLoadingDialog();
-
-    var result = false;
-
-    try {
-      var response = await get(
-          getFileUrl(
-              'file/addFileFavorite/' + widget.file.id!.toString() + '/'),
-          headers: {
-            "Authorization": await User.getBearerToken(),
-          });
-
-      if (isResponseOk(response)) {
-        result = true;
-      } else {
-        var json = jDecode(response.body);
-        notify(json['message'] ??
-            "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
-        result = false;
-      }
-    } on HttpException {
-      notify("خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
-    } catch (e) {
-      notify("خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
-    }
-
-    dissmisLoadingDialog();
-
-    return result;
-  }
-
-  Future<bool> removeFavorite() async {
-    showLoadingDialog();
-
-    var result = false;
-
-    try {
-      var response = await get(
-          getFileUrl(
-              'file/deleteFileFavorite/' + widget.file.id!.toString() + '/'),
-          headers: {
-            "Authorization": await User.getBearerToken(),
-          });
-
-      if (isResponseOk(response)) {
-        result = true;
-      } else {
-        var json = jDecode(response.body);
-        notify(json['message'] ??
-            "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
-        result = false;
-      }
-    } on HttpException {
-      notify("خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
-    } catch (e) {
-      notify("خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
-    }
-
-    dissmisLoadingDialog();
-
-    return result;
-  }
-
-  showLoadingDialog() {
-    showDialog2(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) {
-        loadingDContext = _;
-        return AlertDialog(
-          contentPadding: EdgeInsets.all(0),
-          content: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            height: 170,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5),
-                  child: Text(
-                    'در حال ارسال درخواست صبور باشید',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Loading(),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  dissmisLoadingDialog() {
-    if (loadingDContext != null) {
-      Navigator.pop(loadingDContext!);
-    }
-  }
-
-  BuildContext? loadingDContext;
 }

@@ -10,6 +10,7 @@ import 'package:siraf3/themes.dart';
 
 import '../../money_input_formatter.dart';
 import '../../widgets/text_field_2.dart';
+import 'package:siraf3/dialog.dart';
 
 class PropertiesScreen extends StatefulWidget {
   List<PropertyInsert> properties;

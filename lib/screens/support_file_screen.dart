@@ -13,6 +13,7 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:http/http.dart';
 
+import 'package:siraf3/dialog.dart';
 import '../helpers.dart';
 
 class SupportFileScreen extends StatefulWidget {

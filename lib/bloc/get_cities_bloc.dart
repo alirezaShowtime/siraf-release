@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:http/http.dart' as http;
+import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/helpers.dart';
 
 class GetCitiesEventBase {}
@@ -41,7 +42,7 @@ class GetCitiesBloc extends Bloc<GetCitiesEventBase, GetCitiesState> {
     if (event is GetCitiesEvent) {
       emit(GetCitiesLoadingState());
 
-      var response = await http.get(getFileUrl("city/citys/"));
+      var response = await http2.get(getFileUrl("city/citys/"));
 
       if (response.statusCode == 200) {
         var json = jDecode(response.body);

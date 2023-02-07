@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart';
+import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/file_consulant.dart';
 import 'package:siraf3/models/file_detail.dart';
@@ -52,16 +53,14 @@ class MyFileBloc extends Bloc<MyFileEvent, MyFileState> {
 
         var url = getFileUrl('file/myFile/' + event.id.toString());
 
-        response = await get(url, headers: {
-          "Authorization": await User.getBearerToken(),
-        });
+        response = await http2.getWithToken(url);
 
         List<FileConsulant> consulants = [];
 
         print(event.progress);
 
         if (event.progress == 7 || event.progress == 4) {
-          var response2 = await get(
+          var response2 = await http2.get(
               getEstateUrl("consultant/consultantsFile?fileId=${event.id}"));
 
           if (isResponseOk(response2)) {
@@ -92,7 +91,7 @@ class MyFileBloc extends Bloc<MyFileEvent, MyFileState> {
           if (json['code'] == 205) {
             User.remove();
 
-            response = await get(url);
+            response = await http2.get(url);
 
             if (isResponseOk(response)) {
               var json = jDecode(response.body);

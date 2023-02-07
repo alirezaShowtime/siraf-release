@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -82,6 +83,10 @@ Map flipMap(Map map) {
 
 String convertUtf8(String content) {
   return Utf8Decoder(allowMalformed: true).convert(content.codeUnits);
+}
+
+String encodeUtf8(String content) {
+  return String.fromCharCodes(Utf8Encoder().convert(content));
 }
 
 dynamic jDecode(String json) {
@@ -193,44 +198,6 @@ void navigateTo(BuildContext context, Widget page) {
   Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
 }
 
-BuildContext? showLoadingDialog(
-    {required BuildContext context, String? message}) {
-  BuildContext? loadingDContext;
-  showDialog2(
-    context: context,
-    barrierDismissible: false,
-    builder: (_) {
-      loadingDContext = _;
-      return LoadingDialog();
-    },
-  );
-
-  return loadingDContext;
-}
-
-BuildContext? showErrorDialog(
-    {required BuildContext context, String? message}) {
-  BuildContext? dialogContext;
-  showDialog2(
-    context: context,
-    barrierDismissible: true,
-    builder: (_) {
-      dialogContext = _;
-      return ErrorDialog(
-        message: message ?? "خطایی در هنگام انجام عملیات رخ داد",
-      );
-    },
-  );
-
-  return dialogContext;
-}
-
-dismissDialog({required BuildContext? dialogContext}) {
-  if (dialogContext != null) {
-    Navigator.pop(dialogContext);
-  }
-}
-
 bool isValidNumberPhone(String numberPhone) {
   return numberPhone.length == 11;
 }
@@ -256,39 +223,4 @@ PopupMenuItem<String> popupMenuItemWithIcon({
       ],
     ),
   );
-}
-
-Future<T?> showDialog2<T>({
-  required BuildContext context,
-  required WidgetBuilder builder,
-  bool barrierDismissible = true,
-  Color? barrierColor = Colors.black54,
-  String? barrierLabel,
-  bool useSafeArea = true,
-  bool useRootNavigator = true,
-  RouteSettings? routeSettings,
-  Offset? anchorPoint,
-}) {
-  final CapturedThemes themes = InheritedTheme.capture(
-    from: context,
-    to: Navigator.of(
-      context,
-      rootNavigator: useRootNavigator,
-    ).context,
-  );
-
-  FocusScope.of(context).unfocus();
-
-  return Navigator.of(context, rootNavigator: useRootNavigator)
-      .push<T>(DialogRoute<T>(
-    context: context,
-    builder: builder,
-    barrierColor: barrierColor,
-    barrierDismissible: barrierDismissible,
-    barrierLabel: barrierLabel,
-    useSafeArea: useSafeArea,
-    settings: routeSettings,
-    themes: themes,
-    anchorPoint: anchorPoint,
-  ));
 }

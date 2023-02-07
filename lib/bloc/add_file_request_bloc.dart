@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart';
+import 'package:siraf3/http2.dart' as http2;
 import 'package:bloc/bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/estate.dart';
@@ -75,12 +76,10 @@ class AddFileRequestBloc
     Response? response;
 
     try {
-      response = await post(getEstateUrl("fileRequest/addFileRequest/"),
-          body: jsonEncode(event.toMap()),
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": await User.getBearerToken(),
-          });
+      response = await http2.postJsonWithToken(
+        getEstateUrl("fileRequest/addFileRequest/"),
+        body: event.toMap(),
+      );
     } on HttpException catch (_) {
       return emit(AddFileRequestErrorState(response: response));
     } on SocketException catch (_) {

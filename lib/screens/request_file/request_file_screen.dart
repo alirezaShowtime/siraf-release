@@ -19,6 +19,7 @@ import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/section.dart';
+import 'package:siraf3/dialog.dart';
 
 class RequestFileScreen extends StatefulWidget {
   @override
@@ -841,7 +842,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
 
   listen(AddFileRequestState event) {
     if (event is AddFileRequestLoadingState) {
-      loadingDContext = showLoadingDialog(context: context);
+      loadingDialog(context: context);
     }
     if (event is AddFileRequestErrorState) {
       String? message;
@@ -852,22 +853,20 @@ class _RequestFileScreen extends State<RequestFileScreen> {
         } on Exception catch (_) {}
       }
 
-      showErrorDialog(
+      errorDialog(
         context: context,
         message: message,
       );
     }
     if (event is AddFileRequestSuccessState) {
       print(convertUtf8(event.response.body));
-      dismissDialog(dialogContext: loadingDContext);
+      dismissDialog(loadingDialogContext);
       notify("درخواست فایل با موفقیت ثبت شد");
 
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (_) => RequestListScreen()));
     }
   }
-
-  BuildContext? loadingDContext;
 
   bool validate() {
     if (category == null) {

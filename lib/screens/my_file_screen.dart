@@ -16,12 +16,9 @@ import 'package:siraf3/bloc/my_file_bloc.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/file_consulant.dart';
-import 'package:siraf3/models/file_detail.dart';
 import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/models/user.dart';
-import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/edit/edit_file_first.dart';
-import 'package:siraf3/screens/support_file_screen.dart';
 import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
@@ -29,8 +26,8 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:http/http.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
+import 'package:siraf3/dialog.dart';
 
 class MyFileScreen extends StatefulWidget {
   int id;

@@ -10,6 +10,7 @@ import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/screens/my_files_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/dialog.dart';
 
 class CreateFileFinal extends StatefulWidget {
   CreateFileFormData formData;

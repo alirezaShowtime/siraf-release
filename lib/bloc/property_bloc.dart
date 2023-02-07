@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:http/http.dart';
+import 'package:siraf3/http2.dart' as http2;
 import 'package:bloc/bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/property_insert.dart';
@@ -51,7 +52,7 @@ class PropertyBloc extends Bloc<PropertyEvent, PropertyState> {
       Response response;
 
       try {
-        response = await get(getFileUrl(
+        response = await http2.get(getFileUrl(
             "property/propertyFields?catId=${event.category_id}&type=${event.type}"));
       } on HttpException catch (e) {
         emit(PropertyErrorState());

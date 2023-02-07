@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart';
+import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/file_detail.dart';
 import 'package:siraf3/models/user.dart';
@@ -47,11 +48,9 @@ class FileBloc extends Bloc<FileEvent, FileState> {
       var url = getFileUrl('file/file/' + event.id.toString());
 
       if (await User.hasToken()) {
-        response = await get(url, headers: {
-          "Authorization": await User.getBearerToken(),
-        });
+        response = await http2.getWithToken(url);
       } else {
-        response = await get(url);
+        response = await http2.get(url);
       }
 
       var json = jDecode(response.body);
@@ -69,7 +68,7 @@ class FileBloc extends Bloc<FileEvent, FileState> {
         if (json['code'] == 205) {
           User.remove();
 
-          response = await get(url);
+          response = await http2.get(url);
 
           if (isResponseOk(response)) {
             var json = jDecode(response.body);

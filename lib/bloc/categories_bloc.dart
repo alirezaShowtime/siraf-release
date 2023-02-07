@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/category.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
+import 'package:siraf3/http2.dart' as http2;
 
 class CategoriesEvent {}
 
@@ -28,7 +29,7 @@ class CategoriesBlocLoaded extends CategoriesBlocState {
 }
 
 class CategoriesBlocError extends CategoriesBlocState {
-  http.Response response;
+  Response response;
 
   CategoriesBlocError({required this.response});
 }
@@ -44,7 +45,7 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesBlocState> {
     } else if (event is CategoriesFetchEvent) {
       emit(CategoriesBlocLoading());
 
-      var response = await http.get(getFileUrl("category/categorys"));
+      var response = await http2.get(getFileUrl("category/categorys"));
       var resJson = jDecode(response.body);
       if (response.statusCode == 200) {
         emit(CategoriesBlocLoaded(

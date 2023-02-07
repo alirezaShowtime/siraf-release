@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart';
+import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
@@ -55,11 +56,9 @@ class HSBloc extends Bloc<HSEvent, HSState> {
 
       try {
         if (await User.hasToken()) {
-          response = await get(url, headers: {
-            "Authorization": await User.getBearerToken(),
-          });
+          response = await http2.getWithToken(url);
         } else {
-          response = await get(url);
+          response = await http2.get(url);
         }
       } on HttpException catch (e) {
         emit(HSErrorState(response: null));
@@ -81,7 +80,7 @@ class HSBloc extends Bloc<HSEvent, HSState> {
         if (json['code'] == 205) {
           User.remove();
 
-          response = await get(url);
+          response = await http2.get(url);
 
           if (isResponseOk(response)) {
             var json = jDecode(response.body);

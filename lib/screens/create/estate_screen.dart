@@ -17,6 +17,8 @@ import 'package:siraf3/widgets/try_again.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
 import 'package:latlong2/latlong.dart';
 
+import 'package:siraf3/dialog.dart';
+
 class EstateScreen extends StatefulWidget {
   List<Estate> estates;
 

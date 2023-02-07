@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart';
+import 'package:siraf3/http2.dart' as http2;
 import 'package:bloc/bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/user.dart';
@@ -58,7 +59,7 @@ class DeleteFileBloc extends Bloc<DeleteFileEvent, DeleteFileState> {
     Response response;
 
     try {
-      response = await get(
+      response = await http2.get(
           getFileUrl(
             "file/removeFile?listFile=" + jsonEncode(ids),
           ),
