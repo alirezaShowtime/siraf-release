@@ -316,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListView(
       controller: scrollController,
       children: files
-              .map<Widget>((file) => GestureDetector(
+              .map<Widget>((file) => InkWell(
                     onTap: () {
                       Navigator.push(
                         context,

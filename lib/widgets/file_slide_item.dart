@@ -59,6 +59,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(color: Colors.transparent),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
