@@ -665,7 +665,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
   BuildContext? resetDialogContext;
 
   showResetDialog() {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -778,7 +778,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
   BuildContext? addressDialogContext;
 
   showAddressDialog() {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -891,7 +891,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
     StreamController<String?> value = StreamController();
     value.add(selectedMainProps[property.value!]);
 
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -1083,7 +1083,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
   BuildContext? listDialog;
 
   showListDialog(PropertyInsert property) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -1169,7 +1169,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
     StreamController<String?> value = StreamController();
     value.add(selectedMainProps[property.value!]);
 
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -1356,7 +1356,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
   BuildContext? listDialogFeature;
 
   showFeatureListDialog(PropertyInsert property) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {

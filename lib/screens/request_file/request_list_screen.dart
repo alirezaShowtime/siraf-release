@@ -84,7 +84,7 @@ class _RequestListScreen extends State<RequestListScreen> {
           if (selectedFiles.length > 0) IconButton(onPressed: removeFile, icon: icon(CupertinoIcons.delete)),
           MyPopupMenuButton(
             icon: icon(Icons.sort_rounded),
-            items: [
+            itemBuilder: (_) => [
               PopupMenuItem(child: Text("جدیدترین", style: TextStyle(fontSize: 12))),
               PopupMenuItem(child: Text("قدیمی ترین", style: TextStyle(fontSize: 12))),
               PopupMenuItem(child: Text("در انتظار تایید", style: TextStyle(fontSize: 12))),
@@ -95,7 +95,7 @@ class _RequestListScreen extends State<RequestListScreen> {
             ],
           ),
           MyPopupMenuButton(
-            items: [
+            itemBuilder: (_) => [
               PopupMenuItem(child: Text("انتخاب همه", style: TextStyle(fontSize: 12))),
             ],
           ),

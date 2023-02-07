@@ -183,7 +183,7 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
   BuildContext? resetDialogContext;
 
   showResetDialog() {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -355,7 +355,7 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
   }
 
   showLoadingDialog() {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: false,
       builder: (_) {
@@ -403,7 +403,7 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
   BuildContext? loadingDContext;
 
   showErrorDialog(String s) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {

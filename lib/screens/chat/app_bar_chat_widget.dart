@@ -26,7 +26,7 @@ class _AppBarChat extends State<AppBarChat> {
       title: title(),
       actions: [
         MyPopupMenuButton(
-          items: [
+          itemBuilder: (_) => [
             popupMenuItemWithIcon(
               title: "حذف گفتگو",
               iconDate: CupertinoIcons.delete,

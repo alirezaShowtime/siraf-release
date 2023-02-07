@@ -799,7 +799,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
   BuildContext? resetDialogContext;
 
   showResetDialog() {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -912,7 +912,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
   BuildContext? addressDialogContext;
 
   showAddressDialog() {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -1025,7 +1025,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
     StreamController<String?> value = StreamController();
     value.add(selectedMainProps[property.value!]);
 
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -1217,7 +1217,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
   BuildContext? listDialog;
 
   showListDialog(PropertyInsert property) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -1303,7 +1303,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
     StreamController<String?> value = StreamController();
     value.add(selectedMainProps[property.value!]);
 
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -1490,7 +1490,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
   BuildContext? listDialogFeature;
 
   showFeatureListDialog(PropertyInsert property) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {

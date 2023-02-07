@@ -809,7 +809,7 @@ class _FileScreenState extends State<FileScreen> {
   }
 
   showLoadingDialog() {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: false,
       builder: (_) {
@@ -859,7 +859,7 @@ class _FileScreenState extends State<FileScreen> {
   BuildContext? violationDialogContext;
 
   showViolationDialog() {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {

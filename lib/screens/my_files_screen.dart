@@ -12,6 +12,7 @@ import 'package:siraf3/screens/my_file_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_file_horizontal_item.dart';
+import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 class MyFilesScreen extends StatefulWidget {
@@ -130,7 +131,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                 ),
                 disabledColor: Themes.iconGrey,
               ),
-              PopupMenuButton(
+              MyPopupMenuButton(
                 itemBuilder: (context) {
                   return [
                     PopupMenuItem<String>(
@@ -267,7 +268,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                     ),
                   ];
                 },
-                onSelected: (String value) {
+                onSelected: (value) {
                   _loadFiles(sort: value);
                 },
                 icon: Icon(
@@ -275,7 +276,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                   color: Themes.icon,
                 ),
               ),
-              PopupMenuButton(
+              MyPopupMenuButton(
                 itemBuilder: (context) {
                   return [
                     PopupMenuItem<int>(
@@ -408,7 +409,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
   }
 
   showLoadingDialog({String? message}) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: false,
       builder: (_) {
@@ -458,7 +459,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
   BuildContext? deleteDialogContext;
 
   showDeleteDialog(List<int> ids) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {

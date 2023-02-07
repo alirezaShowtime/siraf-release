@@ -76,7 +76,7 @@ class UFMBloc extends Bloc<UFMEvent, UFMState> {
               await MultipartFile.fromFile((item['file'] as io.File).path)),
       ]);
 
-      var url = getFileUrl("file/updateFile/${event.id}/").toString();
+      var url = getFileUrl("file/uploadFile/${event.id}/").toString();
 
       print(url);
       print(headers);

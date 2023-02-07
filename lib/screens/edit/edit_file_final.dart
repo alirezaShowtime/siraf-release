@@ -196,7 +196,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
   BuildContext? resetDialogContext;
 
   showResetDialog() {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -356,13 +356,24 @@ class _EditFileFinalState extends State<EditFileFinal> {
     } else if (event is EditFileSuccessState) {
       dissmisLoadingDialog();
       notify("اطلاعات فایل با موفقیت ویرایش شد");
-      ufmBloc.add(
-          UFMEvent(id: widget.formData.id, media: widget.formData.mediaData));
+      if (!widget.formData.mediaData.isEmpty()) {
+        ufmBloc.add(
+            UFMEvent(id: widget.formData.id, media: widget.formData.mediaData));
+      } else {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (_) => HomeScreen(
+                      nextScreen:
+                          MaterialPageRoute(builder: (_) => MyFilesScreen()),
+                    )),
+            (Route<dynamic> route) => false);
+      }
     }
   }
 
   showLoadingDialog({String? message}) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: false,
       builder: (_) {
@@ -410,7 +421,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
   BuildContext? loadingDContext;
 
   showErrorDialog(String s) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {

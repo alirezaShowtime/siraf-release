@@ -639,7 +639,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   BuildContext? resetDialogContext;
 
   showResetDialog() {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -830,7 +830,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   BuildContext? optionsDialog;
 
   showOptionsDialog(int index) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -1088,7 +1088,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   BuildContext? mediaTitleDialogContext;
 
   _showAddTitleDialog(int index) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {

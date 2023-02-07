@@ -16,7 +16,8 @@ enum TradeType {
 
 class CommissionCalculatorScreen extends StatefulWidget {
   @override
-  State<CommissionCalculatorScreen> createState() => _CommissionCalculatorScreen();
+  State<CommissionCalculatorScreen> createState() =>
+      _CommissionCalculatorScreen();
 }
 
 class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
@@ -66,9 +67,15 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
               value: tradTypeLabel[selectedTradeType],
               onTap: determineTradeType,
             ),
-            if (selectedTradeType == TradeType.buyAndSell) getBuyAndSellWidget(),
-            if (selectedTradeType == TradeType.rentAndMortgage) getRentAndMortgageWidget(),
-            if (selectedTradeType != null) BlockBtn(text: "محاسبه سود", padding: EdgeInsets.only(top: 15), onTap: calculateCommission),
+            if (selectedTradeType == TradeType.buyAndSell)
+              getBuyAndSellWidget(),
+            if (selectedTradeType == TradeType.rentAndMortgage)
+              getRentAndMortgageWidget(),
+            if (selectedTradeType != null)
+              BlockBtn(
+                  text: "محاسبه سود",
+                  padding: EdgeInsets.only(top: 15),
+                  onTap: calculateCommission),
           ],
         ),
       ),
@@ -79,7 +86,9 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
     return Section(
       title: "مبلغ کل",
       hint: "تعیین",
-      value: totalPriceController.value.text.isNotEmpty ? totalPriceController.value.text : null,
+      value: totalPriceController.value.text.isNotEmpty
+          ? totalPriceController.value.text
+          : null,
       onTap: determineTotalPrice,
     );
   }
@@ -90,13 +99,17 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
         Section(
           title: "مبلغ ودیعه",
           hint: "تعیین",
-          value: depositController.value.text.isNotEmpty ? depositController.value.text : null,
+          value: depositController.value.text.isNotEmpty
+              ? depositController.value.text
+              : null,
           onTap: determineDeposit,
         ),
         Section(
           title: "مبلغ اجاره",
           hint: "تعیین",
-          value: rentController.value.text.isNotEmpty ? rentController.value.text : null,
+          value: rentController.value.text.isNotEmpty
+              ? rentController.value.text
+              : null,
           onTap: determineRent,
         ),
       ],
@@ -106,7 +119,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
   //event listeners
   void determineTotalPrice() {
     //todo: implement event listener
-    showDialog(
+    showDialog2(
       context: context,
       builder: (context) {
         return FieldDialog(
@@ -125,8 +138,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
   }
 
   void determineDeposit() {
-    //todo: implement event listener
-    showDialog(
+    showDialog2(
       context: context,
       builder: (context) {
         return FieldDialog(
@@ -145,7 +157,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
 
   void determineRent() {
     //todo: implement event listener
-    showDialog(
+    showDialog2(
       context: context,
       builder: (context) {
         return FieldDialog(
@@ -184,13 +196,14 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
   void determineTradeType() {
     //todo: implement event listener
 
-    showDialog(
+    showDialog2(
       context: context,
       builder: (context) {
         return ListDialog(
           list: tradeTypeList,
           onItemTap: (item) {
-            if (selectedTradeType != null && selectedTradeType == item["value"]) return;
+            if (selectedTradeType != null && selectedTradeType == item["value"])
+              return;
 
             selectedTradeType = item["value"];
             Navigator.pop(context);
@@ -204,7 +217,9 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
   void calculateCommission() {
     //todo: implement event listener
 
-    if (!isValidCityAndTradeType() || !isValidTotalPrice() || !isValidRendAndDeposit()) {
+    if (!isValidCityAndTradeType() ||
+        !isValidTotalPrice() ||
+        !isValidRendAndDeposit()) {
       notify("فیلد های خالی هستند");
       return;
     }
@@ -212,7 +227,10 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
 
   bool isValidCityAndTradeType() => selectedCity == null || tradeType == null;
 
-  bool isValidTotalPrice() => tradeType == TradeType.buyAndSell && totalPrice == null;
+  bool isValidTotalPrice() =>
+      tradeType == TradeType.buyAndSell && totalPrice == null;
 
-  bool isValidRendAndDeposit() => tradeType == TradeType.rentAndMortgage && (rent == null || deposit == null);
+  bool isValidRendAndDeposit() =>
+      tradeType == TradeType.rentAndMortgage &&
+      (rent == null || deposit == null);
 }

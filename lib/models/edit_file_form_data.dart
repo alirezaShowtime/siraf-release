@@ -51,4 +51,13 @@ class MediaData {
     this.imagesWeight = const [],
     this.videosWeight = const [],
   });
+
+  bool isEmpty() {
+    return deleteImages.isEmpty &&
+        deleteVideos.isEmpty &&
+        newImages.isEmpty &&
+        newVideos.isEmpty &&
+        imagesWeight.isEmpty &&
+        videosWeight.isEmpty;
+  }
 }

@@ -196,7 +196,7 @@ void navigateTo(BuildContext context, Widget page) {
 BuildContext? showLoadingDialog(
     {required BuildContext context, String? message}) {
   BuildContext? loadingDContext;
-  showDialog(
+  showDialog2(
     context: context,
     barrierDismissible: false,
     builder: (_) {
@@ -211,7 +211,7 @@ BuildContext? showLoadingDialog(
 BuildContext? showErrorDialog(
     {required BuildContext context, String? message}) {
   BuildContext? dialogContext;
-  showDialog(
+  showDialog2(
     context: context,
     barrierDismissible: true,
     builder: (_) {
@@ -256,4 +256,39 @@ PopupMenuItem<String> popupMenuItemWithIcon({
       ],
     ),
   );
+}
+
+Future<T?> showDialog2<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+  bool barrierDismissible = true,
+  Color? barrierColor = Colors.black54,
+  String? barrierLabel,
+  bool useSafeArea = true,
+  bool useRootNavigator = true,
+  RouteSettings? routeSettings,
+  Offset? anchorPoint,
+}) {
+  final CapturedThemes themes = InheritedTheme.capture(
+    from: context,
+    to: Navigator.of(
+      context,
+      rootNavigator: useRootNavigator,
+    ).context,
+  );
+
+  FocusScope.of(context).unfocus();
+
+  return Navigator.of(context, rootNavigator: useRootNavigator)
+      .push<T>(DialogRoute<T>(
+    context: context,
+    builder: builder,
+    barrierColor: barrierColor,
+    barrierDismissible: barrierDismissible,
+    barrierLabel: barrierLabel,
+    useSafeArea: useSafeArea,
+    settings: routeSettings,
+    themes: themes,
+    anchorPoint: anchorPoint,
+  ));
 }

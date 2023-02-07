@@ -116,7 +116,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
   void determineSupportSection() {
     //todo: implement event listener
 
-    showDialog(
+    showDialog2(
       context: context,
       builder: (context) {
         return ListDialog(
@@ -133,7 +133,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
   void determineTitle() {
     //todo: implement event listener
 
-    showDialog(
+    showDialog2(
       context: context,
       builder: (context) {
         return FieldDialog(
@@ -151,7 +151,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
   void determineFullName() {
     //todo: implement event listener
 
-    showDialog(
+    showDialog2(
       context: context,
       builder: (context) {
         return FieldDialog(
@@ -169,7 +169,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
   void determineNumberPhone() {
     //todo: implement event listener
 
-    showDialog(
+    showDialog2(
       context: context,
       builder: (context) {
         return FieldDialog(
@@ -188,7 +188,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
   void determineEmailAddress() {
     //todo: implement event listener
 
-    showDialog(
+    showDialog2(
       context: context,
       builder: (context) {
         return FieldDialog(

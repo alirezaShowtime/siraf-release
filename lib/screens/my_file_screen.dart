@@ -26,6 +26,7 @@ import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart';
@@ -423,7 +424,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                       ],
                     ),
                   ),
-                  PopupMenuButton(
+                  MyPopupMenuButton(
                     itemBuilder: (context) {
                       return [
                         PopupMenuItem<int>(
@@ -450,7 +451,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                         ),
                       ];
                     },
-                    onSelected: (int value) {
+                    onSelected: (value) {
                       switch (value) {
                         case 0:
                           Navigator.push(
@@ -791,7 +792,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
   }
 
   showLoadingDialog({String? message}) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: false,
       builder: (_) {
@@ -955,7 +956,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
   BuildContext? deleteDialogContext;
 
   showDeleteDialog() {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {

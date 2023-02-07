@@ -66,7 +66,9 @@ class MyFileBloc extends Bloc<MyFileEvent, MyFileState> {
 
           if (isResponseOk(response2)) {
             var json2 = jDecode(response2.body);
-            consulants = FileConsulant.fromList(json2['data']);
+            consulants = !(json2['data'] is String)
+                ? FileConsulant.fromList(json2['data'])
+                : [];
           }
         }
 

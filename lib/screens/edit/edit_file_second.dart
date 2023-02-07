@@ -102,7 +102,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
         return {
           "isNew": false,
           "title": e.name,
-          "path": e.link,
+          "path": e.link != null ? e.link!.substring(e.link!.indexOf('media/')) : null,
           "file": e.image,
           "type": type,
           "id": e.id,
@@ -712,7 +712,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
   BuildContext? resetDialogContext;
 
   showResetDialog() {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -913,7 +913,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
             "isNew": true,
             "file": file,
             "title": null,
-            "path": file.path,
+            "path": p.basename(file.path),
             "type": type,
             "id": null,
           });
@@ -926,7 +926,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
   BuildContext? optionsDialog;
 
   showOptionsDialog(int index) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -1225,7 +1225,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
           "isNew": true,
           "file": file,
           "title": files[index]['title'],
-          "path": file.path,
+          "path": p.basename(file.path),
           "type": type,
           "id": null,
         };
@@ -1254,7 +1254,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
   BuildContext? mediaTitleDialogContext;
 
   _showAddTitleDialog(int index) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {

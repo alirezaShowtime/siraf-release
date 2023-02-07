@@ -391,7 +391,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
     StreamController<String?> value = StreamController();
     value.add(selectedProps[property.value!]);
 
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -577,7 +577,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
   BuildContext? listDialog;
 
   showListDialog(PropertyInsert property) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -663,7 +663,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
     StreamController<String?> value = StreamController();
     value.add(selectedProps[property.value!]);
 
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -849,7 +849,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
   BuildContext? listDialogFeature;
 
   showFeatureListDialog(PropertyInsert property) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {

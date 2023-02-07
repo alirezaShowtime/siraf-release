@@ -6,11 +6,12 @@ class MyPopupMenuButton extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _MyPopupMenuButton();
 
-  List<PopupMenuItem> items;
+  List<PopupMenuItem> Function(BuildContext context) itemBuilder;
+  void Function(dynamic value)? onSelected;
   Widget? icon;
   String? tooltip;
 
-  MyPopupMenuButton({required this.items, this.icon, this.tooltip});
+  MyPopupMenuButton({required this.itemBuilder, this.onSelected, this.icon, this.tooltip});
 }
 
 class _MyPopupMenuButton extends State<MyPopupMenuButton> {
@@ -25,9 +26,8 @@ class _MyPopupMenuButton extends State<MyPopupMenuButton> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
-      itemBuilder: (context) {
-        return widget.items;
-      },
+      itemBuilder: widget.itemBuilder,
+      onSelected: widget.onSelected,
     );
   }
 }

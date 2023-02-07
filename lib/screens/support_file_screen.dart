@@ -226,7 +226,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
   }
 
   showLoadingDialog({String? message}) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: false,
       builder: (_) {

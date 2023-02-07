@@ -451,7 +451,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
   BuildContext? resetDialogContext;
 
   showResetDialog() {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
@@ -571,7 +571,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
     StreamController<String> persianNumberTextMax = StreamController();
     persianNumberTextMax.add(maxVal.replaceAll(',', '').toWord());
 
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {

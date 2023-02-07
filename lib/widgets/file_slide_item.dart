@@ -364,7 +364,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
   }
 
   showLoadingDialog() {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: false,
       builder: (_) {

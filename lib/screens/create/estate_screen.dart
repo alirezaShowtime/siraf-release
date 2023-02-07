@@ -6,10 +6,12 @@ import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:siraf3/bloc/estate_bloc.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/estate.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
@@ -111,7 +113,7 @@ class _EstateScreenState extends State<EstateScreen> {
               width: 10,
             ),
             if (!mapEnabled)
-              PopupMenuButton(
+              MyPopupMenuButton(
                 itemBuilder: (context) {
                   return [
                     PopupMenuItem<String>(
@@ -226,7 +228,7 @@ class _EstateScreenState extends State<EstateScreen> {
                     ),
                   ];
                 },
-                onSelected: (String? value) {
+                onSelected: (value) {
                   bloc.add(
                     EstateLoadEvent(
                       city_ids: cities.map((e) => e.id!).toList(),
@@ -607,7 +609,7 @@ class _EstateScreenState extends State<EstateScreen> {
   BuildContext? detailsDialog;
 
   showDetailsDialog(Estate estate) {
-    showDialog(
+    showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
