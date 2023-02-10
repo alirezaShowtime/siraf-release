@@ -139,7 +139,11 @@ class _SettingsScreen extends State<SettingsScreen> {
     );
   }
 
-  Widget item({required String title, String? text, Widget? widget, GestureTapCallback? onTap}) {
+  Widget item(
+      {required String title,
+      String? text,
+      Widget? widget,
+      GestureTapCallback? onTap}) {
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -158,7 +162,10 @@ class _SettingsScreen extends State<SettingsScreen> {
           children: [
             Text(
               title,
-              style: TextStyle(fontSize: 13, color: Themes.text, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 13,
+                  color: Themes.text,
+                  fontWeight: FontWeight.bold),
             ),
             if (text != null && widget == null)
               Text(

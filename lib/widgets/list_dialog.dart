@@ -60,7 +60,10 @@ class _ListDialog extends State<ListDialog> {
                   height: 50,
                   child: Text(
                     "تایید",
-                    style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold),
                   ),
                   padding: EdgeInsets.symmetric(vertical: 9),
                 ),
@@ -72,7 +75,10 @@ class _ListDialog extends State<ListDialog> {
     );
   }
 
-  Widget buildListItem({required Map<String, dynamic> item, bool isLast = false, void Function(Map<String, dynamic>)? onItemTap}) {
+  Widget buildListItem(
+      {required Map<String, dynamic> item,
+      bool isLast = false,
+      void Function(Map<String, dynamic>)? onItemTap}) {
     return GestureDetector(
       onTap: () {
         selectedItems.add(item);
@@ -81,7 +87,10 @@ class _ListDialog extends State<ListDialog> {
       child: Container(
         decoration: BoxDecoration(
           border: Border(
-            bottom: isLast ? BorderSide.none : BorderSide(color: Themes.textGrey.withOpacity(0.5), width: 0.7),
+            bottom: isLast
+                ? BorderSide.none
+                : BorderSide(
+                    color: Themes.textGrey.withOpacity(0.5), width: 0.7),
           ),
         ),
         padding: EdgeInsets.symmetric(vertical: 10),
@@ -91,7 +100,8 @@ class _ListDialog extends State<ListDialog> {
             item["name"],
             style: TextStyle(
               fontSize: 13,
-              color: selectedItems.contains(item) ? Themes.primary : Themes.text,
+              color:
+                  selectedItems.contains(item) ? Themes.primary : Themes.text,
             ),
           ),
         ),

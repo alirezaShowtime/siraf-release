@@ -84,7 +84,10 @@ class _SearchScreen extends State<SearchScreen> {
                   children: [
                     Text(
                       "سابقه جستوجو",
-                      style: TextStyle(fontSize: 12, color: Themes.blue, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Themes.blue,
+                          fontWeight: FontWeight.bold),
                     ),
                     TextButton(
                       onPressed: () {

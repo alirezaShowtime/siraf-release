@@ -38,5 +38,4 @@ extension EventListener on AgencyProfileScreenState {
   }
 
   void sendComment() {}
-
 }

@@ -68,7 +68,9 @@ class EstateBloc extends Bloc<EstateEvent, EstateState> {
     if (isResponseOk(response)) {
       var json = jDecode(response.body);
 
-      emit(EstateLoadedState(estates: Estate.fromList(json['data']['estats']), sort_type: event.sort));
+      emit(EstateLoadedState(
+          estates: Estate.fromList(json['data']['estats']),
+          sort_type: event.sort));
     } else {
       emit(EstateErrorState(response: response));
     }

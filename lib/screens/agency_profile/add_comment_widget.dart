@@ -15,7 +15,8 @@ extension AddCommentWidget on AgencyProfileScreenState {
         children: [
           Text(
             "امتیاز شما",
-            style: TextStyle(color: Themes.text, fontWeight: FontWeight.bold, fontSize: 12),
+            style: TextStyle(
+                color: Themes.text, fontWeight: FontWeight.bold, fontSize: 12),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
@@ -25,7 +26,8 @@ extension AddCommentWidget on AgencyProfileScreenState {
               direction: Axis.horizontal,
               itemCount: 5,
               itemPadding: EdgeInsets.symmetric(horizontal: 10),
-              itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
+              itemBuilder: (context, _) =>
+                  icon(Icons.star, color: Colors.amber),
               itemSize: 35,
               onRatingUpdate: (double value) => rating = value,
               glow: false,

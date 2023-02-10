@@ -70,7 +70,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
                   });
                 },
                 icon: Icon(
-                  widget.isFavorite ? Icons.bookmark: Icons.bookmark_border,
+                  widget.isFavorite ? Icons.bookmark : Icons.bookmark_border,
                   color: Themes.icon,
                 ),
               ),

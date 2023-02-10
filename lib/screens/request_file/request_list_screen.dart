@@ -82,22 +82,34 @@ class _RequestListScreen extends State<RequestListScreen> {
         title: AppBarTitle("درخواست های من"),
         actions: [
           IconButton(onPressed: requestFile, icon: icon(Icons.add)),
-          if (selectedFiles.length > 0) IconButton(onPressed: removeFile, icon: icon(CupertinoIcons.delete)),
+          if (selectedFiles.length > 0)
+            IconButton(
+                onPressed: removeFile, icon: icon(CupertinoIcons.delete)),
           MyPopupMenuButton(
             icon: icon(Icons.sort_rounded),
             items: [
-              PopupMenuItem(child: Text("جدیدترین", style: TextStyle(fontSize: 12))),
-              PopupMenuItem(child: Text("قدیمی ترین", style: TextStyle(fontSize: 12))),
-              PopupMenuItem(child: Text("در انتظار تایید", style: TextStyle(fontSize: 12))),
-              PopupMenuItem(child: Text("در انتظار پذیرش", style: TextStyle(fontSize: 12))),
-              PopupMenuItem(child: Text("پذیرش شده", style: TextStyle(fontSize: 12))),
-              PopupMenuItem(child: Text("عدم پذیرش", style: TextStyle(fontSize: 12))),
-              PopupMenuItem(child: Text("رد شده", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(
+                  child: Text("جدیدترین", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(
+                  child: Text("قدیمی ترین", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(
+                  child:
+                      Text("در انتظار تایید", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(
+                  child:
+                      Text("در انتظار پذیرش", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(
+                  child: Text("پذیرش شده", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(
+                  child: Text("عدم پذیرش", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(
+                  child: Text("رد شده", style: TextStyle(fontSize: 12))),
             ],
           ),
           MyPopupMenuButton(
             items: [
-              PopupMenuItem(child: Text("انتخاب همه", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(
+                  child: Text("انتخاب همه", style: TextStyle(fontSize: 12))),
             ],
           ),
         ],
@@ -177,6 +189,7 @@ class _RequestListScreen extends State<RequestListScreen> {
   void onClickItem(Map<String, dynamic> model) {
     //todo: implement event listener
 
-    Navigator.push(context, MaterialPageRoute(builder: (_) => RequestFileShowScreen()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (_) => RequestFileShowScreen()));
   }
 }

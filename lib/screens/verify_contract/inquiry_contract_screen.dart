@@ -82,7 +82,8 @@ class _InquiryContractScreen extends State<InquiryContractScreen> {
                 MyCard(
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   title: "شماره موبایل یکی از طرفین قرارداد",
-                  padding: EdgeInsets.only(top: 12, bottom: 12, right: 12, left: 5),
+                  padding:
+                      EdgeInsets.only(top: 12, bottom: 12, right: 12, left: 5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -105,7 +106,8 @@ class _InquiryContractScreen extends State<InquiryContractScreen> {
                         onTap: verifyNumberPhone,
                         borderRadius: BorderRadius.circular(20),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 12),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 12),
                           child: Text(
                             "تایید شماره",
                             style: TextStyle(

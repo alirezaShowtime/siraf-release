@@ -13,7 +13,12 @@ class FieldDialog extends StatefulWidget {
   Function()? onPressed;
   TextInputType? keyboardType;
 
-  FieldDialog({required this.numberFieldController, this.hintText = null, this.onChanged, this.onPressed, this.keyboardType});
+  FieldDialog(
+      {required this.numberFieldController,
+      this.hintText = null,
+      this.onChanged,
+      this.onPressed,
+      this.keyboardType});
 }
 
 class _FieldDialog extends State<FieldDialog> {

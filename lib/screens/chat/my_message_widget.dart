@@ -92,7 +92,8 @@ class _MyMessage extends State<MyMessage> {
                   padding: const EdgeInsets.only(left: 2, right: 2, top: 4),
                   child: Text(
                     widget.time,
-                    style: TextStyle(color: Colors.white, fontSize: 9, height: 1),
+                    style:
+                        TextStyle(color: Colors.white, fontSize: 9, height: 1),
                   ),
                 ),
               ],

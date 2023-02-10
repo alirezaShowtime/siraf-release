@@ -16,7 +16,8 @@ extension CommentItem on AgentProfileScreenState {
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(bottom: BorderSide(color: Colors.grey.shade200, width: 1)),
+        border:
+            Border(bottom: BorderSide(color: Colors.grey.shade200, width: 1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +30,8 @@ extension CommentItem on AgentProfileScreenState {
                 children: [
                   Avatar(
                     size: 40,
-                    imagePath: "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png",
+                    imagePath:
+                        "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png",
                   ),
                   SizedBox(width: 10),
                   Text(
@@ -49,7 +51,8 @@ extension CommentItem on AgentProfileScreenState {
                     direction: Axis.horizontal,
                     itemCount: 5,
                     itemPadding: EdgeInsets.symmetric(horizontal: 0.25),
-                    itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
+                    itemBuilder: (context, _) =>
+                        icon(Icons.star, color: Colors.amber),
                     itemSize: 10,
                     onRatingUpdate: (double value) {},
                     updateOnDrag: false,
@@ -115,9 +118,12 @@ extension CommentItem on AgentProfileScreenState {
               ),
             ],
           ),
-          if (comment["answers"] != null && (comment["answers"] as List).length > 0)
+          if (comment["answers"] != null &&
+              (comment["answers"] as List).length > 0)
             Column(
-              children: (comment["answers"] as List).map((answer) => answerItem(answer)).toList(),
+              children: (comment["answers"] as List)
+                  .map((answer) => answerItem(answer))
+                  .toList(),
             ),
         ],
       ),

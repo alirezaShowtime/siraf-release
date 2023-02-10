@@ -20,7 +20,8 @@ class AgentProfileScreen extends StatefulWidget {
   State<StatefulWidget> createState() => AgentProfileScreenState();
 }
 
-class AgentProfileScreenState extends State<AgentProfileScreen> with SingleTickerProviderStateMixin {
+class AgentProfileScreenState extends State<AgentProfileScreen>
+    with SingleTickerProviderStateMixin {
   List<File> list = [
     File(
       id: 342,
@@ -224,10 +225,8 @@ class AgentProfileScreenState extends State<AgentProfileScreen> with SingleTicke
 
   late BuildContext scaffoldContext;
 
-
   TextEditingController searchController = TextEditingController();
   TextEditingController commentController = TextEditingController();
-
 
   String? comment;
   double? rating;
@@ -236,8 +235,10 @@ class AgentProfileScreenState extends State<AgentProfileScreen> with SingleTicke
   void initState() {
     super.initState();
 
-    collopsController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
-    collopsAnimation = CurvedAnimation(parent: collopsController, curve: Curves.fastOutSlowIn);
+    collopsController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+    collopsAnimation =
+        CurvedAnimation(parent: collopsController, curve: Curves.fastOutSlowIn);
 
     collopsController.addListener(_collopsControllerListener);
   }
@@ -261,7 +262,8 @@ class AgentProfileScreenState extends State<AgentProfileScreen> with SingleTicke
             children: [
               Container(
                 height: 170,
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                 color: Colors.white,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -270,10 +272,16 @@ class AgentProfileScreenState extends State<AgentProfileScreen> with SingleTicke
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Avatar(size: 80, imagePath: "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png"),
+                        Avatar(
+                            size: 80,
+                            imagePath:
+                                "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png"),
                         Container(
                           padding: const EdgeInsets.only(left: 2),
-                          decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.grey.shade200, width: 1))),
+                          decoration: BoxDecoration(
+                              border: Border(
+                                  left: BorderSide(
+                                      color: Colors.grey.shade200, width: 1))),
                           child: Column(
                             children: [
                               Text(
@@ -305,11 +313,21 @@ class AgentProfileScreenState extends State<AgentProfileScreen> with SingleTicke
                           children: [
                             Expanded(
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
-                                  card(title: "فروشی", value: "10", onTap: () {}),
-                                  card(title: "اجاره ای", value: "75", onTap: () {}),
-                                  card(title: "ساخت و ساز", value: "23", onTap: () {}),
+                                  card(
+                                      title: "فروشی",
+                                      value: "10",
+                                      onTap: () {}),
+                                  card(
+                                      title: "اجاره ای",
+                                      value: "75",
+                                      onTap: () {}),
+                                  card(
+                                      title: "ساخت و ساز",
+                                      value: "23",
+                                      onTap: () {}),
                                 ],
                               ),
                             ),
@@ -318,10 +336,12 @@ class AgentProfileScreenState extends State<AgentProfileScreen> with SingleTicke
                                 Text(
                                   "ds;ofdskj dolspfk dkdofdks oidmnsfk dnf dosmjfoidns d[sk fldpofdspofmks dpolfkdms dms,fp[doskjf ods,fkdpsnf dpsfdms fdskmofds",
                                   maxLines: 2,
-                                  style: TextStyle(color: Themes.textGrey, fontSize: 11),
+                                  style: TextStyle(
+                                      color: Themes.textGrey, fontSize: 11),
                                 ),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     GestureDetector(
                                       onTap: viewMoreDetail,
@@ -336,21 +356,26 @@ class AgentProfileScreenState extends State<AgentProfileScreen> with SingleTicke
                                     ),
                                     GestureDetector(
                                       onTap: () => setState(() {
-                                        final bool previousValueOfMoreDetail = moreDetail;
+                                        final bool previousValueOfMoreDetail =
+                                            moreDetail;
                                         showComment = !showComment;
 
                                         viewMoreDetail(force: false);
 
-                                        if (!previousValueOfMoreDetail && !showComment) {
+                                        if (!previousValueOfMoreDetail &&
+                                            !showComment) {
                                           showSearchBarWidget = true;
                                         }
 
-                                        if (!previousValueOfMoreDetail && showComment) {
+                                        if (!previousValueOfMoreDetail &&
+                                            showComment) {
                                           showSearchBarWidget = false;
                                         }
                                       }),
                                       child: Text(
-                                        !showComment ? "نمایش نظرات (${comments.length})" : "فایل های مشاور",
+                                        !showComment
+                                            ? "نمایش نظرات (${comments.length})"
+                                            : "فایل های مشاور",
                                         style: TextStyle(
                                           color: Themes.text,
                                           fontWeight: FontWeight.bold,
@@ -415,7 +440,8 @@ class AgentProfileScreenState extends State<AgentProfileScreen> with SingleTicke
     );
   }
 
-  Widget card({required String title, required String value, void Function()? onTap}) {
+  Widget card(
+      {required String title, required String value, void Function()? onTap}) {
     return Expanded(
       child: MyTextButton(
         onPressed: () {},
@@ -454,7 +480,8 @@ class AgentProfileScreenState extends State<AgentProfileScreen> with SingleTicke
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: Image(
-          image: NetworkImage("https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png"),
+          image: NetworkImage(
+              "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png"),
           height: 50,
           width: 70,
           fit: BoxFit.fill,

@@ -7,9 +7,15 @@ class Slider {
   String? link;
   SliderType type;
 
-  Slider({required this.image, required this.type, this.link,});
+  Slider({
+    required this.image,
+    required this.type,
+    this.link,
+  });
 }
 
 enum SliderType {
-  image, video, virtual_tour,
+  image,
+  video,
+  virtual_tour,
 }

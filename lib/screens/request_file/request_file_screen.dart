@@ -30,7 +30,9 @@ class _RequestFileScreen extends State<RequestFileScreen> {
         title: AppBarTitle("درخواست فایل"),
         automaticallyImplyLeading: false,
         elevation: 0.7,
-        actions: [IconButton(onPressed: () {}, icon: icon(Icons.refresh_rounded))],
+        actions: [
+          IconButton(onPressed: () {}, icon: icon(Icons.refresh_rounded))
+        ],
       ),
       body: Stack(
         children: [
@@ -45,7 +47,8 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                   padding: EdgeInsets.only(bottom: 10),
                   decoration: BoxDecoration(
                     border: Border(
-                      bottom: BorderSide(color: Themes.textGrey.withOpacity(0.5), width: 1),
+                      bottom: BorderSide(
+                          color: Themes.textGrey.withOpacity(0.5), width: 1),
                     ),
                   ),
                   child: Row(
@@ -204,7 +207,9 @@ class _RequestFileScreen extends State<RequestFileScreen> {
   void onClickCityItem() {
     //todo: implement event listener
 
-    Navigator.push(context, MaterialPageRoute(builder: (_) => SelectCityScreen())).then((result) {
+    Navigator.push(
+            context, MaterialPageRoute(builder: (_) => SelectCityScreen()))
+        .then((result) {
       if (result != null && result == List<City>) {
         city = result.last;
       }

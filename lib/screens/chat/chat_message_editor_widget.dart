@@ -29,7 +29,8 @@ class ChatMessageEditor extends StatefulWidget {
   }) : _messageController = messageController;
 }
 
-class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProviderStateMixin {
+class _ChatMessageEditor extends State<ChatMessageEditor>
+    with SingleTickerProviderStateMixin {
   late AnimationController _replyingAnimationController;
   late Animation<double> _replyingAnimation;
 
@@ -44,9 +45,11 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
   }
 
   void _initReplyingAnimation() {
-    _replyingAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+    _replyingAnimationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 400));
 
-    _replyingAnimation = CurvedAnimation(parent: _replyingAnimationController, curve: Curves.fastOutSlowIn);
+    _replyingAnimation = CurvedAnimation(
+        parent: _replyingAnimationController, curve: Curves.fastOutSlowIn);
 
     _replyingAnimationController.addListener(_replyingAnimationControlListener);
 
@@ -59,7 +62,8 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
   void dispose() {
     super.dispose();
     widget._messageController.removeListener(_messageControlListener);
-    _replyingAnimationController.removeListener(_replyingAnimationControlListener);
+    _replyingAnimationController
+        .removeListener(_replyingAnimationControlListener);
   }
 
   void _messageControlListener() {

@@ -143,7 +143,7 @@ class FileDetail {
 
     return prices.asMap().containsKey(0) ? prices[0] : null;
   }
-  
+
   Property? getRent() {
     var prices = getPrices();
 

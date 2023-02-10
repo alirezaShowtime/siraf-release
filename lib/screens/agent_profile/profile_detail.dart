@@ -7,7 +7,9 @@ extension ProfileDetail on AgentProfileScreenState {
   Widget profileDetail() {
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height - (Scaffold.of(scaffoldContext).appBarMaxHeight ?? 0) - 170,
+        maxHeight: MediaQuery.of(context).size.height -
+            (Scaffold.of(scaffoldContext).appBarMaxHeight ?? 0) -
+            170,
       ),
       padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
       decoration: BoxDecoration(
@@ -32,7 +34,8 @@ extension ProfileDetail on AgentProfileScreenState {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: Image(
-                  image: NetworkImage("https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png"),
+                  image: NetworkImage(
+                      "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png"),
                   fit: BoxFit.cover,
                 ),
               ),

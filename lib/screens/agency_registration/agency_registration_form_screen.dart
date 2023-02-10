@@ -8,10 +8,12 @@ import 'package:siraf3/widgets/text_field_2.dart';
 
 class AgencyRegistrationFormScreen extends StatefulWidget {
   @override
-  State<AgencyRegistrationFormScreen> createState() => _AgencyRegistrationFormScreen();
+  State<AgencyRegistrationFormScreen> createState() =>
+      _AgencyRegistrationFormScreen();
 }
 
-class _AgencyRegistrationFormScreen extends State<AgencyRegistrationFormScreen> {
+class _AgencyRegistrationFormScreen
+    extends State<AgencyRegistrationFormScreen> {
   TextEditingController businessNameController = TextEditingController();
   TextEditingController businessIdController = TextEditingController();
   TextEditingController officeAddressController = TextEditingController();
@@ -35,7 +37,8 @@ class _AgencyRegistrationFormScreen extends State<AgencyRegistrationFormScreen> 
           ListView(
             children: [
               field(
-                padding: const EdgeInsets.only(top: 30, left: 10, right: 10, bottom: 10),
+                padding: const EdgeInsets.only(
+                    top: 30, left: 10, right: 10, bottom: 10),
                 controller: businessNameController,
                 labelText: "نام تجاری دفتر املاک",
                 hintText: "مثال: دپارتمان املاک شهر",
@@ -96,7 +99,8 @@ class _AgencyRegistrationFormScreen extends State<AgencyRegistrationFormScreen> 
                       fontSize: 11,
                     ),
                   ),
-                  icon(Icons.arrow_forward_ios_rounded, color: Colors.white, size: 15),
+                  icon(Icons.arrow_forward_ios_rounded,
+                      color: Colors.white, size: 15),
                 ],
               ),
               shape: RoundedRectangleBorder(
@@ -158,7 +162,8 @@ class _AgencyRegistrationFormScreen extends State<AgencyRegistrationFormScreen> 
         descriptionController.value.text.isEmpty ||
         trackingController.value.text.isEmpty) {}
 
-    Navigator.push(context, MaterialPageRoute(builder: (_) => PreviewAgencyRegistrationScreen()));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (_) => PreviewAgencyRegistrationScreen()));
   }
 
   void attachSymbolBusiness() {

@@ -50,7 +50,8 @@ class _AppBarChat extends State<AppBarChat> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(100),
                 child: Image(
-                  image: NetworkImage("https://www.seiu1000.org/sites/main/files/imagecache/hero/main-images/camera_lense_0.jpeg"),
+                  image: NetworkImage(
+                      "https://www.seiu1000.org/sites/main/files/imagecache/hero/main-images/camera_lense_0.jpeg"),
                   width: 40,
                   height: 40,
                   fit: BoxFit.fill,

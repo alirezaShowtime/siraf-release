@@ -24,7 +24,8 @@ extension AnswerItem on AgentProfileScreenState {
                 children: [
                   Avatar(
                     size: 25,
-                    imagePath: "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png",
+                    imagePath:
+                        "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png",
                   ),
                   SizedBox(width: 5),
                   Text(

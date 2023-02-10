@@ -52,12 +52,13 @@ class PropertyBloc extends Bloc<PropertyEvent, PropertyState> {
       } on SocketException catch (e) {
         emit(PropertyErrorState());
         return;
-    }
+      }
 
       if (isResponseOk(response)) {
         var json = jDecode(response.body);
 
-        emit(PropertyLoadedState(iproperties: PropertyInsert.fromList(json['data'])));
+        emit(PropertyLoadedState(
+            iproperties: PropertyInsert.fromList(json['data'])));
       } else {
         emit(PropertyErrorState(response: response));
       }

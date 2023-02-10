@@ -38,7 +38,8 @@ void showMessageActionMenu(
         onTap: () {
           Future.delayed(
             const Duration(seconds: 0),
-            () => confirmDeleteMessageDialog(context, isForMe: true, onClickDelete: onClickDeleteItem),
+            () => confirmDeleteMessageDialog(context,
+                isForMe: true, onClickDelete: onClickDeleteItem),
           );
         },
       ),
@@ -87,7 +88,8 @@ void confirmDeleteMessageDialog(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MyContentDialog(content: "آیا واقعا می خواهید این پیام را حذف کنید?"),
+              MyContentDialog(
+                  content: "آیا واقعا می خواهید این پیام را حذف کنید?"),
               if (isForMe) SizedBox(height: 10),
               if (isForMe)
                 Row(

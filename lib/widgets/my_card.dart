@@ -28,7 +28,8 @@ class _MyCard extends State<MyCard> {
         children: [
           Container(
             margin: widget.margin ?? EdgeInsets.only(top: 8),
-            padding: widget.padding ?? EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+            padding: widget.padding ??
+                EdgeInsets.symmetric(vertical: 12, horizontal: 20),
             decoration: BoxDecoration(
               color: widget.background,
               border: Border.all(color: Colors.grey.shade200),

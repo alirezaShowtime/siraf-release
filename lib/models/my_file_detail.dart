@@ -149,7 +149,7 @@ class MyFileDetail {
 
     return prices.asMap().containsKey(0) ? prices[0] : null;
   }
-  
+
   Property? getRent() {
     var prices = getPrices();
 
@@ -159,7 +159,6 @@ class MyFileDetail {
   List<Property> getPrices() =>
       property?.where((element) => element.section == 3).toList() ??
       <Property>[];
-
 
   List<Property> getMainProperties() {
     var list = property

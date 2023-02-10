@@ -70,7 +70,11 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _hasNewFiles = true;
 
   bool _canLoadMore() {
-    return (scrollController.position.pixels == scrollController.position.maxScrollExtent) && lastId != null && _hasNewFiles && !_isLoadingMore;
+    return (scrollController.position.pixels ==
+            scrollController.position.maxScrollExtent) &&
+        lastId != null &&
+        _hasNewFiles &&
+        !_isLoadingMore;
   }
 
   void pagination() async {
@@ -140,7 +144,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   changeViewType() async {
     var sh = await SharedPreferences.getInstance();
-    sh.setString("FILE_VIEW_TYPE", viewType == ViewType.List ? "slide" : "list");
+    sh.setString(
+        "FILE_VIEW_TYPE", viewType == ViewType.List ? "slide" : "list");
 
     await getViewType();
 
@@ -148,7 +153,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   goSelectCity({showSelected = false}) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => SelectCityScreen(showSelected: showSelected)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => SelectCityScreen(showSelected: showSelected)));
   }
 
   openMenu() {
@@ -199,7 +207,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             onPressed: () async {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => FilterScreen()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => FilterScreen()));
             },
             icon: FaIcon(
               OctIcons.sliders_16,
@@ -210,7 +219,8 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             onPressed: () {
               print("search object");
-              Navigator.push(context, MaterialPageRoute(builder: (_) => SearchScreen()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => SearchScreen()));
             },
             icon: FaIcon(
               CupertinoIcons.search,
@@ -237,7 +247,9 @@ class _HomeScreenState extends State<HomeScreen> {
       return Center(
         child: TryAgain(
           onPressed: getFiles,
-          message: state.response != null ? jDecode(state.response!.body)['message'] : null,
+          message: state.response != null
+              ? jDecode(state.response!.body)['message']
+              : null,
         ),
       );
     }
@@ -259,8 +271,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     child: Padding(
-                      padding: EdgeInsets.only(top: (state as HSLoadedState).files.first == file ? 0 : 5),
-                      child: viewType == ViewType.List ? FileHorizontalItem(file: file) : FileSlideItem(file: file),
+                      padding: EdgeInsets.only(
+                          top: (state as HSLoadedState).files.first == file
+                              ? 0
+                              : 5),
+                      child: viewType == ViewType.List
+                          ? FileHorizontalItem(file: file)
+                          : FileSlideItem(file: file),
                     ),
                   ))
               .toList() +
