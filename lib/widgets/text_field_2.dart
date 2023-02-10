@@ -86,10 +86,12 @@ class TextField2 extends m.TextField {
           onChanged: onChanged,
           onTap: () {
             if (controller != null) {
-              var txtSelection = TextSelection.fromPosition(TextPosition(offset: controller.text.length - 1));
+              var txtSelection = TextSelection.fromPosition(
+                  TextPosition(offset: controller.text.length - 1));
 
               if (controller.selection == txtSelection) {
-                controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
+                controller.selection = TextSelection.fromPosition(
+                    TextPosition(offset: controller.text.length));
               }
             }
             if (onTap != null) onTap();

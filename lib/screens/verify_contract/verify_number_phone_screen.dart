@@ -84,7 +84,9 @@ class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: Themes.blue,
-                      borderRadius: BorderRadius.only(bottomRight: Radius.circular(10), bottomLeft: Radius.circular(10)),
+                      borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(10),
+                          bottomLeft: Radius.circular(10)),
                     ),
                     child: Text(
                       "تایید",

@@ -17,11 +17,14 @@ class SearchHistory {
   }
 
   static Future<void> truncate() async {
-    await (await SQLiteDbProvider.sqLiteDbProvider.database).execute("DELETE FROM `$table`;");
+    await (await SQLiteDbProvider.sqLiteDbProvider.database)
+        .execute("DELETE FROM `$table`;");
   }
 
   static Future<List<SearchHistory>> all({String orderById = "desc"}) async {
-    List<Map<String, Object?>> result = await (await SQLiteDbProvider.sqLiteDbProvider.database).query(table, orderBy: "id $orderById");
+    List<Map<String, Object?>> result =
+        await (await SQLiteDbProvider.sqLiteDbProvider.database)
+            .query(table, orderBy: "id $orderById");
     List<SearchHistory> models = [];
 
     result.forEach((item) {
@@ -32,7 +35,8 @@ class SearchHistory {
   }
 
   static Future<bool> isExist(String keyword) async {
-    var result = await (await SQLiteDbProvider.sqLiteDbProvider.database).rawQuery("SELECT * FROM $table WHERE keyword = '$keyword';");
+    var result = await (await SQLiteDbProvider.sqLiteDbProvider.database)
+        .rawQuery("SELECT * FROM $table WHERE keyword = '$keyword';");
 
     return result.length > 0;
   }

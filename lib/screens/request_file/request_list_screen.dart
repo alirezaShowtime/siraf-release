@@ -82,7 +82,9 @@ class _RequestListScreen extends State<RequestListScreen> {
         title: AppBarTitle("درخواست های من"),
         actions: [
           IconButton(onPressed: requestFile, icon: icon(Icons.add)),
-          if (selectedFiles.length > 0) IconButton(onPressed: removeFile, icon: icon(CupertinoIcons.delete)),
+          if (selectedFiles.length > 0)
+            IconButton(
+                onPressed: removeFile, icon: icon(CupertinoIcons.delete)),
           MyPopupMenuButton(
             icon: icon(Icons.sort_rounded),
             itemBuilder: (_) => [
@@ -177,6 +179,7 @@ class _RequestListScreen extends State<RequestListScreen> {
   void onClickItem(Map<String, dynamic> model) {
     //todo: implement event listener
 
-    Navigator.push(context, MaterialPageRoute(builder: (_) => RequestFileShowScreen()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (_) => RequestFileShowScreen()));
   }
 }

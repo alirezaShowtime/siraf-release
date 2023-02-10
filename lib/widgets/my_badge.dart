@@ -16,10 +16,13 @@ class _MyBadge extends State<MyBadge> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: widget.padding ?? EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      padding:
+          widget.padding ?? EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       margin: widget.margin ?? EdgeInsets.symmetric(horizontal: 3),
       alignment: Alignment.center,
-      decoration: BoxDecoration(color: Themes.primary.withOpacity(0.2), borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(
+          color: Themes.primary.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(10)),
       child: Text(
         widget.text,
         style: TextStyle(

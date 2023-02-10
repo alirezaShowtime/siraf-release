@@ -8,5 +8,11 @@ class Province {
   dynamic parentId;
   List<City> cities;
 
-  Province({required this.id, required this.name, required this.weight, required this.countFile, required this.parentId, required this.cities});
+  Province(
+      {required this.id,
+      required this.name,
+      required this.weight,
+      required this.countFile,
+      required this.parentId,
+      required this.cities});
 }

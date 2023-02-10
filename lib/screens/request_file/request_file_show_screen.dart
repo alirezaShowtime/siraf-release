@@ -69,7 +69,9 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
         automaticallyImplyLeading: false,
         title: AppBarTitle("درخواست های من"),
         actions: [
-          IconButton(onPressed: showConfirmDialog, icon: icon(CupertinoIcons.delete, size: 20)),
+          IconButton(
+              onPressed: showConfirmDialog,
+              icon: icon(CupertinoIcons.delete, size: 20)),
           MyPopupMenuButton(
             itemBuilder:  (_) => [
               popupMenuItemWithIcon(title: "ویرایش فایل", iconDate: Icons.edit_rounded, onTap: onClickEditFile),
@@ -141,8 +143,10 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                       ),
                       MyBadge(
                         text: "842745353",
-                        padding: EdgeInsets.symmetric(vertical: 1, horizontal: 6),
-                        margin: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 1, horizontal: 6),
+                        margin:
+                            EdgeInsets.symmetric(vertical: 1, horizontal: 2),
                       ),
                     ],
                   ),
@@ -203,7 +207,8 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image(
-                  image: NetworkImage("https://www.seiu1000.org/sites/main/files/imagecache/hero/main-images/camera_lense_0.jpeg"),
+                  image: NetworkImage(
+                      "https://www.seiu1000.org/sites/main/files/imagecache/hero/main-images/camera_lense_0.jpeg"),
                   height: 40,
                   width: 40,
                   fit: BoxFit.fill,
@@ -241,7 +246,8 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                     direction: Axis.horizontal,
                     itemCount: 5,
                     itemPadding: EdgeInsets.symmetric(horizontal: 0.25),
-                    itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
+                    itemBuilder: (context, _) =>
+                        icon(Icons.star, color: Colors.amber),
                     itemSize: 10,
                     onRatingUpdate: (double value) {},
                     updateOnDrag: false,
@@ -254,8 +260,12 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
           ),
           Row(
             children: [
-              IconButton(onPressed: () => startChat(agent), icon: icon(Icons.chat_outlined, color: Colors.grey.shade500)),
-              IconButton(onPressed: () => call(agent["numberPhone"]), icon: icon(Icons.phone_rounded, color: Colors.grey.shade500)),
+              IconButton(
+                  onPressed: () => startChat(agent),
+                  icon: icon(Icons.chat_outlined, color: Colors.grey.shade500)),
+              IconButton(
+                  onPressed: () => call(agent["numberPhone"]),
+                  icon: icon(Icons.phone_rounded, color: Colors.grey.shade500)),
             ],
           ),
         ],
@@ -268,9 +278,13 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
         context: context,
         builder: (context) => MyAlertDialog(
           title: TitleDialog(title: "حذف درخواست فایل"),
-          content: MyContentDialog(content: "آیا واقعا میخواهید این درخواست را پاک کنید؟"),
+          content: MyContentDialog(
+              content: "آیا واقعا میخواهید این درخواست را پاک کنید؟"),
           actions: [
-            MyTextButton(text: "حذف", onPressed: onClickRemoveFile, rippleColor: Colors.red),
+            MyTextButton(
+                text: "حذف",
+                onPressed: onClickRemoveFile,
+                rippleColor: Colors.red),
             MyTextButton(text: "لغو", onPressed: () => Navigator.pop(context)),
           ],
         ),

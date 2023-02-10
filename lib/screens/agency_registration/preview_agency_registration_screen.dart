@@ -8,10 +8,12 @@ import 'package:siraf3/widgets/simple_app_bar.dart';
 
 class PreviewAgencyRegistrationScreen extends StatefulWidget {
   @override
-  State<PreviewAgencyRegistrationScreen> createState() => _PreviewAgencyRegistrationScreen();
+  State<PreviewAgencyRegistrationScreen> createState() =>
+      _PreviewAgencyRegistrationScreen();
 }
 
-class _PreviewAgencyRegistrationScreen extends State<PreviewAgencyRegistrationScreen> {
+class _PreviewAgencyRegistrationScreen
+    extends State<PreviewAgencyRegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +52,8 @@ class _PreviewAgencyRegistrationScreen extends State<PreviewAgencyRegistrationSc
                         ),
                         Container(
                           alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 15),
+                          padding: const EdgeInsets.only(
+                              left: 10, right: 10, bottom: 15),
                           child: Text(
                             "fld[spkf[d نیحخنبخح ینبحخ نبحخینبح خینسبحخ نیبحخ نسیبخحیسنبخح ینب یحسخبنیسحخب ",
                             style: TextStyle(
@@ -98,7 +101,8 @@ class _PreviewAgencyRegistrationScreen extends State<PreviewAgencyRegistrationSc
                   MaterialButton(
                     onPressed: done,
                     color: Themes.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
                     child: Row(
                       children: [
                         Text(

@@ -8,10 +8,12 @@ import 'package:siraf3/widgets/my_text_button.dart';
 
 class AgencyRegistrationInfoScreen extends StatefulWidget {
   @override
-  State<AgencyRegistrationInfoScreen> createState() => _AgencyRegistrationInfoScreen();
+  State<AgencyRegistrationInfoScreen> createState() =>
+      _AgencyRegistrationInfoScreen();
 }
 
-class _AgencyRegistrationInfoScreen extends State<AgencyRegistrationInfoScreen> {
+class _AgencyRegistrationInfoScreen
+    extends State<AgencyRegistrationInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +25,9 @@ class _AgencyRegistrationInfoScreen extends State<AgencyRegistrationInfoScreen> 
         elevation: 0.7,
         backgroundColor: Themes.appBar,
         title: AppBarTitle("ثبت دفتر املاک"),
-        actions: [IconButton(onPressed: share, icon: icon(Icons.share_rounded))],
+        actions: [
+          IconButton(onPressed: share, icon: icon(Icons.share_rounded))
+        ],
       ),
       body: Column(
         children: [
@@ -51,12 +55,14 @@ class _AgencyRegistrationInfoScreen extends State<AgencyRegistrationInfoScreen> 
                 item(
                   index: 2,
                   title: "دسترسی به ویترین مشتریان و فایل های اختصاصی سیراف",
-                  subtitle: "سیراف در کنار شما و برای شما فایل و مشتری معرفی مینماید",
+                  subtitle:
+                      "سیراف در کنار شما و برای شما فایل و مشتری معرفی مینماید",
                 ),
                 item(
                   index: 3,
                   title: "سهولت در ارتباط با مشتریان",
-                  subtitle: "گفتگوی آنلاین، اشترام گذاری چند فایل برای مشتری و ...",
+                  subtitle:
+                      "گفتگوی آنلاین، اشترام گذاری چند فایل برای مشتری و ...",
                 ),
                 item(
                   index: 4,
@@ -73,8 +79,13 @@ class _AgencyRegistrationInfoScreen extends State<AgencyRegistrationInfoScreen> 
                   title: "صرفه جویی در زمان و هزینه و افزایش سرعت و بهره وری",
                 ),
                 item(index: 7, title: "معرفی دفتر املاک شما به کاربران سیراف"),
-                item(index: 8, title: "بهره مندی از محتواهای آموزشی اختصاصی حوزه املاک"),
-                item(index: 9, title: "امکان دسترسی به سامانه از راه دور، تنها از طریق تلفن همراه"),
+                item(
+                    index: 8,
+                    title: "بهره مندی از محتواهای آموزشی اختصاصی حوزه املاک"),
+                item(
+                    index: 9,
+                    title:
+                        "امکان دسترسی به سامانه از راه دور، تنها از طریق تلفن همراه"),
                 Padding(
                   padding: EdgeInsets.only(top: 10, bottom: 30),
                   child: MyTextButton(
@@ -151,7 +162,8 @@ class _AgencyRegistrationInfoScreen extends State<AgencyRegistrationInfoScreen> 
         children: [
           Text(
             "${index}.${title}",
-            style: TextStyle(color: Themes.text, fontSize: 12, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Themes.text, fontSize: 12, fontWeight: FontWeight.bold),
           ),
           if (subtitle != null)
             Padding(
@@ -180,7 +192,8 @@ class _AgencyRegistrationInfoScreen extends State<AgencyRegistrationInfoScreen> 
 
   void registerAgency() {
     //todo: implement event listener
-    Navigator.push(context, MaterialPageRoute(builder: (_) => AgencyRegistrationFormScreen()));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (_) => AgencyRegistrationFormScreen()));
   }
 
   void viewIntroductionVideo() {

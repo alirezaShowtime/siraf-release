@@ -51,7 +51,7 @@ class Category {
     _data["parent_id"] = parentId;
     return _data;
   }
-
+  
   int isAllInt() {
     return (isAll ?? false) ? 0 : 1;
   }

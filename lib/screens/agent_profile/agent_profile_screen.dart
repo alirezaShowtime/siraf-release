@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/file.dart';
-import 'package:siraf3/screens/agency_profile/add_comment_widget.dart';
-import 'package:siraf3/screens/agency_profile/comment_item.dart';
-import 'package:siraf3/screens/agency_profile/event_listeners.dart';
-import 'package:siraf3/screens/agency_profile/profile_detail.dart';
-import 'package:siraf3/screens/agency_profile/search_bar.dart';
+import 'package:siraf3/screens/agent_profile/add_comment_widget.dart';
+import 'package:siraf3/screens/agent_profile/comment_item.dart';
+import 'package:siraf3/screens/agent_profile/event_listeners.dart';
+import 'package:siraf3/screens/agent_profile/profile_detail.dart';
+import 'package:siraf3/screens/agent_profile/search_bar.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/avatar.dart';
@@ -15,12 +15,12 @@ import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:siraf3/widgets/static_star.dart';
 
-class AgencyProfileScreen extends StatefulWidget {
+class AgentProfileScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => AgencyProfileScreenState();
+  State<StatefulWidget> createState() => AgentProfileScreenState();
 }
 
-class AgencyProfileScreenState extends State<AgencyProfileScreen>
+class AgentProfileScreenState extends State<AgentProfileScreen>
     with SingleTickerProviderStateMixin {
   List<File> list = [
     File(
@@ -225,11 +225,11 @@ class AgencyProfileScreenState extends State<AgencyProfileScreen>
 
   late BuildContext scaffoldContext;
 
-  String? comment;
-  double? rating;
-
   TextEditingController searchController = TextEditingController();
   TextEditingController commentController = TextEditingController();
+
+  String? comment;
+  double? rating;
 
   @override
   void initState() {
@@ -375,7 +375,7 @@ class AgencyProfileScreenState extends State<AgencyProfileScreen>
                                       child: Text(
                                         !showComment
                                             ? "نمایش نظرات (${comments.length})"
-                                            : "فایل های دفتر املاک",
+                                            : "فایل های مشاور",
                                         style: TextStyle(
                                           color: Themes.text,
                                           fontWeight: FontWeight.bold,
@@ -494,30 +494,6 @@ class AgencyProfileScreenState extends State<AgencyProfileScreen>
             );
           },
         ),
-      ),
-    );
-  }
-
-  Widget agentItem() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 5),
-      child: Column(
-        children: [
-          Avatar(
-              size: 45,
-              imagePath:
-                  "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png"),
-          SizedBox(height: 5),
-          Text(
-            "عباس رحیمی",
-            style: TextStyle(
-              color: Themes.textGrey,
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          StaticStar(rating: 4.5),
-        ],
       ),
     );
   }

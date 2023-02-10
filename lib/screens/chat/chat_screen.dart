@@ -12,30 +12,35 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreen();
 }
 
-class _ChatScreen extends State<ChatScreen> with SingleTickerProviderStateMixin {
+class _ChatScreen extends State<ChatScreen>
+    with SingleTickerProviderStateMixin {
   List<List<Map<String, Object>>> list = [
     [
       {
         "forMe": true,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
       {
         "forMe": true,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
       {
         "forMe": true,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
       {
         "forMe": true,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
@@ -43,13 +48,15 @@ class _ChatScreen extends State<ChatScreen> with SingleTickerProviderStateMixin 
     [
       {
         "forMe": false,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
       {
         "forMe": false,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
@@ -57,13 +64,15 @@ class _ChatScreen extends State<ChatScreen> with SingleTickerProviderStateMixin 
     [
       {
         "forMe": true,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
       {
         "forMe": true,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
@@ -71,55 +80,64 @@ class _ChatScreen extends State<ChatScreen> with SingleTickerProviderStateMixin 
     [
       {
         "forMe": false,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
       {
         "forMe": false,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
       {
         "forMe": false,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
       {
         "forMe": false,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
       {
         "forMe": false,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
       {
         "forMe": false,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
       {
         "forMe": false,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
       {
         "forMe": false,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
       {
         "forMe": false,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
@@ -127,7 +145,8 @@ class _ChatScreen extends State<ChatScreen> with SingleTickerProviderStateMixin 
     [
       {
         "forMe": true,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       }
@@ -135,7 +154,8 @@ class _ChatScreen extends State<ChatScreen> with SingleTickerProviderStateMixin 
     [
       {
         "forMe": false,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
@@ -143,7 +163,8 @@ class _ChatScreen extends State<ChatScreen> with SingleTickerProviderStateMixin 
     [
       {
         "forMe": true,
-        "text": "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
+        "text":
+            "lorem kfodpsmkf pods,mf oimfsoi mdsoidmsklf s dmnf kdmsfo  isd  n f k l s d m f  o i k  is n s d fklsd ndo kslf",
         "time": "12:33",
         "isSeen": true,
       },
@@ -194,7 +215,9 @@ class _ChatScreen extends State<ChatScreen> with SingleTickerProviderStateMixin 
                   physics: BouncingScrollPhysics(),
                   itemCount: list.length,
                   itemBuilder: (context, i) {
-                    return (list[i].first["forMe"] as bool) ? myMessage(list[i]) : personMessage(list[i]);
+                    return (list[i].first["forMe"] as bool)
+                        ? myMessage(list[i])
+                        : personMessage(list[i]);
                   },
                 ),
                 Positioned(
@@ -258,22 +281,28 @@ class _ChatScreen extends State<ChatScreen> with SingleTickerProviderStateMixin 
   }
 
   void _initScrollAnimation() {
-    _scrollDownAnimationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
+    _scrollDownAnimationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 400));
 
-    _scrollDownAnimation = Tween<double>(end: end_floatingActionButtonOffset, begin: begin_floatingActionButtonOffset).animate(_scrollDownAnimationController);
+    _scrollDownAnimation = Tween<double>(
+            end: end_floatingActionButtonOffset,
+            begin: begin_floatingActionButtonOffset)
+        .animate(_scrollDownAnimationController);
 
     _scrollDownAnimationController.addListener(_animationListener);
   }
 
   void _scrollListener() {
-    if (_chatController.position.userScrollDirection == ScrollDirection.forward) {
+    if (_chatController.position.userScrollDirection ==
+        ScrollDirection.forward) {
       if (_scrollDownAnimation.value != end_floatingActionButtonOffset) {
         _scrollDownAnimationController.reset();
         _scrollDownAnimationController.forward();
       }
     }
 
-    if (_chatController.position.userScrollDirection == ScrollDirection.reverse) {
+    if (_chatController.position.userScrollDirection ==
+        ScrollDirection.reverse) {
       if (_scrollDownAnimation.value != begin_floatingActionButtonOffset) {
         _scrollDownAnimationController.reset();
         _scrollDownAnimationController.reverse();
@@ -292,6 +321,7 @@ class _ChatScreen extends State<ChatScreen> with SingleTickerProviderStateMixin 
 
   void onclickRemoveChat() {
     //todo: implement event listener
-    Future.delayed(const Duration(seconds: 0), () => confirmDeleteChatDialog(context, onClickDelete: () {}));
+    Future.delayed(const Duration(seconds: 0),
+        () => confirmDeleteChatDialog(context, onClickDelete: () {}));
   }
 }
