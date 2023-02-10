@@ -124,6 +124,7 @@ Uri getFileUrl(String endpoint) {
 }
 
 Uri getEstateUrl(String endpoint) {
+  print(endpoint);
   return Uri.parse("https://estate.siraf.app/api/${endpoint}");
 }
 

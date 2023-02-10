@@ -53,8 +53,10 @@ class EstateBloc extends Bloc<EstateEvent, EstateState> {
       try {
         var url = getEstateUrl(
           "estate/estates?city_id=" +
-              jsonEncode(event.city_ids.toList()) +
-              "&name=" +
+              "[" +
+              event.city_ids.join(',') +
+              "]"
+                  "&name=" +
               (event.search != null ? event.search! : "") +
               (event.sort != null ? "&sort=" + event.sort! : "") +
               (event.latLng != null
@@ -62,7 +64,6 @@ class EstateBloc extends Bloc<EstateEvent, EstateState> {
                   : ""),
         );
 
-        print(url.toString());
 
         response = await http2.get(url);
       } on HttpException catch (e) {

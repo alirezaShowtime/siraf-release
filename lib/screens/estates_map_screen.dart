@@ -12,6 +12,7 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/estate.dart';
 import 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
+import 'package:siraf3/screens/request_file/request_file_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
@@ -39,10 +40,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
   initState() {
     super.initState();
 
-    getCities();
-    getEstates();
-
-    // getEstatesFirstTime();
+    getEstatesFirstTime();
 
     bloc.stream.listen((event) {
       if (event is EstateLoadedState) {
@@ -258,7 +256,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
               center: defaultLocation,
               interactiveFlags:
                   InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-              zoom: 13.0,
+              zoom: 15.0,
             ),
             children: [
               TileLayer(
@@ -440,8 +438,6 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
         ];
       });
     }
-
-    // if (points != null) setMarkersData(points!);
   }
 
   Widget _buildMapMarker(_) {
@@ -570,20 +566,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
                           Expanded(
                             child: MaterialButton(
                               onPressed: () {
-                                // setState(() {
-                                //   if (selectedEstates
-                                //       .where(
-                                //           (element) => element.id == estate.id)
-                                //       .isNotEmpty) {
-                                //     selectedEstates.removeWhere(
-                                //       (element) => element.id == estate.id,
-                                //     );
-                                //   } else {
-                                //     selectedEstates.add(estate);
-                                //   }
-                                // });
-
-                                dismissDetailsDialog();
+                                Navigator.push(context, MaterialPageRoute(builder: (_) => RequestFileScreen(estates: [estate])));
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(

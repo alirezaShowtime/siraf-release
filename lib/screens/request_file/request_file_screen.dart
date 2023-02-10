@@ -22,6 +22,10 @@ import '../../widgets/section.dart';
 import 'package:siraf3/dialog.dart';
 
 class RequestFileScreen extends StatefulWidget {
+  List<Estate> estates;
+
+  RequestFileScreen({this.estates = const []});
+
   @override
   State<StatefulWidget> createState() => _RequestFileScreen();
 }
@@ -49,6 +53,12 @@ class _RequestFileScreen extends State<RequestFileScreen> {
     super.initState();
 
     bloc.stream.listen(listen);
+
+    setEstates();
+  }
+
+  setEstates() {
+    selectedEstates = widget.estates;
   }
 
   BuildContext? buildContext;
