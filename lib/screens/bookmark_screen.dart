@@ -239,7 +239,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
     files = state.data;
 
     return ListView(
-      children: state.data.map<Widget>(
+      children: files.map<Widget>(
         (e) {
           return GestureDetector(
             onTap: () {
@@ -281,6 +281,11 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                   if (selectedFiles.isEmpty) {
                     isSelectable = false;
                   }
+                });
+              },
+              onRemoveFavorite: (file) {
+                setState(() {
+                  files.remove(e);
                 });
               },
             ),

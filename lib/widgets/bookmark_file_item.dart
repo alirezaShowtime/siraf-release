@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:siraf3/bookmark.dart';
 import 'package:siraf3/models/favorite_file.dart';
 import 'package:siraf3/themes.dart';
 
@@ -7,11 +9,13 @@ class BookmarkFileItem extends StatefulWidget {
   bool isSelectable;
   bool isSelected;
   void Function(bool) onChanged;
+  void Function(FavoriteFile file) onRemoveFavorite;
 
   BookmarkFileItem({
     required this.file,
     required this.isSelectable,
     required this.isSelected,
+    required this.onRemoveFavorite,
     required this.onChanged,
     super.key,
   });
@@ -21,6 +25,22 @@ class BookmarkFileItem extends StatefulWidget {
 }
 
 class _BookmarkFileItemState extends State<BookmarkFileItem> {
+  late Bookmark bookmark;
+
+  @override
+  void initState() {
+    super.initState();
+
+    bookmark = Bookmark(
+        id: widget.file.fileId!.id!, isFavorite: true, context: context);
+
+    bookmark.favoriteStream.stream.listen((isFavorite) {
+      if (!isFavorite) {
+        widget.onRemoveFavorite(widget.file);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double imageSize = (MediaQuery.of(context).size.width - 20) / 3.5;
@@ -45,18 +65,36 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image(
-                  image: NetworkImage(widget.file.fileId?.images?.first.path ?? ""),
-                  width: imageSize,
-                  height: imageSize,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Image(
-                    image:
-                        AssetImage("assets/images/image_not_avialable_2.png"),
-                    width: imageSize,
-                    height: imageSize,
-                    fit: BoxFit.cover,
-                  ),
+                child: Stack(
+                  children: [
+                    Image(
+                      image: NetworkImage(
+                          widget.file.fileId?.images?.first.path ?? ""),
+                      width: imageSize,
+                      height: imageSize,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Image(
+                        image: AssetImage(
+                            "assets/images/image_not_avialable_2.png"),
+                        width: imageSize,
+                        height: imageSize,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Positioned(
+                      right: 6,
+                      top: 0,
+                      child: GestureDetector(
+                        onTap: () {
+                          bookmark.addOrRemoveFavorite();
+                        },
+                        child: Icon(
+                          CupertinoIcons.bookmark_fill,
+                          color: Themes.primary,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(
