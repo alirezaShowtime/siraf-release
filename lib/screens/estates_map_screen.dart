@@ -11,6 +11,7 @@ import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/estate.dart';
+import 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
@@ -32,20 +33,24 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
   List<City> cities = [];
 
   bool _showFileOnMyLocation = false;
+  bool _firstTime = false;
 
   @override
-  void initState() {
+  initState() {
     super.initState();
 
     getCities();
+    getEstates();
+
+    // getEstatesFirstTime();
 
     bloc.stream.listen((event) {
       if (event is EstateLoadedState) {
-        if (myLocationMarker == null) {
+        if (_firstTime) {
           setState(() {
-            _showFileOnMyLocation = true;
+            _firstTime = false;
+            _controller.move(myLocationMarker!.point, getZoomLevel(3000));
           });
-          _onMyLocationClicked();
         }
       }
     });
@@ -65,6 +70,19 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
     }
   }
 
+  getEstatesFirstTime() async {
+    await getCities();
+    if (await checkLocationEnabled()) {
+      setState(() {
+        _showFileOnMyLocation = true;
+        _firstTime = true;
+      });
+      await _onMyLocationClicked(move: false);
+    }
+
+    getEstates();
+  }
+
   getEstates() {
     bloc.add(
       EstateLoadEvent(
@@ -77,6 +95,22 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
             : null,
       ),
     );
+  }
+
+  checkLocationEnabled() async {
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    _serviceEnabled = await _location.serviceEnabled();
+    if (!_serviceEnabled) {
+      return false;
+    }
+
+    _permissionGranted = await _location.hasPermission();
+    if (_permissionGranted != PermissionStatus.granted) {
+      return false;
+    }
+
+    return true;
   }
 
   EstateBloc bloc = EstateBloc();
@@ -95,8 +129,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
           elevation: 0.7,
           title: TextField2(
             decoration: InputDecoration(
-              hintText: "جستجو در دفاتر املاک | " +
-                  cities.map((e) => e.name).join(' و '),
+              hintText: "جستجو در دفاتر املاک",
               hintStyle: TextStyle(color: Themes.textGrey, fontSize: 13),
               border: InputBorder.none,
             ),
@@ -114,11 +147,18 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
               onTap: () async {
                 goSelectCity();
               },
-              child: Text(
-                getTitle(cities),
-                style: TextStyle(
-                  color: Themes.textLight,
-                  fontSize: 13,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 17,
+                ),
+                child: Text(
+                  getTitle(cities),
+                  style: TextStyle(
+                    color: Themes.text,
+                    fontSize: 14,
+                    fontFamily: "IranSansMedium",
+                  ),
                 ),
               ),
             ),
@@ -173,7 +213,8 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
 
       City.saveList(cities);
 
-      getCities();
+      await getCities();
+      getEstates();
     }
   }
 
@@ -228,8 +269,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
                 circles: circles,
               ),
               MarkerLayer(
-                markers: _buildEstateMarkers(state.estates) +
-                    <Marker>[if (myLocationMarker != null) myLocationMarker!],
+                markers: _buildEstateMarkers(state.estates),
               )
             ],
           ),
@@ -352,13 +392,11 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
     return true;
   }
 
-  Future<void> _onMyLocationClicked() async {
+  Future<void> _onMyLocationClicked({bool move = true}) async {
     if (!await getLocationPermissions()) {
       notify("دسترسی موقعیت مکانی رد شده است لطفا به برنامه دسترسی بدهید");
       return;
     }
-
-    notify("در حال دریافت موقعیت مکانی");
 
     LocationData locationData = await _location.getLocation();
 
@@ -377,7 +415,9 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
         builder: _buildMapMarker,
         point: position,
       );
-      _controller.move(position, getZoomLevel(1000));
+      if (move) {
+        _controller.move(position, getZoomLevel(3000));
+      }
     });
 
     if (_showFileOnMyLocation) {
@@ -385,7 +425,14 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
         circles = [
           CircleMarker(
             point: position,
-            radius: 1000,
+            radius: 8,
+            color: Colors.blue,
+            borderStrokeWidth: 3,
+            borderColor: Colors.white,
+          ),
+          CircleMarker(
+            point: position,
+            radius: 3000,
             useRadiusInMeter: true,
             color: Colors.blue.withOpacity(0.15),
             borderStrokeWidth: 0,
@@ -547,16 +594,10 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
                               elevation: 1,
                               height: 40,
                               child: Text(
-                                // selectedEstates
-                                //         .where((element) =>
-                                //             element.id == estate.id)
-                                //         .isNotEmpty
-                                //     ? "حذف"
-                                //     :
-                                "افزودن",
+                                "سپردن فایل / درخواست",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   fontFamily: "IranSansBold",
                                 ),
                               ),
@@ -568,7 +609,14 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
                           ),
                           Expanded(
                             child: MaterialButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => AgencyProfileScreen(),
+                                  ),
+                                );
+                              },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(5),
@@ -581,7 +629,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
                                 "مشاهده پروفایل",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   fontFamily: "IranSansBold",
                                 ),
                               ),
@@ -713,6 +761,39 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
         : cities.length == 1
             ? cities.first.name ?? "${cities.length} شهر"
             : "${cities.length} شهر";
+  }
+
+  void setLocationMarkers() {
+    var position = myLocationMarker!.point;
+
+    setState(() {
+      myLocationMarker = Marker(
+        builder: _buildMapMarker,
+        point: position,
+      );
+      _controller.move(position, getZoomLevel(3000));
+    });
+
+    if (_showFileOnMyLocation) {
+      setState(() {
+        circles = [
+          CircleMarker(
+            point: position,
+            radius: 8,
+            color: Colors.blue,
+            borderStrokeWidth: 3,
+            borderColor: Colors.white,
+          ),
+          CircleMarker(
+            point: position,
+            radius: 3000,
+            useRadiusInMeter: true,
+            color: Colors.blue.withOpacity(0.15),
+            borderStrokeWidth: 0,
+          )
+        ];
+      });
+    }
   }
 }
 

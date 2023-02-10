@@ -45,11 +45,39 @@ class Bookmark {
               children: [
                 Column(
                   children: [
+                    SizedBox(
+                      height: 40,
+                      child: Container(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(5),
+                              topRight: Radius.circular(5),
+                            ),
+                          ),
+                          height: 40,
+                          alignment: Alignment.center,
+                          child: Text(
+                            "نشان کردن فایل",
+                            style: TextStyle(
+                              color: Themes.text,
+                              fontSize: 14,
+                              fontFamily: "IranSansMedium",
+                            ),
+                          ),
+                          padding: EdgeInsets.symmetric(vertical: 9),
+                        ),
+                      ),
+                    ),
+                    Divider(
+                      height: 1,
+                      color: Themes.textGrey,
+                    ),
                     Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       child: TextField2(
-                        minLines: 3,
+                        minLines: 5,
                         maxLines: 5,
                         controller: _controller,
                         decoration: InputDecoration(
@@ -61,7 +89,7 @@ class Bookmark {
                             fontFamily: "IranSans",
                           ),
                         ),
-                        textAlign: TextAlign.center,
+                        textAlign: TextAlign.right,
                         style: TextStyle(
                           color: Themes.text,
                           fontSize: 13,
@@ -77,9 +105,33 @@ class Bookmark {
                           Expanded(
                             child: MaterialButton(
                               onPressed: () async {
+                                dismissDialog(noteDialogContext);
+                                addFavorite();
+                              },
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomRight: Radius.circular(5),
+                                ),
+                              ),
+                              color: Themes.secondary2,
+                              elevation: 1,
+                              height: 40,
+                              child: Text(
+                                "ذخیره بدون یادداشت",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontFamily: "IranSansBold",
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                            ),
+                          ),
+                          Expanded(
+                            child: MaterialButton(
+                              onPressed: () async {
                                 if (_controller.text.trim().isEmpty) {
-                                  dismissDialog(noteDialogContext);
-                                  addFavorite();
+                                  notify("لطفا یادداشت برای فایل بنویسید.");
                                   return;
                                 }
                                 dismissDialog(noteDialogContext);
@@ -88,17 +140,16 @@ class Bookmark {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(5),
                                 ),
                               ),
                               color: Themes.primary,
                               elevation: 1,
                               height: 40,
                               child: Text(
-                                "ثبت",
+                                "ثبت با یادداشت",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   fontFamily: "IranSansBold",
                                 ),
                               ),

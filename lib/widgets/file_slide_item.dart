@@ -65,29 +65,42 @@ class _FileSlideItemState extends State<FileSlideItem> {
         children: [
           Stack(
             children: [
-              CarouselSliderCustom(
-                sliders: widget.file.images
-                        ?.map<s.Slider>(
-                          (e) => s.Slider(
-                            image: NetworkImage(e.path ?? ""),
-                            type: s.SliderType.image,
-                            link: e.path ?? "",
-                          ),
-                        )
-                        .toList() ??
-                    [],
-                height: 250,
-                autoPlay: false,
-                indicatorsCenterAlign: true,
-                viewportFraction: 1.0,
-                itemMargin: EdgeInsets.only(bottom: 15, top: 1),
-                indicatorPosition:
-                    EdgeInsets.only(left: 0, right: 0, bottom: 0),
-                itemBorderRadius: BorderRadius.zero,
-                imageFit: BoxFit.cover,
-                indicatorSelectedColor: Themes.blue,
-                indicatorColor: Colors.grey,
-              ),
+              if (widget.file.images == null || widget.file.images!.isEmpty)
+                Container(
+                  padding: EdgeInsets.only(bottom: 15),
+                  height: 250,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Themes.background,
+                    image: DecorationImage(
+                        image:
+                            AssetImage("assets/images/image_not_avialable.png"),
+                        alignment: Alignment.center),
+                  ),
+                ),
+              if (widget.file.images != null && widget.file.images!.isNotEmpty)
+                CarouselSliderCustom(
+                  sliders: widget.file.images!
+                      .map<s.Slider>(
+                        (e) => s.Slider(
+                          image: NetworkImage(e.path ?? ""),
+                          type: s.SliderType.image,
+                          link: e.path ?? "",
+                        ),
+                      )
+                      .toList(),
+                  height: 250,
+                  autoPlay: false,
+                  indicatorsCenterAlign: true,
+                  viewportFraction: 1.0,
+                  itemMargin: EdgeInsets.only(bottom: 15),
+                  indicatorPosition:
+                      EdgeInsets.only(left: 0, right: 0, bottom: 0),
+                  itemBorderRadius: BorderRadius.zero,
+                  imageFit: BoxFit.cover,
+                  indicatorSelectedColor: Themes.blue,
+                  indicatorColor: Colors.grey,
+                ),
               if (widget.file.getFirstPrice().isNotEmpty ||
                   widget.file.getSecondPrice().isNotEmpty)
                 Positioned(

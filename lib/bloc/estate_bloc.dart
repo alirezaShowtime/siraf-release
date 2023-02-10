@@ -45,41 +45,43 @@ class EstateBloc extends Bloc<EstateEvent, EstateState> {
   }
 
   _onEvent(event, emit) async {
-    event = event as EstateLoadEvent;
-    emit(EstateLoadingState());
+    if (event is EstateLoadEvent) {
+      emit(EstateLoadingState());
 
-    Response response;
+      Response response;
 
-    try {
-      var url = getEstateUrl(
-        "estate/estates?city_id=" +
-            jsonEncode(event.city_ids.toList()) +
-            "&name=" +
-            (event.sort != null ? "&sort=" + event.sort! : "") +
-            (event.latLng != null
-                ? "&lat=${event.latLng!.latitude.toString()}&long=${event.latLng!.longitude.toString()}"
-                : ""),
-      );
+      try {
+        var url = getEstateUrl(
+          "estate/estates?city_id=" +
+              jsonEncode(event.city_ids.toList()) +
+              "&name=" +
+              (event.search != null ? event.search! : "") +
+              (event.sort != null ? "&sort=" + event.sort! : "") +
+              (event.latLng != null
+                  ? "&lat=${event.latLng!.latitude.toString()}&long=${event.latLng!.longitude.toString()}"
+                  : ""),
+        );
 
-      print(url.toString());
+        print(url.toString());
 
-      response = await http2.get(url);
-    } on HttpException catch (e) {
-      emit(EstateErrorState(response: null));
-      return;
-    } on SocketException catch (e) {
-      emit(EstateErrorState(response: null));
-      return;
-    }
+        response = await http2.get(url);
+      } on HttpException catch (e) {
+        emit(EstateErrorState(response: null));
+        return;
+      } on SocketException catch (e) {
+        emit(EstateErrorState(response: null));
+        return;
+      }
 
-    if (isResponseOk(response)) {
-      var json = jDecode(response.body);
+      if (isResponseOk(response)) {
+        var json = jDecode(response.body);
 
-      emit(EstateLoadedState(
-          estates: Estate.fromList(json['data']['estats']),
-          sort_type: event.sort));
-    } else {
-      emit(EstateErrorState(response: response));
+        emit(EstateLoadedState(
+            estates: Estate.fromList(json['data']['estats']),
+            sort_type: event.sort));
+      } else {
+        emit(EstateErrorState(response: response));
+      }
     }
   }
 }

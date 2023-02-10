@@ -51,6 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     checkIsCitySelected();
 
+    // changeViewType();
+
     getViewType();
 
     scrollController.addListener(pagination);

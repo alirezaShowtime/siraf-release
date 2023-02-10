@@ -443,12 +443,7 @@ class _EstateScreenState extends State<EstateScreen> {
                   CircleLayer(
                     circles: circles,
                   ),
-                  MarkerLayer(
-                    markers: _buildEstateMarkers(state.estates) +
-                        <Marker>[
-                          if (myLocationMarker != null) myLocationMarker!
-                        ],
-                  )
+                  MarkerLayer(markers: _buildEstateMarkers(state.estates))
                 ],
               ),
             ),
@@ -481,63 +476,6 @@ class _EstateScreenState extends State<EstateScreen> {
                       Icons.my_location_outlined,
                       size: 30,
                       color: Themes.icon,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 20,
-              right: 80,
-              child: GestureDetector(
-                onTap: () async {
-                  setState(() {
-                    _showFileOnMyLocation = !_showFileOnMyLocation;
-                  });
-                  if (!_showFileOnMyLocation) {
-                    setState(() {
-                      circles.clear();
-                    });
-
-                    getEstates();
-                    return;
-                  }
-
-                  if (myLocationMarker == null) {
-                    await _onMyLocationClicked();
-                  }
-
-                  getEstates();
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: _showFileOnMyLocation
-                        ? Themes.primary
-                        : Themes.background,
-                    borderRadius: BorderRadius.circular(100),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(-2, 2),
-                        blurRadius: 4,
-                      ),
-                      BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(2, -2),
-                        blurRadius: 4,
-                      ),
-                    ],
-                  ),
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.all(10),
-                  child: Text(
-                    "اطراف من",
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontFamily: "IranSansMedium",
-                      color: _showFileOnMyLocation
-                          ? Themes.textLight
-                          : Themes.text,
                     ),
                   ),
                 ),
@@ -608,11 +546,11 @@ class _EstateScreenState extends State<EstateScreen> {
         circles = [
           CircleMarker(
             point: position,
-            radius: 1000,
-            useRadiusInMeter: true,
-            color: Colors.blue.withOpacity(0.15),
-            borderStrokeWidth: 0,
-          )
+            radius: 5,
+            color: Colors.blue,
+            borderStrokeWidth: 3,
+            borderColor: Colors.white,
+          ),
         ];
       });
     }
