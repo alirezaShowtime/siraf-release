@@ -11,10 +11,6 @@ class AgencyRegistrationFormScreen extends StatefulWidget {
 }
 
 class _AgencyRegistrationFormScreen extends State<AgencyRegistrationFormScreen> {
-
-
-
-
   TextEditingController businessNameController = TextEditingController();
   TextEditingController businessIdController = TextEditingController();
   TextEditingController officeAddressController = TextEditingController();
@@ -27,6 +23,7 @@ class _AgencyRegistrationFormScreen extends State<AgencyRegistrationFormScreen> 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
         appBar: SimpleAppBar(
           titleText: "ثبت مشخصات",
@@ -222,13 +219,11 @@ class _AgencyRegistrationFormScreen extends State<AgencyRegistrationFormScreen> 
         ));
   }
 
-  Widget field()
+  // Widget field()
 
   void attachSymbolBusiness() {}
 
   void next() {
-
-    if(){}
-
+    // if(){}
   }
 }

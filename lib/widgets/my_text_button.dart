@@ -10,6 +10,7 @@ class MyTextButton extends StatefulWidget {
   void Function()? onPressed;
   Color? rippleColor;
   Color? textColor;
+  EdgeInsets? padding;
 
   MyTextButton({
     this.text,
@@ -17,6 +18,7 @@ class MyTextButton extends StatefulWidget {
     this.rippleColor,
     this.textColor,
     this.child,
+    this.padding,
   });
 }
 
@@ -26,6 +28,7 @@ class _MyTextButton extends State<MyTextButton> {
     return TextButton(
       onPressed: widget.onPressed,
       style: TextButton.styleFrom(
+        padding: widget.padding,
         foregroundColor: widget.rippleColor ?? Themes.primary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
