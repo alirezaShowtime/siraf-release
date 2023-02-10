@@ -60,7 +60,11 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
 
         notify("حذف فایل ها با موفقیت انجام شد");
 
-        _loadFiles();
+        setState(() {
+          selectedFiles.clear();
+          isSelectable = false;
+          files.removeWhere((element) => event.ids.any((e) => e == element.id));
+        });
       }
     });
   }
@@ -342,7 +346,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
     files = state.files;
 
     return ListView(
-      children: state.files
+      children: files
           .map<Widget>((file) => GestureDetector(
                 onTap: () async {
                   var result = await Navigator.push(
@@ -406,6 +410,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
     bloc.add(MyFilesEvent(sort: sort));
     setState(() {
       selectedFiles.clear();
+      isSelectable = false;
     });
   }
 
@@ -496,7 +501,14 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                     SizedBox(
                       height: 25,
                     ),
-                    SizedBox(
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Themes.primary,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(5),
+                          bottomRight: Radius.circular(5),
+                        ),
+                      ),
                       height: 40,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -522,9 +534,6 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                               ),
                               padding: EdgeInsets.symmetric(vertical: 9),
                             ),
-                          ),
-                          SizedBox(
-                            width: 0.5,
                           ),
                           Expanded(
                             child: MaterialButton(

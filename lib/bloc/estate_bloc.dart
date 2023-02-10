@@ -6,6 +6,7 @@ import 'package:siraf3/http2.dart' as http2;
 import 'package:bloc/bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/estate.dart';
+import 'package:latlong2/latlong.dart';
 
 class EstateEvent {}
 
@@ -13,8 +14,10 @@ class EstateLoadEvent extends EstateEvent {
   List<int> city_ids;
   String? search;
   String? sort;
+  LatLng? latLng;
 
-  EstateLoadEvent({required this.city_ids, this.search, this.sort});
+  EstateLoadEvent(
+      {required this.city_ids, this.search, this.sort, this.latLng});
 }
 
 class EstateState {}
@@ -52,7 +55,10 @@ class EstateBloc extends Bloc<EstateEvent, EstateState> {
         "estate/estates?city_id=" +
             jsonEncode(event.city_ids.toList()) +
             "&name=" +
-            (event.sort != null ? "&sort=" + event.sort! : ""),
+            (event.sort != null ? "&sort=" + event.sort! : "") +
+            (event.latLng != null
+                ? "&lat=${event.latLng!.latitude.toString()}&long=${event.latLng!.longitude.toString()}"
+                : ""),
       );
 
       print(url.toString());
@@ -69,7 +75,9 @@ class EstateBloc extends Bloc<EstateEvent, EstateState> {
     if (isResponseOk(response)) {
       var json = jDecode(response.body);
 
-      emit(EstateLoadedState(estates: Estate.fromList(json['data']['estats']), sort_type: event.sort));
+      emit(EstateLoadedState(
+          estates: Estate.fromList(json['data']['estats']),
+          sort_type: event.sort));
     } else {
       emit(EstateErrorState(response: response));
     }

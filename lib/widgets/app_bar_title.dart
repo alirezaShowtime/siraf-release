@@ -6,14 +6,15 @@ class AppBarTitle extends StatefulWidget {
   State<AppBarTitle> createState() => _AppBarTitle();
 
   String title;
+  double fontSize;
 
-  AppBarTitle(this.title);
+  AppBarTitle(this.title, {this.fontSize = 16});
 }
 
 class _AppBarTitle extends State<AppBarTitle> {
   @override
   Widget build(BuildContext context) {
     return Text(widget.title,
-        style: TextStyle(fontSize: 16, color: Themes.text));
+        style: TextStyle(fontSize: widget.fontSize, color: Themes.text));
   }
 }

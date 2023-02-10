@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_octicons/flutter_octicons.dart';
@@ -21,6 +22,7 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 import 'package:badges/badges.dart' as badges;
+import 'package:uni_links/uni_links.dart';
 
 class HomeScreen extends StatefulWidget {
   MaterialPageRoute? nextScreen;
@@ -37,6 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    listenLink();
 
     if (widget.nextScreen != null) {
       Navigator.push(context, widget.nextScreen!);
@@ -362,6 +366,43 @@ class _HomeScreenState extends State<HomeScreen> {
         : cities.length == 1
             ? cities.first.name ?? "${cities.length} شهر"
             : "${cities.length} شهر";
+  }
+
+  void listenLink() {
+    if (!kIsWeb) {
+      uriLinkStream.listen((Uri? uri) {
+        if (!mounted) {
+          return;
+        }
+        debugPrint('Received URI: $uri');
+        RegExp reg = new RegExp(r'https://siraf.biz/([0-9]+)');
+
+        if (!reg.hasMatch(uri.toString())) {
+          return notify("صفحه ای برای نمایش پیدا نشد");
+        }
+
+        var match = reg.firstMatch(uri.toString());
+        var id = match!.group(1);
+
+        if (id == null) {
+          return notify("صفحه ای برای نمایش پیدا نشد");
+        }
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => FileScreen(
+              id: int.parse(id),
+            ),
+          ),
+        );
+      }, onError: (Object err) {
+        if (!mounted) {
+          return;
+        }
+        notify("لینک قابل پردازش نیست");
+      });
+    }
   }
 }
 

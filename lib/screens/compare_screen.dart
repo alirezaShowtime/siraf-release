@@ -169,7 +169,10 @@ class _CompareItemState extends State<_CompareItem> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image(
-                      image: NetworkImage(file.images!.first.path ?? ""),
+                      image: NetworkImage(
+                          (file.images != null && file.images!.isNotEmpty)
+                              ? file.images!.first.path ?? ""
+                              : ""),
                       width: 100,
                       height: 100,
                       fit: BoxFit.cover,
@@ -189,6 +192,8 @@ class _CompareItemState extends State<_CompareItem> {
                       file.name != null ? file.name! + "\n\n" : "\n\n",
                       maxLines: 2,
                       textAlign: TextAlign.center,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: Themes.text,
                         fontSize: 11,

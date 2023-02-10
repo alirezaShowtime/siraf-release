@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
+import 'package:siraf3/screens/bookmark_screen.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
+import 'package:siraf3/screens/estates_map_screen.dart';
 import 'package:siraf3/screens/inquiry_screen.dart';
 import 'package:siraf3/screens/my_files_screen.dart';
 import 'package:siraf3/screens/request_file/request_file_screen.dart';
@@ -147,7 +149,14 @@ class _MenuScreenState extends State<MenuScreen> {
                           _item(
                             title: "نشان ها",
                             icon: CupertinoIcons.bookmark,
-                            onClick: () {},
+                            onClick: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BookmarkScreen(),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -222,7 +231,14 @@ class _MenuScreenState extends State<MenuScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               AccordionItem(
-                                  onClick: () {},
+                                  onClick: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => EstatesMapScreen(),
+                                      ),
+                                    );
+                                  },
                                   title: "دفاتر املاک اطراف من"),
                               AccordionItem(
                                   onClick: () {}, title: "ثبت دفتر املاک"),

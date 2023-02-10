@@ -6,24 +6,36 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/user.dart';
 
 Future<http.Response> get(Uri url,
-    {Map<String, String>? headers, Duration? timeout}) {
-  return http.get(url, headers: headers).timeout(
-        timeout ?? Duration(seconds: 20),
-        onTimeout: () => timeoutErrorResponse(),
-      );
+    {Map<String, String>? headers, Duration? timeout}) async {
+  try {
+    return http.get(url, headers: headers).timeout(
+          timeout ?? Duration(seconds: 20),
+          onTimeout: () => timeoutErrorResponse(),
+        );
+  } on HttpException catch (e) {
+    return timeoutErrorResponse();
+  } on SocketException catch (e) {
+    return timeoutErrorResponse();
+  }
 }
 
 Future<http.Response> post(Uri url,
     {Object? body,
     Encoding? encoding,
     Map<String, String>? headers,
-    Duration? timeout}) {
-  return http
-      .post(url, body: body, encoding: encoding, headers: headers)
-      .timeout(
-        timeout ?? Duration(minutes: 10),
-        onTimeout: () => timeoutErrorResponse(),
-      );
+    Duration? timeout}) async {
+  try {
+    return http
+        .post(url, body: body, encoding: encoding, headers: headers)
+        .timeout(
+          timeout ?? Duration(minutes: 10),
+          onTimeout: () => timeoutErrorResponse(),
+        );
+  } on HttpException catch (e) {
+    return timeoutErrorResponse();
+  } on SocketException catch (e) {
+    return timeoutErrorResponse();
+  }
 }
 
 Future<http.Response> getWithToken(Uri url,

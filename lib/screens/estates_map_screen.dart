@@ -11,9 +11,9 @@ import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/estate.dart';
+import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
-import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
@@ -21,16 +21,14 @@ import 'package:latlong2/latlong.dart';
 
 import 'package:siraf3/dialog.dart';
 
-class EstateScreen extends StatefulWidget {
-  List<Estate> estates;
-
-  EstateScreen({required this.estates, super.key});
+class EstatesMapScreen extends StatefulWidget {
+  EstatesMapScreen({super.key});
 
   @override
-  State<EstateScreen> createState() => _EstateScreenState();
+  State<EstatesMapScreen> createState() => _EstatesMapScreenState();
 }
 
-class _EstateScreenState extends State<EstateScreen> {
+class _EstatesMapScreenState extends State<EstatesMapScreen> {
   List<City> cities = [];
 
   bool _showFileOnMyLocation = false;
@@ -40,13 +38,15 @@ class _EstateScreenState extends State<EstateScreen> {
     super.initState();
 
     getCities();
-    setEstates();
 
     bloc.stream.listen((event) {
       if (event is EstateLoadedState) {
-        setState(() {
-          currentSortType = event.sort_type;
-        });
+        if (myLocationMarker == null) {
+          setState(() {
+            _showFileOnMyLocation = true;
+          });
+          _onMyLocationClicked();
+        }
       }
     });
   }
@@ -59,7 +59,10 @@ class _EstateScreenState extends State<EstateScreen> {
       cities = mCities;
     });
 
-    getEstates();
+    if (cities.isEmpty) {
+      goSelectCity();
+      return;
+    }
   }
 
   getEstates() {
@@ -72,26 +75,13 @@ class _EstateScreenState extends State<EstateScreen> {
         latLng: (_showFileOnMyLocation && myLocationMarker != null)
             ? myLocationMarker!.point
             : null,
-        sort: currentSortType,
       ),
     );
   }
 
-  setEstates() {
-    setState(() {
-      selectedEstates = widget.estates;
-    });
-  }
-
-  String? currentSortType;
-
-  List<Estate> selectedEstates = [];
-
   EstateBloc bloc = EstateBloc();
 
   TextEditingController _searchController = TextEditingController();
-
-  bool mapEnabled = false;
 
   LatLng defaultLocation = LatLng(34.08892074204623, 49.7009108491914);
 
@@ -113,164 +103,34 @@ class _EstateScreenState extends State<EstateScreen> {
             controller: _searchController,
             style: TextStyle(color: Themes.text, fontSize: 13),
             textInputAction: TextInputAction.search,
-            onSubmitted: (value) {},
+            onSubmitted: (value) {
+              getEstates();
+            },
           ),
           automaticallyImplyLeading: false,
           titleSpacing: 0,
           actions: [
+            GestureDetector(
+              onTap: () async {
+                goSelectCity();
+              },
+              child: Text(
+                getTitle(cities),
+                style: TextStyle(
+                  color: Themes.textLight,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
             GestureDetector(
               onTap: () {
                 getEstates();
               },
               child: Icon(
                 CupertinoIcons.search,
-                color: Themes.icon,
-              ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            if (!mapEnabled)
-              MyPopupMenuButton(
-                itemBuilder: (context) {
-                  return [
-                    PopupMenuItem<String>(
-                      value: "alphabet",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "بر اساس حروف الفبا",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Themes.text,
-                            ),
-                          ),
-                          if (currentSortType == "alphabet")
-                            Icon(
-                              Icons.check,
-                              color: Themes.icon,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
-                    ),
-                    PopupMenuItem<String>(
-                      value: "topRate",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "بالاترین امتیاز",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Themes.text,
-                            ),
-                          ),
-                          if (currentSortType == "topRate")
-                            Icon(
-                              Icons.check,
-                              color: Themes.icon,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
-                    ),
-                    PopupMenuItem<String>(
-                      value: "new",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "جدید ترین",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Themes.text,
-                            ),
-                          ),
-                          if (currentSortType == "new")
-                            Icon(
-                              Icons.check,
-                              color: Themes.icon,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
-                    ),
-                    PopupMenuItem<String>(
-                      value: "old",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "قدیمی ترین",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Themes.text,
-                            ),
-                          ),
-                          if (currentSortType == "old")
-                            Icon(
-                              Icons.check,
-                              color: Themes.icon,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
-                    ),
-                    PopupMenuItem<String>(
-                      value: "random",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "تصادفی",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Themes.text,
-                            ),
-                          ),
-                          if (currentSortType == "random")
-                            Icon(
-                              Icons.check,
-                              color: Themes.icon,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
-                    ),
-                  ];
-                },
-                onSelected: (value) {
-                  setState(() {
-                    currentSortType = value;
-                  });
-
-                  getEstates();
-                },
-                icon: Icon(
-                  CupertinoIcons.sort_down,
-                  color: Themes.icon,
-                ),
-              ),
-            SizedBox(
-              width: 10,
-            ),
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  mapEnabled = !mapEnabled;
-                });
-
-                getEstates();
-              },
-              child: Icon(
-                mapEnabled ? CupertinoIcons.map_fill : CupertinoIcons.map,
                 color: Themes.icon,
               ),
             ),
@@ -288,91 +148,33 @@ class _EstateScreenState extends State<EstateScreen> {
             ),
           ),
         ),
-        body: Column(
-          children: [
-            Expanded(
-              child:
-                  BlocBuilder<EstateBloc, EstateState>(builder: _buildMainBloc),
-            ),
-            if (selectedEstates.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  width: double.infinity,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                        children: selectedEstates.map<Widget>((e) {
-                      return Container(
-                        child: Row(children: [
-                          Text(
-                            e.name!,
-                            style: TextStyle(
-                              color: Color(0xff000000),
-                              fontSize: 13,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                selectedEstates.remove(e);
-                              });
-                            },
-                            child: Icon(
-                              Typicons.delete_outline,
-                              color: Color(0xff707070),
-                              size: 22,
-                            ),
-                          )
-                        ]),
-                      );
-                    }).toList()),
-                  ),
-                ),
-              ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: MaterialButton(
-                      onPressed: () {
-                        Navigator.pop(
-                          context,
-                          selectedEstates,
-                        );
-                      },
-                      color: Themes.primary,
-                      child: Text(
-                        "تایید",
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      minWidth: 100,
-                      height: 45,
-                    ),
-                  )
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-          ],
+        body: BlocBuilder<EstateBloc, EstateState>(builder: _buildMainBloc),
+      ),
+    );
+  }
+
+  goSelectCity() async {
+    var result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SelectCityScreen(
+          showSelected: false,
+          force: true,
+          saveCity: false,
+          selectedCities: cities,
         ),
       ),
     );
+
+    if (result is List<City>) {
+      setState(() {
+        cities = result;
+      });
+
+      City.saveList(cities);
+
+      getCities();
+    }
   }
 
   Widget _buildMainBloc(BuildContext context, EstateState state) {
@@ -405,148 +207,123 @@ class _EstateScreenState extends State<EstateScreen> {
         ),
       );
     }
-
-    if (!mapEnabled) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: state.estates.map<Widget>((e) => buildItem(e)).toList(),
+    return Stack(
+      children: [
+        SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: FlutterMap(
+            mapController: _controller,
+            options: MapOptions(
+              center: defaultLocation,
+              interactiveFlags:
+                  InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+              zoom: 13.0,
+            ),
+            children: [
+              TileLayer(
+                urlTemplate:
+                    "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+              ),
+              CircleLayer(
+                circles: circles,
+              ),
+              MarkerLayer(
+                markers: _buildEstateMarkers(state.estates) +
+                    <Marker>[if (myLocationMarker != null) myLocationMarker!],
+              )
+            ],
           ),
         ),
-      );
-    } else {
-      return Padding(
-        padding: EdgeInsets.only(bottom: 10),
-        child: Stack(
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: FlutterMap(
-                mapController: _controller,
-                options: MapOptions(
-                  center: defaultLocation,
-                  interactiveFlags:
-                      InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-                  zoom: 13.0,
-                  onTap: (_, _1) {
-                    // MapsLauncher.launchCoordinates(file.lat!, file.long!);
-                    // launchUrl(Uri.parse('geo:0,0?q=${file.lat!},${file.long!}'));
-                  },
+        Positioned(
+          bottom: 20,
+          right: 20,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Themes.background,
+              borderRadius: BorderRadius.circular(100),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  offset: Offset(-2, 2),
+                  blurRadius: 4,
                 ),
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+                BoxShadow(
+                  color: Colors.black12,
+                  offset: Offset(2, -2),
+                  blurRadius: 4,
+                ),
+              ],
+            ),
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(7),
+            child: InkWell(
+              onTap: _onMyLocationClicked,
+              child: Center(
+                child: Icon(
+                  Icons.my_location_outlined,
+                  size: 30,
+                  color: Themes.icon,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 20,
+          right: 80,
+          child: GestureDetector(
+            onTap: () async {
+              setState(() {
+                _showFileOnMyLocation = !_showFileOnMyLocation;
+              });
+              if (!_showFileOnMyLocation) {
+                setState(() {
+                  circles.clear();
+                });
+
+                getEstates();
+                return;
+              }
+
+              if (myLocationMarker == null) {
+                await _onMyLocationClicked();
+              }
+
+              getEstates();
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color:
+                    _showFileOnMyLocation ? Themes.primary : Themes.background,
+                borderRadius: BorderRadius.circular(100),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    offset: Offset(-2, 2),
+                    blurRadius: 4,
                   ),
-                  CircleLayer(
-                    circles: circles,
+                  BoxShadow(
+                    color: Colors.black12,
+                    offset: Offset(2, -2),
+                    blurRadius: 4,
                   ),
-                  MarkerLayer(
-                    markers: _buildEstateMarkers(state.estates) +
-                        <Marker>[
-                          if (myLocationMarker != null) myLocationMarker!
-                        ],
-                  )
                 ],
               ),
-            ),
-            Positioned(
-              bottom: 20,
-              right: 20,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Themes.background,
-                  borderRadius: BorderRadius.circular(100),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      offset: Offset(-2, 2),
-                      blurRadius: 4,
-                    ),
-                    BoxShadow(
-                      color: Colors.black12,
-                      offset: Offset(2, -2),
-                      blurRadius: 4,
-                    ),
-                  ],
-                ),
-                alignment: Alignment.center,
-                padding: EdgeInsets.all(7),
-                child: InkWell(
-                  onTap: _onMyLocationClicked,
-                  child: Center(
-                    child: Icon(
-                      Icons.my_location_outlined,
-                      size: 30,
-                      color: Themes.icon,
-                    ),
-                  ),
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(10),
+              child: Text(
+                "اطراف من",
+                style: TextStyle(
+                  fontSize: 15,
+                  fontFamily: "IranSansMedium",
+                  color: _showFileOnMyLocation ? Themes.textLight : Themes.text,
                 ),
               ),
             ),
-            Positioned(
-              bottom: 20,
-              right: 80,
-              child: GestureDetector(
-                onTap: () async {
-                  setState(() {
-                    _showFileOnMyLocation = !_showFileOnMyLocation;
-                  });
-                  if (!_showFileOnMyLocation) {
-                    setState(() {
-                      circles.clear();
-                    });
-
-                    getEstates();
-                    return;
-                  }
-
-                  if (myLocationMarker == null) {
-                    await _onMyLocationClicked();
-                  }
-
-                  getEstates();
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: _showFileOnMyLocation
-                        ? Themes.primary
-                        : Themes.background,
-                    borderRadius: BorderRadius.circular(100),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(-2, 2),
-                        blurRadius: 4,
-                      ),
-                      BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(2, -2),
-                        blurRadius: 4,
-                      ),
-                    ],
-                  ),
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.all(10),
-                  child: Text(
-                    "اطراف من",
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontFamily: "IranSansMedium",
-                      color: _showFileOnMyLocation
-                          ? Themes.textLight
-                          : Themes.text,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
-      );
-    }
+      ],
+    );
   }
 
   Location _location = Location();
@@ -626,73 +403,6 @@ class _EstateScreenState extends State<EstateScreen> {
       width: 30,
       height: 40,
       fit: BoxFit.contain,
-    );
-  }
-
-  Widget buildItem(Estate estate) {
-    return GestureDetector(
-      onTap: () {
-        showDetailsDialog(estate);
-      },
-      child: Padding(
-        padding: EdgeInsets.only(top: 5),
-        child: Container(
-          color: Colors.transparent,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Align(
-                alignment: Alignment.topLeft,
-                child: RatingBarIndicator(
-                  direction: Axis.horizontal,
-                  itemCount: 5,
-                  itemSize: 14,
-                  unratedColor: Colors.grey,
-                  itemPadding: EdgeInsets.symmetric(horizontal: .2),
-                  itemBuilder: (context, _) {
-                    return Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                      size: 10,
-                    );
-                  },
-                  rating: 4.2,
-                ),
-              ),
-              Text(
-                estate.name! + " | " + estate.address!,
-                style: TextStyle(
-                  fontSize: 11.5,
-                  fontFamily: "IranSansMedium",
-                  color: Themes.text,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                maxLines: 1,
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Text(
-                "مدریت : " + estate.managerName!,
-                style: TextStyle(
-                  fontSize: 10,
-                  fontFamily: "IranSansMedium",
-                  color: Themes.textGrey,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                maxLines: 1,
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Divider(
-                height: 0.7,
-                color: Themes.textGrey.withOpacity(0.5),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 
@@ -813,18 +523,18 @@ class _EstateScreenState extends State<EstateScreen> {
                           Expanded(
                             child: MaterialButton(
                               onPressed: () {
-                                setState(() {
-                                  if (selectedEstates
-                                      .where(
-                                          (element) => element.id == estate.id)
-                                      .isNotEmpty) {
-                                    selectedEstates.removeWhere(
-                                      (element) => element.id == estate.id,
-                                    );
-                                  } else {
-                                    selectedEstates.add(estate);
-                                  }
-                                });
+                                // setState(() {
+                                //   if (selectedEstates
+                                //       .where(
+                                //           (element) => element.id == estate.id)
+                                //       .isNotEmpty) {
+                                //     selectedEstates.removeWhere(
+                                //       (element) => element.id == estate.id,
+                                //     );
+                                //   } else {
+                                //     selectedEstates.add(estate);
+                                //   }
+                                // });
 
                                 dismissDetailsDialog();
                               },
@@ -837,12 +547,13 @@ class _EstateScreenState extends State<EstateScreen> {
                               elevation: 1,
                               height: 40,
                               child: Text(
-                                selectedEstates
-                                        .where((element) =>
-                                            element.id == estate.id)
-                                        .isNotEmpty
-                                    ? "حذف"
-                                    : "افزودن",
+                                // selectedEstates
+                                //         .where((element) =>
+                                //             element.id == estate.id)
+                                //         .isNotEmpty
+                                //     ? "حذف"
+                                //     :
+                                "افزودن",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -994,6 +705,14 @@ class _EstateScreenState extends State<EstateScreen> {
               },
             ))
         .toList();
+  }
+
+  String getTitle(List<City> cities) {
+    return cities.isEmpty
+        ? "انتخاب شهر"
+        : cities.length == 1
+            ? cities.first.name ?? "${cities.length} شهر"
+            : "${cities.length} شهر";
   }
 }
 

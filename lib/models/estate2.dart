@@ -9,34 +9,43 @@ class Estate {
   String? address;
   String? managerName;
 
-  Estate({this.id, this.lat, this.long, this.rate, this.name, this.phoneNumber, this.logo, this.address, this.managerName});
+  Estate(
+      {this.id,
+      this.lat,
+      this.long,
+      this.rate,
+      this.name,
+      this.phoneNumber,
+      this.logo,
+      this.address,
+      this.managerName});
 
   Estate.fromJson(Map<String, dynamic> json) {
-    if(json["id"] is int) {
+    if (json["id"] is int) {
       id = json["id"];
     }
-    if(json["lat"] is String) {
+    if (json["lat"] is String) {
       lat = json["lat"];
     }
-    if(json["long"] is String) {
+    if (json["long"] is String) {
       long = json["long"];
     }
-    if(json["rate"] is double) {
+    if (json["rate"] is double) {
       rate = json["rate"];
     }
-    if(json["name"] is String) {
+    if (json["name"] is String) {
       name = json["name"];
     }
-    if(json["phoneNumber"] is String) {
+    if (json["phoneNumber"] is String) {
       phoneNumber = json["phoneNumber"];
     }
-    if(json["logo"] is String) {
+    if (json["logo"] is String) {
       logo = json["logo"];
     }
-    if(json["address"] is String) {
+    if (json["address"] is String) {
       address = json["address"];
     }
-    if(json["managerName"] is String) {
+    if (json["managerName"] is String) {
       managerName = json["managerName"];
     }
   }
@@ -55,7 +64,6 @@ class Estate {
     return _data;
   }
 
-  
   static List<Estate> fromList(List<dynamic> list) {
     var list2 = <Estate>[];
 

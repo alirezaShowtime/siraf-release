@@ -17,13 +17,15 @@ class DeleteFileEvent {
 class DeleteFileListEvent extends DeleteFileEvent {
   List<int> ids;
 
-  DeleteFileListEvent({required this.ids,required token}) : super (token: token);
+  DeleteFileListEvent({required this.ids, required token})
+      : super(token: token);
 }
 
 class DeleteFileSingleEvent extends DeleteFileEvent {
   int id;
 
-  DeleteFileSingleEvent({required this.id,required token}) : super (token: token);
+  DeleteFileSingleEvent({required this.id, required token})
+      : super(token: token);
 }
 
 class DeleteFileState {}
@@ -38,7 +40,11 @@ class DeleteFileErrorState extends DeleteFileState {
   DeleteFileErrorState({this.response});
 }
 
-class DeleteFileSuccessState extends DeleteFileState {}
+class DeleteFileSuccessState extends DeleteFileState {
+  List<int> ids;
+
+  DeleteFileSuccessState({required this.ids});
+}
 
 class DeleteFileBloc extends Bloc<DeleteFileEvent, DeleteFileState> {
   DeleteFileBloc() : super(DeleteFileInitState()) {
@@ -77,8 +83,9 @@ class DeleteFileBloc extends Bloc<DeleteFileEvent, DeleteFileState> {
     print(response.body);
 
     if (isResponseOk(response)) {
-      emit(DeleteFileSuccessState());
+      emit(DeleteFileSuccessState(ids: ids));
     } else {
+      print(response.body);
       emit(DeleteFileErrorState(response: response));
     }
   }

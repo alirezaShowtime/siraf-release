@@ -1,11 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:siraf3/helpers.dart';
 import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class InquiryScreen extends StatefulWidget {
   const InquiryScreen({super.key});
@@ -73,7 +69,12 @@ class _InquiryScreenState extends State<InquiryScreen> {
               ),
               SizedBox(height: 15),
               item(
-                "دفتر طلاق دارای ظرفیت ثبت سند",
+                "دفتر طلاق دارای ظرفیت ثبت واقعه",
+                "https://my.ssaa.ir/portal/ssar/notary-office-capacity",
+              ),
+              SizedBox(height: 15),
+              item(
+                "دفتر اسناد رسمی دارای ظرفیت ثبت سند",
                 "https://my.ssaa.ir/portal/ssar/notary-office-capacity",
               ),
             ],
