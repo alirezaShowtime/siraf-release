@@ -75,7 +75,7 @@ class _InquiryScreenState extends State<InquiryScreen> {
               SizedBox(height: 15),
               item(
                 "دفتر اسناد رسمی دارای ظرفیت ثبت سند",
-                "https://my.ssaa.ir/portal/ssar/notary-office-capacity",
+                "https://my.ssaa.ir/portal/ssar/notary-office-capacity", // todo change link
               ),
             ],
           ),

@@ -1050,7 +1050,6 @@ class _EditFileFirstState extends State<EditFileFirst> {
               children: [
                 Column(
                   children: [
-                    SizedBox(height: 20),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Container(

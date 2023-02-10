@@ -56,8 +56,8 @@ class MediaData {
     return deleteImages.isEmpty &&
         deleteVideos.isEmpty &&
         newImages.isEmpty &&
-        newVideos.isEmpty &&
-        imagesWeight.isEmpty &&
-        videosWeight.isEmpty;
+        newVideos.isEmpty;
+    // imagesWeight.isEmpty && // todo remove comment # temporary
+    // videosWeight.isEmpty; // todo remove comment # temporary
   }
 }

@@ -916,7 +916,6 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
               children: [
                 Column(
                   children: [
-                    SizedBox(height: 20),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Container(
