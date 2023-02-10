@@ -1,7 +1,6 @@
 import 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
 
-extension EventListener on AgencyProfileScreenState{
-
+extension EventListener on AgencyProfileScreenState {
   void share() {
     //todo: implement event listener
   }

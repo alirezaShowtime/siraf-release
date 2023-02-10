@@ -227,6 +227,11 @@ class AgencyProfileScreenState extends State<AgencyProfileScreen> with SingleTic
   String? comment;
   double? rating;
 
+
+  TextEditingController searchController = TextEditingController();
+  TextEditingController commentController = TextEditingController();
+
+
   @override
   void initState() {
     super.initState();

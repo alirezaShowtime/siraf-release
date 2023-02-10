@@ -224,6 +224,11 @@ class AgentProfileScreenState extends State<AgentProfileScreen> with SingleTicke
 
   late BuildContext scaffoldContext;
 
+
+  TextEditingController searchController = TextEditingController();
+  TextEditingController commentController = TextEditingController();
+
+
   String? comment;
   double? rating;
 

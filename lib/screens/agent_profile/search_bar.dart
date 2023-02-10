@@ -29,6 +29,7 @@ extension SearchBar on AgentProfileScreenState {
                 ),
               ),
               child: TextField2(
+                controller: searchController,
                 maxLines: 1,
                 decoration: InputDecoration(
                   hintText: "جستجو در امللاک برج",

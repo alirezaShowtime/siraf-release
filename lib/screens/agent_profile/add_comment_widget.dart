@@ -33,6 +33,7 @@ extension AddCommentWidget on AgentProfileScreenState {
             ),
           ),
           TextField2(
+            controller: commentController,
             style: TextStyle(
               fontSize: 12,
             ),
