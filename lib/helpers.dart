@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -16,9 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 const image_extensions = <String>["png", "jpg", "jpeg", "tif", 'webp'];
 const video_extensions = <String>["mp4", "mov", "3gp", "avi", "mkv"];
 
-void notify(String msg,
-    {TextDirection textDirection = TextDirection.rtl,
-    Duration? duration = null}) {
+void notify(String msg, {TextDirection textDirection = TextDirection.rtl, Duration? duration = null}) {
   showToast(
     msg,
     textDirection: textDirection,
@@ -92,8 +89,7 @@ callToSupport() async {
   if (await canLaunch(url)) {
     await launch(url);
   } else {
-    notify(
-        'نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_PHONE + 'تماس بگیرید');
+    notify('نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_PHONE + 'تماس بگیرید');
   }
 }
 
@@ -144,8 +140,7 @@ bool isResponseOk(http.Response response) {
 
 const API_HOST = 'auth.siraf.app';
 
-Uri createAuthUrlByEndPoint(String endPoint,
-    {Map<String, dynamic>? queryParams = null}) {
+Uri createAuthUrlByEndPoint(String endPoint, {Map<String, dynamic>? queryParams = null}) {
   return Uri.https(API_HOST, "api/user/${endPoint}", queryParams);
 }
 
@@ -156,14 +151,12 @@ String phoneFormat(String numberPhone) {
     numberPhone = "0$numberPhone";
   }
 
-  var formatted =
-      "${numberPhone.substring(0, 4)}  ${numberPhone.substring(4, 7)}  ${numberPhone.substring(7, 11)}";
+  var formatted = "${numberPhone.substring(0, 4)}  ${numberPhone.substring(4, 7)}  ${numberPhone.substring(7, 11)}";
 
   return zeroPrefix ? formatted : formatted.replaceFirst("09", "9");
 }
 
-doWithLogin(BuildContext context, void Function() onLoggedIn,
-    {bool pop = true}) async {
+doWithLogin(BuildContext context, void Function() onLoggedIn, {bool pop = true}) async {
   if (await User.hasToken()) {
     onLoggedIn();
   } else {
@@ -191,3 +184,32 @@ FaIcon icon(IconData icon, {Color color = Themes.text, double size = 24}) {
 void navigateTo(BuildContext context, Widget page) {
   Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
 }
+
+bool isValidNumberPhone(String numberPhone) {
+  return numberPhone.length == 11;
+}
+
+PopupMenuItem<String> popupMenuItemWithIcon({
+  required String title,
+  required IconData iconDate,
+  Function()? onTap,
+}) {
+  return PopupMenuItem<String>(
+    onTap: onTap,
+    child: Row(
+      children: [
+        icon(iconDate, size: 20),
+        SizedBox(width: 10),
+        Text(
+          title,
+          style: TextStyle(
+            color: Themes.text,
+            fontSize: 11,
+          ),
+        )
+      ],
+    ),
+  );
+}
+
+Divider divider({double height = 1}) => Divider(color: Colors.grey.shade200, height: height);

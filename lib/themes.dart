@@ -38,6 +38,9 @@ class Themes {
       accentColor: Themes.secondary,
       secondaryHeaderColor: Themes.secondary,
       primaryColor: Themes.primary,
+      appBarTheme: AppBarTheme(
+        backgroundColor: Themes.appBar,
+      ),
     );
   }
 }
