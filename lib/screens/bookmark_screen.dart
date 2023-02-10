@@ -295,7 +295,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
     );
   }
 
-  void _compare() {
+  void _compare() async {
     if (selectedFiles.length < 2) {
       return notify(
           "جهت مقایسه حداقل می بایست دو فایل هم نوع را انتخاب نمایید");
@@ -336,7 +336,12 @@ class _BookmarkScreen extends State<BookmarkScreen> {
       print(element.toJson());
     });
 
-    Navigator.push(context,
+    await Navigator.push(context,
         MaterialPageRoute(builder: (_) => CompareScreen(files: files)));
+
+    setState(() {
+      selectedFiles.clear();
+      isSelectable = false;
+    });
   }
 }
