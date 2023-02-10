@@ -222,6 +222,8 @@ class AgencyProfileScreenState extends State<AgencyProfileScreen> with SingleTic
   late AnimationController collopsController;
   late Animation<double> collopsAnimation;
 
+  late BuildContext scaffoldContext;
+
   String? comment;
   double? rating;
 
@@ -246,132 +248,150 @@ class AgencyProfileScreenState extends State<AgencyProfileScreen> with SingleTic
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: appBar(),
-      body: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: Column(
-          children: [
-            Container(
-              height: 170,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-              color: Colors.white,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Avatar(size: 80, imagePath: "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png"),
-                      Container(
-                        padding: const EdgeInsets.only(left: 2),
-                        decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.grey.shade200, width: 1))),
+      body: Builder(builder: (context) {
+        scaffoldContext = context;
+        return GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Column(
+            children: [
+              Container(
+                height: 170,
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                color: Colors.white,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Avatar(size: 80, imagePath: "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png"),
+                        Container(
+                          padding: const EdgeInsets.only(left: 2),
+                          decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.grey.shade200, width: 1))),
+                          child: Column(
+                            children: [
+                              Text(
+                                "املاک برج",
+                                style: TextStyle(
+                                  color: Themes.text,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                "93405355345",
+                                style: TextStyle(
+                                  color: Themes.text,
+                                  fontSize: 11,
+                                ),
+                              ),
+                              StaticStar(rating: 4.5),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              "املاک برج",
-                              style: TextStyle(
-                                color: Themes.text,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  card(title: "فروشی", value: "10", onTap: () {}),
+                                  card(title: "اجاره ای", value: "75", onTap: () {}),
+                                  card(title: "ساخت و ساز", value: "23", onTap: () {}),
+                                ],
                               ),
                             ),
-                            Text(
-                              "93405355345",
-                              style: TextStyle(
-                                color: Themes.text,
-                                fontSize: 11,
-                              ),
+                            Column(
+                              children: [
+                                Text(
+                                  "ds;ofdskj dolspfk dkdofdks oidmnsfk dnf dosmjfoidns d[sk fldpofdspofmks dpolfkdms dms,fp[doskjf ods,fkdpsnf dpsfdms fdskmofds",
+                                  maxLines: 2,
+                                  style: TextStyle(color: Themes.textGrey, fontSize: 11),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: viewMoreDetail,
+                                      child: Text(
+                                        moreDetail ? "کمتر" : "بیشتر...",
+                                        style: TextStyle(
+                                          color: Themes.text,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 9,
+                                        ),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () => setState(() {
+                                        final bool previousValueOfMoreDetail = moreDetail;
+                                        showComment = !showComment;
+
+                                        viewMoreDetail(force: false);
+
+                                        if (!previousValueOfMoreDetail && !showComment) {
+                                          showSearchBarWidget = true;
+                                        }
+
+                                        if (!previousValueOfMoreDetail && showComment) {
+                                          showSearchBarWidget = false;
+                                        }
+                                      }),
+                                      child: Text(
+                                        !showComment ? "نمایش نظرات (${comments.length})" : "فایل های دفتر املاک",
+                                        style: TextStyle(
+                                          color: Themes.text,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 9,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            StaticStar(rating: 4.5),
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                card(title: "فروشی", value: "10", onTap: () {}),
-                                card(title: "اجاره ای", value: "75", onTap: () {}),
-                                card(title: "ساخت و ساز", value: "23", onTap: () {}),
-                              ],
-                            ),
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                "ds;ofdskj dolspfk dkdofdks oidmnsfk dnf dosmjfoidns d[sk fldpofdspofmks dpolfkdms dms,fp[doskjf ods,fkdpsnf dpsfdms fdskmofds",
-                                maxLines: 2,
-                                style: TextStyle(color: Themes.textGrey, fontSize: 11),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  GestureDetector(
-                                    onTap: viewMoreDetail,
-                                    child: Text(
-                                      moreDetail ? "کمتر" : "بیشتر...",
-                                      style: TextStyle(
-                                        color: Themes.text,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 9,
-                                      ),
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        viewMoreDetail(force: false);
-                                        showComment = !showComment;
-                                        showCommentWidget = !showCommentWidget;
-                                        if (!moreDetail) {
-                                          showComment = showSearchBarWidget;
-                                        }
-                                      });
-                                    },
-                                    child: Text(
-                                      !showComment ? "نمایش نظرات (${comments.length})" : "فایل های دفتر املاک",
-                                      style: TextStyle(
-                                        color: Themes.text,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 9,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
                     ),
+                  ],
+                ),
+              ),
+              SizeTransition(
+                sizeFactor: collopsAnimation,
+                axis: Axis.vertical,
+                child: profileDetail(),
+              ),
+              if (showSearchBarWidget) searchBar(),
+              if (showComment)
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: comments.length,
+                    itemBuilder: (context, i) {
+                      if (i == 0) return addCommentWidget();
+
+                      return commentItem(comments[i - 0]);
+                    },
                   ),
-                ],
-              ),
-            ),
-            SizeTransition(
-              sizeFactor: collopsAnimation,
-              axis: Axis.vertical,
-              child: profileDetail(),
-            ),
-            if (showSearchBarWidget) searchBar(),
-            if (showCommentWidget) addCommentWidget(),
-            Expanded(
-              child: ListView.builder(
-                itemCount: showComment ? comments.length : list.length,
-                itemBuilder: (context, i) => showComment ? commentItem(comments[i]) : fileItem(list[i]),
-              ),
-            ),
-          ],
-        ),
-      ),
+                ),
+              if (!showComment)
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: list.length,
+                    itemBuilder: (context, i) => fileItem(list[i]),
+                  ),
+                ),
+            ],
+          ),
+        );
+      }),
     );
   }
 

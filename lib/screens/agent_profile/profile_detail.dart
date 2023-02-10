@@ -7,7 +7,7 @@ extension ProfileDetail on AgentProfileScreenState {
   Widget profileDetail() {
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height - 276,
+        maxHeight: MediaQuery.of(context).size.height - (Scaffold.of(scaffoldContext).appBarMaxHeight ?? 0) - 170,
       ),
       padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
       decoration: BoxDecoration(
