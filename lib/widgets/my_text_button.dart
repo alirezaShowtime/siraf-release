@@ -5,16 +5,20 @@ class MyTextButton extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _MyTextButton();
 
-  String text;
+  String? text;
+  Widget? child;
   void Function()? onPressed;
   Color? rippleColor;
   Color? textColor;
+  EdgeInsets? padding;
 
   MyTextButton({
-    required this.text,
+    this.text,
     this.onPressed,
     this.rippleColor,
     this.textColor,
+    this.child,
+    this.padding,
   });
 }
 
@@ -24,19 +28,21 @@ class _MyTextButton extends State<MyTextButton> {
     return TextButton(
       onPressed: widget.onPressed,
       style: TextButton.styleFrom(
+        padding: widget.padding,
         foregroundColor: widget.rippleColor ?? Themes.primary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
       ),
-      child: Text(
-        widget.text,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          color: widget.textColor ?? widget.rippleColor,
-        ),
-      ),
+      child: widget.child ??
+          Text(
+            widget.text!,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: widget.textColor ?? widget.rippleColor,
+            ),
+          ),
     );
   }
 }

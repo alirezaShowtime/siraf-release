@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/screens/request_file/request_file_show_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
@@ -121,7 +122,7 @@ class _RequestListScreen extends State<RequestListScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "${model["type"]}|${model["title"]}",
+              "${model["type"]} | ${model["title"]}",
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
@@ -175,5 +176,7 @@ class _RequestListScreen extends State<RequestListScreen> {
 
   void onClickItem(Map<String, dynamic> model) {
     //todo: implement event listener
+
+    Navigator.push(context, MaterialPageRoute(builder: (_) => RequestFileShowScreen()));
   }
 }
