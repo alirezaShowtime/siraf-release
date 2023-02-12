@@ -120,6 +120,8 @@ bool isNumeric(String? s) {
 }
 
 Uri getFileUrl(String endpoint) {
+  print(endpoint);
+
   return Uri.parse("https://file.siraf.app/api/${endpoint}");
 }
 

@@ -2,7 +2,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/file_detail.dart';
+import 'package:siraf3/models/user.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/widgets/mini_video.dart';
 import 'slider.dart' as slider;
 import 'package:flutter/material.dart' as m;
 import 'slider.dart' as s;
@@ -67,6 +69,9 @@ class _CarouselSliderCustomState extends State<CarouselSliderCustom> {
             enableInfiniteScroll: widget.enableInfiniteScroll,
             reverse: widget.reverse,
             autoPlay: widget.autoPlay,
+            scrollPhysics: widget.sliders.length > 1
+                ? null
+                : NeverScrollableScrollPhysics(),
             enlargeCenterPage: widget.enlargeCenterPage,
             autoPlayInterval: Duration(seconds: 5),
             autoPlayAnimationDuration: Duration(milliseconds: 800),
@@ -105,32 +110,33 @@ class _CarouselSliderCustomState extends State<CarouselSliderCustom> {
             );
           }).toList(),
         ),
-        Positioned(
-          bottom: widget.indicatorPosition.bottom,
-          left: widget.indicatorPosition.left,
-          right: widget.indicatorPosition.right,
-          child: Row(
-            mainAxisAlignment: widget.indicatorsCenterAlign
-                ? MainAxisAlignment.center
-                : MainAxisAlignment.end,
-            children: widget.sliders.asMap().entries.map((entry) {
-              return GestureDetector(
-                onTap: () => _controller.animateToPage(entry.key),
-                child: Container(
-                  width: 6.0,
-                  height: 6.0,
-                  margin: EdgeInsets.symmetric(horizontal: 2.5),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _current == entry.key
-                        ? widget.indicatorSelectedColor
-                        : widget.indicatorColor,
+        if (widget.sliders.length > 1)
+          Positioned(
+            bottom: widget.indicatorPosition.bottom,
+            left: widget.indicatorPosition.left,
+            right: widget.indicatorPosition.right,
+            child: Row(
+              mainAxisAlignment: widget.indicatorsCenterAlign
+                  ? MainAxisAlignment.center
+                  : MainAxisAlignment.end,
+              children: widget.sliders.asMap().entries.map((entry) {
+                return GestureDetector(
+                  onTap: () => _controller.animateToPage(entry.key),
+                  child: Container(
+                    width: 6.0,
+                    height: 6.0,
+                    margin: EdgeInsets.symmetric(horizontal: 2.5),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _current == entry.key
+                          ? widget.indicatorSelectedColor
+                          : widget.indicatorColor,
+                    ),
                   ),
-                ),
-              );
-            }).toList(),
+                );
+              }).toList(),
+            ),
           ),
-        ),
       ],
     );
   }
@@ -164,82 +170,112 @@ class CarouselSliderItemCustom extends StatefulWidget {
 class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> {
   @override
   Widget build(BuildContext context) {
+    if (widget.slide.type == s.SliderType.image) {
+      return _buildImage();
+    }
+    if (widget.slide.type == s.SliderType.video) {
+      return _buildVideo();
+    }
+    if (widget.slide.type == s.SliderType.virtual_tour) {
+      return _buildTour();
+    }
+
+    return Container();
+  }
+
+  _buildImage() {
+    return GestureDetector(
+      onTap: widget.onImageTap != null
+          ? () {
+              widget.onImageTap!(widget.slide);
+            }
+          : null,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        margin: widget.margin,
+        child: ClipRRect(
+          borderRadius: widget.borderRadius,
+          child: m.Image(
+            image: widget.image,
+            width: MediaQuery.of(context).size.width,
+            fit: widget.imageFit ?? BoxFit.cover,
+            height: MediaQuery.of(context).size.height,
+            errorBuilder: (_, _1, _2) {
+              return m.Image(
+                image: AssetImage("assets/images/image_not_avialable.png"),
+                width: MediaQuery.of(context).size.width,
+                fit: widget.imageFit ?? BoxFit.cover,
+                height: MediaQuery.of(context).size.height,
+                color: Color(0x757f8c8d),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  _buildVideo() {
+    return MiniVideo(thumbnail: widget.image, videoUrl: widget.slide.link!);
+  }
+
+  _buildTour() {
     return Stack(
       children: [
-        widget.onImageTap == null
-            ? Container(
+        GestureDetector(
+          onTap: widget.onImageTap != null
+              ? () {
+                  widget.onImageTap!(widget.slide);
+                }
+              : null,
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            margin: widget.margin,
+            child: ClipRRect(
+              borderRadius: widget.borderRadius,
+              child: m.Image(
+                image: widget.image,
                 width: MediaQuery.of(context).size.width,
-                margin: widget.margin,
-                child: ClipRRect(
-                  borderRadius: widget.borderRadius,
-                  child: m.Image(
-                    image: widget.image,
+                fit: widget.imageFit ?? BoxFit.cover,
+                height: MediaQuery.of(context).size.height,
+                errorBuilder: (_, _1, _2) {
+                  return m.Image(
+                    image: AssetImage("assets/images/image_not_avialable.png"),
                     width: MediaQuery.of(context).size.width,
                     fit: widget.imageFit ?? BoxFit.cover,
                     height: MediaQuery.of(context).size.height,
-                    errorBuilder: (_, _1, _2) {
-                      return m.Image(
-                        image:
-                            AssetImage("assets/images/image_not_avialable.png"),
-                        width: MediaQuery.of(context).size.width,
-                        fit: widget.imageFit ?? BoxFit.cover,
-                        height: MediaQuery.of(context).size.height,
-                        color: Color(0x757f8c8d),
-                      );
-                    },
-                  ),
-                ),
-              )
-            : GestureDetector(
-                onTap: () => widget.onImageTap!(widget.slide),
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: widget.margin,
-                  child: ClipRRect(
-                    borderRadius: widget.borderRadius,
-                    child: m.Image(
-                      image: widget.image,
-                      width: MediaQuery.of(context).size.width,
-                      fit: widget.imageFit ?? BoxFit.cover,
-                      height: MediaQuery.of(context).size.height,
-                    ),
-                  ),
-                ),
-              ),
-        if (widget.slide.type == s.SliderType.video)
-          GestureDetector(
-            onTap: () => widget.onImageTap!(widget.slide),
-            child: Align(
-              alignment: Alignment.center,
-              child: Icon(
-                Icons.play_arrow_outlined,
-                color: Colors.white,
-                size: 60,
+                    color: Color(0x757f8c8d),
+                  );
+                },
               ),
             ),
           ),
-        if (widget.slide.type == s.SliderType.virtual_tour)
-          GestureDetector(
-            onTap: () => widget.onImageTap!(widget.slide),
-            child: Align(
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  m.Image(
-                    image: AssetImage("assets/images/virtual_tour.png"),
-                    color: Colors.white,
-                    width: 80,
-                    height: 80,
-                  ),
-                  Text(
-                    "جهت نمایش تور مجازی روی کلیک کنید",
-                    style: TextStyle(fontSize: 13, color: Themes.textLight),
-                  ),
-                ],
-              ),
+        ),
+        GestureDetector(
+          onTap: widget.onImageTap != null
+              ? () {
+                  widget.onImageTap!(widget.slide);
+                }
+              : null,
+          child: Align(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                m.Image(
+                  image: AssetImage("assets/images/virtual_tour.png"),
+                  color: Colors.white,
+                  width: 80,
+                  height: 80,
+                ),
+                Text(
+                  "جهت نمایش تور مجازی کلیک کنید",
+                  style: TextStyle(fontSize: 13, color: Themes.textLight),
+                ),
+              ],
             ),
           ),
+        ),
       ],
     );
   }

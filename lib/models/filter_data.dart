@@ -30,7 +30,7 @@ class FilterData {
     }
 
     if (cityIds != null) {
-      str += getDelimiter(str) + "cityIds=" + jsonEncode(cityIds);
+      str += getDelimiter(str) + "cityIds=" + "[" + cityIds!.join(',') + "]";
     }
 
     if (hasImage == true) {
@@ -116,5 +116,4 @@ class Filters {
   List<int>? prices;
 
   Filters({this.mater, this.price, this.rent, this.prices});
-
 }

@@ -54,18 +54,10 @@ class HSBloc extends Bloc<HSEvent, HSState> {
 
       print(url.toString());
 
-      try {
-        if (await User.hasToken()) {
-          response = await http2.getWithToken(url);
-        } else {
-          response = await http2.get(url);
-        }
-      } on HttpException catch (e) {
-        emit(HSErrorState(response: null));
-        return;
-      } on SocketException catch (e) {
-        emit(HSErrorState(response: null));
-        return;
+      if (await User.hasToken()) {
+        response = await http2.getWithToken(url, timeout: Duration(seconds: 60));
+      } else {
+        response = await http2.get(url, timeout: Duration(seconds: 60));
       }
 
       if (isResponseOk(response)) {
@@ -77,10 +69,12 @@ class HSBloc extends Bloc<HSEvent, HSState> {
       } else {
         var json = jDecode(response.body);
 
+        print(convertUtf8(response.body));
+
         if (json['code'] == 205) {
           User.remove();
 
-          response = await http2.get(url);
+          response = await http2.get(url, timeout: Duration(seconds: 60));
 
           if (isResponseOk(response)) {
             var json = jDecode(response.body);

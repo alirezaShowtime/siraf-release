@@ -51,8 +51,10 @@ class _FileScreenState extends State<FileScreen> {
     super.initState();
 
     fileBloc.add(FileFetchEvent(id: widget.id));
-    fileBloc.stream.listen((event) {
+    fileBloc.stream.listen((event) async {
       if (event is FileLoadedState) {
+        print(await User.getBearerToken());
+
         setSliders(event.file);
 
         setState(() {
@@ -214,55 +216,55 @@ class _FileScreenState extends State<FileScreen> {
   Widget _buildSliders(FileDetail file) {
     return Stack(
       children: [
-        if (file.media!.image == null || file.media!.image!.isEmpty)
-          Container(
-            padding: EdgeInsets.only(bottom: 15),
-            height: 250,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Themes.background,
-              image: DecorationImage(
-                  image: AssetImage("assets/images/image_not_avialable.png"),
-                  alignment: Alignment.center),
-            ),
-          ),
-        if (file.media?.image != null && file.media!.image!.isNotEmpty)
-          CarouselSliderCustom(
-            sliders: sliders,
-            autoPlay: false,
-            height: 250,
-            indicatorsCenterAlign: true,
-            viewportFraction: 1.0,
-            itemMargin: EdgeInsets.only(bottom: 15),
-            indicatorPosition: EdgeInsets.only(left: 0, right: 0, bottom: 0),
-            itemBorderRadius: BorderRadius.zero,
-            imageFit: BoxFit.cover,
-            indicatorSelectedColor: Themes.blue,
-            indicatorColor: Colors.grey,
-            onPageChanged: (i) {
-              setState(() {
-                if (file.media!.image![i].name == null ||
-                    file.media!.image![i].name == "") {
-                  imageName.add(null);
-                } else {
-                  imageName.add(" | ${file.media!.image![i].name!.trim()}");
-                }
-              });
-            },
-            onImageTap: (s.Slider slider) {
-              if (slider.type == s.SliderType.virtual_tour) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => WebViewScreen(
-                      title: file.name ?? "",
-                      url: slider.link!,
-                    ),
-                  ),
-                );
+        // if (file.media!.image == null || file.media!.image!.isEmpty)
+        //   Container(
+        //     padding: EdgeInsets.only(bottom: 15),
+        //     height: 250,
+        //     width: double.infinity,
+        //     decoration: BoxDecoration(
+        //       color: Themes.background,
+        //       image: DecorationImage(
+        //           image: AssetImage("assets/images/image_not_avialable.png"),
+        //           alignment: Alignment.center),
+        //     ),
+        //   ),
+        // if (file.media?.image != null && file.media!.image!.isNotEmpty)
+        CarouselSliderCustom(
+          sliders: sliders,
+          autoPlay: false,
+          height: 250,
+          indicatorsCenterAlign: true,
+          viewportFraction: 1.0,
+          itemMargin: EdgeInsets.only(bottom: 15),
+          indicatorPosition: EdgeInsets.only(left: 0, right: 0, bottom: 0),
+          itemBorderRadius: BorderRadius.zero,
+          imageFit: BoxFit.cover,
+          indicatorSelectedColor: Themes.blue,
+          indicatorColor: Colors.grey,
+          onPageChanged: (i) {
+            setState(() {
+              if (file.media!.image![i].name == null ||
+                  file.media!.image![i].name == "") {
+                imageName.add(null);
+              } else {
+                imageName.add(" | ${file.media!.image![i].name!.trim()}");
               }
-            },
-          ),
+            });
+          },
+          onImageTap: (s.Slider slider) {
+            if (slider.type == s.SliderType.virtual_tour) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => WebViewScreen(
+                    title: file.name ?? "",
+                    url: slider.link!,
+                  ),
+                ),
+              );
+            }
+          },
+        ),
         Positioned(
           top: 0,
           left: 0,

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -8,13 +9,16 @@ import 'package:siraf3/models/user.dart';
 Future<http.Response> get(Uri url,
     {Map<String, String>? headers, Duration? timeout}) async {
   try {
-    return http.get(url, headers: headers).timeout(
+    return http
+        .get(url, headers: headers)
+        .timeout(
           timeout ?? Duration(seconds: 20),
           onTimeout: () => timeoutErrorResponse(),
-        );
-  } on HttpException catch (e) {
-    return timeoutErrorResponse();
-  } on SocketException catch (e) {
+        )
+        .catchError((_) {
+      return timeoutErrorResponse();
+    });
+  } catch (_) {
     return timeoutErrorResponse();
   }
 }
@@ -30,10 +34,11 @@ Future<http.Response> post(Uri url,
         .timeout(
           timeout ?? Duration(minutes: 10),
           onTimeout: () => timeoutErrorResponse(),
-        );
-  } on HttpException catch (e) {
-    return timeoutErrorResponse();
-  } on SocketException catch (e) {
+        )
+        .catchError((_) {
+      return timeoutErrorResponse();
+    });
+  } catch (_) {
     return timeoutErrorResponse();
   }
 }
