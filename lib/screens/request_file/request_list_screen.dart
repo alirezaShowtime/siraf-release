@@ -81,25 +81,47 @@ class _RequestListScreen extends State<RequestListScreen> {
         automaticallyImplyLeading: false,
         title: AppBarTitle("درخواست های من"),
         actions: [
-          IconButton(onPressed: requestFile, icon: icon(Icons.add)),
+          GestureDetector(
+            onTap: requestFile,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+              child: icon(Icons.add),
+            ),
+          ),
           if (selectedFiles.length > 0)
-            IconButton(
-                onPressed: removeFile, icon: icon(CupertinoIcons.delete)),
+            GestureDetector(
+              onTap: requestFile,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+                child: icon(CupertinoIcons.delete),
+              ),
+            ),
           MyPopupMenuButton(
             icon: icon(Icons.sort_rounded),
             itemBuilder: (_) => [
-              PopupMenuItem(child: Text("جدیدترین", style: TextStyle(fontSize: 12))),
-              PopupMenuItem(child: Text("قدیمی ترین", style: TextStyle(fontSize: 12))),
-              PopupMenuItem(child: Text("در انتظار تایید", style: TextStyle(fontSize: 12))),
-              PopupMenuItem(child: Text("در انتظار پذیرش", style: TextStyle(fontSize: 12))),
-              PopupMenuItem(child: Text("پذیرش شده", style: TextStyle(fontSize: 12))),
-              PopupMenuItem(child: Text("عدم پذیرش", style: TextStyle(fontSize: 12))),
-              PopupMenuItem(child: Text("رد شده", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(
+                  child: Text("جدیدترین", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(
+                  child: Text("قدیمی ترین", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(
+                  child:
+                      Text("در انتظار تایید", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(
+                  child:
+                      Text("در انتظار پذیرش", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(
+                  child: Text("پذیرش شده", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(
+                  child: Text("عدم پذیرش", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(
+                  child: Text("رد شده", style: TextStyle(fontSize: 12))),
             ],
           ),
           MyPopupMenuButton(
             itemBuilder: (_) => [
-              PopupMenuItem(child: Text("انتخاب همه", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(
+                  child: Text("انتخاب همه", style: TextStyle(fontSize: 12))),
             ],
           ),
         ],
@@ -116,6 +138,9 @@ class _RequestListScreen extends State<RequestListScreen> {
   Widget item(Map<String, dynamic> model) {
     return InkWell(
       onTap: () => onClickItem(model),
+      onLongPress: () => () {
+        // if (selectedFiles.contains(model))
+      },
       child: Container(
         color: Colors.white,
         margin: EdgeInsets.symmetric(vertical: 4),

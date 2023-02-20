@@ -58,14 +58,15 @@ class _HomeScreenState extends State<HomeScreen> {
     scrollController.addListener(pagination);
 
     homeScreenBloc.stream.listen((event) {
+      setState(() {
+        currentBlocState = event;
+      });
       if (event is HSLoadedState) {
-        print(event.files.length);
         setState(() {
           _hasNewFiles = event.files.isNotEmpty;
           lastId = event.lastId;
-          print(_hasNewFiles);
-          print(lastId);
-          print(files.length);
+          currentBlocState = event;
+          files = event.files;
         });
       }
     });
@@ -87,15 +88,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return (scrollController.position.pixels ==
             scrollController.position.maxScrollExtent) &&
         lastId != null &&
-        _hasNewFiles &&
-        !_isLoadingMore;
+        // _hasNewFiles && 
+         !_isLoadingMore;
   }
 
   void pagination() async {
     if (_canLoadMore()) {
-      // scrollController.animateTo(scrollController.position.maxScrollExtent,
-      //     duration: const Duration(milliseconds: 1),
-      //     curve: Curves.fastOutSlowIn);
       _moreBloc.add(HSLoadEvent(filterData: filterData, lastId: lastId!));
     }
   }
@@ -109,13 +107,9 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _hasNewFiles = event.files.isNotEmpty;
 
-        files += event.files;
+        files.addAll(event.files);
 
         lastId = event.lastId;
-
-        print(_hasNewFiles);
-        print(lastId);
-        print(files.length);
       });
     } else if (event is HSErrorState) {
       notify("خطا در بارگزاری ادامه فایل ها رخ داد لطفا مجدد تلاش کنید");
@@ -214,16 +208,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         actions: [
-          // IconButton(
-          //   onPressed: () async {
-          //     changeViewType();
-          //   },
-          //   icon: FaIcon(
-          //     OctIcons.image_24,
-          //     color: Themes.iconLight,
-          //     size: 20,
-          //   ),
-          // ),
           IconButton(
             onPressed: () async {
               var result = await Navigator.push(
@@ -261,11 +245,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             onPressed: () {
+              var originalFilterData = this.filterData;
+              var filterData = this.filterData;
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => SearchScreen(
-                    originalFilterData: filterData,
+                    originalFilterData: originalFilterData,
                     filterData: filterData,
                   ),
                 ),
@@ -281,78 +267,86 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: BlocBuilder<HSBloc, HSState>(builder: _buildHSBloc),
-    );
-  }
-
-  Widget _buildHSBloc(BuildContext _, HSState state) {
-    if (state is HSInitState || state is HSLoadingState) {
-      return Center(
-        child: Loading(),
-      );
-    }
-
-    if (state is HSErrorState) {
-      return Center(
-        child: TryAgain(
-          onPressed: getFiles,
-          message: state.response != null
-              ? jDecode(state.response!.body)['message']
-              : null,
-        ),
-      );
-    }
-
-    state = state as HSLoadedState;
-
-    files = state.files;
-
-    if (files.isEmpty) {
-      return Center(
-        child: Text(
-          "فایلی موجود نیست فیلتر را حدف کنید",
-          style: TextStyle(
-            color: Themes.text,
-            fontSize: 15,
-          ),
-        ),
-      );
-    }
-
-    return ListView(
-      controller: scrollController,
-      children: files
-              .map<Widget>((file) => InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => FileScreen(id: file.id!),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          top: (state as HSLoadedState).files.first == file
-                              ? 0
-                              : 5),
-                      child: viewType == ViewType.List
-                          ? FileHorizontalItem(file: file)
-                          : FileSlideItem(file: file),
-                    ),
-                  ))
-              .toList() +
-          [
-            if (_isLoadingMore)
-              Align(
-                alignment: Alignment.center,
-                child: Loading(
-                  backgroundColor: Colors.transparent,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (currentBlocState is HSInitState ||
+              currentBlocState is HSLoadingState)
+            Center(
+              child: Loading(),
+            ),
+          if (currentBlocState is HSErrorState)
+            Center(
+              child: TryAgain(
+                onPressed: getFiles,
+                message: (currentBlocState as HSErrorState).response != null
+                    ? jDecode((currentBlocState as HSErrorState)
+                        .response!
+                        .body)['message']
+                    : null,
+              ),
+            ),
+          if (currentBlocState is HSLoadedState &&
+              (currentBlocState as HSLoadedState).files.isEmpty)
+            Center(
+              child: Text(
+                "فایلی موجود نیست فیلتر را حدف کنید",
+                style: TextStyle(
+                  color: Themes.text,
+                  fontSize: 15,
                 ),
-              )
-          ],
+              ),
+            ),
+          if (currentBlocState is HSLoadedState &&
+              (currentBlocState as HSLoadedState).files.isNotEmpty)
+            Expanded(
+              child: ListView(
+                controller: scrollController,
+                children: files
+                        .map<Widget>((file) => InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => FileScreen(id: file.id!),
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    top: files.first == file ? 0 : 5),
+                                child: viewType == ViewType.List
+                                    ? FileHorizontalItem(file: file)
+                                    : FileSlideItem(file: file),
+                              ),
+                            ))
+                        .toList() +
+                    [
+                      if (_isLoadingMore)
+                        Align(
+                          alignment: Alignment.center,
+                          child: Loading(
+                            backgroundColor: Colors.transparent,
+                          ),
+                        )
+                    ],
+              ),
+            ),
+        ],
+      ),
     );
   }
+
+  void _scrollDown() {
+    scrollController.animateTo(
+      scrollController.position.maxScrollExtent,
+      duration: Duration(seconds: 2),
+      curve: Curves.fastOutSlowIn,
+    );
+  }
+
+  HSState currentBlocState = HSInitState();
 
   getFiles() {
     homeScreenBloc.add(

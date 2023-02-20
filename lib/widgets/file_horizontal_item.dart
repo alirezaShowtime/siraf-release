@@ -129,6 +129,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                                       element.weightList == 3 ||
                                       element.weightList == 4)
                                   .toList()
+                                  .take(4)
                                   .map<Widget>((e) => Text(
                                         "${e.name} ${e.value}",
                                         style: TextStyle(

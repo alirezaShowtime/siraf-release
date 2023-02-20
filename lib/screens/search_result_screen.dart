@@ -29,6 +29,8 @@ class SearchResultScreen extends StatefulWidget {
 }
 
 class _SearchResultScreenState extends State<SearchResultScreen> {
+  HSState currentBlocState = HSInitState();
+
   @override
   void initState() {
     super.initState();
@@ -38,13 +40,15 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
     scrollController.addListener(pagination);
 
     homeScreenBloc.stream.listen((event) {
+      setState(() {
+        currentBlocState = event;
+      });
+
       if (event is HSLoadedState) {
         setState(() {
           _hasNewFiles = event.files.isNotEmpty;
           lastId = event.lastId;
-          print(_hasNewFiles);
-          print(lastId);
-          print(files.length);
+          files = event.files;
         });
       }
     });
@@ -53,16 +57,6 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
 
     getFiles();
   }
-
-  HSBloc _moreBloc = HSBloc();
-
-  int? lastId;
-
-  bool _isLoadingMore = false;
-
-  List<File> files = [];
-
-  bool _hasNewFiles = true;
 
   bool _canLoadMore() {
     return (scrollController.position.pixels ==
@@ -88,18 +82,24 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
       setState(() {
         _hasNewFiles = event.files.isNotEmpty;
 
-        files += event.files;
+        files.addAll(event.files);
 
         lastId = event.lastId;
-
-        print(_hasNewFiles);
-        print(lastId);
-        print(files.length);
       });
     } else if (event is HSErrorState) {
       notify("خطا در بارگزاری ادامه فایل ها رخ داد لطفا مجدد تلاش کنید");
     }
   }
+
+  HSBloc _moreBloc = HSBloc();
+
+  int? lastId;
+
+  bool _isLoadingMore = false;
+
+  List<File> files = [];
+
+  bool _hasNewFiles = true;
 
   ScrollController scrollController = ScrollController();
 
@@ -170,79 +170,146 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
             ),
           ],
         ),
-        body: BlocBuilder<HSBloc, HSState>(builder: _buildHSBloc),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (currentBlocState is HSInitState ||
+                currentBlocState is HSLoadingState)
+              Center(
+                child: Loading(),
+              ),
+            if (currentBlocState is HSErrorState)
+              Center(
+                child: TryAgain(
+                  onPressed: getFiles,
+                  message: (currentBlocState as HSErrorState).response != null
+                      ? jDecode((currentBlocState as HSErrorState)
+                          .response!
+                          .body)['message']
+                      : null,
+                ),
+              ),
+            if (currentBlocState is HSLoadedState &&
+                (currentBlocState as HSLoadedState).files.isEmpty)
+              Center(
+                child: Text(
+                  "فایلی موجود نیست فیلتر را حدف کنید",
+                  style: TextStyle(
+                    color: Themes.text,
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+            if (currentBlocState is HSLoadedState &&
+                (currentBlocState as HSLoadedState).files.isNotEmpty)
+              Expanded(
+                child: ListView(
+                  controller: scrollController,
+                  children: files
+                          .map<Widget>((file) => InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => FileScreen(id: file.id!),
+                                    ),
+                                  );
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      top: files.first == file ? 0 : 5),
+                                  child: viewType == ViewType.List
+                                      ? FileHorizontalItem(file: file)
+                                      : FileSlideItem(file: file),
+                                ),
+                              ))
+                          .toList() +
+                      [
+                        if (_isLoadingMore)
+                          Align(
+                            alignment: Alignment.center,
+                            child: Loading(
+                              backgroundColor: Colors.transparent,
+                            ),
+                          )
+                      ],
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildHSBloc(BuildContext _, HSState state) {
-    if (state is HSInitState || state is HSLoadingState) {
-      return Center(
-        child: Loading(),
-      );
-    }
+  // Widget _buildHSBloc(BuildContext _, HSState state) {
+  //   if (state is HSInitState || state is HSLoadingState) {
+  //     return Center(
+  //       child: Loading(),
+  //     );
+  //   }
 
-    if (state is HSErrorState) {
-      return Center(
-        child: TryAgain(
-          onPressed: getFiles,
-          message: state.response != null
-              ? jDecode(state.response!.body)['message']
-              : null,
-        ),
-      );
-    }
+  //   if (state is HSErrorState) {
+  //     return Center(
+  //       child: TryAgain(
+  //         onPressed: getFiles,
+  //         message: state.response != null
+  //             ? jDecode(state.response!.body)['message']
+  //             : null,
+  //       ),
+  //     );
+  //   }
 
-    state = state as HSLoadedState;
+  //   state = state as HSLoadedState;
 
-    files = state.files;
+  //   files = state.files;
 
-    if (files.isEmpty) {
-      return Center(
-        child: Text(
-          "فایلی موجود نیست فیلتر را حدف کنید",
-          style: TextStyle(
-            color: Themes.text,
-            fontSize: 15,
-          ),
-        ),
-      );
-    }
+  //   if (files.isEmpty) {
+  //     return Center(
+  //       child: Text(
+  //         "فایلی موجود نیست فیلتر را حدف کنید",
+  //         style: TextStyle(
+  //           color: Themes.text,
+  //           fontSize: 15,
+  //         ),
+  //       ),
+  //     );
+  //   }
 
-    return ListView(
-      controller: scrollController,
-      children: files
-              .map<Widget>((file) => GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => FileScreen(id: file.id!),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          top: (state as HSLoadedState).files.first == file
-                              ? 0
-                              : 5),
-                      child: viewType == ViewType.List
-                          ? FileHorizontalItem(file: file)
-                          : FileSlideItem(file: file),
-                    ),
-                  ))
-              .toList() +
-          [
-            if (_isLoadingMore)
-              Align(
-                alignment: Alignment.center,
-                child: Loading(
-                  backgroundColor: Colors.transparent,
-                ),
-              )
-          ],
-    );
-  }
+  //   return ListView(
+  //     controller: scrollController,
+  //     children: files
+  //             .map<Widget>((file) => GestureDetector(
+  //                   onTap: () {
+  //                     Navigator.push(
+  //                       context,
+  //                       MaterialPageRoute(
+  //                         builder: (_) => FileScreen(id: file.id!),
+  //                       ),
+  //                     );
+  //                   },
+  //                   child: Padding(
+  //                     padding: EdgeInsets.only(
+  //                         top: (state as HSLoadedState).files.first == file
+  //                             ? 0
+  //                             : 5),
+  //                     child: viewType == ViewType.List
+  //                         ? FileHorizontalItem(file: file)
+  //                         : FileSlideItem(file: file),
+  //                   ),
+  //                 ))
+  //             .toList() +
+  //         [
+  //           if (_isLoadingMore)
+  //             Align(
+  //               alignment: Alignment.center,
+  //               child: Loading(
+  //                 backgroundColor: Colors.transparent,
+  //               ),
+  //             )
+  //         ],
+  //   );
+  // }
 
   getFiles() {
     homeScreenBloc.add(
@@ -258,6 +325,12 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
         : cities.length == 1
             ? cities.first.name ?? "${cities.length} شهر"
             : "${cities.length} شهر";
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    homeScreenBloc.close();
   }
 }
 

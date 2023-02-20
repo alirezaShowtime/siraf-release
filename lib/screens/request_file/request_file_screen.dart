@@ -607,7 +607,6 @@ class _RequestFileScreen extends State<RequestFileScreen> {
               children: [
                 Column(
                   children: [
-                    SizedBox(height: 20),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Container(
@@ -678,7 +677,6 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                     ),
                     SizedBox(height: 3),
                     Divider(height: 1, color: Themes.textGrey.withOpacity(0.5)),
-                    SizedBox(height: 10),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Container(
@@ -862,6 +860,8 @@ class _RequestFileScreen extends State<RequestFileScreen> {
           message = jDecode(event.response!.body)['message'];
         } on Exception catch (_) {}
       }
+
+      dismissDialog(loadingDialogContext);
 
       errorDialog(
         context: context,

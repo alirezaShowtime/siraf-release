@@ -77,7 +77,7 @@ class AddFileRequestBloc
 
     try {
       response = await http2.postJsonWithToken(
-        getEstateUrl("fileRequest/addFileRequest/"),
+        getEstateUrl("requestFile/addFileRequest/"),
         body: event.toMap(),
       );
     } on HttpException catch (_) {
