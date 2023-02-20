@@ -205,7 +205,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                             EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                         hintText:
                             "در این قسمت به موارد مهم ملک مانند نوع ملک و محله اشاره کنید",
-                        hintStyle: TextStyle(fontSize: 14),
+                        hintStyle: TextStyle(fontSize: 13),
                         labelStyle: TextStyle(fontSize: 14),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         floatingLabelStyle: TextStyle(color: Themes.primary),
@@ -264,7 +264,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                       labelStyle: TextStyle(fontSize: 14),
                       hintText:
                           "در این قسمت به جزئیات ملک مانند امکانات ، ویژگی ها و ... که برای شمااهمیت دارد اشاره کنید",
-                      hintStyle: TextStyle(fontSize: 14),
+                      hintStyle: TextStyle(fontSize: 13),
                     ),
                     controller: _descriptionController,
                     cursorColor: Themes.primary,

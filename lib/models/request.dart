@@ -65,4 +65,15 @@ class Request {
     _data["user_id"] = userId;
     return _data;
   }
+
+  
+  static List<Request> fromList(List<dynamic> list) {
+    var list2 = <Request>[];
+
+    for (dynamic item in list) {
+      list2.add(Request.fromJson(item));
+    }
+
+    return list2;
+  }
 }
