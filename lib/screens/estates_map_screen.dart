@@ -47,7 +47,9 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
         if (_firstTime) {
           setState(() {
             _firstTime = false;
-            _controller.move(myLocationMarker!.point, getZoomLevel(3000));
+            Future.delayed(Duration(milliseconds: 100), () {
+              _controller.move(myLocationMarker!.point, getZoomLevel(3000));
+            });
           });
         }
       }
@@ -81,7 +83,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
     getEstates();
   }
 
-  getEstates() {
+  getEstates({bool showMyLocation = false}) {
     bloc.add(
       EstateLoadEvent(
         city_ids: cities.map((e) => e.id!).toList(),
@@ -236,16 +238,9 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
     state = state as EstateLoadedState;
 
     if (state.estates.isEmpty) {
-      return Center(
-        child: Text(
-          "متاسفانه موردی پیدا نشد",
-          style: TextStyle(
-            fontSize: 15,
-            color: Themes.text,
-          ),
-        ),
-      );
+      notify("متاسفانه موردی پیدا نشد");
     }
+
     return Stack(
       children: [
         SizedBox(
@@ -256,7 +251,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
               center: defaultLocation,
               interactiveFlags:
                   InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-              zoom: 15.0,
+              zoom: 14.0,
             ),
             children: [
               TileLayer(
@@ -322,12 +317,8 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
                 getEstates();
                 return;
               }
-
-              if (myLocationMarker == null) {
-                await _onMyLocationClicked();
-              }
-
-              getEstates();
+              
+              getEstatesFirstTime();
             },
             child: Container(
               decoration: BoxDecoration(
@@ -566,7 +557,11 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> {
                           Expanded(
                             child: MaterialButton(
                               onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => RequestFileScreen(estates: [estate])));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => RequestFileScreen(
+                                            estates: [estate])));
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(

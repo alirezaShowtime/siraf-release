@@ -35,6 +35,8 @@ class _EstateScreenState extends State<EstateScreen> {
 
   bool _showFileOnMyLocation = false;
 
+  bool _firstTime = false;
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +49,15 @@ class _EstateScreenState extends State<EstateScreen> {
         setState(() {
           currentSortType = event.sort_type;
         });
+
+        if (_firstTime) {
+          setState(() {
+            _firstTime = false;
+            Future.delayed(Duration(milliseconds: 100), () {
+              _controller.move(myLocationMarker!.point, getZoomLevel(3000));
+            });
+          });
+        }
       }
     });
   }
@@ -94,6 +105,36 @@ class _EstateScreenState extends State<EstateScreen> {
   bool mapEnabled = false;
 
   LatLng defaultLocation = LatLng(34.08892074204623, 49.7009108491914);
+
+  getEstatesFirstTime() async {
+    await getCities();
+    if (await checkLocationEnabled()) {
+      setState(() {
+        _showFileOnMyLocation = true;
+        _firstTime = true;
+      });
+      await _onMyLocationClicked(move: false);
+    }
+
+    getEstates();
+  }
+  
+  checkLocationEnabled() async {
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    _serviceEnabled = await _location.serviceEnabled();
+    if (!_serviceEnabled) {
+      return false;
+    }
+
+    _permissionGranted = await _location.hasPermission();
+    if (_permissionGranted != PermissionStatus.granted) {
+      return false;
+    }
+
+    return true;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -395,15 +436,7 @@ class _EstateScreenState extends State<EstateScreen> {
     state = state as EstateLoadedState;
 
     if (state.estates.isEmpty) {
-      return Center(
-        child: Text(
-          "متاسفانه موردی پیدا نشد",
-          style: TextStyle(
-            fontSize: 15,
-            color: Themes.text,
-          ),
-        ),
-      );
+      notify("موردی پیدا نشد");
     }
 
     if (!mapEnabled) {
@@ -429,7 +462,7 @@ class _EstateScreenState extends State<EstateScreen> {
                   center: defaultLocation,
                   interactiveFlags:
                       InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-                  zoom: 13.0,
+                  zoom: 14.0,
                   onTap: (_, _1) {
                     // MapsLauncher.launchCoordinates(file.lat!, file.long!);
                     // launchUrl(Uri.parse('geo:0,0?q=${file.lat!},${file.long!}'));
@@ -481,6 +514,63 @@ class _EstateScreenState extends State<EstateScreen> {
                 ),
               ),
             ),
+            Positioned(
+              bottom: 20,
+              right: 80,
+              child: GestureDetector(
+                onTap: () async {
+                  setState(() {
+                    _showFileOnMyLocation = !_showFileOnMyLocation;
+                  });
+                  if (!_showFileOnMyLocation) {
+                    setState(() {
+                      circles.clear();
+                    });
+
+                    getEstates();
+                    return;
+                  }
+
+                  if (myLocationMarker == null) {
+                    await _onMyLocationClicked();
+                  }
+
+                  getEstatesFirstTime();
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: _showFileOnMyLocation
+                        ? Themes.primary
+                        : Themes.background,
+                    borderRadius: BorderRadius.circular(100),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(-2, 2),
+                        blurRadius: 4,
+                      ),
+                      BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(2, -2),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.all(10),
+                  child: Text(
+                    "اطراف من",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontFamily: "IranSansMedium",
+                      color: _showFileOnMyLocation
+                          ? Themes.textLight
+                          : Themes.text,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       );
@@ -513,7 +603,7 @@ class _EstateScreenState extends State<EstateScreen> {
     return true;
   }
 
-  Future<void> _onMyLocationClicked() async {
+  Future<void> _onMyLocationClicked({bool move = true}) async {
     if (!await getLocationPermissions()) {
       notify("دسترسی موقعیت مکانی رد شده است لطفا به برنامه دسترسی بدهید");
       return;
@@ -538,7 +628,7 @@ class _EstateScreenState extends State<EstateScreen> {
         builder: _buildMapMarker,
         point: position,
       );
-      _controller.move(position, getZoomLevel(1000));
+      if (move) _controller.move(position, getZoomLevel(1000));
     });
 
     if (_showFileOnMyLocation) {
@@ -551,6 +641,13 @@ class _EstateScreenState extends State<EstateScreen> {
             borderStrokeWidth: 3,
             borderColor: Colors.white,
           ),
+          CircleMarker(
+            point: position,
+            radius: 3000,
+            useRadiusInMeter: true,
+            color: Colors.blue.withOpacity(0.15),
+            borderStrokeWidth: 0,
+          )
         ];
       });
     }
@@ -760,7 +857,7 @@ class _EstateScreenState extends State<EstateScreen> {
                                       (element) => element.id == estate.id,
                                     );
                                   } else {
-                                    selectedEstates.add(estate);
+                                    selectedEstates = selectedEstates + [estate];
                                   }
                                 });
 

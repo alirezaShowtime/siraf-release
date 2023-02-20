@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/models/user.dart';
+import 'package:siraf3/screens/agency_registration/agency_registration_info_screen.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/bookmark_screen.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
@@ -241,7 +242,9 @@ class _MenuScreenState extends State<MenuScreen> {
                                   },
                                   title: "دفاتر املاک اطراف من"),
                               AccordionItem(
-                                  onClick: () {}, title: "ثبت دفتر املاک"),
+                                  onClick: () {
+                                    Navigator.push(context, MaterialPageRoute(builder: (_ ) => AgencyRegistrationInfoScreen()));
+                                  }, title: "ثبت دفتر املاک"),
                             ],
                           ),
                         ),

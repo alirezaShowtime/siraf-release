@@ -16,8 +16,12 @@ class EstateLoadEvent extends EstateEvent {
   String? sort;
   LatLng? latLng;
 
-  EstateLoadEvent(
-      {required this.city_ids, this.search, this.sort, this.latLng});
+  EstateLoadEvent({
+    required this.city_ids,
+    this.search,
+    this.sort,
+    this.latLng,
+  });
 }
 
 class EstateState {}
@@ -64,7 +68,6 @@ class EstateBloc extends Bloc<EstateEvent, EstateState> {
                   : ""),
         );
 
-
         response = await http2.get(url);
       } on HttpException catch (e) {
         emit(EstateErrorState(response: null));
@@ -77,9 +80,12 @@ class EstateBloc extends Bloc<EstateEvent, EstateState> {
       if (isResponseOk(response)) {
         var json = jDecode(response.body);
 
-        emit(EstateLoadedState(
+        emit(
+          EstateLoadedState(
             estates: Estate.fromList(json['data']['estats']),
-            sort_type: event.sort));
+            sort_type: event.sort,
+          ),
+        );
       } else {
         emit(EstateErrorState(response: response));
       }
