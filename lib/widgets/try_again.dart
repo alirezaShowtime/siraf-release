@@ -17,7 +17,12 @@ class _TryAgainState extends State<TryAgain> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(widget.message ?? "خطایی در هنگام دریافت اطلاعات پیش آمد"),
+        Text(
+          widget.message ?? "خطایی در هنگام دریافت اطلاعات پیش آمد",
+          style: TextStyle(
+            fontSize: 14,
+          ),
+        ),
         SizedBox(
           height: 10,
         ),

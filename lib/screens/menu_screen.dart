@@ -7,6 +7,7 @@ import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/bookmark_screen.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/estates_map_screen.dart';
+import 'package:siraf3/screens/files_map_screen.dart';
 import 'package:siraf3/screens/inquiry_screen.dart';
 import 'package:siraf3/screens/my_files_screen.dart';
 import 'package:siraf3/screens/request_file/request_file_screen.dart';
@@ -176,49 +177,61 @@ class _MenuScreenState extends State<MenuScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               AccordionItem(
-                                  onClick: () async {
-                                    await doWithLogin(context, () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => MyFilesScreen(),
-                                        ),
-                                      );
-                                    });
+                                onClick: () async {
+                                  await doWithLogin(context, () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => MyFilesScreen(),
+                                      ),
+                                    );
+                                  });
 
-                                    getUser();
-                                  },
-                                  title: "فایل های من"),
+                                  getUser();
+                                },
+                                title: "فایل های من",
+                              ),
                               AccordionItem(
-                                  onClick: () async {
-                                    await doWithLogin(context, () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => RequestFileScreen(),
-                                        ),
-                                      );
-                                    });
+                                onClick: () async {
+                                  await doWithLogin(context, () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => RequestFileScreen(),
+                                      ),
+                                    );
+                                  });
 
-                                    getUser();
-                                  },
-                                  title: "ثبت در خواست"),
+                                  getUser();
+                                },
+                                title: "ثبت در خواست",
+                              ),
                               AccordionItem(
-                                  onClick: () async {
-                                    await doWithLogin(context, () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => RequestListScreen(),
-                                        ),
-                                      );
-                                    });
+                                onClick: () async {
+                                  await doWithLogin(context, () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => RequestListScreen(),
+                                      ),
+                                    );
+                                  });
 
-                                    getUser();
-                                  },
-                                  title: "در خواست های من"),
+                                  getUser();
+                                },
+                                title: "در خواست های من",
+                              ),
                               AccordionItem(
-                                  onClick: () {}, title: "ملک های اطراف من"),
+                                onClick: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => FilesMapScreen(),
+                                    ),
+                                  );
+                                },
+                                title: "ملک های اطراف من",
+                              ),
                             ],
                           ),
                         ),
@@ -243,8 +256,13 @@ class _MenuScreenState extends State<MenuScreen> {
                                   title: "دفاتر املاک اطراف من"),
                               AccordionItem(
                                   onClick: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (_ ) => AgencyRegistrationInfoScreen()));
-                                  }, title: "ثبت دفتر املاک"),
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                AgencyRegistrationInfoScreen()));
+                                  },
+                                  title: "ثبت دفتر املاک"),
                             ],
                           ),
                         ),
