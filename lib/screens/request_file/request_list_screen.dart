@@ -66,46 +66,53 @@ class _RequestListScreen extends State<RequestListScreen> {
             ),
             backgroundColor: Themes.appBar,
             automaticallyImplyLeading: false,
-            title: AppBarTitle("درخواست های من"),
+            title: AppBarTitle(
+              "درخواست های من",
+              fontSize: 15,
+            ),
             actions: [
-              GestureDetector(
-                onTap: requestFile,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-                  child: icon(Icons.add),
+              Transform.translate(
+                offset: Offset(-10, 0),
+                child: IconButton(
+                  onPressed: requestFile,
+                  icon: icon(Icons.add),
                 ),
               ),
               if (selectedRequests.length > 0)
-                GestureDetector(
-                  onTap: removeFile,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-                    child: icon(CupertinoIcons.delete),
+                Transform.translate(
+                  offset: Offset(-10, 0),
+                  child: IconButton(
+                    onPressed: removeFile,
+                    icon: icon(CupertinoIcons.delete),
                   ),
                 ),
-              MyPopupMenuButton(
-                icon: icon(Icons.sort_rounded),
-                itemBuilder: (_) => [
-                  PopupMenuItem(
-                      child: Text("جدیدترین", style: TextStyle(fontSize: 12))),
-                  PopupMenuItem(
-                      child:
-                          Text("قدیمی ترین", style: TextStyle(fontSize: 12))),
-                  PopupMenuItem(
-                      child: Text("در انتظار تایید",
-                          style: TextStyle(fontSize: 12))),
-                  PopupMenuItem(
-                      child: Text("در انتظار پذیرش",
-                          style: TextStyle(fontSize: 12))),
-                  PopupMenuItem(
-                      child: Text("پذیرش شده", style: TextStyle(fontSize: 12))),
-                  PopupMenuItem(
-                      child: Text("عدم پذیرش", style: TextStyle(fontSize: 12))),
-                  PopupMenuItem(
-                      child: Text("رد شده", style: TextStyle(fontSize: 12))),
-                ],
+              Transform.translate(
+                offset: Offset(-10, 0),
+                child: MyPopupMenuButton(
+                  icon: icon(Icons.sort_rounded),
+                  itemBuilder: (_) => [
+                    PopupMenuItem(
+                        child:
+                            Text("جدیدترین", style: TextStyle(fontSize: 12))),
+                    PopupMenuItem(
+                        child:
+                            Text("قدیمی ترین", style: TextStyle(fontSize: 12))),
+                    PopupMenuItem(
+                        child: Text("در انتظار تایید",
+                            style: TextStyle(fontSize: 12))),
+                    PopupMenuItem(
+                        child: Text("در انتظار پذیرش",
+                            style: TextStyle(fontSize: 12))),
+                    PopupMenuItem(
+                        child:
+                            Text("پذیرش شده", style: TextStyle(fontSize: 12))),
+                    PopupMenuItem(
+                        child:
+                            Text("عدم پذیرش", style: TextStyle(fontSize: 12))),
+                    PopupMenuItem(
+                        child: Text("رد شده", style: TextStyle(fontSize: 12))),
+                  ],
+                ),
               ),
               MyPopupMenuButton(
                 itemBuilder: (_) => [
@@ -118,10 +125,11 @@ class _RequestListScreen extends State<RequestListScreen> {
                   ),
                 ],
                 onSelected: (value) {
-                  // setState(() {
-                  //   isSelectable = true;
-                  //   selectedRequests = requests;
-                  // }); //todo implements
+                  setState(() {
+                    isSelectable = true;
+                    selectedRequests.clear();
+                    selectedRequests.addAll(requests);
+                  });
                 },
               ),
             ],
@@ -244,12 +252,12 @@ class _RequestListScreen extends State<RequestListScreen> {
     state as RequestsLoadedState;
 
     requests = state.requests;
-      return ListView.builder(
-        itemCount: requests.length,
-        itemBuilder: (context, i) {
-          return item(requests[i]);
-        },
-      );
+    return ListView.builder(
+      itemCount: requests.length,
+      itemBuilder: (context, i) {
+        return item(requests[i]);
+      },
+    );
   }
 
   void changeSelection(Request request) {
