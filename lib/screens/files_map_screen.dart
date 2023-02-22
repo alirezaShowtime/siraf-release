@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -188,7 +190,6 @@ class _FilesMapScreenState extends State<FilesMapScreen>
                   interactiveFlags:
                       InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                   zoom: 14.0,
-                  
                 ),
                 children: [
                   TileLayer(
@@ -200,7 +201,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
                   ),
                   MarkerLayer(
                     markers: _buildEstateMarkers(estates),
-                  ),
+                  )
                 ],
               ),
             ),
