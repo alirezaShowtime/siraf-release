@@ -230,3 +230,6 @@ PopupMenuItem<String> popupMenuItemWithIcon({
 
 Divider divider({double height = 1}) =>
     Divider(color: Colors.grey.shade200, height: height);
+
+bool resetCreateFileForm = false;
+bool resetEditFileForm = false;

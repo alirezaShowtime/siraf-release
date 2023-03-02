@@ -57,8 +57,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
 
     getCurrentCityName();
 
-    if (widget.showSelected || (widget.selectedCities?.isNotEmpty ?? false))
-      showSelectedCities();
+    if (widget.showSelected || (widget.selectedCities?.isNotEmpty ?? false)) showSelectedCities();
   }
 
   showSelectedCities() async {
@@ -192,13 +191,11 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
               ),
         body: Column(
           children: [
-            if (selectedCities.isNotEmpty &&
-                currentState is GetCitiesLoadedState)
+            if (selectedCities.isNotEmpty && currentState is GetCitiesLoadedState)
               SizedBox(
                 height: 10,
               ),
-            if (selectedCities.isNotEmpty &&
-                currentState is GetCitiesLoadedState)
+            if (selectedCities.isNotEmpty && currentState is GetCitiesLoadedState)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Container(
@@ -224,8 +221,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      selectedCities
-                                          .removeWhere((el) => el.id == e.id);
+                                      selectedCities.removeWhere((el) => el.id == e.id);
                                     });
                                   },
                                   child: Icon(
@@ -314,7 +310,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                 ),
                 elevation: 0,
                 constraints: BoxConstraints(
-                  minHeight: 60,
+                  minHeight: 50,
                   minWidth: double.infinity,
                 ),
                 fillColor: Themes.primary,
@@ -356,9 +352,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
       });
     } else {
       p = p.where((Province province) {
-        return province.cities
-            .where((City city) => regExp.hasMatch(city.name ?? ""))
-            .isNotEmpty;
+        return province.cities.where((City city) => regExp.hasMatch(city.name ?? "")).isNotEmpty;
       }).toList();
 
       cities = p
@@ -372,16 +366,13 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
           .toList();
 
       p.forEach((element) {
-        cities += element.cities
-            .where((City city) => regExp.hasMatch(city.name ?? ""))
-            .toList();
+        cities += element.cities.where((City city) => regExp.hasMatch(city.name ?? "")).toList();
       });
     }
 
     TextFormField();
 
-    bloc.add(GetCitiesEmitState(
-        state: GetCitiesLoadedState(cities: cities, searching: true)));
+    bloc.add(GetCitiesEmitState(state: GetCitiesLoadedState(cities: cities, searching: true)));
   }
 
   _onCitiesEvent(GetCitiesState state) {
@@ -410,9 +401,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                 countFile: e.countFile,
                 parentId: e.parentId,
                 weight: e.weight,
-                cities: cities
-                    .where((element) => element.parentId == e.id)
-                    .toList(),
+                cities: cities.where((element) => element.parentId == e.id).toList(),
               ))
           .toList();
 
@@ -423,14 +412,12 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
   }
 
   _onTapSubmit() async {
-    if (widget.force && selectedCities.isEmpty)
-      return notify("شهری انتخاب نکرده اید");
+    if (widget.force && selectedCities.isEmpty) return notify("شهری انتخاب نکرده اید");
 
     if (widget.saveCity) {
       await City.saveList(selectedCities);
 
-      await (await SharedPreferences.getInstance())
-          .setBool("isFirstOpen", false);
+      await (await SharedPreferences.getInstance()).setBool("isFirstOpen", false);
 
       Navigator.pushAndRemoveUntil(
         context,
@@ -457,6 +444,8 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
       );
     }
 
+    int currentCityAccordion = -1;
+
     if (state is GetCitiesLoadedState) {
       return ListView(
           children: provinces.map<Widget>((e) {
@@ -468,6 +457,13 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
               fontSize: 15,
             ),
           ),
+          open: currentCityAccordion == e.id,
+          onChanged: (value) {
+            setState(() {
+              currentCityAccordion = value ? e.id : -1;
+            });
+            print(currentCityAccordion);
+          },
           content: Container(
             padding: EdgeInsets.only(top: 10, bottom: 15, right: 30),
             alignment: Alignment.centerRight,
@@ -479,15 +475,11 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
-                        if (selectedCities
-                            .any((element) => element.id == e.id)) {
+                        if (selectedCities.any((element) => element.id == e.id)) {
                           selectedCities.removeWhere((el) => el.id == e.id);
                         } else {
-                          if (widget.max != null &&
-                              selectedCities.length == widget.max) {
-                            notify("حداکثر " +
-                                widget.max.toString() +
-                                " شهر میتوانید انتخاب کنید");
+                          if (widget.max != null && selectedCities.length == widget.max) {
+                            notify("حداکثر " + widget.max.toString() + " شهر میتوانید انتخاب کنید");
                           } else {
                             selectedCities.add(e);
                           }
@@ -500,10 +492,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                           e.name!,
                           textAlign: TextAlign.start,
                           style: TextStyle(
-                            color: selectedCities
-                                    .any((element) => element.id == e.id)
-                                ? Color(0xff3d3d3d)
-                                : Color(0xff707070),
+                            color: selectedCities.any((element) => element.id == e.id) ? Color(0xff3d3d3d) : Color(0xff707070),
                             fontSize: 15,
                           ),
                         ),

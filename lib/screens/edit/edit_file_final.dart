@@ -33,6 +33,9 @@ class _EditFileFinalState extends State<EditFileFinal> {
   void initState() {
     super.initState();
 
+
+    resetEditFileForm = false;
+
     setEstates();
 
     editBloc.stream.listen(_listenEditBloc);
@@ -308,7 +311,8 @@ class _EditFileFinalState extends State<EditFileFinal> {
   }
 
   _resetData() {
-    Navigator.pop(context, "reset");
+    resetEditFileForm = true;
+    Navigator.pop(context);
   }
 
   _openHelp() {

@@ -60,6 +60,8 @@ class _EditFileFirstState extends State<EditFileFirst> {
   void initState() {
     super.initState();
 
+    resetEditFileForm = false;
+
     setData();
   }
 
@@ -102,6 +104,8 @@ class _EditFileFirstState extends State<EditFileFirst> {
   }
 
   bool propertiesSetes = false;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -628,7 +632,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
       MaterialPageRoute(
         builder: (_) => MarkInMapScreen(
           position: location != null
-              ? LatLng(location!.latitude, location!.latitude)
+              ? LatLng(location!.latitude, location!.longitude)
               : null,
         ),
       ),
@@ -733,7 +737,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
   }
 
   push(formData) async {
-    var result = await Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => EditFileSecond(
@@ -743,7 +747,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
       ),
     );
 
-    if (result == "reset") {
+    if (resetEditFileForm) {
       _resetData();
     }
   }

@@ -71,6 +71,9 @@ class _EditFileSecondState extends State<EditFileSecond> {
   void initState() {
     super.initState();
 
+
+    resetEditFileForm = false;
+
     setData();
   }
 
@@ -824,7 +827,8 @@ class _EditFileSecondState extends State<EditFileSecond> {
   }
 
   _resetData() {
-    Navigator.pop(context, {"result"});
+    resetEditFileForm = true;
+    Navigator.pop(context);
   }
 
   _openHelp() {
@@ -864,7 +868,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
     widget.formData.visitPhone = _visitPhoneController.text;
     widget.formData.description = _descriptionController.text;
 
-    var result = await Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) =>
@@ -872,8 +876,8 @@ class _EditFileSecondState extends State<EditFileSecond> {
       ),
     );
 
-    if (result == "reset") {
-      print("reset");
+    if (resetEditFileForm) {
+      _resetData();
     }
   }
 

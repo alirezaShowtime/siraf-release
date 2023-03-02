@@ -7,6 +7,7 @@ class Accordion extends StatefulWidget {
   final Widget content;
   bool open;
   Function? onClick;
+  Function(bool value)? onChanged;
 
   Accordion({
     Key? key,
@@ -14,6 +15,7 @@ class Accordion extends StatefulWidget {
     required this.content,
     this.open = false,
     this.onClick,
+    this.onChanged,
   }) : super(key: key);
 
   @override
@@ -23,31 +25,43 @@ class Accordion extends StatefulWidget {
 class _AccordionState extends State<Accordion> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0.3,
-      shape: BeveledRectangleBorder(
+    return Container(
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
+        color: Themes.background2,
       ),
+      margin: EdgeInsets.only(bottom: 5),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ListTile(
-            title: GestureDetector(onTap: _onClick, child: widget.title),
-            trailing: IconAsset(
-              icon: widget.open ? "ic_arrow_top.png" : "ic_arrow_bottom.png",
-              width: 14,
-              height: 8,
-              color: Themes.icon,
-              fit: BoxFit.fill,
-              onPressed: _onClick,
+          InkWell(
+            onTap: _onClick,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Themes.background2,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 7, top: 7, right: 7),
+                    child: widget.title,
+                  ),
+                  IconAsset(
+                    icon: widget.open ? "ic_arrow_top.png" : "ic_arrow_bottom.png",
+                    width: 14,
+                    height: 8,
+                    color: Themes.icon,
+                    fit: BoxFit.fill,
+                    onPressed: _onClick,
+                  ),
+                ],
+              ),
             ),
           ),
-          widget.open
-              ? Padding(
-                  padding: const EdgeInsets.only(bottom: 9),
-                  child: widget.content)
-              : Container()
+          widget.open ? Padding(padding: const EdgeInsets.only(bottom: 9), child: widget.content) : Container()
         ],
       ),
     );
@@ -57,9 +71,14 @@ class _AccordionState extends State<Accordion> {
     if (widget.onClick != null) {
       widget.onClick!();
     }
+
     setState(() {
       widget.open = !widget.open;
     });
+
+    if (widget.onChanged != null) {
+      widget.onChanged!(widget.open);
+    }
   }
 }
 

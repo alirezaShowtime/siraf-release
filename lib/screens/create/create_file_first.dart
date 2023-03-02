@@ -53,6 +53,14 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
   Map<String, String> selectedOtherFeatures = {};
 
   @override
+  void initState() {
+    super.initState();
+
+
+    resetCreateFileForm = false;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => propertyBloc,
@@ -495,7 +503,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
       MaterialPageRoute(
         builder: (_) => MarkInMapScreen(
           position: location != null
-              ? LatLng(location!.latitude, location!.latitude)
+              ? LatLng(location!.latitude, location!.longitude)
               : null,
         ),
       ),
@@ -602,14 +610,14 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
   }
 
   push(formData) async {
-    var result = await Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => CreateFileSecond(formData: formData),
       ),
     );
 
-    if (result == "reset") {
+    if (resetCreateFileForm) {
       _resetData();
     }
   }

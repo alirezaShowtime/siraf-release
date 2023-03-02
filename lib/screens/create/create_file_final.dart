@@ -29,6 +29,8 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
   void initState() {
     super.initState();
 
+    resetCreateFileForm = false;
+
     bloc.stream.listen(_listenBloc);
   }
 
@@ -295,7 +297,8 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
   }
 
   _resetData() {
-    Navigator.pop(context, "reset");
+    resetCreateFileForm = true;
+    Navigator.pop(context);
   }
 
   _openHelp() {

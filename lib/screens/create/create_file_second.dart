@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/create_file_form_data.dart';
 import 'package:siraf3/screens/create/create_file_final.dart';
+import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/create/upload_media_guide.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
@@ -62,6 +63,14 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   TextEditingController _ownerPhoneController = TextEditingController();
   TextEditingController _visitPhoneController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+
+    resetCreateFileForm = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -752,7 +761,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   }
 
   _resetData() {
-    Navigator.pop(context, {"result"});
+    resetCreateFileForm = true;
+    Navigator.pop(context);
   }
 
   _openHelp() {
@@ -771,15 +781,15 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
     widget.formData.visitPhone = visitPhone!;
     widget.formData.description = description!;
 
-    var result = await Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => CreateFileFinal(formData: widget.formData),
       ),
     );
 
-    if (result == "reset") {
-      print("reset");
+    if (resetCreateFileForm) {
+      _resetData();
     }
   }
 
