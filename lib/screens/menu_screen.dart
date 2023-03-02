@@ -5,6 +5,7 @@ import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/agency_registration/agency_registration_info_screen.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/bookmark_screen.dart';
+import 'package:siraf3/screens/commission_calculator_screen.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/estates_map_screen.dart';
 import 'package:siraf3/screens/files_map_screen.dart';
@@ -254,15 +255,15 @@ class _MenuScreenState extends State<MenuScreen> {
                                     );
                                   },
                                   title: "دفاتر املاک اطراف من"),
-                              AccordionItem(
-                                  onClick: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) =>
-                                                AgencyRegistrationInfoScreen()));
-                                  },
-                                  title: "ثبت دفتر املاک"),
+                              // AccordionItem(
+                              //     onClick: () {
+                              //       Navigator.push(
+                              //           context,
+                              //           MaterialPageRoute(
+                              //               builder: (_) =>
+                              //                   AgencyRegistrationInfoScreen()));
+                              //     },
+                              //     title: "ثبت دفتر املاک"),
                             ],
                           ),
                         ),
@@ -298,7 +299,9 @@ class _MenuScreenState extends State<MenuScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               AccordionItem(
-                                  onClick: () {}, title: "محاسبه کمیسیون"),
+                                  onClick: () {
+                                    Navigator.push(context, MaterialPageRoute(builder: (_) => CommissionCalculatorScreen()));
+                                  }, title: "محاسبه کمیسیون"),
                               AccordionItem(
                                   onClick: () {}, title: "تبدیل رهن به اجاره"),
                             ],

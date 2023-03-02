@@ -34,7 +34,10 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
   _onEvent(RequestsEvent event, Emitter<RequestsState> emit) async {
     emit(RequestsLoadingState());
 
-    var response = await http2.getWithToken(getEstateUrl("requestFile/myRequestFile"));
+    var response = await http2.getWithToken(getEstateUrl("requestFile/myRequestFiles"));
+
+    print(response.statusCode);
+    print(convertUtf8(response.body));
 
     if (isResponseOk(response)) {
       emit(

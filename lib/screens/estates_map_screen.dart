@@ -21,14 +21,14 @@ import 'package:latlong2/latlong.dart';
 
 import 'package:siraf3/dialog.dart';
 
-class FilesMapScreen extends StatefulWidget {
-  FilesMapScreen({super.key});
+class EstatesMapScreen extends StatefulWidget {
+  EstatesMapScreen({super.key});
 
   @override
-  State<FilesMapScreen> createState() => _FilesMapScreenState();
+  State<EstatesMapScreen> createState() => _EstatesMapScreenState();
 }
 
-class _FilesMapScreenState extends State<FilesMapScreen>
+class _EstatesMapScreenState extends State<EstatesMapScreen>
     with TickerProviderStateMixin {
   List<City> cities = [];
 

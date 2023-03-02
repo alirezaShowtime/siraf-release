@@ -49,6 +49,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
         onWillPop: () async {
           if (isSelectable) {
             setState(() {
+              selectedFiles.clear();
               isSelectable = false;
             });
             return false;
@@ -69,6 +70,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
               onPressed: () {
                 if (isSelectable) {
                   setState(() {
+                    selectedFiles.clear();
                     isSelectable = false;
                   });
                 } else {
@@ -81,8 +83,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
               InkWell(
                 onTap: _compare,
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 7, vertical: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 15),
                   child: Text(
                     "مقایسه",
                     style: TextStyle(
@@ -199,7 +200,11 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                   if (val == 0) {
                     setState(() {
                       isSelectable = true;
-                      selectedFiles = files;
+
+                      selectedFiles.clear();
+                      files.forEach((element) {
+                        selectedFiles.add(element);
+                      });
                     });
                   } else if (val == 1) {
                     //todo delete all selected
@@ -242,47 +247,11 @@ class _BookmarkScreen extends State<BookmarkScreen> {
       children: files.map<Widget>(
         (e) {
           return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => FileScreen(
-                    id: e.fileId!.id!,
-                  ),
-                ),
-              );
-            },
-            onLongPress: () {
-              setState(() {
-                isSelectable = true;
-
-                if (!selectedFiles.contains(e)) {
-                  selectedFiles.add(e);
-                } else {
-                  selectedFiles.remove(e);
-                }
-
-                if (selectedFiles.isEmpty) {
-                  isSelectable = false;
-                }
-              });
-            },
+            onTap: isSelectable ? () => changeSelection(e) : () => onTapFile(e),
+            onLongPress: () => changeSelection(e),
             child: BookmarkFileItem(
               file: e,
-              isSelectable: isSelectable,
               isSelected: selectedFiles.contains(e),
-              onChanged: (value) {
-                setState(() {
-                  if (value) {
-                    selectedFiles.add(e);
-                  } else {
-                    selectedFiles.remove(e);
-                  }
-                  if (selectedFiles.isEmpty) {
-                    isSelectable = false;
-                  }
-                });
-              },
               onRemoveFavorite: (file) {
                 setState(() {
                   files.remove(e);
@@ -297,8 +266,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
 
   void _compare() async {
     if (selectedFiles.length < 2) {
-      return notify(
-          "جهت مقایسه حداقل می بایست دو فایل هم نوع را انتخاب نمایید");
+      return notify("جهت مقایسه حداقل می بایست دو فایل هم نوع را انتخاب نمایید");
     }
 
     int? parentId;
@@ -320,14 +288,8 @@ class _BookmarkScreen extends State<BookmarkScreen> {
         favorite: true,
         fullCategory: null,
         name: e.fileId!.name,
-        images: e.fileId!.images
-                ?.map<file.Images>((e) => file.Images.fromJson(e.toJson()))
-                .toList() ??
-            [],
-        propertys: e.fileId!.propertys
-                ?.map<file.Property>((e) => file.Property.fromJson(e.toJson()))
-                .toList() ??
-            [],
+        images: e.fileId!.images?.map<file.Images>((e) => file.Images.fromJson(e.toJson())).toList() ?? [],
+        propertys: e.fileId!.propertys?.map<file.Property>((e) => file.Property.fromJson(e.toJson())).toList() ?? [],
         publishedAgo: e.fileId!.publishedAgo,
       );
     }).toList();
@@ -336,12 +298,38 @@ class _BookmarkScreen extends State<BookmarkScreen> {
       print(element.toJson());
     });
 
-    await Navigator.push(context,
-        MaterialPageRoute(builder: (_) => CompareScreen(files: files)));
+    await Navigator.push(context, MaterialPageRoute(builder: (_) => CompareScreen(files: files)));
 
     setState(() {
       selectedFiles.clear();
       isSelectable = false;
     });
+  }
+
+  changeSelection(FavoriteFile e) {
+    setState(() {
+      isSelectable = true;
+
+      if (!selectedFiles.contains(e)) {
+        selectedFiles.add(e);
+      } else {
+        selectedFiles.remove(e);
+      }
+
+      if (selectedFiles.isEmpty) {
+        isSelectable = false;
+      }
+    });
+  }
+
+  onTapFile(FavoriteFile e) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => FileScreen(
+          id: e.fileId!.id!,
+        ),
+      ),
+    );
   }
 }

@@ -61,6 +61,8 @@ class MyFilesBloc extends Bloc<MyFilesEvent, MyFilesState> {
       return;
     }
 
+    print(convertUtf8(response.body));
+
     if (isResponseOk(response)) {
       var json = jDecode(response.body);
 

@@ -220,8 +220,10 @@ class Bookmark {
 
     try {
       var response = await http2.getWithToken(
-        getFileUrl('file/deleteFileFavorite/${id}/'),
+        getFileUrl('file/deleteFileFavorite?fileIds=[${id}]'),
       );
+
+      print(response.statusCode);
 
       if (isResponseOk(response)) {
         result = true;

@@ -19,8 +19,6 @@ class RequestListScreen extends StatefulWidget {
 }
 
 class _RequestListScreen extends State<RequestListScreen> {
-  //todo: selecting item when longClick is`t done
-  //todo: String type is a test type, this must be a model class
   List<Request> selectedRequests = [];
 
   RequestsBloc requestsBloc = RequestsBloc();
@@ -151,7 +149,7 @@ class _RequestListScreen extends State<RequestListScreen> {
   bool isSelectable = false;
 
   Widget item(Request request) {
-    return InkWell(
+    return GestureDetector(
       onTap: () =>
           isSelectable ? changeSelection(request) : onClickItem(request),
       onLongPress: () => changeSelection(request),
@@ -168,7 +166,7 @@ class _RequestListScreen extends State<RequestListScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "اجاره ای | ${request.title}",
+              request.categoryId!.getMainCategoryName()! + " | ${request.title}",
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
@@ -176,7 +174,7 @@ class _RequestListScreen extends State<RequestListScreen> {
             ),
             SizedBox(height: 10),
             Text(
-              "یک روز پیش",
+              request.createDate ?? "",
               style: TextStyle(
                 color: Colors.grey.shade400,
                 fontSize: 10,
@@ -195,9 +193,8 @@ class _RequestListScreen extends State<RequestListScreen> {
                   ),
                 ),
                 Text(
-                  statuses[request.status] ?? "null",
+                  request.status!,
                   style: TextStyle(
-                    //todo: I have an idea that the text color status will be sort the color base on status, for example green when the status is approved
                     color: Themes.text,
                     fontSize: 12,
                   ),
@@ -209,8 +206,6 @@ class _RequestListScreen extends State<RequestListScreen> {
       ),
     );
   }
-
-  //event listeners
 
   void requestFile() {
     Navigator.push(
@@ -252,6 +247,38 @@ class _RequestListScreen extends State<RequestListScreen> {
     state as RequestsLoadedState;
 
     requests = state.requests;
+
+    if (requests.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "درخواستی پیدا نشد جهت ثبت درخواست دکمه زیر را کلیک کنید",
+              style: TextStyle(
+                fontSize: 14,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            RawMaterialButton(
+              onPressed: requestFile,
+              child: Text(
+                "ایجاد درخواست",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              elevation: 0.2,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+              fillColor: Themes.primary,
+            ),
+          ],
+        ),
+      );
+    }
+
     return ListView.builder(
       itemCount: requests.length,
       itemBuilder: (context, i) {

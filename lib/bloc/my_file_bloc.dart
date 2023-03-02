@@ -59,7 +59,7 @@ class MyFileBloc extends Bloc<MyFileEvent, MyFileState> {
 
         print(event.progress);
 
-        if (event.progress == 7 || event.progress == 4) {
+        if (event.progress == 7) {
           var response2 = await http2.get(
               getEstateUrl("consultant/consultantsFile?fileId=${event.id}"));
 

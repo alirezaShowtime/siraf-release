@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/delete_file_bloc.dart';
 import 'package:siraf3/bloc/my_files_bloc.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/my_file.dart';
 import 'package:siraf3/models/user.dart';
-import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/my_file_screen.dart';
 import 'package:siraf3/themes.dart';
@@ -14,7 +14,6 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_file_horizontal_item.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/try_again.dart';
-import 'package:siraf3/dialog.dart';
 
 class MyFilesScreen extends StatefulWidget {
   const MyFilesScreen({super.key});
@@ -50,15 +49,14 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
 
     deleteFileBloc.stream.listen((event) {
       if (event is DeleteFileLoadingState) {
-        showLoadingDialog(message: "در حال حذف فایل ها هستیم لطفا شکیبا باشید");
+        loadingDialog(context: context, showMessage: false);
       } else if (event is DeleteFileErrorState) {
-        dissmisLoadingDialog();
-        notify("خطا در حذف فایل ها رخ داد لطفا مجدد تلاش کنید");
-      } else if (event is DeleteFileSuccessState) {
-        dissmisLoadingDialog();
         dismissDeleteDialog();
-
-        notify("حذف فایل ها با موفقیت انجام شد");
+        dismissDialog(loadingDialogContext);
+        errorDialog(context: context, message: "خطایی در حذف فایل رخ داد لطفا مجددا تلاش کنید");
+      } else if (event is DeleteFileSuccessState) {
+        dismissDeleteDialog();
+        dismissDialog(loadingDialogContext);
 
         setState(() {
           selectedFiles.clear();
@@ -77,6 +75,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
         onWillPop: () async {
           if (isSelectable) {
             setState(() {
+              selectedFiles.clear();
               isSelectable = false;
             });
             return false;
@@ -99,6 +98,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
               onPressed: () {
                 if (isSelectable) {
                   setState(() {
+                    selectedFiles.clear();
                     isSelectable = false;
                   });
                 } else {
@@ -113,10 +113,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
             elevation: 0.7,
             actions: [
               IconButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => CreateFileFirst()));
-                },
+                onPressed: _addFile,
                 icon: Icon(
                   CupertinoIcons.add,
                   color: Themes.icon,
@@ -125,14 +122,12 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
               IconButton(
                 onPressed: selectedFiles.isNotEmpty
                     ? () {
-                        showDeleteDialog(
-                            selectedFiles.map((e) => e.id!).toList());
+                        showDeleteDialog(selectedFiles.map((e) => e.id!).toList());
                       }
                     : null,
                 icon: Icon(
                   CupertinoIcons.delete,
-                  color:
-                      selectedFiles.isNotEmpty ? Themes.icon : Themes.iconGrey,
+                  color: selectedFiles.isNotEmpty ? Themes.icon : Themes.iconGrey,
                 ),
                 disabledColor: Themes.iconGrey,
               ),
@@ -334,9 +329,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
       return Center(
         child: TryAgain(
           onPressed: _loadFiles,
-          message: state.response != null
-              ? jDecode(state.response!.body)['message']
-              : "خطا در دریافت اطلاعات پیش آمد مجدد تلاش کنید",
+          message: state.response != null ? jDecode(state.response!.body)['message'] : "خطا در دریافت اطلاعات پیش آمد مجدد تلاش کنید",
         ),
       );
     }
@@ -345,60 +338,47 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
 
     files = state.files;
 
+    if (files.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "فایلی پیدا نشد جهت ثبت فایل دکمه زیر را کلیک کنید",
+              style: TextStyle(
+                fontSize: 14,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            RawMaterialButton(
+              onPressed: _addFile,
+              child: Text(
+                "ایجاد فایل",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              elevation: 0.2,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+              fillColor: Themes.primary,
+            ),
+          ],
+        ),
+      );
+    }
+
     return ListView(
       children: files
           .map<Widget>((file) => GestureDetector(
-                onTap: () async {
-                  var result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => MyFileScreen(
-                        id: file.id!,
-                        progress: file.progress!,
-                      ),
-                    ),
-                  );
-
-                  if (result is String && result == "refresh") {
-                    _loadFiles();
-                  }
-                },
-                onLongPress: () {
-                  setState(() {
-                    isSelectable = true;
-
-                    if (!selectedFiles.contains(file)) {
-                      selectedFiles.add(file);
-                    } else {
-                      selectedFiles.remove(file);
-                    }
-
-                    if (selectedFiles.isEmpty) {
-                      isSelectable = false;
-                    }
-                  });
-                },
+                onTap: isSelectable ? () => changeSelection(file) : () => onTapFile(file),
+                onLongPress: () => changeSelection(file),
                 child: Padding(
-                  padding: EdgeInsets.only(
-                      top: (state as MyFilesLoadedState).files.first == file
-                          ? 0
-                          : 5),
+                  padding: EdgeInsets.only(top: (state as MyFilesLoadedState).files.first == file ? 0 : 5),
                   child: MyFileHorizontalItem(
                     file: file,
-                    isSelectable: isSelectable,
                     isSelected: selectedFiles.contains(file),
-                    onChanged: (value) {
-                      setState(() {
-                        if (value) {
-                          selectedFiles.add(file);
-                        } else {
-                          selectedFiles.remove(file);
-                        }
-                        if (selectedFiles.isEmpty) {
-                          isSelectable = false;
-                        }
-                      });
-                    },
                   ),
                 ),
               ))
@@ -587,5 +567,41 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
     User.remove();
     notify("لطفا مجددا وارد حساب کاربری شوید");
     Navigator.pop(context);
+  }
+
+  _addFile() {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => CreateFileFirst()));
+  }
+
+  changeSelection(MyFile file) {
+    setState(() {
+      isSelectable = true;
+
+      if (!selectedFiles.contains(file)) {
+        selectedFiles.add(file);
+      } else {
+        selectedFiles.remove(file);
+      }
+
+      if (selectedFiles.isEmpty) {
+        isSelectable = false;
+      }
+    });
+  }
+
+  onTapFile(MyFile file) async {
+    var result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MyFileScreen(
+          id: file.id!,
+          progress: file.progress!,
+        ),
+      ),
+    );
+
+    if (result is String && result == "refresh") {
+      _loadFiles();
+    }
   }
 }

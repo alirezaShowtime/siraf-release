@@ -44,12 +44,12 @@ class _MyFileScreenState extends State<MyFileScreen> {
   DeleteFileBloc deleteFileBloc = DeleteFileBloc();
 
   Map<int, String> progress_fa = {
-    1: "در انتظار تایید",
-    2: "در حال پردازش",
+    1: "منتظر تایید",
+    2: "در حال پیگیری",
     3: "رد شده",
     4: "تایید شده",
-    5: "در انتظار پذیرش",
-    6: "پذیرش نشده",
+    5: "در انتظار پذیرش املاک",
+    6: "توسط دفاتر پذیرش نشده",
     7: "پذیرش شده",
   };
 
