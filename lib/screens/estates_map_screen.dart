@@ -328,6 +328,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
   void listener(EstateState state) {
     if (state is EstateLoadingState) {
       loadingDialog(context: context, showMessage: false);
+      dismissDialog(errorDialogContext);
     } else if (state is EstateErrorState) {
       dismissDialog(loadingDialogContext);
 

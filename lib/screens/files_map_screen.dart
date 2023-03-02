@@ -7,11 +7,14 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:location/location.dart';
 import 'package:siraf3/bloc/estate_bloc.dart';
+import 'package:siraf3/bloc/location_files_bloc.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/map_utilities.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/estate.dart';
+import 'package:siraf3/models/filter_data.dart';
+import 'package:siraf3/models/location_file.dart';
 import 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
 import 'package:siraf3/screens/request_file/request_file_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
@@ -20,6 +23,7 @@ import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:flutter/material.dart' as m;
 
 import 'package:siraf3/dialog.dart';
 
@@ -43,7 +47,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
 
     bloc.stream.listen(listener);
 
-    getEstatesFirstTime();
+    getFilesFirstTime();
   }
 
   List<CircleMarker> circles = [];
@@ -52,6 +56,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
     var mCities = await City.getList();
     setState(() {
       cities = mCities;
+      filterData.cityIds = cities.map<int>((e) => e.id!).toList();
     });
 
     if (cities.isEmpty) {
@@ -60,7 +65,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
     }
   }
 
-  getEstatesFirstTime() async {
+  getFilesFirstTime() async {
     await getCities();
     if (await _getLocation()) {
       setState(() {
@@ -69,22 +74,24 @@ class _FilesMapScreenState extends State<FilesMapScreen>
       });
     }
 
-    getEstates();
+    getFiles();
   }
 
-  getEstates({bool showMyLocation = false}) {
+  getFiles({bool showMyLocation = false}) {
     bloc.add(
-      EstateLoadEvent(
-        city_ids: cities.map((e) => e.id!).toList(),
+      LocationFilesEvent(
         search: _searchController.text.trim().isEmpty
             ? null
             : _searchController.text.trim(),
         latLng: (_showFileOnMyLocation && myLocationMarker != null)
             ? myLocationMarker!.point
             : null,
+        filterData: filterData,
       ),
     );
   }
+
+  FilterData filterData = FilterData();
 
   checkLocationEnabled() async {
     bool _serviceEnabled;
@@ -102,13 +109,13 @@ class _FilesMapScreenState extends State<FilesMapScreen>
     return true;
   }
 
-  EstateBloc bloc = EstateBloc();
+  LocationFilesBloc bloc = LocationFilesBloc();
 
   TextEditingController _searchController = TextEditingController();
 
   LatLng defaultLocation = LatLng(34.08892074204623, 49.7009108491914);
 
-  List<Estate> estates = [];
+  List<LocationFile> files = [];
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +135,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
             style: TextStyle(color: Themes.text, fontSize: 13),
             textInputAction: TextInputAction.search,
             onSubmitted: (value) {
-              getEstates();
+              getFiles();
             },
           ),
           automaticallyImplyLeading: false,
@@ -158,7 +165,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
             ),
             GestureDetector(
               onTap: () {
-                getEstates();
+                getFiles();
               },
               child: Icon(
                 CupertinoIcons.search,
@@ -200,7 +207,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
                     circles: circles,
                   ),
                   MarkerLayer(
-                    markers: _buildEstateMarkers(estates),
+                    markers: _buildFileMarkers(files),
                   )
                 ],
               ),
@@ -253,11 +260,11 @@ class _FilesMapScreenState extends State<FilesMapScreen>
                       myLocationMarker = null;
                     });
 
-                    getEstates();
+                    getFiles();
                     return;
                   }
 
-                  getEstatesFirstTime();
+                  getFilesFirstTime();
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -320,16 +327,17 @@ class _FilesMapScreenState extends State<FilesMapScreen>
       City.saveList(cities);
 
       await getCities();
-      getEstates();
+      getFiles();
     }
   }
 
   BuildContext? errorDialogContext;
 
-  void listener(EstateState state) {
-    if (state is EstateLoadingState) {
+  void listener(LocationFilesState state) {
+    if (state is LocationFilesLoadingState) {
+      dismissDialog(errorDialogContext);
       loadingDialog(context: context, showMessage: false);
-    } else if (state is EstateErrorState) {
+    } else if (state is LocationFilesErrorState) {
       dismissDialog(loadingDialogContext);
 
       showDialog2(
@@ -367,9 +375,9 @@ class _FilesMapScreenState extends State<FilesMapScreen>
                     TryAgain(
                       onPressed: () {
                         if (_firstTime) {
-                          getEstatesFirstTime();
+                          getFilesFirstTime();
                         } else {
-                          getEstates();
+                          getFiles();
                         }
                       },
                     )
@@ -378,10 +386,10 @@ class _FilesMapScreenState extends State<FilesMapScreen>
               ),
             );
           });
-    } else if (state is EstateLoadedState) {
+    } else if (state is LocationFilesLoadedState) {
       dismissDialog(loadingDialogContext);
       setState(() {
-        estates = state.estates;
+        files = state.files;
       });
       if (_firstTime) {
         setState(() {
@@ -513,7 +521,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
   }
 
   Widget _buildMapMarker(_) {
-    return Image(
+    return m.Image(
       image: AssetImage('assets/images/map_marker.png'),
       width: 30,
       height: 40,
@@ -521,200 +529,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
     );
   }
 
-  BuildContext? detailsDialog;
-
-  showDetailsDialog(Estate estate) {
-    showDialog2(
-      context: context,
-      barrierDismissible: true,
-      builder: (_) {
-        detailsDialog = _;
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
-          content: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Wrap(
-              children: [
-                Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                estate.name!,
-                                style: TextStyle(
-                                  color: Color(0xff000000),
-                                  fontSize: 14,
-                                ),
-                              ),
-                              RatingBarIndicator(
-                                direction: Axis.horizontal,
-                                itemCount: 5,
-                                itemSize: 14,
-                                unratedColor: Colors.grey,
-                                itemPadding:
-                                    EdgeInsets.symmetric(horizontal: .2),
-                                itemBuilder: (context, _) {
-                                  return Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
-                                    size: 10,
-                                  );
-                                },
-                                rating: 4.2,
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 7),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "مدیریت : " + estate.managerName!,
-                                style: TextStyle(
-                                  color: Themes.textGrey,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              Text(
-                                "امتیار 4/4 از 5",
-                                style: TextStyle(
-                                  color: Themes.textGrey,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 7),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "موبایل : " + estate.phoneNumber!,
-                                style: TextStyle(
-                                  color: Themes.textGrey,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              Text(
-                                "تلفن : " + "02133333333",
-                                style: TextStyle(
-                                  color: Themes.textGrey,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 7),
-                          Text(
-                            "آدرس : " + estate.address!,
-                            style: TextStyle(
-                              color: Themes.textGrey,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      height: 40,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => RequestFileScreen(
-                                            estates: [estate])));
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "سپردن فایل / درخواست",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 0.5,
-                          ),
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => AgencyProfileScreen(),
-                                  ),
-                                );
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "مشاهده پروفایل",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  dismissDetailsDialog() {
-    if (detailsDialog != null) {
-      Navigator.pop(detailsDialog!);
-    }
-  }
-
-  _buildEstateMarkers(List<Estate> estates) {
+  _buildFileMarkers(List<LocationFile> estates) {
     return estates
         .map<Marker>((e) => Marker(
               width: 240,
@@ -722,9 +537,6 @@ class _FilesMapScreenState extends State<FilesMapScreen>
               point: LatLng(double.parse(e.lat!), double.parse(e.long!)),
               builder: (_) {
                 return GestureDetector(
-                  onTap: () {
-                    showDetailsDialog(e);
-                  },
                   child: Stack(
                     children: [
                       Positioned(
@@ -745,34 +557,19 @@ class _FilesMapScreenState extends State<FilesMapScreen>
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Text(
-                                e.name!,
+                                e.getFirstPrice(),
                                 style: TextStyle(
                                   color: Themes.textLight,
                                   fontSize: 11,
                                 ),
                               ),
+                              SizedBox(height: 20),
                               Text(
-                                "مدیریت : ${e.managerName}",
+                                e.name!,
                                 style: TextStyle(
                                   color: Themes.textLight,
-                                  fontSize: 8,
+                                  fontSize: 11,
                                 ),
-                              ),
-                              RatingBarIndicator(
-                                direction: Axis.horizontal,
-                                itemCount: 5,
-                                itemSize: 14,
-                                unratedColor: Colors.grey,
-                                itemPadding:
-                                    EdgeInsets.symmetric(horizontal: .2),
-                                itemBuilder: (context, _) {
-                                  return Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
-                                    size: 6,
-                                  );
-                                },
-                                rating: e.rate ?? 5.0,
                               ),
                             ],
                           ),

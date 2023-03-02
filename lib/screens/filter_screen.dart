@@ -356,7 +356,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                                 color: _subCategory == null
                                                     ? Themes.primary
                                                     : Themes.secondary2,
-                                                height: 1,
+                                                height: _subCategory == null ? 2 : 1,
                                               ),
                                             ],
                                           ),
@@ -616,7 +616,7 @@ class _FilterScreenState extends State<FilterScreen> {
             Divider(
               color:
                   _subCategory?.id == e.id ? Themes.primary : Themes.secondary2,
-              height: 1,
+              height: _subCategory?.id == e.id ? 2 : 1,
             ),
           ],
         ),
