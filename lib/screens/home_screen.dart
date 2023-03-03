@@ -236,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
               badgeContent: Text(''),
               showBadge: filterData.hasFilter(),
               position: badges.BadgePosition.custom(top: -15, start: -10),
-              badgeStyle: badges.BadgeStyle(badgeColor: Themes.iconLight),
+              badgeStyle: badges.BadgeStyle(badgeColor: Themes.primary),
               child: FaIcon(
                 OctIcons.sliders_16,
                 size: 20,

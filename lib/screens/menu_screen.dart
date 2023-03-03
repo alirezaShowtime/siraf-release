@@ -187,12 +187,14 @@ class _MenuScreenState extends State<MenuScreen> {
                                 icon: CupertinoIcons.bookmark,
                                 padding: EdgeInsets.only(right: 15, left: 30, top: 20, bottom: 20),
                                 onClick: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => BookmarkScreen(),
-                                    ),
-                                  );
+                                  doWithLogin(context, () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => BookmarkScreen(),
+                                      ),
+                                    );
+                                  });
                                 },
                               ),
                             ],

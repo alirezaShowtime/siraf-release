@@ -12,6 +12,9 @@ import 'package:siraf3/widgets/accordion.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:siraf3/widgets/usefull/button/button_primary.dart';
+import 'package:siraf3/widgets/usefull/text/text_normal.dart';
+import 'package:siraf3/widgets/usefull/text/text_title.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
 
 class SelectCityScreen extends StatefulWidget {
@@ -35,13 +38,16 @@ class SelectCityScreen extends StatefulWidget {
 }
 
 class _SelectCityScreenState extends State<SelectCityScreen> {
+  late GetCitiesBloc bloc;
+
+  GetCitiesState currentState = GetCitiesInitialState();
+
   bool onSearching = false;
+  TextEditingController _searchFieldCtrl = TextEditingController();
 
   List<Province> provinces = [];
   List<Province> allProvinces = [];
   List<City> selectedCities = [];
-
-  late GetCitiesBloc bloc;
 
   @override
   void initState() {
@@ -81,69 +87,20 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
     bloc.add(GetCitiesEvent());
   }
 
-  GetCitiesState currentState = GetCitiesInitialState();
-
   getCurrentCityName() async {}
-
-  TextEditingController _searchFieldCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        if (onSearching) {
-          setState(() {
-            _searchFieldCtrl.clear();
-            doSearch("");
-            onSearching = false;
-          });
-          return false;
-        }
-
-        return true;
-      },
+      onWillPop: _handleBack,
       child: Scaffold(
         backgroundColor: Themes.background,
-        appBar: onSearching
-            ? AppBar(
-                backgroundColor: Themes.appBar,
-                elevation: 0.7,
-                title: TextField2(
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "جستجو در شهر ها",
-                    hintStyle: TextStyle(
-                      fontSize: 15,
-                    ),
-                  ),
-                  style: TextStyle(fontSize: 15),
-                  controller: _searchFieldCtrl,
-                  onChanged: ((value) {
-                    doSearch(value.trim());
-                  }),
-                ),
-                automaticallyImplyLeading: false,
-                titleSpacing: 0,
-                leading: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _searchFieldCtrl.clear();
-                      doSearch("");
-                      onSearching = false;
-                    });
-                  },
-                  icon: Icon(
-                    CupertinoIcons.back,
-                    color: Themes.icon,
-                    size: 20,
-                  ),
-                ),
-              )
-            : AppBar(
-                backgroundColor: Themes.appBar,
-                shadowColor: Color(0x50000000),
-                elevation: 0.7,
-                actions: [
+        appBar: AppBar(
+          backgroundColor: Themes.appBar,
+          shadowColor: Color(0x50000000),
+          elevation: 0.7,
+          actions: !onSearching
+              ? [
                   IconButton(
                     onPressed: () {
                       setState(() {
@@ -169,28 +126,39 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                   SizedBox(
                     width: 10,
                   ),
-                ],
-                title: Text(
-                  "انتخاب شهر",
-                  style: TextStyle(
-                    color: Themes.text,
-                    fontFamily: "IranSansMedium",
-                    fontSize: 15,
+                ]
+              : [],
+          title: !onSearching
+              ? TextTitle("انتخاب شهر")
+              : TextField2(
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "جستجو در شهر ها",
+                    hintStyle: TextStyle(
+                      fontSize: 15,
+                    ),
                   ),
+                  style: TextStyle(fontSize: 15),
+                  controller: _searchFieldCtrl,
+                  onChanged: ((value) {
+                    doSearch(value.trim());
+                  }),
                 ),
-                automaticallyImplyLeading: false,
-                titleSpacing: 0,
-                leading: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    CupertinoIcons.back,
-                    color: Themes.icon,
-                    size: 20,
-                  ),
-                ),
-              ),
+          automaticallyImplyLeading: false,
+          titleSpacing: 0,
+          leading: IconButton(
+            onPressed: () async {
+              if (await _handleBack()) {
+                Navigator.pop(context);
+              }
+            },
+            icon: Icon(
+              CupertinoIcons.back,
+              color: Themes.icon,
+              size: 20,
+            ),
+          ),
+        ),
         body: getContentWidget(currentState),
       ),
     );
@@ -322,7 +290,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
       return Stack(
         children: [
           ListView(
-            children: [
+            children: <Widget>[
                   if (selectedCities.isNotEmpty)
                     Container(
                       margin: EdgeInsets.only(top: 10),
@@ -333,7 +301,12 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                         child: Row(
                           children: selectedCities
                               .map<Widget>(
-                                (e) => _createSelectedCityBadge(e),
+                                (e) => Padding(
+                                    padding: EdgeInsets.only(
+                                      right: selectedCities.first == e ? 10 : 5,
+                                      left: selectedCities.last == e ? 10 : 0,
+                                    ),
+                                    child: _createSelectedCityBadge(e)),
                               )
                               .toList(),
                         ),
@@ -342,55 +315,17 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  Container(
-                    margin: EdgeInsets.only(right: 10),
-                    child: Row(children: [
-                      Icon(
-                        Typicons.location_outline,
-                        color: Themes.secondary,
-                      ),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: "انتخاب لوکیشن فعلی من (",
-                              style: TextStyle(
-                                color: Themes.text,
-                                fontSize: 15,
-                                fontFamily: "IranSansMedium",
-                              ),
-                            ),
-                            TextSpan(
-                              text: "تهران",
-                              style: TextStyle(
-                                color: Themes.secondary,
-                                fontSize: 15,
-                                fontFamily: "IranSansMedium",
-                              ),
-                            ),
-                            TextSpan(
-                              text: ")",
-                              style: TextStyle(
-                                color: Themes.text,
-                                fontSize: 15,
-                                fontFamily: "IranSansMedium",
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ]),
-                  ),
+                  _myLocationSection(),
                   SizedBox(
                     height: 5,
                   ),
                 ] +
                 provinces.map<Widget>((e) {
                   return _accordionItem(e);
-                }).toList(),
+                }).toList() +
+                [
+                  SizedBox(height: 60),
+                ],
           ),
           Positioned(
             bottom: 0,
@@ -398,25 +333,10 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
             right: 0,
             child: Padding(
               padding: const EdgeInsets.all(10),
-              child: RawMaterialButton(
+              child: ButtonPrimary(
                 onPressed: _onTapSubmit,
-                child: Text(
-                  "تایید",
-                  style: TextStyle(
-                    color: Themes.textLight,
-                    fontSize: 17,
-                    fontFamily: "IranSansMedium",
-                  ),
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                elevation: 0,
-                constraints: BoxConstraints(
-                  minHeight: 50,
-                  minWidth: double.infinity,
-                ),
-                fillColor: Themes.primary,
+                text: "تایید",
+                fullWidth: true,
               ),
             ),
           )
@@ -430,68 +350,59 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
   int currentCityAccordion = -1;
 
   _createSelectedCityBadge(City e) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 3, horizontal: 6),
-      margin: EdgeInsets.only(left: 5),
-      decoration: BoxDecoration(
-        color: Themes.blueSky,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
-        Text(
-          e.name!,
-          style: TextStyle(
-            color: Color(0xff000000),
-            fontSize: 16,
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedCities.removeWhere((el) => el.id == e.id);
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+        decoration: BoxDecoration(
+          color: Color(0xfffdb713),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
+          TextNormal(
+            e.name!,
           ),
-        ),
-        SizedBox(
-          width: 5,
-        ),
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              selectedCities.removeWhere((el) => el.id == e.id);
-            });
-          },
-          child: Icon(
+          SizedBox(
+            width: 5,
+          ),
+          Icon(
             Typicons.delete_outline,
-            color: Color(0xff707070),
+            color: Themes.icon,
             size: 22,
           ),
-        )
-      ]),
+        ]),
+      ),
     );
   }
 
   Widget _accordionItem(Province e) {
-    return Accordion(
-      title: Text(
-        e.name,
-        style: TextStyle(
-          color: Color(0xff000000),
-          fontSize: 14,
-          fontFamily: "IranSansMedium",
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Accordion(
+        title: TextNormal(
+          e.name,
+          color: Colors.black,
         ),
-      ),
-      open: currentCityAccordion == e.id,
-      onClick: () {
-        setState(() {
-          currentCityAccordion = currentCityAccordion == e.id ? -1 : e.id;
-        });
-        print(currentCityAccordion);
-      },
-      content: Container(
-        padding: EdgeInsets.only(top: 10, bottom: 15, right: 30),
-        alignment: Alignment.centerRight,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: e.cities.map<Widget>((e) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: _accordionCityItem(e),
-            );
-          }).toList(),
+        open: currentCityAccordion == e.id,
+        onClick: () {
+          setState(() {
+            currentCityAccordion = currentCityAccordion == e.id ? -1 : e.id;
+          });
+          print(currentCityAccordion);
+        },
+        content: Container(
+          padding: EdgeInsets.only(top: 10, bottom: 15, right: 20),
+          alignment: Alignment.centerRight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: e.cities.map<Widget>((e) {
+              return _accordionCityItem(e);
+            }).toList(),
+          ),
         ),
       ),
     );
@@ -512,18 +423,76 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
           }
         });
       },
-      child: Row(
-        children: [
-          Text(
-            e.name!,
-            textAlign: TextAlign.start,
-            style: TextStyle(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        child: Row(
+          children: [
+            TextNormal(
+              e.name!,
+              fontFamily: selectedCities.any((element) => element.id == e.id) ? "IranSansMedium" : "IranSans",
               color: selectedCities.any((element) => element.id == e.id) ? Themes.primary : Themes.textGrey,
-              fontSize: 13,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+
+  Future<bool> _handleBack() async {
+    if (onSearching) {
+      setState(() {
+        _searchFieldCtrl.clear();
+        doSearch("");
+        onSearching = false;
+      });
+      return false;
+    }
+
+    return true;
+  }
+
+  Widget _myLocationSection() {
+    return Container(
+      margin: EdgeInsets.only(right: 10),
+      child: Row(children: [
+        Icon(
+          Typicons.location_outline,
+          color: Themes.secondary,
+        ),
+        SizedBox(
+          width: 3,
+        ),
+        RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: "انتخاب لوکیشن فعلی من (",
+                style: TextStyle(
+                  color: Themes.text,
+                  fontSize: 15,
+                  fontFamily: "IranSansMedium",
+                ),
+              ),
+              TextSpan(
+                text: "تهران",
+                style: TextStyle(
+                  color: Themes.secondary,
+                  fontSize: 15,
+                  fontFamily: "IranSansMedium",
+                ),
+              ),
+              TextSpan(
+                text: ")",
+                style: TextStyle(
+                  color: Themes.text,
+                  fontSize: 15,
+                  fontFamily: "IranSansMedium",
+                ),
+              ),
+            ],
+          ),
+        ),
+      ]),
     );
   }
 }
