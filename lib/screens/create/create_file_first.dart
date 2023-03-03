@@ -110,8 +110,8 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                       Text(
                         "مشخصات کلی",
                         style: TextStyle(
-                          fontSize: 14,
-                          color: Themes.text,
+                          fontSize: 15,
+                          color: Themes.primary,
                           fontFamily: "IranSansBold",
                         ),
                       ),
@@ -237,8 +237,8 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                   Text(
                     "ویژگی ها",
                     style: TextStyle(
-                      fontSize: 14,
-                      color: Themes.text,
+                      fontSize: 15,
+                      color: Themes.primary,
                       fontFamily: "IranSansBold",
                     ),
                   ),
@@ -311,8 +311,8 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                   Text(
                     "امکانات",
                     style: TextStyle(
-                      fontSize: 14,
-                      color: Themes.text,
+                      fontSize: 15,
+                      color: Themes.primary,
                       fontFamily: "IranSansBold",
                     ),
                   ),

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:persian_number_utility/persian_number_utility.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
+import 'package:siraf3/money_input_formatter.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
-import 'package:siraf3/widgets/block_btn.dart';
+import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/field_dialog.dart';
 import 'package:siraf3/widgets/list_dialog.dart';
 import 'package:siraf3/widgets/simple_app_bar.dart';
+import 'package:siraf3/widgets/usefull/button/button_primary.dart';
 
-import 'package:siraf3/dialog.dart';
 import '../widgets/section.dart';
 
 enum TradeType {
@@ -17,8 +20,7 @@ enum TradeType {
 
 class CommissionCalculatorScreen extends StatefulWidget {
   @override
-  State<CommissionCalculatorScreen> createState() =>
-      _CommissionCalculatorScreen();
+  State<CommissionCalculatorScreen> createState() => _CommissionCalculatorScreen();
 }
 
 class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
@@ -53,8 +55,9 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
     return Scaffold(
       appBar: SimpleAppBar(titleText: "محاسبه کمیسیون"),
       body: Padding(
-        padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
+        padding: const EdgeInsets.only(top: 10, right: 12, left: 12),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Section(
               title: "شهر",
@@ -68,15 +71,24 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
               value: tradTypeLabel[selectedTradeType],
               onTap: determineTradeType,
             ),
-            if (selectedTradeType == TradeType.buyAndSell)
-              getBuyAndSellWidget(),
-            if (selectedTradeType == TradeType.rentAndMortgage)
-              getRentAndMortgageWidget(),
-            if (selectedTradeType != null)
-              BlockBtn(
-                  text: "محاسبه سود",
-                  padding: EdgeInsets.only(top: 15),
-                  onTap: calculateCommission),
+            if (selectedTradeType == TradeType.buyAndSell) getBuyAndSellWidget(),
+            if (selectedTradeType == TradeType.rentAndMortgage) getRentAndMortgageWidget(),
+            SizedBox(height: 10,),
+            Text(
+              "کمیسیون قرارداد های جعاله بصورت توافقی میباشد.",
+              style: TextStyle(
+                fontSize: 11,
+                color: Themes.textGrey,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: ButtonPrimary(
+                text: "محاسبه",
+                onPressed: calculateCommission,
+                fullWidth: true,
+              ),
+            ),
           ],
         ),
       ),
@@ -87,9 +99,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
     return Section(
       title: "مبلغ کل",
       hint: "تعیین",
-      value: totalPriceController.value.text.isNotEmpty
-          ? totalPriceController.value.text
-          : null,
+      value: number_format(totalPrice, defaultValue: "تعیین"),
       onTap: determineTotalPrice,
     );
   }
@@ -100,22 +110,20 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
         Section(
           title: "مبلغ ودیعه",
           hint: "تعیین",
-          value: depositController.value.text.isNotEmpty
-              ? depositController.value.text
-              : null,
+          value: number_format(deposit, defaultValue: "تعیین"),
           onTap: determineDeposit,
         ),
         Section(
           title: "مبلغ اجاره",
           hint: "تعیین",
-          value: rentController.value.text.isNotEmpty
-              ? rentController.value.text
-              : null,
+          value: number_format(rent, defaultValue: "تعیین"),
           onTap: determineRent,
         ),
       ],
     );
   }
+
+  String? totalPriceHelpText;
 
   //event listeners
   void determineTotalPrice() {
@@ -126,7 +134,18 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
         return FieldDialog(
           numberFieldController: totalPriceController,
           keyboardType: TextInputType.number,
-          hintText: "مبلغ را وارد کنید",
+          hintText: "مبلغ کل را وارد کنید",
+          inputFormatters: [
+            MoneyInputFormatter(mantissaLength: 0),
+          ],
+          helperText: totalPriceHelpText,
+          onChanged: (value) {
+            setState(() {
+              totalPriceHelpText = value.isNotEmpty ? value.toWord() : null;
+            });
+
+            print(totalPriceHelpText);
+          },
           onPressed: () {
             totalPrice = double.parse(totalPriceController.value.text);
             deposit = 0;
@@ -145,7 +164,10 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
         return FieldDialog(
           numberFieldController: depositController,
           keyboardType: TextInputType.number,
-          hintText: "مبلغ را وارد کنید",
+          hintText: "مبلغ ودیعه را وارد کنید",
+          inputFormatters: [
+            MoneyInputFormatter(mantissaLength: 0),
+          ],
           onPressed: () {
             deposit = double.parse(depositController.value.text);
             totalPrice = 0;
@@ -164,7 +186,10 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
         return FieldDialog(
           numberFieldController: rentController,
           keyboardType: TextInputType.number,
-          hintText: "مبلغ را وارد کنید",
+          hintText: "مبلغ اجاره را وارد کنید",
+          inputFormatters: [
+            MoneyInputFormatter(mantissaLength: 0),
+          ],
           onPressed: () {
             rent = double.parse(rentController.value.text);
             totalPrice = 0;
@@ -203,8 +228,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
         return ListDialog(
           list: tradeTypeList,
           onItemTap: (item) {
-            if (selectedTradeType != null && selectedTradeType == item["value"])
-              return;
+            if (selectedTradeType != null && selectedTradeType == item["value"]) return;
 
             selectedTradeType = item["value"];
             Navigator.pop(context);
@@ -218,9 +242,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
   void calculateCommission() {
     //todo: implement event listener
 
-    if (!isValidCityAndTradeType() ||
-        !isValidTotalPrice() ||
-        !isValidRendAndDeposit()) {
+    if (!isValidCityAndTradeType() || !isValidTotalPrice() || !isValidRendAndDeposit()) {
       notify("فیلد های خالی هستند");
       return;
     }
@@ -228,10 +250,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
 
   bool isValidCityAndTradeType() => selectedCity == null || tradeType == null;
 
-  bool isValidTotalPrice() =>
-      tradeType == TradeType.buyAndSell && totalPrice == null;
+  bool isValidTotalPrice() => tradeType == TradeType.buyAndSell && totalPrice == null;
 
-  bool isValidRendAndDeposit() =>
-      tradeType == TradeType.rentAndMortgage &&
-      (rent == null || deposit == null);
+  bool isValidRendAndDeposit() => tradeType == TradeType.rentAndMortgage && (rent == null || deposit == null);
 }

@@ -115,8 +115,8 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                           Text(
                             "سایر ویژگی ها",
                             style: TextStyle(
-                              fontSize: 14,
-                              color: Themes.text,
+                              fontSize: 15,
+                              color: Themes.primary,
                               fontFamily: "IranSansBold",
                             ),
                           ),
@@ -189,8 +189,8 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                           Text(
                             "سایر امکانات",
                             style: TextStyle(
-                              fontSize: 14,
-                              color: Themes.text,
+                              fontSize: 15,
+                              color: Themes.primary,
                               fontFamily: "IranSansBold",
                             ),
                           ),

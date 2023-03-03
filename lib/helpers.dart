@@ -62,7 +62,10 @@ bool checkVirtualTourExtension(String path) {
   return false;
 }
 
-String number_format(number) {
+String number_format(number, {String? defaultValue}) {
+  if (number == null) {
+    return defaultValue ?? "";
+  }
   return fr.NumberFormat.decimalPattern().format(number);
 }
 

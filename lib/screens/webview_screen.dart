@@ -46,8 +46,9 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     fontSize: 15,
                   ),
                 ),
-                elevation: 0,
-                backgroundColor: Themes.primary,
+                elevation: 0.7,
+                backgroundColor: Themes.appBar,
+                foregroundColor: Themes.text,
                 centerTitle: widget.centerTitle,
                 titleSpacing: 0,
                 automaticallyImplyLeading: false,
@@ -55,9 +56,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  icon: MyBackButton(
-                    color: Themes.iconLight,
-                  ),
+                  icon: MyBackButton(),
                 ),
               )
             : null,

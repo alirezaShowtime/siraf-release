@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 
 import '../themes.dart';
@@ -12,13 +13,18 @@ class FieldDialog extends StatefulWidget {
   Function(String)? onChanged;
   Function()? onPressed;
   TextInputType? keyboardType;
+  List<TextInputFormatter>? inputFormatters;
+  String? helperText;
 
-  FieldDialog(
-      {required this.numberFieldController,
-      this.hintText = null,
-      this.onChanged,
-      this.onPressed,
-      this.keyboardType});
+  FieldDialog({
+    required this.numberFieldController,
+    this.hintText = null,
+    this.onChanged,
+    this.onPressed,
+    this.inputFormatters,
+    this.keyboardType,
+    this.helperText,
+  });
 }
 
 class _FieldDialog extends State<FieldDialog> {
@@ -37,7 +43,6 @@ class _FieldDialog extends State<FieldDialog> {
           children: [
             Column(
               children: [
-                SizedBox(height: 20),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   child: Container(
@@ -49,11 +54,33 @@ class _FieldDialog extends State<FieldDialog> {
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: widget.hintText,
-                        hintStyle: TextStyle(color: Colors.grey.shade300),
+                        hintStyle: TextStyle(
+                          color: Themes.textGrey,
+                          fontSize: 13,
+                          fontFamily: "IranSans",
+                        ),
+                      ),
+                      inputFormatters: widget.inputFormatters,
+                      style: TextStyle(
+                        color: Themes.text,
+                        fontSize: 13,
+                        fontFamily: "IranSansMedium",
                       ),
                       onChanged: widget.onChanged,
                       keyboardType: widget.keyboardType,
                       textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  height: 20,
+                  child: Text(
+                    widget.helperText ?? "",
+                    style: TextStyle(
+                      color: Themes.text,
+                      fontSize: 11,
+                      fontFamily: "IranSansMedium",
                     ),
                   ),
                 ),

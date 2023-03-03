@@ -22,7 +22,7 @@ class _BlockBtn extends State<BlockBtn> {
         minWidth: double.infinity,
         onPressed: widget.onTap,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        height: 60,
+        height: 50,
         color: Themes.blue,
         textColor: Colors.white,
         elevation: 0,
