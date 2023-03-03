@@ -46,15 +46,14 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
 
   List<CircleMarker> circles = [];
 
-  getCities() async {
-    var mCities = await City.getList();
+   getCities() async {
+    var mCities = await City.getList(key: "estates");
     setState(() {
       cities = mCities;
     });
 
     if (cities.isEmpty) {
-      goSelectCity();
-      return;
+      await goSelectCity();
     }
   }
 
@@ -134,7 +133,9 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
           actions: [
             GestureDetector(
               onTap: () async {
-                goSelectCity();
+                await goSelectCity();
+
+                getEstates();
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(
@@ -316,10 +317,9 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
         cities = result;
       });
 
-      City.saveList(cities);
+      City.saveList(cities, key: "estates");
 
       await getCities();
-      getEstates();
     }
   }
 

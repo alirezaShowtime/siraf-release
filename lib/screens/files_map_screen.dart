@@ -1,31 +1,23 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as m;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
-import 'package:siraf3/bloc/estate_bloc.dart';
 import 'package:siraf3/bloc/location_files_bloc.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/map_utilities.dart';
 import 'package:siraf3/models/city.dart';
-import 'package:siraf3/models/estate.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/models/location_file.dart';
-import 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
-import 'package:siraf3/screens/request_file/request_file_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/widgets/location_file_item.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
-import 'package:typicons_flutter/typicons_flutter.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:flutter/material.dart' as m;
-
-import 'package:siraf3/dialog.dart';
 
 class FilesMapScreen extends StatefulWidget {
   FilesMapScreen({super.key});
@@ -34,8 +26,7 @@ class FilesMapScreen extends StatefulWidget {
   State<FilesMapScreen> createState() => _FilesMapScreenState();
 }
 
-class _FilesMapScreenState extends State<FilesMapScreen>
-    with TickerProviderStateMixin {
+class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStateMixin {
   List<City> cities = [];
 
   bool _showFileOnMyLocation = false;
@@ -53,14 +44,14 @@ class _FilesMapScreenState extends State<FilesMapScreen>
   List<CircleMarker> circles = [];
 
   getCities() async {
-    var mCities = await City.getList();
+    var mCities = await City.getList(key: "files");
     setState(() {
       cities = mCities;
       filterData.cityIds = cities.map<int>((e) => e.id!).toList();
     });
 
     if (cities.isEmpty) {
-      goSelectCity();
+      await goSelectCity();
       return;
     }
   }
@@ -80,12 +71,8 @@ class _FilesMapScreenState extends State<FilesMapScreen>
   getFiles({bool showMyLocation = false}) {
     bloc.add(
       LocationFilesEvent(
-        search: _searchController.text.trim().isEmpty
-            ? null
-            : _searchController.text.trim(),
-        latLng: (_showFileOnMyLocation && myLocationMarker != null)
-            ? myLocationMarker!.point
-            : null,
+        search: _searchController.text.trim().isEmpty ? null : _searchController.text.trim(),
+        latLng: (_showFileOnMyLocation && myLocationMarker != null) ? myLocationMarker!.point : null,
         filterData: filterData,
       ),
     );
@@ -127,7 +114,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
           elevation: 0.7,
           title: TextField2(
             decoration: InputDecoration(
-              hintText: "جستجو در دفاتر املاک",
+              hintText: "جستجو در فایل ها",
               hintStyle: TextStyle(color: Themes.textGrey, fontSize: 13),
               border: InputBorder.none,
             ),
@@ -143,7 +130,8 @@ class _FilesMapScreenState extends State<FilesMapScreen>
           actions: [
             GestureDetector(
               onTap: () async {
-                goSelectCity();
+                await goSelectCity();
+                getFiles();
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(
@@ -194,14 +182,12 @@ class _FilesMapScreenState extends State<FilesMapScreen>
                 mapController: _controller,
                 options: MapOptions(
                   center: defaultLocation,
-                  interactiveFlags:
-                      InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                  interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                   zoom: 14.0,
                 ),
                 children: [
                   TileLayer(
-                    urlTemplate:
-                        "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+                    urlTemplate: "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
                   ),
                   CircleLayer(
                     circles: circles,
@@ -213,8 +199,8 @@ class _FilesMapScreenState extends State<FilesMapScreen>
               ),
             ),
             Positioned(
-              bottom: 20,
-              right: 20,
+              top: 10,
+              right: 10,
               child: Container(
                 decoration: BoxDecoration(
                   color: Themes.background,
@@ -247,8 +233,8 @@ class _FilesMapScreenState extends State<FilesMapScreen>
               ),
             ),
             Positioned(
-              bottom: 20,
-              right: 80,
+              top: 10,
+              right: 60,
               child: GestureDetector(
                 onTap: () async {
                   setState(() {
@@ -268,9 +254,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: _showFileOnMyLocation
-                        ? Themes.primary
-                        : Themes.background,
+                    color: _showFileOnMyLocation ? Themes.primary : Themes.background,
                     borderRadius: BorderRadius.circular(100),
                     boxShadow: [
                       BoxShadow(
@@ -288,23 +272,32 @@ class _FilesMapScreenState extends State<FilesMapScreen>
                   alignment: Alignment.center,
                   padding: EdgeInsets.all(10),
                   child: Text(
-                    "اطراف من",
+                    "فقط اطراف من",
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 14,
                       fontFamily: "IranSansMedium",
-                      color: _showFileOnMyLocation
-                          ? Themes.textLight
-                          : Themes.text,
+                      color: _showFileOnMyLocation ? Themes.textLight : Themes.text,
                     ),
                   ),
                 ),
               ),
             ),
+            if (selectedFile != null)
+              Positioned(
+                bottom: 10,
+                left: 10,
+                right: 10,
+                child: LocationFileItem(
+                  locationFile: selectedFile!,
+                ),
+              ),
           ],
         ),
       ),
     );
   }
+
+  LocationFile? selectedFile;
 
   goSelectCity() async {
     var result = await Navigator.push(
@@ -324,10 +317,9 @@ class _FilesMapScreenState extends State<FilesMapScreen>
         cities = result;
       });
 
-      City.saveList(cities);
+      City.saveList(cities, key: "files");
 
       await getCities();
-      getFiles();
     }
   }
 
@@ -451,10 +443,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
 
     LocationData locationData = await _location.getLocation();
 
-    if (locationData.latitude == null ||
-        locationData.longitude == null ||
-        locationData.latitude == 0 ||
-        locationData.longitude == 0) {
+    if (locationData.latitude == null || locationData.longitude == null || locationData.latitude == 0 || locationData.longitude == 0) {
       return false;
     }
 
@@ -480,10 +469,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
 
     LocationData locationData = await _location.getLocation();
 
-    if (locationData.latitude == null ||
-        locationData.longitude == null ||
-        locationData.latitude == 0 ||
-        locationData.longitude == 0) {
+    if (locationData.latitude == null || locationData.longitude == null || locationData.latitude == 0 || locationData.longitude == 0) {
       notify("موقعیت مکانی دریافت نشد");
       return;
     }
@@ -529,86 +515,88 @@ class _FilesMapScreenState extends State<FilesMapScreen>
     );
   }
 
-  _buildFileMarkers(List<LocationFile> estates) {
-    return estates
-        .map<Marker>((e) => Marker(
-              width: 240,
-              height: 100,
-              point: LatLng(double.parse(e.lat!), double.parse(e.long!)),
-              builder: (_) {
-                return GestureDetector(
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        bottom: 30,
-                        child: Container(
-                          height: 60,
-                          width: 122,
-                          decoration: BoxDecoration(
-                            color: Color(0xff707070),
-                            border: Border.all(
-                              color: Themes.icon,
-                              width: 3,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          alignment: Alignment.center,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+  _buildFileMarkers(List<LocationFile> files) {
+    return files.map<Marker>((e) {
+      return Marker(
+        width: 244,
+        height: 120,
+        point: LatLng(double.parse(e.lat!), double.parse(e.long!)),
+        builder: (_) {
+          // return Container(width: 5, height: 5, color: Themes.blue,);
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+
+              });
+            },
+            child: Stack(
+              children: [
+                Positioned(
+                  bottom: 60,
+                  child: Container(
+                    height: 60,
+                    width: 122,
+                    decoration: BoxDecoration(
+                      color: Color(0xff707070),
+                      border: Border.all(
+                        color: Themes.icon,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    alignment: Alignment.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        RichText(
+                          text: TextSpan(
                             children: [
-                              Text(
-                                e.getFirstPrice(),
+                              TextSpan(
+                                text: e.isRent() ? "ودیعه : " : "قیمت کل : ",
                                 style: TextStyle(
                                   color: Themes.textLight,
                                   fontSize: 11,
+                                  fontFamily: e.isRent() ? "IranSans" : "IranSansMedium",
                                 ),
                               ),
-                              SizedBox(height: 20),
-                              Text(
-                                e.name!,
-                                style: TextStyle(
-                                  color: Themes.textLight,
-                                  fontSize: 11,
-                                ),
+                              TextSpan(
+                                text: e.getFirstPrice(),
+                                style: TextStyle(color: Themes.textLight, fontSize: e.isRent() ? 11 : 12, fontFamily: e.isRent() ? "IranSans" : "IranSansMedium"),
                               ),
                             ],
                           ),
                         ),
-                      ),
-                      Container(
-                        height: 100,
-                        width: 240,
-                        alignment: Alignment.center,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Icon(
-                              Typicons.location,
-                              size: 40,
-                              color: Colors.white,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              width: 20,
-                              height: 20,
-                            ),
-                            Icon(
-                              Typicons.location_outline,
-                              size: 40,
-                              color: Themes.icon,
-                            ),
-                          ],
+                        Text(
+                          e.name!,
+                          style: TextStyle(
+                            color: Themes.textLight,
+                            fontSize: 9,
+                          ),
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.fade,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                );
-              },
-            ))
-        .toList();
+                ),
+                Container(
+                  height: 57,
+                  width: 244,
+                  alignment: Alignment.bottomCenter,
+                  child: m.Image(
+                    image: AssetImage("assets/images/marker_pic.png"),
+                    width: 27,
+                    height: 40,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }).toList();
   }
 
   String getTitle(List<City> cities) {

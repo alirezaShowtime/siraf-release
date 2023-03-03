@@ -3,7 +3,6 @@ import 'package:http/http.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
-import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/models/location_file.dart';
 
@@ -43,19 +42,22 @@ class LocationFilesBloc extends Bloc<LocationFilesEvent, LocationFilesState> {
 
     var response = await http2.getWithToken(
       getFileUrl(
-        "file/locationFiles" + event.filterData.toQueryString()
-            + (event.latLng != null ? "&lat=${event.latLng!.latitude.toString()}&long=${event.latLng!.longitude.toString()}" : "")
-            + (event.search != null ? "&q=${event.search!}" : ""),
+        "file/locationFiles" + event.filterData.toQueryString() + (event.latLng != null ? "&lat=${event.latLng!.latitude.toString()}&long=${event.latLng!.longitude.toString()}" : "") + (event.search != null ? "&q=${event.search!}" : ""),
       ),
     );
 
+    print(response.statusCode);
+    print(convertUtf8(response.body));
+
     if (isResponseOk(response)) {
+      var data = jDecode(response.body)['data'];
+      var files = <LocationFile>[];
+      if (!(data is String)) {
+        files = LocationFile.fromList(data);
+      }
+      files = files.where((e) => (double.parse(e.lat!) <= 90 && double.parse(e.lat!) >= -90) && (double.parse(e.long!) <= 90 && double.parse(e.long!) >= -90)).toList();
       emit(
-        LocationFilesLoadedState(
-          files: LocationFile.fromList(
-            jDecode(response.body),
-          ),
-        ),
+        LocationFilesLoadedState(files: files),
       );
     } else {
       emit(LocationFilesErrorState(response: response));

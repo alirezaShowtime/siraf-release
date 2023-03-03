@@ -75,11 +75,11 @@ class LocationFile {
     if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 5);
 
-      if (prop.value == null || prop.name == null) return "";
+      if (prop.value == null || prop.name == null) return "توافقی";
 
       return number_format(int.parse(prop.value!)) + " " + prop.name!;
     } else {
-      return "";
+      return "توافقی";
     }
   }
 
@@ -87,16 +87,22 @@ class LocationFile {
     if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 6);
 
+      if (prop.value == null || prop.name == null) return "توافقی";
+
       return number_format(int.parse(prop.value!)) + " " + prop.name!;
     } else {
-      return "";
+      return "توافقی";
     }
+  }
+
+  bool isRent() {
+    return category?.getMainCategoryName() == "اجاره ای";
   }
 }
 
 class Propertys {
   String? name;
-  dynamic value;
+  String? value;
   bool? list;
   int? weightList;
 
@@ -106,7 +112,9 @@ class Propertys {
     if(json["name"] is String) {
       name = json["name"];
     }
-    value = json["value"];
+    if (json["value"] is String) {
+      value = json["value"];
+    }
     if(json["list"] is bool) {
       list = json["list"];
     }
@@ -211,5 +219,9 @@ class Category {
     _data["isAll"] = isAll;
     _data["parent_id"] = parentId;
     return _data;
+  }
+
+  String? getMainCategoryName() {
+    return fullCategory != null ? fullCategory!.split("-")[0] : null;
   }
 }

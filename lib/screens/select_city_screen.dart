@@ -439,6 +439,10 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
   }
 
   Future<bool> _handleBack() async {
+    if (widget.force && selectedCities.isEmpty) {
+      notify("شهری انتخاب نکرده اید");
+      return false;
+    }
     if (onSearching) {
       setState(() {
         _searchFieldCtrl.clear();

@@ -49,14 +49,14 @@ class City {
     return list2;
   }
 
-  static Future<bool> saveList(List<City> cities) async {
+  static Future<bool> saveList(List<City> cities, {String? key}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString("cities", jsonEncode(cities));
+    return prefs.setString(key != null ? "{$key}_cities" : "cities", jsonEncode(cities));
   }
 
-  static Future<List<City>> getList() async {
+  static Future<List<City>> getList({String? key}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var list = jsonDecode(prefs.getString("cities") ?? '[]') as List<dynamic>;
+    var list = jsonDecode(prefs.getString(key != null ? "{$key}_cities" : "cities") ?? '[]') as List<dynamic>;
 
     return list.map<City>((e) => City.fromJson(e)).toList();
   }
