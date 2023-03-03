@@ -7,7 +7,6 @@ class Accordion extends StatefulWidget {
   final Widget content;
   bool open;
   Function? onClick;
-  Function(bool value)? onChanged;
 
   Accordion({
     Key? key,
@@ -15,7 +14,6 @@ class Accordion extends StatefulWidget {
     required this.content,
     this.open = false,
     this.onClick,
-    this.onChanged,
   }) : super(key: key);
 
   @override
@@ -75,10 +73,6 @@ class _AccordionState extends State<Accordion> {
     setState(() {
       widget.open = !widget.open;
     });
-
-    if (widget.onChanged != null) {
-      widget.onChanged!(widget.open);
-    }
   }
 }
 

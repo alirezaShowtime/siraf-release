@@ -186,12 +186,13 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Text(
             getTitle(cities),
             style: TextStyle(
-              color: Themes.textLight,
+              color: Themes.text,
               fontSize: 15,
             ),
           ),
         ),
-        backgroundColor: Themes.primary,
+        backgroundColor: Themes.appBar,
+        foregroundColor: Themes.text,
         centerTitle: true,
         leading: Padding(
           padding: const EdgeInsets.only(right: 15),
@@ -203,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
               image: AssetImage("assets/images/ic_menu.png"),
               width: 30,
               height: 30,
-              color: Themes.iconLight,
+              color: Themes.icon,
             ),
           ),
         ),
@@ -238,7 +239,6 @@ class _HomeScreenState extends State<HomeScreen> {
               badgeStyle: badges.BadgeStyle(badgeColor: Themes.iconLight),
               child: FaIcon(
                 OctIcons.sliders_16,
-                color: Themes.iconLight,
                 size: 20,
               ),
             ),
@@ -259,7 +259,6 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             icon: FaIcon(
               CupertinoIcons.search,
-              color: Themes.iconLight,
             ),
           ),
           SizedBox(
