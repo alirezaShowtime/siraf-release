@@ -4,7 +4,6 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/settings.dart';
 import 'package:siraf3/themes.dart';
-import 'package:switcher_button/switcher_button.dart';
 
 import '../widgets/app_bar_title.dart';
 import '../widgets/my_back_button.dart';
