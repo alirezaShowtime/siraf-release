@@ -1,47 +1,49 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Settings {
-  static Future<bool> showNumberPhoneForAgent() async {
+
+  Future<bool> showNumberPhoneForAgent() async {
     var pref = await SharedPreferences.getInstance();
 
-    return await pref.getBool("settings_showNumberPhoneForAgent") ?? true;
+    var v = pref.getBool("settings_showNumberPhoneForAgent") ?? true;
+    print("settings_showNumberPhoneForAgent $v");
+
+    return v;
   }
 
-  static Future<bool> showNotification() async {
+  Future<bool> showNotification() async {
     var pref = await SharedPreferences.getInstance();
 
-    return await pref.getBool("settings_showNotification") ?? true;
+    var v =  pref.getBool("settings_showNotification") ?? true;
+    print("settings_showNotification $v");
+    return v;
   }
 
-  static Future<bool> darkMode() async {
+  Future<bool> darkMode() async {
     var pref = await SharedPreferences.getInstance();
 
-    return await pref.getBool("settings_darkMode") ?? false;
+    var v = pref.getBool("settings_darkMode") ?? false;
+
+    print("settings_darkMode $v");
+
+    return v;
   }
 
-  static void setShowNumberPhoneForAgent(bool value) async {
+  void setShowNumberPhoneForAgent(bool value) async {
     var pref = await SharedPreferences.getInstance();
 
     await pref.setBool("settings_showNumberPhoneForAgent", value);
   }
 
-  static void setShowNotification(bool value) async {
+  void setShowNotification(bool value) async {
     var pref = await SharedPreferences.getInstance();
 
     await pref.setBool("settings_showNotification", value);
   }
 
-  static void setDarkMode(bool value) async {
+  void setDarkMode(bool value) async {
     var pref = await SharedPreferences.getInstance();
 
     await pref.setBool("settings_darkMode", value);
   }
-
-  static void toggleShowNumberPhoneForAgent() async =>
-      setShowNumberPhoneForAgent(!(await showNumberPhoneForAgent()));
-
-  static void toggleShowNotification() async =>
-      setShowNotification(!(await showNotification()));
-
-  static void toggleDarkMode() async => setDarkMode(!(await darkMode()));
 }

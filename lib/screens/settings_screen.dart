@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/settings.dart';
@@ -18,27 +19,25 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreen extends State<SettingsScreen> {
-  bool? showNumberPhoneForAgent;
-  bool? showNotification;
-  bool? darkMode;
+  bool showNumberPhoneForAgent = false;
+  bool showNotification = false;
+  bool darkMode = false;
+
+  Settings settings = Settings();
 
   @override
   void initState() {
-    Settings.showNumberPhoneForAgent().then((value) {
-      showNumberPhoneForAgent = value;
-      setState(() {});
-    });
-
-    Settings.showNotification().then((value) {
-      showNotification = value;
-      setState(() {});
-    });
-
-    Settings.darkMode().then((value) {
-      darkMode = value;
-      setState(() {});
-    });
     super.initState();
+
+    setData();
+  }
+
+  setData() async {
+    showNumberPhoneForAgent = await settings.showNumberPhoneForAgent();
+    showNotification = await settings.showNotification();
+    darkMode = await settings.darkMode();
+
+    setState(() {});
   }
 
   @override
@@ -74,38 +73,67 @@ class _SettingsScreen extends State<SettingsScreen> {
               title: "نام کاربری",
               text: widget.user?.username,
             ),
-          if (widget.user?.phone != null)
-            item(title: "شماره همراه", text: phoneFormat(widget.user!.phone!)),
+          if (widget.user?.phone != null) item(title: "شماره همراه", text: phoneFormat(widget.user!.phone!)),
           item(
             title: "نمایش شماره همراه برای مشاوران",
-            widget: SwitcherButton(
-              onColor: Themes.blue,
-              offColor: Colors.grey.shade300,
-              value: showNumberPhoneForAgent ?? false,
-              onChange: (value) {
-                Settings.setShowNumberPhoneForAgent(value);
+            widget: FlutterSwitch(
+              height: 20.0,
+              width: 40.0,
+              padding: 4.0,
+              toggleSize: 10.0,
+              borderRadius: 10.0,
+              activeColor: Themes.blue,
+              inactiveColor: Colors.grey.shade300,
+              value: showNumberPhoneForAgent,
+              activeToggleColor: Colors.white,
+              inactiveToggleColor: Themes.blue,
+              onToggle: (value) {
+                setState(() {
+                  showNumberPhoneForAgent = value;
+                });
+                settings.setShowNumberPhoneForAgent(value);
               },
             ),
           ),
           item(
             title: "اعلان برنامه",
-            widget: SwitcherButton(
-              onColor: Themes.blue,
-              offColor: Colors.grey.shade300,
-              value: showNotification ?? true,
-              onChange: (value) {
-                Settings.setShowNotification(value);
+            widget: FlutterSwitch(
+              height: 20.0,
+              width: 40.0,
+              padding: 4.0,
+              toggleSize: 10.0,
+              borderRadius: 10.0,
+              activeColor: Themes.blue,
+              inactiveColor: Colors.grey.shade300,
+              value: showNotification,
+              activeToggleColor: Colors.white,
+              inactiveToggleColor: Themes.blue,
+              onToggle: (value) {
+                setState(() {
+                  showNotification = value;
+                });
+                settings.setShowNotification(value);
               },
             ),
           ),
           item(
             title: "حالت شب",
-            widget: SwitcherButton(
-              onColor: Themes.blue,
-              offColor: Colors.grey.shade300,
-              value: darkMode ?? false,
-              onChange: (value) {
-                Settings.setDarkMode(value);
+            widget: FlutterSwitch(
+              height: 20.0,
+              width: 40.0,
+              padding: 4.0,
+              toggleSize: 10.0,
+              borderRadius: 10.0,
+              activeColor: Themes.blue,
+              inactiveColor: Colors.grey.shade300,
+              value: darkMode,
+              activeToggleColor: Colors.white,
+              inactiveToggleColor: Themes.blue,
+              onToggle: (value) {
+                setState(() {
+                  darkMode = value;
+                });
+                settings.setDarkMode(value);
               },
             ),
           ),
@@ -138,15 +166,11 @@ class _SettingsScreen extends State<SettingsScreen> {
     );
   }
 
-  Widget item(
-      {required String title,
-      String? text,
-      Widget? widget,
-      GestureTapCallback? onTap}) {
+  Widget item({required String title, String? text, Widget? widget, GestureTapCallback? onTap}) {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
@@ -161,10 +185,7 @@ class _SettingsScreen extends State<SettingsScreen> {
           children: [
             Text(
               title,
-              style: TextStyle(
-                  fontSize: 13,
-                  color: Themes.text,
-                  fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 13, color: Themes.text, fontFamily: "IranSansMedium"),
             ),
             if (text != null && widget == null)
               Text(
