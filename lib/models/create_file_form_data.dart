@@ -14,6 +14,7 @@ class CreateFileFormData {
   List<Map<String, dynamic>> files;
   String title;
   String description;
+  String? secDescription;
   List<Estate> estates;
 
   CreateFileFormData({
@@ -28,5 +29,6 @@ class CreateFileFormData {
     required this.title,
     required this.description,
     required this.estates,
+    this.secDescription,
   });
 }

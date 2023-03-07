@@ -76,6 +76,7 @@ class CreateFileBloc extends Bloc<CreateFileEvent, CreateFileState> {
           'imagesName': jsonEncode(
               images.map((e) => (e['title'] as String?) ?? "").toList()),
         'description': event.data.description,
+        'securityDescription': event.data.secDescription,
         'visitPhoneNumber': event.data.visitPhone,
         'ownerPhoneNumber': event.data.ownerPhone,
         if (event.data.estates.isNotEmpty)

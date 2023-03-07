@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/file_detail.dart';
 import 'package:siraf3/themes.dart';
 
 class FileImagesScreen extends StatefulWidget {
   FileDetail file;
   int? index;
+
   FileImagesScreen({required this.file, this.index, Key? key}) : super(key: key);
 
   @override
@@ -24,11 +24,14 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.file.name ?? '',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.normal,
-            )),
+        title: Text(
+          widget.file.name ?? '',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.normal,
+            fontSize: 15,
+          ),
+        ),
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -38,23 +41,7 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
             color: Colors.white,
           ),
         ),
-        actions: [
-          PopupMenuButton(
-            itemBuilder: (context) {
-              return [
-                PopupMenuItem<int>(
-                  value: 0,
-                  child: Text("گزارش تخلف"),
-                ),
-              ];
-            },
-            onSelected: (value) {
-              callToSupport();
-            },
-            icon: Icon(Icons.more_vert, color: Colors.white),
-          ),
-        ],
-        backgroundColor: Themes.primary,
+        backgroundColor: Themes.appBar,
       ),
       backgroundColor: Colors.black,
       body: PhotoViewGallery.builder(
@@ -65,8 +52,7 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
             minScale: 0.5,
             imageProvider: NetworkImage(widget.file.media!.image![index].path!),
             initialScale: PhotoViewComputedScale.contained,
-            heroAttributes: PhotoViewHeroAttributes(
-                tag: widget.file.media!.image![index].id!),
+            heroAttributes: PhotoViewHeroAttributes(tag: widget.file.media!.image![index].id!),
           );
         },
         pageController: PageController(initialPage: widget.index ?? 0),
@@ -76,9 +62,7 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
             width: 20.0,
             height: 20.0,
             child: CircularProgressIndicator(
-              value: event == null
-                  ? 0
-                  : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
+              value: event == null ? 0 : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
             ),
           ),
         ),
