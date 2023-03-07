@@ -223,7 +223,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         "آپلود فایل های تصویری",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.text,
+                          color: Themes.primary,
                           fontFamily: "IranSansBold",
                         ),
                       ),
@@ -291,7 +291,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         "عنوان",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.text,
+                          color: Themes.primary,
                           fontFamily: "IranSansBold",
                         ),
                       ),
@@ -395,7 +395,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         "شماره تماس مالک",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.text,
+                          color: Themes.primary,
                           fontFamily: "IranSansBold",
                         ),
                       ),
@@ -489,7 +489,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         "شماره تماس بازدید",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.text,
+                          color: Themes.primary,
                           fontFamily: "IranSansBold",
                         ),
                       ),
@@ -581,7 +581,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         "توضیحات",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.text,
+                          color: Themes.primary,
                           fontFamily: "IranSansBold",
                         ),
                       ),

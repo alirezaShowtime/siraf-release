@@ -162,7 +162,7 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
                         "توضیحات محرمانه (اختیاری)",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.text,
+                          color: Themes.primary,
                           fontFamily: "IranSansBold",
                         ),
                       ),

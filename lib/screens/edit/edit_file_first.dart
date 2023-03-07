@@ -158,7 +158,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                         "مشخصات کلی",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.text,
+                          color: Themes.primary,
                           fontFamily: "IranSansBold",
                         ),
                       ),
@@ -361,7 +361,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                     "ویژگی ها",
                     style: TextStyle(
                       fontSize: 14,
-                      color: Themes.text,
+                      color: Themes.primary,
                       fontFamily: "IranSansBold",
                     ),
                   ),
@@ -435,7 +435,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                     "امکانات",
                     style: TextStyle(
                       fontSize: 14,
-                      color: Themes.text,
+                      color: Themes.primary,
                       fontFamily: "IranSansBold",
                     ),
                   ),

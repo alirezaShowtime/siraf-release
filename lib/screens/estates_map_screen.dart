@@ -41,7 +41,12 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
 
     bloc.stream.listen(listener);
 
-    getEstatesFirstTime();
+    getData();
+  }
+
+  getData() async {
+    await getCities();
+    getEstates();
   }
 
   List<CircleMarker> circles = [];
@@ -286,7 +291,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                   alignment: Alignment.center,
                   padding: EdgeInsets.all(10),
                   child: Text(
-                    "اطراف من",
+                    "فقط اطراف من",
                     style: TextStyle(
                       fontSize: 15,
                       fontFamily: "IranSansMedium",

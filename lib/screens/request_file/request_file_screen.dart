@@ -272,7 +272,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                   ),
                 ),
                 Section(
-                  title: "دفتر/دفاتر املاک(اخیتاری)",
+                  title: "دفتر/دفاتر املاک(اختیاری)",
                   hint: "انتخاب",
                   value: selectedEstates.isNotEmpty
                       ? "${selectedEstates.length} مورد"
