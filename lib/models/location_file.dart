@@ -10,6 +10,7 @@ class LocationFile {
   Image? image;
   List<Propertys>? propertys;
   bool? favorite;
+  String? lat_long;
 
   LocationFile({this.id, this.name, this.category, this.lat, this.long, this.image, this.propertys, this.favorite});
 
@@ -38,6 +39,8 @@ class LocationFile {
     if(json["favorite"] is bool) {
       favorite = json["favorite"];
     }
+
+    lat_long = lat.toString() + "," + long.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -77,7 +80,7 @@ class LocationFile {
 
       if (prop.value == null || prop.name == null) return "توافقی";
 
-      return number_format(int.parse(prop.value!)) + " " + prop.name!;
+      return number_format(int.parse(prop.value!));
     } else {
       return "توافقی";
     }
@@ -89,7 +92,7 @@ class LocationFile {
 
       if (prop.value == null || prop.name == null) return "توافقی";
 
-      return number_format(int.parse(prop.value!)) + " " + prop.name!;
+      return number_format(int.parse(prop.value!));
     } else {
       return "توافقی";
     }
@@ -112,8 +115,8 @@ class Propertys {
     if(json["name"] is String) {
       name = json["name"];
     }
-    if (json["value"] is String) {
-      value = json["value"];
+    if (json["value"] is int || json["value"] is double || json["value"] is String) {
+      value = json["value"].toString();
     }
     if(json["list"] is bool) {
       list = json["list"];
@@ -222,6 +225,6 @@ class Category {
   }
 
   String? getMainCategoryName() {
-    return fullCategory != null ? fullCategory!.split("-")[0] : null;
+    return fullCategory != null ? fullCategory!.split("-")[0].trim() : null;
   }
 }

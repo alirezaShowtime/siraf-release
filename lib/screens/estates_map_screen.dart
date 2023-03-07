@@ -192,16 +192,21 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                   
                 ),
                 children: [
-                  TileLayer(
-                    urlTemplate:
-                        "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+                  TileLayerWidget(
+                    options: TileLayerOptions(
+                      urlTemplate: "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+                    ),
                   ),
-                  CircleLayer(
-                    circles: circles,
+                  CircleLayerWidget(
+                    options: CircleLayerOptions(
+                      circles: circles,
+                    ),
                   ),
-                  MarkerLayer(
-                    markers: _buildEstateMarkers(estates),
-                  ),
+                  MarkerLayerWidget(
+                    options: MarkerLayerOptions(
+                      markers: _buildEstateMarkers(estates),
+                    ),
+                  )
                 ],
               ),
             ),

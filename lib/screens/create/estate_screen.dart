@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:siraf3/bloc/estate_bloc.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/estate.dart';
@@ -17,9 +19,6 @@ import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
-import 'package:latlong2/latlong.dart';
-
-import 'package:siraf3/dialog.dart';
 
 class EstateScreen extends StatefulWidget {
   List<Estate> estates;
@@ -77,12 +76,8 @@ class _EstateScreenState extends State<EstateScreen> {
     bloc.add(
       EstateLoadEvent(
         city_ids: cities.map((e) => e.id!).toList(),
-        search: _searchController.text.trim().isEmpty
-            ? null
-            : _searchController.text.trim(),
-        latLng: (_showFileOnMyLocation && myLocationMarker != null)
-            ? myLocationMarker!.point
-            : null,
+        search: _searchController.text.trim().isEmpty ? null : _searchController.text.trim(),
+        latLng: (_showFileOnMyLocation && myLocationMarker != null) ? myLocationMarker!.point : null,
         sort: currentSortType,
       ),
     );
@@ -118,7 +113,7 @@ class _EstateScreenState extends State<EstateScreen> {
 
     getEstates();
   }
-  
+
   checkLocationEnabled() async {
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;
@@ -135,7 +130,6 @@ class _EstateScreenState extends State<EstateScreen> {
     return true;
   }
 
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -146,8 +140,7 @@ class _EstateScreenState extends State<EstateScreen> {
           elevation: 0.7,
           title: TextField2(
             decoration: InputDecoration(
-              hintText: "جستجو در دفاتر املاک | " +
-                  cities.map((e) => e.name).join(' و '),
+              hintText: "جستجو در دفاتر املاک | " + cities.map((e) => e.name).join(' و '),
               hintStyle: TextStyle(color: Themes.textGrey, fontSize: 13),
               border: InputBorder.none,
             ),
@@ -332,8 +325,7 @@ class _EstateScreenState extends State<EstateScreen> {
         body: Column(
           children: [
             Expanded(
-              child:
-                  BlocBuilder<EstateBloc, EstateState>(builder: _buildMainBloc),
+              child: BlocBuilder<EstateBloc, EstateState>(builder: _buildMainBloc),
             ),
             if (selectedEstates.isNotEmpty)
               Padding(
@@ -460,8 +452,7 @@ class _EstateScreenState extends State<EstateScreen> {
                 mapController: _controller,
                 options: MapOptions(
                   center: defaultLocation,
-                  interactiveFlags:
-                      InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                  interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                   zoom: 14.0,
                   onTap: (_, _1) {
                     // MapsLauncher.launchCoordinates(file.lat!, file.long!);
@@ -469,14 +460,21 @@ class _EstateScreenState extends State<EstateScreen> {
                   },
                 ),
                 children: [
-                  TileLayer(
-                    urlTemplate:
-                        "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+                  TileLayerWidget(
+                    options: TileLayerOptions(
+                      urlTemplate: "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+                    ),
                   ),
-                  CircleLayer(
-                    circles: circles,
+                  CircleLayerWidget(
+                    options: CircleLayerOptions(
+                      circles: circles,
+                    ),
                   ),
-                  MarkerLayer(markers: _buildEstateMarkers(state.estates))
+                  MarkerLayerWidget(
+                    options: MarkerLayerOptions(
+                      markers: _buildEstateMarkers(state.estates),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -539,9 +537,7 @@ class _EstateScreenState extends State<EstateScreen> {
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: _showFileOnMyLocation
-                        ? Themes.primary
-                        : Themes.background,
+                    color: _showFileOnMyLocation ? Themes.primary : Themes.background,
                     borderRadius: BorderRadius.circular(100),
                     boxShadow: [
                       BoxShadow(
@@ -563,9 +559,7 @@ class _EstateScreenState extends State<EstateScreen> {
                     style: TextStyle(
                       fontSize: 15,
                       fontFamily: "IranSansMedium",
-                      color: _showFileOnMyLocation
-                          ? Themes.textLight
-                          : Themes.text,
+                      color: _showFileOnMyLocation ? Themes.textLight : Themes.text,
                     ),
                   ),
                 ),
@@ -613,10 +607,7 @@ class _EstateScreenState extends State<EstateScreen> {
 
     LocationData locationData = await _location.getLocation();
 
-    if (locationData.latitude == null ||
-        locationData.longitude == null ||
-        locationData.latitude == 0 ||
-        locationData.longitude == 0) {
+    if (locationData.latitude == null || locationData.longitude == null || locationData.latitude == 0 || locationData.longitude == 0) {
       notify("موقعیت مکانی دریافت نشد");
       return;
     }
@@ -773,8 +764,7 @@ class _EstateScreenState extends State<EstateScreen> {
                                 itemCount: 5,
                                 itemSize: 14,
                                 unratedColor: Colors.grey,
-                                itemPadding:
-                                    EdgeInsets.symmetric(horizontal: .2),
+                                itemPadding: EdgeInsets.symmetric(horizontal: .2),
                                 itemBuilder: (context, _) {
                                   return Icon(
                                     Icons.star,
@@ -849,10 +839,7 @@ class _EstateScreenState extends State<EstateScreen> {
                             child: MaterialButton(
                               onPressed: () {
                                 setState(() {
-                                  if (selectedEstates
-                                      .where(
-                                          (element) => element.id == estate.id)
-                                      .isNotEmpty) {
+                                  if (selectedEstates.where((element) => element.id == estate.id).isNotEmpty) {
                                     selectedEstates.removeWhere(
                                       (element) => element.id == estate.id,
                                     );
@@ -872,12 +859,7 @@ class _EstateScreenState extends State<EstateScreen> {
                               elevation: 1,
                               height: 40,
                               child: Text(
-                                selectedEstates
-                                        .where((element) =>
-                                            element.id == estate.id)
-                                        .isNotEmpty
-                                    ? "حذف"
-                                    : "افزودن",
+                                selectedEstates.where((element) => element.id == estate.id).isNotEmpty ? "حذف" : "افزودن",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -980,8 +962,7 @@ class _EstateScreenState extends State<EstateScreen> {
                                 itemCount: 5,
                                 itemSize: 14,
                                 unratedColor: Colors.grey,
-                                itemPadding:
-                                    EdgeInsets.symmetric(horizontal: .2),
+                                itemPadding: EdgeInsets.symmetric(horizontal: .2),
                                 itemBuilder: (context, _) {
                                   return Icon(
                                     Icons.star,

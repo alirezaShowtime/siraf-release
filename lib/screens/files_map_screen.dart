@@ -1,8 +1,10 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as m;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:siraf3/bloc/location_files_bloc.dart';
@@ -18,6 +20,8 @@ import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/location_file_item.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
+
+import 'file_screen.dart';
 
 class FilesMapScreen extends StatefulWidget {
   FilesMapScreen({super.key});
@@ -38,7 +42,12 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
 
     bloc.stream.listen(listener);
 
-    getFilesFirstTime();
+    getData();
+  }
+
+  getData() async {
+    await getCities();
+    getFiles();
   }
 
   List<CircleMarker> circles = [];
@@ -52,7 +61,6 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
 
     if (cities.isEmpty) {
       await goSelectCity();
-      return;
     }
   }
 
@@ -103,6 +111,10 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
   LatLng defaultLocation = LatLng(34.08892074204623, 49.7009108491914);
 
   List<LocationFile> files = [];
+
+  List<Marker> markers = [];
+
+  CarouselController carouselController = CarouselController();
 
   @override
   Widget build(BuildContext context) {
@@ -184,17 +196,47 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                   center: defaultLocation,
                   interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                   zoom: 14.0,
+                  plugins: [
+                    MarkerClusterPlugin(),
+                  ],
                 ),
                 children: [
-                  TileLayer(
-                    urlTemplate: "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+                  TileLayerWidget(
+                    options: TileLayerOptions(
+                      urlTemplate: "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+                    ),
                   ),
-                  CircleLayer(
-                    circles: circles,
+                  CircleLayerWidget(
+                    options: CircleLayerOptions(circles: circles),
                   ),
-                  MarkerLayer(
-                    markers: _buildFileMarkers(files),
-                  )
+                  MarkerClusterLayerWidget(
+                    options: MarkerClusterLayerOptions(
+                      spiderfyCircleRadius: 80,
+                      spiderfySpiralDistanceMultiplier: 2,
+                      circleSpiralSwitchover: 50,
+                      maxClusterRadius: 120,
+                      rotate: true,
+                      size: const Size(40, 40),
+                      anchor: AnchorPos.align(AnchorAlign.center),
+                      fitBoundsOptions: const FitBoundsOptions(
+                        padding: EdgeInsets.all(50),
+                        maxZoom: 100,
+                      ),
+                      markers: markers,
+                      polygonOptions: const PolygonOptions(borderColor: Colors.blueAccent, color: Colors.black12, borderStrokeWidth: 3),
+                      builder: (context, markers) {
+                        return Container(
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.blue),
+                          child: Center(
+                            child: Text(
+                              markers.length.toString(),
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -282,15 +324,42 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                 ),
               ),
             ),
-            if (selectedFile != null)
-              Positioned(
+            Visibility(
+              visible: selectedFile != null,
+              child: Positioned(
                 bottom: 10,
-                left: 10,
-                right: 10,
-                child: LocationFileItem(
-                  locationFile: selectedFile!,
+                left: 0,
+                right: 0,
+                child: CarouselSlider(
+                  items: files
+                      .map((e) => Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => FileScreen(id: e.id!),
+                                  ),
+                                );
+                              },
+                              child: LocationFileItem(
+                                locationFile: e,
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                  options: CarouselOptions(
+                      height: 120,
+                      autoPlay: false,
+                      viewportFraction: 0.9,
+                      onPageChanged: (i, _) {
+                        animatedMapMove(_controller, LatLng(double.parse(files.elementAt(i).lat!), double.parse(files.elementAt(i).long!)), _controller.zoom, this);
+                      }),
+                  carouselController: carouselController,
                 ),
               ),
+            ),
           ],
         ),
       ),
@@ -328,6 +397,9 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
   void listener(LocationFilesState state) {
     if (state is LocationFilesLoadingState) {
       dismissDialog(errorDialogContext);
+      setState(() {
+        selectedFile = null;
+      });
       loadingDialog(context: context, showMessage: false);
     } else if (state is LocationFilesErrorState) {
       dismissDialog(loadingDialogContext);
@@ -382,6 +454,9 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
       dismissDialog(loadingDialogContext);
       setState(() {
         files = state.files;
+        markers = _buildFileMarkers(files);
+
+        print(markers.length);
       });
       if (_firstTime) {
         setState(() {
@@ -526,8 +601,12 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
           return GestureDetector(
             onTap: () {
               setState(() {
-
+                selectedFile = e;
               });
+
+              print(files.indexOf(e));
+
+              carouselController.jumpToPage(files.indexOf(e));
             },
             child: Stack(
               children: [
@@ -555,17 +634,36 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                                 text: e.isRent() ? "ودیعه : " : "قیمت کل : ",
                                 style: TextStyle(
                                   color: Themes.textLight,
-                                  fontSize: 11,
+                                  fontSize: 9,
                                   fontFamily: e.isRent() ? "IranSans" : "IranSansMedium",
                                 ),
                               ),
                               TextSpan(
                                 text: e.getFirstPrice(),
-                                style: TextStyle(color: Themes.textLight, fontSize: e.isRent() ? 11 : 12, fontFamily: e.isRent() ? "IranSans" : "IranSansMedium"),
+                                style: TextStyle(color: Themes.textLight, fontSize: e.isRent() ? 9 : 10, fontFamily: e.isRent() ? "IranSans" : "IranSansMedium"),
                               ),
                             ],
                           ),
                         ),
+                        if (e.isRent())
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "اجاره : ",
+                                  style: TextStyle(
+                                    color: Themes.textLight,
+                                    fontSize: 9,
+                                    fontFamily: e.isRent() ? "IranSans" : "IranSansMedium",
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: e.getSecondPrice(),
+                                  style: TextStyle(color: Themes.textLight, fontSize: e.isRent() ? 9 : 10, fontFamily: e.isRent() ? "IranSans" : "IranSansMedium"),
+                                ),
+                              ],
+                            ),
+                          ),
                         Text(
                           e.name!,
                           style: TextStyle(

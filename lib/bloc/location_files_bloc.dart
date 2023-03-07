@@ -44,6 +44,7 @@ class LocationFilesBloc extends Bloc<LocationFilesEvent, LocationFilesState> {
       getFileUrl(
         "file/locationFiles" + event.filterData.toQueryString() + (event.latLng != null ? "&lat=${event.latLng!.latitude.toString()}&long=${event.latLng!.longitude.toString()}" : "") + (event.search != null ? "&q=${event.search!}" : ""),
       ),
+      timeout: Duration(seconds: 60),
     );
 
     print(response.statusCode);
@@ -56,6 +57,11 @@ class LocationFilesBloc extends Bloc<LocationFilesEvent, LocationFilesState> {
         files = LocationFile.fromList(data);
       }
       files = files.where((e) => (double.parse(e.lat!) <= 90 && double.parse(e.lat!) >= -90) && (double.parse(e.long!) <= 90 && double.parse(e.long!) >= -90)).toList();
+      files = files.unique((e) => e.lat_long);
+      print(files.length);
+      files.forEach((element) {
+        print(element.toJson());
+      });
       emit(
         LocationFilesLoadedState(files: files),
       );

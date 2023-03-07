@@ -143,11 +143,16 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
                   onTap: _setMarker,
                 ),
                 children: [
-                  TileLayer(
-                    urlTemplate:
-                        "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+                  TileLayerWidget(
+                    options: TileLayerOptions(
+                      urlTemplate: "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+                    ),
                   ),
-                  MarkerLayer(markers: markers),
+                  MarkerLayerWidget(
+                    options: MarkerLayerOptions(
+                      markers: markers,
+                    ),
+                  ),
                 ],
               ),
               Align(
@@ -178,8 +183,7 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
                           ),
                         ],
                       ),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                       alignment: Alignment.center,
                       child: Row(
                         children: [
@@ -246,10 +250,7 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
 
     LocationData locationData = await _location.getLocation();
 
-    if (locationData.latitude == null ||
-        locationData.longitude == null ||
-        locationData.latitude == 0 ||
-        locationData.longitude == 0) {
+    if (locationData.latitude == null || locationData.longitude == null || locationData.latitude == 0 || locationData.longitude == 0) {
       notify("موقعیت مکانی دریافت نشد");
       return;
     }

@@ -22,6 +22,12 @@ class _LocationFileItemState extends State<LocationFileItem> {
     super.initState();
 
     bookmark = Bookmark(id: widget.locationFile.id!, isFavorite: widget.locationFile.favorite ?? false, context: context);
+
+    bookmark.favoriteStream.stream.listen((fav) {
+      setState(() {
+        widget.locationFile.favorite = fav;
+      });
+    });
   }
 
   @override
@@ -77,7 +83,7 @@ class _LocationFileItemState extends State<LocationFileItem> {
                     },
                     child: Icon(
                       CupertinoIcons.bookmark_fill,
-                      color: Themes.primary,
+                      color: (widget.locationFile.favorite ?? false) ? Themes.primary : Themes.secondary2,
                     ),
                   ),
                 ),
@@ -98,7 +104,7 @@ class _LocationFileItemState extends State<LocationFileItem> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          number_format(125600000),
+                          (widget.locationFile.isRent() ? "ودیعه : " : "قیمت کل : ") + widget.locationFile.getFirstPrice(),
                           style: TextStyle(
                             color: Themes.text,
                             fontSize: 13,
@@ -106,11 +112,11 @@ class _LocationFileItemState extends State<LocationFileItem> {
                             fontFamily: 'IranSans',
                           ),
                         ),
-                        SizedBox(
+                        if (widget.locationFile.isRent()) SizedBox(
                           height: 3,
                         ),
-                        Text(
-                          number_format(358000000),
+                        if (widget.locationFile.isRent()) Text(
+                          "اجاره : " + widget.locationFile.getSecondPrice(),
                           style: TextStyle(
                             color: Themes.text,
                             fontSize: 12,
@@ -121,7 +127,7 @@ class _LocationFileItemState extends State<LocationFileItem> {
                       ],
                     ),
                     Text(
-                      "فروشی | آپارتمان فروشی تهران",
+                      widget.locationFile.category!.getMainCategoryName()! + " | " + widget.locationFile.name!,
                       style: TextStyle(
                         color: Themes.text,
                         fontSize: 12,
@@ -143,23 +149,23 @@ class _LocationFileItemState extends State<LocationFileItem> {
                         SizedBox(
                           height: 3,
                         ),
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        //   children: widget.file.fileId!.propertys
-                        //           ?.where((element) => element.weightList == 1 || element.weightList == 2 || element.weightList == 3 || element.weightList == 4)
-                        //           .toList()
-                        //           .map<Widget>((e) => Text(
-                        //                 "${e.name} ${e.value}",
-                        //                 style: TextStyle(
-                        //                   color: Themes.text,
-                        //                   fontSize: 10.5,
-                        //                   fontWeight: FontWeight.w400,
-                        //                   fontFamily: 'IranSans',
-                        //                 ),
-                        //               ))
-                        //           .toList() ??
-                        //       [],
-                        // ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: widget.locationFile.propertys
+                                  ?.where((element) => element.weightList == 1 || element.weightList == 2 || element.weightList == 3 || element.weightList == 4)
+                                  .take(4).toList()
+                                  .map<Widget>((e) => Text(
+                                        "${e.name} ${e.value}",
+                                        style: TextStyle(
+                                          color: Themes.text,
+                                          fontSize: 10.5,
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: 'IranSans',
+                                        ),
+                                      ))
+                                  .toList() ??
+                              [],
+                        ),
                       ],
                     ),
                   ],
