@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 
 class MyPopupMenuButton extends StatefulWidget {
@@ -19,7 +20,7 @@ class _MyPopupMenuButton extends State<MyPopupMenuButton> {
   Widget build(BuildContext context) {
     return PopupMenuButton(
       tooltip: widget.tooltip,
-      color: Colors.white,
+      color: App.theme.dialogBackgroundColor,
       icon: widget.icon ?? icon(Icons.more_vert, color: Themes.text),
       elevation: 3,
       constraints: BoxConstraints(minWidth: 180),

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/dark_themes.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/bookmark_screen.dart';
@@ -48,10 +50,9 @@ class _MenuScreenState extends State<MenuScreen> {
     var height = MediaQuery.of(context).size.height / 2.5;
 
     return Scaffold(
-      backgroundColor: Themes.background,
       body: SafeArea(
         child: ColoredBox(
-          color: Colors.grey.shade100,
+          color: App.theme.backgroundColor,
           child: Column(
             children: [
               Stack(
@@ -66,7 +67,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         image: AssetImage("assets/images/menu_background.png"),
                         fit: BoxFit.cover,
                         colorFilter: ColorFilter.mode(
-                          Themes.primary,
+                          App.isDark ? DarkThemes.secondary2 : Themes.primary,
                           BlendMode.hardLight,
                         ),
                       ),
@@ -156,7 +157,7 @@ class _MenuScreenState extends State<MenuScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5)),
+                          decoration: BoxDecoration(color: App.theme.dialogBackgroundColor, borderRadius: BorderRadius.circular(5)),
                           child: Wrap(
                             children: [
                               _item(
@@ -289,15 +290,16 @@ class _MenuScreenState extends State<MenuScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             AccordionItem(
-                                onClick: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => EstatesMapScreen(),
-                                    ),
-                                  );
-                                },
-                                title: "دفاتر املاک اطراف من"),
+                              onClick: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => EstatesMapScreen(),
+                                  ),
+                                );
+                              },
+                              title: "دفاتر املاک اطراف من",
+                            ),
                           ],
                         ),
                       ),
@@ -359,13 +361,12 @@ class _MenuScreenState extends State<MenuScreen> {
                         padding: EdgeInsets.only(bottom: 11, top: 11, right: 7),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: Themes.background2,
+                          color: App.theme.dialogBackgroundColor,
                         ),
                         child: Text(
                           "درباره سیراف و قوانین استفاده",
                           style: TextStyle(
                             fontSize: 15,
-                            color: Themes.text,
                             fontFamily: "IranSansMedium",
                           ),
                         ),
@@ -375,13 +376,12 @@ class _MenuScreenState extends State<MenuScreen> {
                         padding: EdgeInsets.only(bottom: 11, top: 11, right: 7),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: Themes.background2,
+                          color: App.theme.dialogBackgroundColor,
                         ),
                         child: Text(
                           "معرفی برنامه به دیگران(${VERSION})",
                           style: TextStyle(
                             fontSize: 15,
-                            color: Themes.text,
                             fontFamily: "IranSansMedium",
                           ),
                         ),
@@ -410,7 +410,6 @@ class _MenuScreenState extends State<MenuScreen> {
     return Text(
       title,
       style: TextStyle(
-        color: Themes.text,
         fontSize: 15,
         fontFamily: "IranSansMedium",
       ),
@@ -433,7 +432,6 @@ class _MenuScreenState extends State<MenuScreen> {
             Icon(
               icon,
               size: 27,
-              color: Themes.icon,
             ),
             SizedBox(
               height: 5,

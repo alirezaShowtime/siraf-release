@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
 
@@ -72,7 +73,6 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
           title: Text(
             "موقعیت فایل",
             style: TextStyle(
-              color: Themes.text,
               fontSize: 15,
             ),
           ),
@@ -82,12 +82,10 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
             },
             icon: Icon(
               CupertinoIcons.back,
-              color: Themes.icon,
               size: 22,
             ),
           ),
           automaticallyImplyLeading: false,
-          titleSpacing: 0,
           actions: [
             if (markers.isNotEmpty)
               Center(
@@ -103,7 +101,6 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
                       "پاک کردن",
                       style: TextStyle(
                         fontSize: 14,
-                        color: Themes.text,
                         fontFamily: "IranSansBold",
                       ),
                     ),
@@ -121,7 +118,6 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
                     "تایید",
                     style: TextStyle(
                       fontSize: 14,
-                      color: Themes.text,
                       fontFamily: "IranSansBold",
                     ),
                   ),
@@ -129,8 +125,6 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
               ),
             ),
           ],
-          backgroundColor: Themes.background,
-          elevation: 0.7,
         ),
         body: SafeArea(
           child: Stack(
@@ -145,7 +139,7 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
                 children: [
                   TileLayerWidget(
                     options: TileLayerOptions(
-                      urlTemplate: "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+                      urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
                     ),
                   ),
                   MarkerLayerWidget(
@@ -168,7 +162,7 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
                     child: Container(
                       constraints: BoxConstraints(maxWidth: 120, maxHeight: 50),
                       decoration: BoxDecoration(
-                        color: Themes.background,
+                        color: App.theme.dialogBackgroundColor,
                         borderRadius: BorderRadius.circular(100),
                         boxShadow: [
                           BoxShadow(
@@ -197,7 +191,6 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
                             child: Text(
                               "مکان من",
                               style: TextStyle(
-                                color: Themes.text,
                                 fontSize: 14,
                                 fontFamily: "IranSansBold",
                               ),

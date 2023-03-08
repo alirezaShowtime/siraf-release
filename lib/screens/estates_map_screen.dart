@@ -7,6 +7,7 @@ import 'package:location/location.dart';
 import 'package:siraf3/bloc/estate_bloc.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/map_utilities.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/estate.dart';
@@ -199,7 +200,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                 children: [
                   TileLayerWidget(
                     options: TileLayerOptions(
-                      urlTemplate: "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+                      urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
                     ),
                   ),
                   CircleLayerWidget(

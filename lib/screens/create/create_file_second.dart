@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/create_file_form_data.dart';
 import 'package:siraf3/screens/create/create_file_final.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
@@ -14,6 +15,7 @@ import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'dart:io' as io;
 import 'package:path/path.dart' as p;
+import 'package:siraf3/widgets/text_form_field_2.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'dart:async';
 import 'dart:typed_data';
@@ -68,7 +70,6 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   void initState() {
     super.initState();
 
-
     resetCreateFileForm = false;
   }
 
@@ -76,17 +77,13 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Themes.appBar,
-        elevation: 0.7,
         title: Text(
           "ثبت فایل",
           style: TextStyle(
-            color: Themes.text,
             fontSize: 15,
           ),
         ),
         automaticallyImplyLeading: false,
-        titleSpacing: 0,
         actions: [
           IconButton(
             onPressed: () {
@@ -94,7 +91,6 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
             },
             icon: Icon(
               Icons.refresh,
-              color: Themes.icon,
             ),
           ),
         ],
@@ -104,7 +100,6 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
           },
           icon: Icon(
             CupertinoIcons.back,
-            color: Themes.icon,
           ),
         ),
       ),
@@ -134,12 +129,10 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontFamily: "IranSansMedium",
-                                  color: Themes.text,
                                 ),
                               ),
                               Icon(
                                 CupertinoIcons.right_chevron,
-                                color: Themes.text,
                                 size: 17,
                               ),
                             ],
@@ -172,7 +165,6 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                         style: TextStyle(
                           fontSize: 11.5,
                           fontFamily: "IranSansMedium",
-                          color: Themes.text,
                         ),
                       ),
                       SizedBox(
@@ -181,10 +173,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       Container(
                         child: GridView(
                           shrinkWrap: true,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount:
-                                MediaQuery.of(context).size.width < 330 ? 4 : 5,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: MediaQuery.of(context).size.width < 330 ? 4 : 5,
                           ),
                           children: <Widget>[
                                 Container(
@@ -215,8 +205,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                                   .map<Widget>(
                                     (e) => GestureDetector(
                                       onTap: () {
-                                        showOptionsDialog(
-                                            mediaBoxes.indexOf(e));
+                                        showOptionsDialog(mediaBoxes.indexOf(e));
                                       },
                                       child: e,
                                     ),
@@ -240,18 +229,14 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                         style: TextStyle(
                           fontSize: 11.5,
                           fontFamily: "IranSansMedium",
-                          color: Themes.text,
                         ),
                       ),
                       SizedBox(
                         height: 4,
                       ),
-                      TextFormField(
+                      TextFormField2(
                         decoration: InputDecoration(
-                          hintText:
-                              hints.containsKey(widget.formData.category.id!)
-                                  ? hints[widget.formData.category.id!]
-                                  : "مثال : آپارتمان 120 متری، میدان ونک",
+                          hintText: hints.containsKey(widget.formData.category.id!) ? hints[widget.formData.category.id!] : "مثال : آپارتمان 120 متری، میدان ونک",
                           border: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: Themes.icon,
@@ -287,11 +272,13 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             ),
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          hintStyle: TextStyle(fontSize: 14),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
+                          hintStyle: TextStyle(fontSize: 14, color: Themes.textGrey),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         ),
-                        style: TextStyle(fontSize: 14, color: Themes.text),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: App.theme.textTheme.bodyLarge?.color,
+                        ),
                         onChanged: (value) {
                           setState(() {
                             title = value;
@@ -314,17 +301,6 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                           });
                         }),
                         controller: _titleController,
-                        onTap: () {
-                          var txtSelection = TextSelection.fromPosition(
-                              TextPosition(
-                                  offset: _titleController.text.length - 1));
-
-                          if (_titleController.selection == txtSelection) {
-                            _titleController.selection =
-                                TextSelection.fromPosition(TextPosition(
-                                    offset: _titleController.text.length));
-                          }
-                        },
                       ),
                       SizedBox(height: 14),
                       Text(
@@ -338,7 +314,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       SizedBox(
                         height: 4,
                       ),
-                      TextFormField(
+                      TextFormField2(
                         decoration: InputDecoration(
                           hintText: "شماره تماس صاحب ملک را بنویسید.",
                           border: OutlineInputBorder(
@@ -376,12 +352,14 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             ),
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          hintStyle: TextStyle(fontSize: 14),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
+                          hintStyle: TextStyle(fontSize: 14, color: Themes.textGrey),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         ),
                         keyboardType: TextInputType.number,
-                        style: TextStyle(fontSize: 14, color: Themes.text),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: App.theme.textTheme.bodyLarge?.color,
+                        ),
                         onChanged: (value) {
                           setState(() {
                             ownerPhone = value;
@@ -404,18 +382,6 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                           });
                         }),
                         controller: _ownerPhoneController,
-                        onTap: () {
-                          var txtSelection = TextSelection.fromPosition(
-                              TextPosition(
-                                  offset:
-                                      _ownerPhoneController.text.length - 1));
-
-                          if (_ownerPhoneController.selection == txtSelection) {
-                            _ownerPhoneController.selection =
-                                TextSelection.fromPosition(TextPosition(
-                                    offset: _ownerPhoneController.text.length));
-                          }
-                        },
                       ),
                       SizedBox(
                         height: 14,
@@ -431,7 +397,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       SizedBox(
                         height: 4,
                       ),
-                      TextFormField(
+                      TextFormField2(
                         decoration: InputDecoration(
                           hintText: "شماره تماس جهت هماهنگی بازدید را بنویسید.",
                           border: OutlineInputBorder(
@@ -469,12 +435,14 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             ),
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          hintStyle: TextStyle(fontSize: 14),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
+                          hintStyle: TextStyle(fontSize: 14, color: Themes.textGrey),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         ),
                         keyboardType: TextInputType.number,
-                        style: TextStyle(fontSize: 14, color: Themes.text),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: App.theme.textTheme.bodyLarge?.color,
+                        ),
                         onChanged: (value) {
                           setState(() {
                             visitPhone = value;
@@ -497,18 +465,6 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                           });
                         }),
                         controller: _visitPhoneController,
-                        onTap: () {
-                          var txtSelection = TextSelection.fromPosition(
-                              TextPosition(
-                                  offset:
-                                      _visitPhoneController.text.length - 1));
-
-                          if (_visitPhoneController.selection == txtSelection) {
-                            _visitPhoneController.selection =
-                                TextSelection.fromPosition(TextPosition(
-                                    offset: _visitPhoneController.text.length));
-                          }
-                        },
                       ),
                       SizedBox(height: 14),
                       Text(
@@ -527,13 +483,12 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                         style: TextStyle(
                           fontSize: 11.5,
                           fontFamily: "IranSansMedium",
-                          color: Themes.text,
                         ),
                       ),
                       SizedBox(
                         height: 4,
                       ),
-                      TextFormField(
+                      TextFormField2(
                         decoration: InputDecoration(
                           hintText: "توضیحات را بنویسید.",
                           border: OutlineInputBorder(
@@ -571,11 +526,13 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             ),
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          hintStyle: TextStyle(fontSize: 14),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
+                          hintStyle: TextStyle(fontSize: 14, color: Themes.textGrey),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         ),
-                        style: TextStyle(fontSize: 14, color: Themes.text),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: App.theme.textTheme.bodyLarge?.color,
+                        ),
                         onChanged: (value) {
                           setState(() {
                             description = value;
@@ -598,20 +555,6 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                           });
                         }),
                         controller: _descriptionController,
-                        onTap: () {
-                          var txtSelection = TextSelection.fromPosition(
-                              TextPosition(
-                                  offset:
-                                      _descriptionController.text.length - 1));
-
-                          if (_descriptionController.selection ==
-                              txtSelection) {
-                            _descriptionController.selection =
-                                TextSelection.fromPosition(TextPosition(
-                                    offset:
-                                        _descriptionController.text.length));
-                          }
-                        },
                       ),
                     ],
                   ),
@@ -658,7 +601,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -678,7 +621,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       child: Text(
                         'آیا مایل به ثبت فایل از ابتدا هستید؟',
                         style: TextStyle(
-                          color: Themes.textGrey,
+                          color: App.theme.tooltipTheme.textStyle?.color,
                           fontSize: 13,
                         ),
                       ),
@@ -766,8 +709,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   }
 
   _openHelp() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (_) => UploadMediaGuide()));
+    Navigator.push(context, MaterialPageRoute(builder: (_) => UploadMediaGuide()));
   }
 
   next() async {
@@ -797,22 +739,13 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   List<Map<String, dynamic>> files = [];
 
   void _addMedia() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: true);
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
 
     if (result != null) {
       for (PlatformFile pFile in result.files) {
         io.File file = io.File(pFile.path!);
-        if (!checkImageExtension(file.path) &&
-            !checkVideoExtension(file.path) &&
-            p.extension(file.path).replaceAll('.', '').toLowerCase() != "zip") {
-          notify(
-              'فرمت فایل انتخابی باید یکی از فرمت های ' +
-                  image_extensions.join(", ") +
-                  video_extensions.join(", ") +
-                  ", zip" +
-                  " باشد",
-              duration: Duration(seconds: 4));
+        if (!checkImageExtension(file.path) && !checkVideoExtension(file.path) && p.extension(file.path).replaceAll('.', '').toLowerCase() != "zip") {
+          notify('فرمت فایل انتخابی باید یکی از فرمت های ' + image_extensions.join(", ") + video_extensions.join(", ") + ", zip" + " باشد", duration: Duration(seconds: 4));
 
           return;
         }
@@ -850,7 +783,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -893,15 +826,13 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       shrinkWrap: true,
                       physics: BouncingScrollPhysics(),
                       children: [
-                        if (!checkVirtualTourExtension(
-                            (files[index]["file"] as io.File).path))
+                        if (!checkVirtualTourExtension((files[index]["file"] as io.File).path))
                           optionItem(
                             value: "عنوان را وارد کنید (اختیاری)",
                             isLast: false,
                             onTap: () => _showAddTitleDialog(index),
                           ),
-                        if (checkImageExtension(
-                            (files[index]["file"] as io.File).path))
+                        if (checkImageExtension((files[index]["file"] as io.File).path))
                           optionItem(
                             value: "انتخاب به عنوان نمایش اول",
                             isLast: false,
@@ -947,11 +878,9 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
         final byteData = await file.readAsBytes();
         Directory tempDir = await getTemporaryDirectory();
 
-        File tempVideo =
-            File("${tempDir.path}/assets/" + file.uri.pathSegments.last)
-              ..createSync(recursive: true)
-              ..writeAsBytesSync(byteData.buffer
-                  .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+        File tempVideo = File("${tempDir.path}/assets/" + file.uri.pathSegments.last)
+          ..createSync(recursive: true)
+          ..writeAsBytesSync(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
 
         final fileName = await VideoThumbnail.thumbnailFile(
           video: tempVideo.path,
@@ -1001,8 +930,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
     );
   }
 
-  Widget optionItem(
-      {required String value, required bool isLast, void Function()? onTap}) {
+  Widget optionItem({required String value, required bool isLast, void Function()? onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -1011,7 +939,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
             bottom: isLast
                 ? BorderSide.none
                 : BorderSide(
-                    color: Themes.textGrey.withOpacity(0.5),
+                    color: Themes.textGrey.withOpacity(0.3),
                     width: 0.7,
                   ),
           ),
@@ -1023,7 +951,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
             value,
             style: TextStyle(
               fontSize: 13,
-              color: Themes.text,
+              color: App.theme.textTheme.bodyLarge?.color,
             ),
           ),
         ),
@@ -1040,21 +968,12 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   }
 
   _editFile(int index) async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: false);
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false);
 
     if (result != null) {
       io.File file = io.File(result.files.first.path!);
-      if (!checkImageExtension(file.path) &&
-          !checkVideoExtension(file.path) &&
-          !checkVirtualTourExtension(file.path)) {
-        notify(
-            'فرمت فایل انتخابی باید یکی از فرمت های ' +
-                image_extensions.join(", ") +
-                video_extensions.join(", ") +
-                ", zip" +
-                " باشد",
-            duration: Duration(seconds: 4));
+      if (!checkImageExtension(file.path) && !checkVideoExtension(file.path) && !checkVirtualTourExtension(file.path)) {
+        notify('فرمت فایل انتخابی باید یکی از فرمت های ' + image_extensions.join(", ") + video_extensions.join(", ") + ", zip" + " باشد", duration: Duration(seconds: 4));
 
         return;
       }
@@ -1105,8 +1024,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
       barrierDismissible: true,
       builder: (_) {
         mediaTitleDialogContext = _;
-        TextEditingController _controller =
-            TextEditingController(text: files[index]['title']);
+        TextEditingController _controller = TextEditingController(text: files[index]['title']);
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -1120,8 +1038,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                 Column(
                   children: [
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       child: TextField2(
                         maxLines: 1,
                         controller: _controller,
@@ -1153,9 +1070,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                                 setState(() {
                                   files[index] = {
                                     "file": files[index]["file"],
-                                    "title": _controller.text.trim().isNotEmpty
-                                        ? _controller.text.trim()
-                                        : null,
+                                    "title": _controller.text.trim().isNotEmpty ? _controller.text.trim() : null,
                                   };
                                 });
 
@@ -1195,8 +1110,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   }
 
   dismissMediaTitleDialog() {
-    if (mediaTitleDialogContext != null)
-      Navigator.pop(mediaTitleDialogContext!);
+    if (mediaTitleDialogContext != null) Navigator.pop(mediaTitleDialogContext!);
     if (optionsDialog != null) Navigator.pop(optionsDialog!);
 
     print(files);

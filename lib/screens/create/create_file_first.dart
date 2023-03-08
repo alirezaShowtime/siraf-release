@@ -7,6 +7,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:siraf3/bloc/property_bloc.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/category.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/create_file_form_data.dart';
@@ -66,12 +67,9 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
       create: (_) => propertyBloc,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Themes.appBar,
-          elevation: 0.7,
           title: Text(
             "ثبت فایل",
             style: TextStyle(
-              color: Themes.text,
               fontSize: 15,
             ),
           ),
@@ -84,7 +82,6 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
               },
               icon: Icon(
                 Icons.refresh,
-                color: Themes.icon,
               ),
             ),
           ],
@@ -94,7 +91,6 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
             },
             icon: Icon(
               CupertinoIcons.back,
-              color: Themes.icon,
             ),
           ),
         ),
@@ -637,7 +633,6 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
               style: TextStyle(
                 fontSize: 13,
                 fontFamily: "IranSansMedium",
-                color: Themes.text,
               ),
             ),
             GestureDetector(
@@ -653,7 +648,6 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                   style: TextStyle(
                     fontSize: 13,
                     fontFamily: "IranSansMedium",
-                    color: Themes.text,
                   ),
                 ),
               ),
@@ -682,7 +676,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -702,7 +696,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                       child: Text(
                         'آیا مایل به ثبت فایل از ابتدا هستید؟',
                         style: TextStyle(
-                          color: Themes.textGrey,
+                          color: App.theme.tooltipTheme.textStyle?.color,
                           fontSize: 13,
                         ),
                       ),
@@ -797,7 +791,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -824,7 +818,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                         ),
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color,
                           fontSize: 13,
                           fontFamily: "IranSansMedium",
                         ),
@@ -894,7 +888,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
   showNumberDialog(PropertyInsert property) {
     StreamController<String> persianNumberText = StreamController();
     persianNumberText.add(((selectedMainProps[property.value!] ?? '')
-            .replaceAll(',', '') as String)
+            .replaceAll(',', ''))
         .toWord());
 
     StreamController<String?> value = StreamController();
@@ -915,7 +909,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -954,7 +948,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color,
                             fontSize: 13,
                             fontFamily: "IranSansMedium",
                           ),
@@ -972,8 +966,8 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                               child: Text(
                                 helpTexts[property.value!]!,
                                 style: TextStyle(
-                                  color: Themes.text,
                                   fontSize: 11,
+                                  color: App.theme.textTheme.bodyLarge?.color,
                                   fontFamily: "IranSansMedium",
                                 ),
                               ),
@@ -1019,7 +1013,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                           child: Text(
                             text.trim(),
                             style: TextStyle(
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color,
                               fontSize: 11,
                               fontFamily: "IranSansMedium",
                             ),
@@ -1099,7 +1093,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -1171,7 +1165,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
   showFeatureNumberDialog(PropertyInsert property) {
     StreamController<String> persianNumberText = StreamController();
     persianNumberText.add(((selectedMainProps[property.value!] ?? '')
-            .replaceAll(',', '') as String)
+            .replaceAll(',', ''))
         .toWord());
 
     StreamController<String?> value = StreamController();
@@ -1188,7 +1182,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -1228,7 +1222,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color,
                             fontSize: 13,
                             fontFamily: "IranSansMedium",
                           ),
@@ -1246,7 +1240,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                               child: Text(
                                 helpTexts[property.value!]!,
                                 style: TextStyle(
-                                  color: Themes.text,
+                                  color: App.theme.textTheme.bodyLarge?.color,
                                   fontSize: 11,
                                   fontFamily: "IranSansMedium",
                                 ),
@@ -1293,7 +1287,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                           child: Text(
                             text.trim(),
                             style: TextStyle(
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color,
                               fontSize: 11,
                               fontFamily: "IranSansMedium",
                             ),
@@ -1373,7 +1367,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -1450,12 +1444,12 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
       color = (selectedMainProps.containsKey(property.value!) &&
               selectedMainProps[property.value!] == e.value.toString())
           ? Themes.secondary
-          : Themes.text;
+          : App.theme.textTheme.bodyLarge?.color;
     } else {
       color = (selectedMainFeatures.containsKey(property.value!) &&
               selectedMainFeatures[property.value!] == e.value.toString())
           ? Themes.secondary
-          : Themes.text;
+          : App.theme.textTheme.bodyLarge?.color;
     }
 
     return GestureDetector(

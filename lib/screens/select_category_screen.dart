@@ -46,11 +46,9 @@ class _CategorySelectScreenState extends State<CategorySelectScreen> {
         title: Text(
           widget.category != null ? widget.category!.name! : 'انتخاب دسته بندی',
           style: TextStyle(
-            color: Themes.text,
             fontSize: 15,
           ),
         ),
-        titleSpacing: 0,
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: () {
@@ -58,11 +56,9 @@ class _CategorySelectScreenState extends State<CategorySelectScreen> {
           },
           icon: Icon(
             CupertinoIcons.back,
-            color: Themes.icon,
             size: 22,
           ),
         ),
-        backgroundColor: Themes.background,
         elevation: 0.7,
       ),
       body: SafeArea(

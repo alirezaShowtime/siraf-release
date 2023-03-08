@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/bookmark.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/favorite_file.dart';
 import 'package:siraf3/themes.dart';
 
@@ -42,13 +43,13 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
     if (imageSize > 140) imageSize = 140;
     return Container(
       decoration: BoxDecoration(
-          color: Themes.background2,
+          color: App.theme.dialogBackgroundColor,
           boxShadow: [
         BoxShadow(
-          color: Themes.background,
-          blurRadius: 2,
-          spreadRadius: 2,
-          offset: Offset(0, -3),
+          color: App.theme.backgroundColor,
+          blurRadius: 1,
+          spreadRadius: 1,
+          offset: Offset(0, -1),
         ),
       ]),
       foregroundDecoration: BoxDecoration(
@@ -109,7 +110,6 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
                         Text(
                           widget.file.fileId!.getFirstPrice(),
                           style: TextStyle(
-                            color: Themes.text,
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                             fontFamily: 'IranSans',
@@ -121,7 +121,6 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
                         Text(
                           widget.file.fileId!.getSecondPrice(),
                           style: TextStyle(
-                            color: Themes.text,
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             fontFamily: 'IranSans',
@@ -132,7 +131,6 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
                     Text(
                       widget.file.fileId!.category!.getMainCategoryName().toString() + " | " + widget.file.fileId!.name!,
                       style: TextStyle(
-                        color: Themes.text,
                         fontSize: 12,
                         fontFamily: 'IranSans',
                       ),
@@ -143,7 +141,6 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
                         Text(
                           '',
                           style: TextStyle(
-                            color: Themes.text,
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             fontFamily: 'IranSans',
@@ -156,11 +153,10 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: widget.file.fileId!.propertys
                                   ?.where((element) => element.weightList == 1 || element.weightList == 2 || element.weightList == 3 || element.weightList == 4)
-                                  .toList()
+                                  .take(4).toList()
                                   .map<Widget>((e) => Text(
                                         "${e.name} ${e.value}",
                                         style: TextStyle(
-                                          color: Themes.text,
                                           fontSize: 10.5,
                                           fontWeight: FontWeight.w400,
                                           fontFamily: 'IranSans',

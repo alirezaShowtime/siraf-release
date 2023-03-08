@@ -196,7 +196,7 @@ VoidCallback back(BuildContext context) {
   };
 }
 
-FaIcon icon(IconData icon, {Color color = Themes.text, double size = 24}) {
+FaIcon icon(IconData icon, {Color? color, double size = 24}) {
   return FaIcon(icon, color: color, size: size);
 }
 

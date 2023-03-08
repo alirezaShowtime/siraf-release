@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
@@ -186,13 +187,10 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Text(
             getTitle(cities),
             style: TextStyle(
-              color: Themes.text,
               fontSize: 15,
             ),
           ),
         ),
-        backgroundColor: Themes.appBar,
-        foregroundColor: Themes.text,
         centerTitle: true,
         leading: Padding(
           padding: const EdgeInsets.only(right: 15),
@@ -204,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
               image: AssetImage("assets/images/ic_menu.png"),
               width: 30,
               height: 30,
-              color: Themes.icon,
+              color: App.theme.iconTheme.color,
             ),
           ),
         ),
@@ -292,7 +290,6 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Text(
                 "فایلی موجود نیست فیلتر را حدف کنید",
                 style: TextStyle(
-                  color: Themes.text,
                   fontSize: 15,
                 ),
               ),

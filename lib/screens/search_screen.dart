@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:siraf3/db/model/search_history.dart';
+import 'package:siraf3/main.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/screens/filter_screen.dart';
 import 'package:siraf3/screens/search_result_screen.dart';
@@ -50,11 +52,7 @@ class _SearchScreen extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Themes.background,
       appBar: AppBar(
-        backgroundColor: Themes.appBar,
-        titleSpacing: 0,
-        elevation: 0.7,
         automaticallyImplyLeading: false,
         leading: MyBackButton(),
         title: TextField2(
@@ -67,10 +65,12 @@ class _SearchScreen extends State<SearchScreen> {
             hintText: "جستجو فایل",
             hintStyle: TextStyle(
               fontSize: 14,
+              color: App.theme.tooltipTheme.textStyle?.color,
             ),
           ),
           style: TextStyle(
             fontSize: 14,
+            color: App.theme.textTheme.bodyLarge?.color,
           ),
         ),
         actions: [
@@ -187,7 +187,7 @@ class _SearchScreen extends State<SearchScreen> {
                   searchHistory.keyword,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Themes.textGrey,
+                    // color: Themes.textGrey,
                   ),
                 ),
               ),

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 
 class TextNormal extends StatefulWidget {
   String data;
-  Color color;
+  Color? color;
   String fontFamily;
 
   TextNormal(
     this.data, {
-    this.color = Themes.text,
+    this.color,
     this.fontFamily = "IranSansMedium",
     Key? key,
   }) : super(key: key);

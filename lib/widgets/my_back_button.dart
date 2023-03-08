@@ -4,10 +4,10 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/themes.dart';
 
 class MyBackButton extends StatefulWidget {
-  Color color;
+  Color? color;
   void Function()? onPressed;
 
-  MyBackButton({this.color = Themes.icon, this.onPressed});
+  MyBackButton({this.color, this.onPressed});
 
   @override
   State<StatefulWidget> createState() => _MyBackButton();

@@ -23,7 +23,6 @@ class _TextTitleState extends State<TextTitle> {
     return Text(
       widget.data,
       style: TextStyle(
-        color: widget.color,
         fontFamily: widget.fontFamily,
         fontSize: 15,
       ),

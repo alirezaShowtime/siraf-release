@@ -11,6 +11,7 @@ import 'package:siraf3/bloc/location_files_bloc.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/map_utilities.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/filter_data.dart';
@@ -203,7 +204,7 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                 children: [
                   TileLayerWidget(
                     options: TileLayerOptions(
-                      urlTemplate: "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+                      urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
                     ),
                   ),
                   CircleLayerWidget(

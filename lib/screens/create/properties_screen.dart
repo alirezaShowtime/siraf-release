@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/category.dart';
 import 'package:siraf3/models/property_insert.dart';
 import 'package:siraf3/themes.dart';
@@ -79,24 +80,19 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Themes.appBar,
-          elevation: 0.7,
           title: Text(
             "انتخاب سایر ویژگی ها و امکانات",
             style: TextStyle(
-              color: Themes.text,
               fontSize: 15,
             ),
           ),
           automaticallyImplyLeading: false,
-          titleSpacing: 0,
           leading: IconButton(
             onPressed: () {
               Navigator.pop(context, [selectedProps, selectedFeatures]);
             },
             icon: Icon(
               CupertinoIcons.back,
-              color: Themes.icon,
             ),
           ),
         ),
@@ -331,7 +327,6 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
               style: TextStyle(
                 fontSize: 13,
                 fontFamily: "IranSansMedium",
-                color: Themes.text,
               ),
             ),
             GestureDetector(
@@ -347,7 +342,6 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                   style: TextStyle(
                     fontSize: 13,
                     fontFamily: "IranSansMedium",
-                    color: Themes.text,
                   ),
                 ),
               ),
@@ -403,7 +397,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -443,7 +437,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color,
                             fontSize: 13,
                             fontFamily: "IranSansMedium",
                           ),
@@ -461,7 +455,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                               child: Text(
                                 helpTexts[property.value!]!,
                                 style: TextStyle(
-                                  color: Themes.text,
+                                  color: App.theme.textTheme.bodyLarge?.color,
                                   fontSize: 11,
                                   fontFamily: "IranSansMedium",
                                 ),
@@ -508,7 +502,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                           child: Text(
                             text.trim(),
                             style: TextStyle(
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color,
                               fontSize: 11,
                               fontFamily: "IranSansMedium",
                             ),
@@ -586,7 +580,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -675,7 +669,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -715,7 +709,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color,
                             fontSize: 13,
                             fontFamily: "IranSansMedium",
                           ),
@@ -733,7 +727,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                               child: Text(
                                 helpTexts[property.value!]!,
                                 style: TextStyle(
-                                  color: Themes.text,
+                                  color: App.theme.textTheme.bodyLarge?.color,
                                   fontSize: 11,
                                   fontFamily: "IranSansMedium",
                                 ),
@@ -780,7 +774,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                           child: Text(
                             text.trim(),
                             style: TextStyle(
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color,
                               fontSize: 11,
                               fontFamily: "IranSansMedium",
                             ),
@@ -859,7 +853,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -936,12 +930,12 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
       color = (selectedProps.containsKey(property.value!) &&
               selectedProps[property.value!] == e.value.toString())
           ? Themes.secondary
-          : Themes.text;
+          : App.theme.textTheme.bodyLarge?.color;
     } else {
       color = (selectedFeatures.containsKey(property.value!) &&
               selectedFeatures[property.value!] == e.value.toString())
           ? Themes.secondary
-          : Themes.text;
+          : App.theme.textTheme.bodyLarge?.color;
     }
 
     return GestureDetector(

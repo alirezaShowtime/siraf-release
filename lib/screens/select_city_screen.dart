@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/get_cities_bloc.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/province.dart';
 import 'package:siraf3/screens/home_screen.dart';
@@ -94,10 +95,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
     return WillPopScope(
       onWillPop: _handleBack,
       child: Scaffold(
-        backgroundColor: Themes.background,
         appBar: AppBar(
-          backgroundColor: Themes.appBar,
-          shadowColor: Color(0x50000000),
           elevation: 0.7,
           actions: !onSearching
               ? [
@@ -109,7 +107,6 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                     },
                     icon: Icon(
                       CupertinoIcons.refresh,
-                      color: Themes.icon,
                     ),
                   ),
                   IconButton(
@@ -120,7 +117,6 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                     },
                     icon: Icon(
                       CupertinoIcons.search,
-                      color: Themes.icon,
                     ),
                   ),
                   SizedBox(
@@ -154,7 +150,6 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
             },
             icon: Icon(
               CupertinoIcons.back,
-              color: Themes.icon,
               size: 20,
             ),
           ),
@@ -297,7 +292,6 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                       width: double.infinity,
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        // mainAxisAlignment: MainAxisAlignment.start,
                         child: Row(
                           children: selectedCities
                               .map<Widget>(
@@ -385,7 +379,6 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
       child: Accordion(
         title: TextNormal(
           e.name,
-          color: Colors.black,
         ),
         open: currentCityAccordion == e.id,
         onClick: () {
@@ -395,6 +388,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
           print(currentCityAccordion);
         },
         content: Container(
+          color: App.theme.dialogBackgroundColor,
           padding: EdgeInsets.only(top: 10, bottom: 15, right: 20),
           alignment: Alignment.centerRight,
           child: Column(
@@ -430,7 +424,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
             TextNormal(
               e.name!,
               fontFamily: selectedCities.any((element) => element.id == e.id) ? "IranSansMedium" : "IranSans",
-              color: selectedCities.any((element) => element.id == e.id) ? Themes.primary : Themes.textGrey,
+              color: selectedCities.any((element) => element.id == e.id) ? Themes.primary : App.theme.tooltipTheme.textStyle?.color,
             ),
           ],
         ),
@@ -461,7 +455,6 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
       child: Row(children: [
         Icon(
           Typicons.location_outline,
-          color: Themes.secondary,
         ),
         SizedBox(
           width: 3,
@@ -472,24 +465,24 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
               TextSpan(
                 text: "انتخاب لوکیشن فعلی من (",
                 style: TextStyle(
-                  color: Themes.text,
                   fontSize: 15,
+                  color: App.theme.textTheme.bodyLarge?.color,
                   fontFamily: "IranSansMedium",
                 ),
               ),
               TextSpan(
                 text: "تهران",
                 style: TextStyle(
-                  color: Themes.secondary,
                   fontSize: 15,
+                  color: App.theme.textTheme.bodyLarge?.color,
                   fontFamily: "IranSansMedium",
                 ),
               ),
               TextSpan(
                 text: ")",
                 style: TextStyle(
-                  color: Themes.text,
                   fontSize: 15,
+                  color: App.theme.textTheme.bodyLarge?.color,
                   fontFamily: "IranSansMedium",
                 ),
               ),

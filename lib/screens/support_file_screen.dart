@@ -4,16 +4,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:http/http.dart';
 import 'package:siraf3/bloc/file_consulants_bloc.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/models/file_consulant.dart';
 import 'package:siraf3/models/file_detail.dart' as file_detail;
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/try_again.dart';
-import 'package:http/http.dart';
 
-import 'package:siraf3/dialog.dart';
 import '../helpers.dart';
 
 class SupportFileScreen extends StatefulWidget {
@@ -23,8 +23,7 @@ class SupportFileScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _SupportFileScreen();
 
-  SupportFileScreen(
-      {required this.file, required this.isFavorite, required this.id});
+  SupportFileScreen({required this.file, required this.isFavorite, required this.id});
 
   file_detail.FileDetail file;
 }
@@ -51,12 +50,10 @@ class _SupportFileScreen extends State<SupportFileScreen> {
         },
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Themes.background,
             title: Text(
               "مشاوران | ${widget.file.name}",
               style: TextStyle(
                 fontSize: 12,
-                color: Themes.text,
               ),
             ),
             actions: [
@@ -72,7 +69,6 @@ class _SupportFileScreen extends State<SupportFileScreen> {
                 },
                 icon: Icon(
                   widget.isFavorite ? Icons.bookmark : Icons.bookmark_border,
-                  color: Themes.icon,
                 ),
               ),
             ],
@@ -82,21 +78,20 @@ class _SupportFileScreen extends State<SupportFileScreen> {
               },
               icon: Icon(
                 CupertinoIcons.back,
-                color: Themes.icon,
               ),
             ),
             elevation: 0.7,
           ),
           body: BlocBuilder<FileConsulantsBloc, FileConsulantsState>(
-              builder: _buildMainBloc),
+            builder: _buildMainBloc,
+          ),
         ),
       ),
     );
   }
 
   Widget _buildMainBloc(context, FileConsulantsState state) {
-    if (state is FileConsulantsInitState ||
-        state is FileConsulantsLoadingState) {
+    if (state is FileConsulantsInitState || state is FileConsulantsLoadingState) {
       return Center(
         child: Loading(),
       );
@@ -298,18 +293,15 @@ class _SupportFileScreen extends State<SupportFileScreen> {
     var result = false;
 
     try {
-      var response = await get(
-          getFileUrl('file/addFileFavorite/' + id.toString() + '/'),
-          headers: {
-            "Authorization": await User.getBearerToken(),
-          });
+      var response = await get(getFileUrl('file/addFileFavorite/' + id.toString() + '/'), headers: {
+        "Authorization": await User.getBearerToken(),
+      });
 
       if (isResponseOk(response)) {
         result = true;
       } else {
         var json = jDecode(response.body);
-        notify(json['message'] ??
-            "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
+        notify(json['message'] ?? "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
         result = false;
       }
     } on HttpException {
@@ -329,18 +321,15 @@ class _SupportFileScreen extends State<SupportFileScreen> {
     var result = false;
 
     try {
-      var response = await get(
-          getFileUrl('file/deleteFileFavorite/' + id.toString() + '/'),
-          headers: {
-            "Authorization": await User.getBearerToken(),
-          });
+      var response = await get(getFileUrl('file/deleteFileFavorite/' + id.toString() + '/'), headers: {
+        "Authorization": await User.getBearerToken(),
+      });
 
       if (isResponseOk(response)) {
         result = true;
       } else {
         var json = jDecode(response.body);
-        notify(json['message'] ??
-            "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
+        notify(json['message'] ?? "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
         result = false;
       }
     } on HttpException {

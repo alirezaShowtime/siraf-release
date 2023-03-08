@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:provider/provider.dart';
+import 'package:siraf3/dark_theme_provider.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/settings.dart';
@@ -22,6 +24,8 @@ class _SettingsScreen extends State<SettingsScreen> {
   bool showNotification = false;
   bool darkMode = false;
 
+  late DarkThemeProvider darkThemeProvider;
+
   Settings settings = Settings();
 
   @override
@@ -41,10 +45,10 @@ class _SettingsScreen extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    darkThemeProvider = Provider.of<DarkThemeProvider>(context);
+
     return Scaffold(
-      backgroundColor: Themes.background,
       appBar: AppBar(
-        backgroundColor: Themes.appBar,
         elevation: 0.7,
         automaticallyImplyLeading: false,
         leading: MyBackButton(),
@@ -132,7 +136,7 @@ class _SettingsScreen extends State<SettingsScreen> {
                 setState(() {
                   darkMode = value;
                 });
-                settings.setDarkMode(value);
+                darkThemeProvider.darkTheme = value;
               },
             ),
           ),
@@ -173,7 +177,7 @@ class _SettingsScreen extends State<SettingsScreen> {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: Colors.grey.shade200,
+              color: Colors.grey.shade200.withOpacity(0.4),
               width: 1,
             ),
           ),
@@ -184,7 +188,7 @@ class _SettingsScreen extends State<SettingsScreen> {
           children: [
             Text(
               title,
-              style: TextStyle(fontSize: 13, color: Themes.text, fontFamily: "IranSansMedium"),
+              style: TextStyle(fontSize: 13, fontFamily: "IranSansMedium"),
             ),
             if (text != null && widget == null)
               Text(
@@ -192,7 +196,6 @@ class _SettingsScreen extends State<SettingsScreen> {
                 textDirection: TextDirection.ltr,
                 style: TextStyle(
                   fontSize: 11,
-                  color: Themes.text.withOpacity(0.7),
                 ),
               ),
             if (widget != null && text == null) widget

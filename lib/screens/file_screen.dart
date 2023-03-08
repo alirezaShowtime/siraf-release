@@ -14,6 +14,7 @@ import 'package:siraf3/bookmark.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file_detail.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/file_images_screen.dart';
@@ -368,7 +369,7 @@ class _FileScreenState extends State<FileScreen> {
                 child: Flexible(
                   child: Text(
                     (file.fullCategory != null ? file.fullCategory!.getMainCategoryName().toString().trim() + " | " : "") + file.name!.trim(),
-                    style: TextStyle(color: Themes.text, fontFamily: "IranSans", fontSize: 14, height: 1.3),
+                    style: TextStyle(fontFamily: "IranSans", fontSize: 14, height: 1.3),
                     maxLines: 3,
                   ),
                 ),
@@ -376,7 +377,7 @@ class _FileScreenState extends State<FileScreen> {
               Text(
                 file.publishedAgo! + ' | ' + file.city!,
                 style: TextStyle(
-                  color: Themes.textGrey,
+                  color: App.theme.tooltipTheme.textStyle?.color,
                   fontFamily: "IranSans",
                   fontSize: 11,
                 ),
@@ -397,7 +398,7 @@ class _FileScreenState extends State<FileScreen> {
             image: AssetImage("assets/images/ic_share.png"),
             width: 16,
             height: 16,
-            color: Themes.icon,
+            color: App.theme.iconTheme.color,
           ),
         ),
       ],
@@ -438,7 +439,6 @@ class _FileScreenState extends State<FileScreen> {
         Text(
           value,
           style: TextStyle(
-            color: Themes.text,
             fontFamily: "IranSans",
             fontSize: 14,
           ),
@@ -449,7 +449,7 @@ class _FileScreenState extends State<FileScreen> {
         Text(
           label.split(r" ").take(2).join(" "),
           style: TextStyle(
-            color: Themes.textGrey,
+            color: App.theme.tooltipTheme.textStyle?.color,
             fontFamily: "IranSans",
             fontSize: 11,
           ),
@@ -475,7 +475,6 @@ class _FileScreenState extends State<FileScreen> {
         child: Text(
           description,
           style: TextStyle(
-            color: Themes.text,
             fontSize: 11.5,
             fontWeight: FontWeight.w400,
             fontFamily: 'IranSans',
@@ -503,7 +502,7 @@ class _FileScreenState extends State<FileScreen> {
           children: [
             TileLayerWidget(
               options: TileLayerOptions(
-                urlTemplate: "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+                urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
               ),
             ),
             MarkerLayerWidget(
@@ -594,10 +593,10 @@ class _FileScreenState extends State<FileScreen> {
       width: double.infinity,
       height: 60,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: App.theme.dialogBackgroundColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.shade200,
+            color: App.theme.shadowColor,
             offset: const Offset(0, -1),
             blurRadius: 2,
           ),
@@ -621,7 +620,7 @@ class _FileScreenState extends State<FileScreen> {
                         ),
                         Text(
                           file.getPrice()?.value != null ? number_format(file.getPrice()!.value) : "توافقی",
-                          style: TextStyle(color: Themes.text, fontSize: 14, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                         ),
                       ],
                     )

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 
-class Themes {
+class DarkThemes {
   static const primary = Color(0xff0067A5);
-  static const appBar = Color(0xffffffff);
+  static const appBar = Color(0xff121418);
   static const statusBar = Color(0xff0067A5);
   static const blue = Color(0xff0067A5);
-  static const background = Color(0xfffafbfd);
-  static const background2 = Color(0xffffffff);
+  static const background = Color(0xff1b1f24);
+  static const background2 = Color(0xff121418);
   static const secondary = Color(0xff0067A5);
   static const secondary2 = Color(0xff707070);
   static const text = Color(0xff3d3d3d);
   static const textGrey = Color(0xff707070);
   static const textLight = Color(0xffffffff);
+  static const textMediumLight = Color(0xffc4c4c4);
   static const icon = Color(0xff3d3d3d);
   static const iconGrey = Color(0xff707070);
   static const iconLight = Color(0xffffffff);
@@ -28,47 +29,43 @@ class Themes {
 
   static const blueSky = Color(0x704abbff);
 
-  static ThemeData themeData() {
+  static ThemeData darkThemeData() {
     return ThemeData(
       primarySwatch: Colors.blue,
       fontFamily: 'IranSans',
-      backgroundColor: Themes.background,
-      scaffoldBackgroundColor: Themes.background,
-      dialogBackgroundColor: Themes.background2,
-      accentColor: Themes.secondary,
-      secondaryHeaderColor: Themes.secondary,
-      primaryColor: Themes.primary,
+      backgroundColor: DarkThemes.background,
+      scaffoldBackgroundColor: DarkThemes.background,
+      dialogBackgroundColor: DarkThemes.background2,
+      accentColor: DarkThemes.secondary,
+      secondaryHeaderColor: DarkThemes.secondary,
+      primaryColor: DarkThemes.primary,
       appBarTheme: AppBarTheme(
-        shadowColor: Color(0x50000000),
-        backgroundColor: Themes.appBar,
-        foregroundColor: Themes.text,
-        titleTextStyle: TextStyle(fontSize: 16, color: Themes.text, fontFamily: "IranSansMedium"),
-        iconTheme: IconThemeData(
-          color: Themes.icon,
-        ),
+        shadowColor: Color(0x50ffffff),
+        backgroundColor: DarkThemes.appBar,
+        foregroundColor: DarkThemes.textLight,
+        titleTextStyle: TextStyle(fontSize: 16, color: DarkThemes.textLight, fontFamily: "IranSansMedium"),
         titleSpacing: 0,
         elevation: 0.7,
         actionsIconTheme: IconThemeData(
-          color: Themes.icon,
+          color: DarkThemes.iconLight,
         ),
       ),
       iconTheme: IconThemeData(
-        color: Themes.icon,
+        color: DarkThemes.iconLight,
       ),
       tooltipTheme: TooltipThemeData(
-          textStyle: TextStyle(
-            color: Themes.textGrey,
-          )
+        textStyle: TextStyle(
+          color: DarkThemes.textMediumLight,
+        )
       ),
-      shadowColor: Colors.grey.withOpacity(0.1),
+      shadowColor: Colors.transparent,
       textTheme: TextTheme(
         bodyText1: TextStyle(),
         bodyText2: TextStyle(),
       ).apply(
-        bodyColor: Themes.text,
-        displayColor: Themes.textGrey,
+        bodyColor: DarkThemes.textLight,
+        displayColor: DarkThemes.textLight,
       ),
     );
   }
-
 }

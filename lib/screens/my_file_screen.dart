@@ -14,6 +14,7 @@ import 'package:siraf3/bloc/my_file_bloc.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file_consulant.dart';
 import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/models/user.dart';
@@ -653,7 +654,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
           children: [
             TileLayerWidget(
               options: TileLayerOptions(
-                urlTemplate: "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+                urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
               ),
             ),
             MarkerLayerWidget(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/icon_asset.dart';
 
@@ -7,6 +8,7 @@ class Accordion extends StatefulWidget {
   final Widget content;
   bool open;
   Function? onClick;
+  Color? backgroundColor;
 
   Accordion({
     Key? key,
@@ -14,6 +16,7 @@ class Accordion extends StatefulWidget {
     required this.content,
     this.open = false,
     this.onClick,
+    this.backgroundColor,
   }) : super(key: key);
 
   @override
@@ -26,7 +29,7 @@ class _AccordionState extends State<Accordion> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        color: Themes.background2,
+        color: widget.backgroundColor ?? App.theme.dialogBackgroundColor,
       ),
       margin: EdgeInsets.only(bottom: 5),
       child: Column(
@@ -38,7 +41,7 @@ class _AccordionState extends State<Accordion> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
-                color: Themes.background2,
+                color: widget.backgroundColor ?? App.theme.dialogBackgroundColor,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -51,7 +54,7 @@ class _AccordionState extends State<Accordion> {
                     icon: widget.open ? "ic_arrow_top.png" : "ic_arrow_bottom.png",
                     width: 14,
                     height: 8,
-                    color: Themes.icon,
+                    color: App.theme.iconTheme.color,
                     fit: BoxFit.fill,
                     onPressed: _onClick,
                   ),
@@ -98,7 +101,6 @@ class _AccordionItem extends State<AccordionItem> {
           widget.title,
           style: TextStyle(
             fontSize: 12,
-            color: Themes.text,
           ),
         ),
       ),

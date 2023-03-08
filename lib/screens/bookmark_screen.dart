@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/bookmark_bloc.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/favorite_file.dart';
 import 'package:siraf3/models/file.dart' as file;
 import 'package:siraf3/screens/compare_screen.dart';
 import 'package:siraf3/screens/file_screen.dart';
-import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/bookmark_file_item.dart';
 import 'package:siraf3/widgets/loading.dart';
@@ -57,9 +57,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
           return true;
         },
         child: Scaffold(
-          backgroundColor: Themes.background,
           appBar: AppBar(
-            backgroundColor: Themes.appBar,
             title: AppBarTitle(
               "نشانها و یادداشت ها",
               fontSize: 15,
@@ -88,7 +86,6 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                     "مقایسه",
                     style: TextStyle(
                       fontSize: 13,
-                      color: Themes.text,
                     ),
                   ),
                 ),
@@ -104,13 +101,12 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                           "نمایش همه",
                           style: TextStyle(
                             fontSize: 13,
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color,
                           ),
                         ),
                         if (sort == null)
                           Icon(
                             Icons.check,
-                            color: Themes.icon,
                             size: 20,
                           ),
                       ],
@@ -126,13 +122,12 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                           "فقط فایل ها",
                           style: TextStyle(
                             fontSize: 13,
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color,
                           ),
                         ),
                         if (sort == 1)
                           Icon(
                             Icons.check,
-                            color: Themes.icon,
                             size: 20,
                           ),
                       ],
@@ -148,13 +143,12 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                           "فقط محتوا ها",
                           style: TextStyle(
                             fontSize: 13,
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color,
                           ),
                         ),
                         if (sort == 2)
                           Icon(
                             Icons.check,
-                            color: Themes.icon,
                             size: 20,
                           ),
                       ],
@@ -162,7 +156,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                     height: 35,
                   ),
                 ],
-                icon: icon(Icons.sort_rounded),
+                icon: icon(Icons.sort_rounded, color: App.theme.iconTheme.color),
                 onSelected: (val) {
                   setState(() {
                     sort = val;
@@ -178,7 +172,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                       "انتخاب همه",
                       style: TextStyle(
                         fontSize: 13,
-                        color: Themes.text,
+                        color: App.theme.textTheme.bodyLarge?.color,
                       ),
                     ),
                     height: 35,
@@ -189,13 +183,13 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                       "حذف",
                       style: TextStyle(
                         fontSize: 13,
-                        color: Themes.text,
+                        color: App.theme.textTheme.bodyLarge?.color,
                       ),
                     ),
                     height: 35,
                   ),
                 ],
-                icon: icon(Icons.more_vert_rounded),
+                icon: icon(Icons.more_vert_rounded, color: App.theme.iconTheme.color),
                 onSelected: (val) {
                   if (val == 0) {
                     setState(() {
@@ -271,14 +265,14 @@ class _BookmarkScreen extends State<BookmarkScreen> {
 
     int? parentId;
 
-    selectedFiles.forEach((element) {
+    for (var element in selectedFiles) {
       if (parentId == null) {
         parentId = element.fileId!.category!.parentId;
       }
       if (parentId != element.fileId!.category!.parentId) {
         return notify("فایل های انتخابی شما هم نوع نمی باشند");
       }
-    });
+    }
 
     List<file.File> files = selectedFiles.map<file.File>((e) {
       return file.File(

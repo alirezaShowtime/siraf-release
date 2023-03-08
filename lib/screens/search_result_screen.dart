@@ -131,12 +131,9 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
           title: Text(
             "جستجوی \"${widget.filterData.search}\"",
             style: TextStyle(
-              color: Themes.text,
-              fontSize: 15,
+              fontSize: 13,
             ),
           ),
-          backgroundColor: Themes.appBar,
-          titleSpacing: 0,
           automaticallyImplyLeading: false,
           leading: Padding(
             padding: const EdgeInsets.only(right: 15),
@@ -162,7 +159,6 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
               },
               icon: FaIcon(
                 CupertinoIcons.search,
-                color: Themes.icon,
               ),
             ),
             SizedBox(
@@ -196,7 +192,6 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                 child: Text(
                   "فایلی موجود نیست فیلتر را حدف کنید",
                   style: TextStyle(
-                    color: Themes.text,
                     fontSize: 15,
                   ),
                 ),

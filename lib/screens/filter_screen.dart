@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/categories_bloc.dart';
 import 'package:siraf3/bloc/property_bloc.dart';
+import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/category.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/models/property_insert.dart';
@@ -61,9 +63,7 @@ class _FilterScreenState extends State<FilterScreen> {
           filters = widget.filterData.filters ?? Filters();
         } else {
           print("nooooo");
-          setMainCat(event.categories
-              .where((element) => element.parentId == null)
-              .first);
+          setMainCat(event.categories.where((element) => element.parentId == null).first);
         }
       }
     });
@@ -110,28 +110,18 @@ class _FilterScreenState extends State<FilterScreen> {
 
   Widget _buildMainWidgetWithCategories(List<Category> categories) {
     return Container(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
-      height: MediaQuery
-          .of(context)
-          .size
-          .height,
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      color: App.theme.backgroundColor,
       child: Stack(
         children: [
-          Image(
-            image: AssetImage("assets/images/filter_background.png"),
-            fit: BoxFit.cover,
-            width: MediaQuery
-                .of(context)
-                .size
-                .width,
-            height: MediaQuery
-                .of(context)
-                .size
-                .height,
-          ),
+          if (!App.isDark)
+            Image(
+              image: AssetImage("assets/images/filter_background.png"),
+              fit: BoxFit.cover,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+            ),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -144,14 +134,8 @@ class _FilterScreenState extends State<FilterScreen> {
                 end: Alignment(0, 0),
               ),
             ),
-            width: MediaQuery
-                .of(context)
-                .size
-                .width,
-            height: MediaQuery
-                .of(context)
-                .size
-                .height,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
           ),
           SafeArea(
             child: Column(
@@ -228,50 +212,44 @@ class _FilterScreenState extends State<FilterScreen> {
               children: [
                 Container(
                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width,
+                  width: MediaQuery.of(context).size.width,
                   child: Column(
                     children: [
                       Container(
                         height: 60,
-                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(60), boxShadow: [
+                        decoration: BoxDecoration(color: App.theme.dialogBackgroundColor, borderRadius: BorderRadius.circular(60), boxShadow: [
                           BoxShadow(
                             offset: Offset(-1, 0),
-                            color: Colors.grey.withOpacity(0.1),
+                            color: App.theme.shadowColor,
                             blurRadius: 5,
                             spreadRadius: 1,
                           ),
                           BoxShadow(
                             offset: Offset(1, 0),
-                            color: Colors.grey.withOpacity(0.1),
+                            color: App.theme.shadowColor,
                             blurRadius: 5,
                             spreadRadius: 1,
                           ),
                           BoxShadow(
                             offset: Offset(0, 0),
-                            color: Colors.grey.withOpacity(0.1),
+                            color: App.theme.shadowColor,
                             blurRadius: 5,
                             spreadRadius: 1,
                           ),
                           BoxShadow(
                             offset: Offset(1, 1),
-                            color: Colors.grey.withOpacity(0.1),
+                            color: App.theme.shadowColor,
                             blurRadius: 5,
                             spreadRadius: 1,
                           ),
                           BoxShadow(
                             offset: Offset(-1, -1),
-                            color: Colors.grey.withOpacity(0.1),
+                            color: App.theme.shadowColor,
                             blurRadius: 5,
                             spreadRadius: 1,
                           ),
                         ]),
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
+                        width: MediaQuery.of(context).size.width,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: Row(
@@ -285,45 +263,42 @@ class _FilterScreenState extends State<FilterScreen> {
                       // if (_mainCategory != null)
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: App.theme.dialogBackgroundColor,
                           borderRadius: BorderRadius.circular(30),
                           boxShadow: [
                             BoxShadow(
                               offset: Offset(-1, 0),
-                              color: Colors.grey.withOpacity(0.1),
+                              color: App.theme.shadowColor,
                               blurRadius: 5,
                               spreadRadius: 1,
                             ),
                             BoxShadow(
                               offset: Offset(1, 0),
-                              color: Colors.grey.withOpacity(0.1),
+                              color: App.theme.shadowColor,
                               blurRadius: 5,
                               spreadRadius: 1,
                             ),
                             BoxShadow(
                               offset: Offset(0, 0),
-                              color: Colors.grey.withOpacity(0.1),
+                              color: App.theme.shadowColor,
                               blurRadius: 5,
                               spreadRadius: 1,
                             ),
                             BoxShadow(
                               offset: Offset(1, 1),
-                              color: Colors.grey.withOpacity(0.1),
+                              color: App.theme.shadowColor,
                               blurRadius: 5,
                               spreadRadius: 1,
                             ),
                             BoxShadow(
                               offset: Offset(-1, -1),
-                              color: Colors.grey.withOpacity(0.1),
+                              color: App.theme.shadowColor,
                               blurRadius: 5,
                               spreadRadius: 1,
                             ),
                           ],
                         ),
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
+                        width: MediaQuery.of(context).size.width,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -359,7 +334,6 @@ class _FilterScreenState extends State<FilterScreen> {
                                                 Text(
                                                   "همه",
                                                   style: TextStyle(
-                                                    color: Themes.secondary2,
                                                     fontSize: 13,
                                                   ),
                                                 ),
@@ -390,7 +364,7 @@ class _FilterScreenState extends State<FilterScreen> {
                               child: Text(
                                 "امکانات تصویری فایل",
                                 style: TextStyle(
-                                  color: Themes.secondary2,
+                                  color: App.isDark ? DarkThemes.textMediumLight : Themes.secondary2,
                                   fontSize: 13,
                                 ),
                               ),
@@ -424,7 +398,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                           child: Text(
                                             "عکس دار",
                                             style: TextStyle(
-                                              color: _hasImage ? Themes.textLight : Themes.text,
+                                              color: _hasImage ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
                                               fontSize: 11,
                                             ),
                                           ),
@@ -454,7 +428,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                           child: Text(
                                             "ویدیو دار",
                                             style: TextStyle(
-                                              color: _hasVideo ? Themes.textLight : Themes.text,
+                                              color: _hasVideo ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
                                               fontSize: 11,
                                             ),
                                           ),
@@ -484,7 +458,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                           child: Text(
                                             "تور مجازی",
                                             style: TextStyle(
-                                              color: _hasTour ? Themes.textLight : Themes.text,
+                                              color: _hasTour ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
                                               fontSize: 11,
                                             ),
                                           ),
@@ -556,7 +530,11 @@ class _FilterScreenState extends State<FilterScreen> {
             child: Text(
               e.name!,
               style: TextStyle(
-                color: _mainCategory?.id == e.id ? Themes.textLight : Themes.text,
+                color: App.isDark
+                    ? Themes.textLight
+                    : _mainCategory?.id == e.id
+                        ? Themes.textLight
+                        : Themes.text,
                 fontSize: 11,
                 fontFamily: "IranSansMedium",
               ),
@@ -583,13 +561,11 @@ class _FilterScreenState extends State<FilterScreen> {
       },
       child: Container(
         constraints: BoxConstraints(
-          minWidth: (MediaQuery
-              .of(context)
-              .size
-              .width - 40) / 4,
+          minWidth: (MediaQuery.of(context).size.width - 40) / 4,
         ),
         decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(
+          border: Border(
+              bottom: BorderSide(
             color: _subCategory?.id == e.id ? Themes.primary : Themes.secondary2.withOpacity(0.5),
             width: 1,
           )),
@@ -598,7 +574,13 @@ class _FilterScreenState extends State<FilterScreen> {
         child: Text(
           e.name!,
           style: TextStyle(
-            color: _subCategory?.id == e.id ? Themes.text : Themes.secondary2,
+            color: App.isDark
+                ? _subCategory?.id == e.id
+                    ? DarkThemes.textLight
+                    : DarkThemes.textMediumLight
+                : _subCategory?.id == e.id
+                    ? Themes.text
+                    : Themes.secondary2,
             fontSize: 13,
             fontFamily: _subCategory?.id == e.id ? "IranSansMedium" : null,
           ),
@@ -652,8 +634,8 @@ class _FilterScreenState extends State<FilterScreen> {
         var minInitialValue = data.asMap().containsKey(0) ? (data[0] == 0 ? "" : data[0]) : "";
         var maxInitialValue = data.asMap().containsKey(1)
             ? data[1] == 0
-            ? ""
-            : data[1]
+                ? ""
+                : data[1]
             : "";
 
         widgets.add(Padding(
@@ -664,7 +646,7 @@ class _FilterScreenState extends State<FilterScreen> {
               Text(
                 p.name!,
                 style: TextStyle(
-                  color: Themes.secondary2,
+                  color: App.isDark ? DarkThemes.textMediumLight : Themes.secondary2,
                   fontSize: 13,
                 ),
               ),
@@ -673,7 +655,7 @@ class _FilterScreenState extends State<FilterScreen> {
                 Text(
                   "(تومان)",
                   style: TextStyle(
-                    color: Themes.secondary2,
+                    color: App.isDark ? DarkThemes.textMediumLight : Themes.secondary2,
                     fontSize: 10,
                   ),
                 ),
@@ -761,7 +743,7 @@ class _FilterScreenState extends State<FilterScreen> {
                     },
                     style: TextStyle(
                       fontSize: 13,
-                      color: Themes.text,
+                      color: App.theme.textTheme.bodyLarge?.color,
                     ),
                   ),
                 ),
@@ -842,7 +824,7 @@ class _FilterScreenState extends State<FilterScreen> {
                     },
                     style: TextStyle(
                       fontSize: 13,
-                      color: Themes.text,
+                      color: App.theme.textTheme.bodyLarge?.color,
                     ),
                   ),
                 ),
