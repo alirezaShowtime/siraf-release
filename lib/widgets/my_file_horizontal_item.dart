@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/my_file.dart';
 import 'package:siraf3/themes.dart';
 
@@ -32,12 +33,12 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
     double imageSize = (MediaQuery.of(context).size.width - 20) / 3.5;
     if (imageSize > 140) imageSize = 140;
     return Container(
-      decoration: BoxDecoration(color: Themes.background2, boxShadow: [
+      decoration: BoxDecoration(color: App.theme.dialogBackgroundColor, boxShadow: [
         BoxShadow(
-          color: Themes.background,
-          blurRadius: 2,
-          spreadRadius: 2,
-          offset: Offset(0, -3),
+          color: App.theme.backgroundColor,
+          blurRadius: 1,
+          spreadRadius: 1,
+          offset: Offset(0, -1),
         ),
       ]),
       foregroundDecoration: BoxDecoration(
@@ -86,7 +87,6 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                             Text(
                               widget.file.getFirstPrice(),
                               style: TextStyle(
-                                color: Themes.text,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
                                 fontFamily: 'IranSans',
@@ -98,7 +98,6 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                             Text(
                               widget.file.getSecondPrice(),
                               style: TextStyle(
-                                color: Themes.text,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
                                 fontFamily: 'IranSans',
@@ -109,7 +108,6 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                         Text(
                           progress_fa[widget.file.progress] ?? "نامشخص",
                           style: TextStyle(
-                            color: Themes.text,
                             fontSize: 11,
                             fontWeight: FontWeight.w400,
                             fontFamily: 'IranSans',
@@ -120,7 +118,6 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                     Text(
                       widget.file.category!.getMainCategoryName().toString() + " | " + widget.file.name!,
                       style: TextStyle(
-                        color: Themes.text,
                         fontSize: 12,
                         fontFamily: 'IranSans',
                       ),
@@ -131,7 +128,6 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                         Text(
                           '',
                           style: TextStyle(
-                            color: Themes.text,
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             fontFamily: 'IranSans',
@@ -146,7 +142,6 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                             Text(
                               widget.file.publishedAgo ?? "",
                               style: TextStyle(
-                                color: Themes.text,
                                 fontSize: 10.5,
                                 fontWeight: FontWeight.w400,
                                 fontFamily: 'IranSans',
@@ -155,7 +150,6 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                             Text(
                               "کد فایل : ${widget.file.id!}",
                               style: TextStyle(
-                                color: Themes.text,
                                 fontSize: 10.5,
                                 fontWeight: FontWeight.w400,
                                 fontFamily: 'IranSans',
@@ -164,7 +158,6 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                             Text(
                               "بازدید : ${widget.file.viewCount}",
                               style: TextStyle(
-                                color: Themes.text,
                                 fontSize: 10.5,
                                 fontWeight: FontWeight.w400,
                                 fontFamily: 'IranSans',

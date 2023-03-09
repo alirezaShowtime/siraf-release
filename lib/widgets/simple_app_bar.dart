@@ -17,10 +17,7 @@ class _SimpleAppBar extends State<SimpleAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Themes.appBar,
       automaticallyImplyLeading: false,
-      titleSpacing: 0,
-      elevation: 0.7,
       title: AppBarTitle(widget.titleText),
       leading: MyBackButton(),
     );

@@ -46,11 +46,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     fontSize: 15,
                   ),
                 ),
-                elevation: 0.7,
-                backgroundColor: Themes.appBar,
-                foregroundColor: Themes.text,
                 centerTitle: widget.centerTitle,
-                titleSpacing: 0,
                 automaticallyImplyLeading: false,
                 leading: IconButton(
                   onPressed: () {

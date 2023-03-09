@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 
 class MyCard extends StatefulWidget {
@@ -32,7 +33,7 @@ class _MyCard extends State<MyCard> {
                 EdgeInsets.symmetric(vertical: 12, horizontal: 20),
             decoration: BoxDecoration(
               color: widget.background,
-              border: Border.all(color: Colors.grey.shade200),
+              border: Border.all(color: App.theme.tooltipTheme.textStyle?.color ?? Colors.grey.shade200),
             ),
             child: widget.child,
           ),
@@ -41,12 +42,12 @@ class _MyCard extends State<MyCard> {
             right: 10,
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 4),
-              color: widget.background ?? Themes.background,
+              color: widget.background ?? App.theme.backgroundColor,
               child: Text(
                 widget.title,
                 style: TextStyle(
                   fontSize: 12,
-                  color: Themes.textGrey,
+                  color: App.theme.tooltipTheme.textStyle?.color,
                 ),
               ),
             ),

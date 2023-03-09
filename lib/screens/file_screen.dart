@@ -713,7 +713,7 @@ class _FileScreenState extends State<FileScreen> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -733,21 +733,21 @@ class _FileScreenState extends State<FileScreen> {
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(color: Themes.textGrey, width: 1),
+                            borderSide: BorderSide(color: App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey, width: 1),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(color: Themes.text, width: 1),
+                            borderSide: BorderSide(color: Themes.primary, width: 1),
                           ),
                           hintText: "عنوان",
                           hintStyle: TextStyle(
-                            color: Themes.textGrey,
+                            color: App.theme.tooltipTheme.textStyle?.color,
                             fontSize: 13,
                             fontFamily: "IranSans",
                           ),
                         ),
                         style: TextStyle(
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color,
                           fontSize: 13,
                           fontFamily: "IranSansMedium",
                         ),
@@ -762,21 +762,21 @@ class _FileScreenState extends State<FileScreen> {
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(color: Themes.textGrey, width: 1),
+                            borderSide: BorderSide(color: App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey, width: 1),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(color: Themes.text, width: 1),
+                            borderSide: BorderSide(color: Themes.primary, width: 1),
                           ),
                           hintText: "توضیحات",
                           hintStyle: TextStyle(
-                            color: Themes.textGrey,
+                            color: App.theme.tooltipTheme.textStyle?.color,
                             fontSize: 13,
                             fontFamily: "IranSans",
                           ),
                         ),
                         style: TextStyle(
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color,
                           fontSize: 13,
                           fontFamily: "IranSansMedium",
                         ),

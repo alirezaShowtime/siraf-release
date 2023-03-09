@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/themes.dart';
@@ -20,13 +21,9 @@ class _CompareScreen extends State<CompareScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
-        titleSpacing: 0,
         leading: MyBackButton(),
-        elevation: 0.7,
         title: AppBarTitle("مقایسه"),
       ),
       body: ListView(
@@ -124,7 +121,7 @@ class _CompareItemState extends State<_CompareItem> {
         child: Text(
           property.value ?? '-',
           style: TextStyle(
-            color: Themes.textGrey,
+            color: App.theme.tooltipTheme.textStyle?.color,
             fontSize: 12,
           ),
         ),
@@ -195,7 +192,6 @@ class _CompareItemState extends State<_CompareItem> {
                       softWrap: true,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: Themes.text,
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
                       ),
@@ -219,11 +215,7 @@ class _CompareItemState extends State<_CompareItem> {
       margin: EdgeInsets.only(top: 198.3),
       padding: EdgeInsets.only(top: 17),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(
-          left: BorderSide(width: 1, color: Colors.grey.shade200),
-          top: BorderSide(width: 1, color: Colors.grey.shade200),
-        ),
+        color: App.theme.backgroundColor,
       ),
       child: Column(
         children: widget.propertiesName!.map((propertyName) {
@@ -232,7 +224,6 @@ class _CompareItemState extends State<_CompareItem> {
             child: Text(
               propertyName,
               style: TextStyle(
-                color: Themes.text,
                 fontWeight: FontWeight.bold,
                 fontSize: 12,
               ),

@@ -119,16 +119,14 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
       create: (_) => bloc,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Themes.appBar,
-          elevation: 0.7,
           title: TextField2(
             decoration: InputDecoration(
               hintText: "جستجو در دفاتر املاک",
-              hintStyle: TextStyle(color: Themes.textGrey, fontSize: 13),
+              hintStyle: TextStyle(color: App.theme.tooltipTheme.textStyle?.color, fontSize: 13),
               border: InputBorder.none,
             ),
             controller: _searchController,
-            style: TextStyle(color: Themes.text, fontSize: 13),
+            style: TextStyle(color: App.theme.textTheme.bodyLarge?.color, fontSize: 13),
             textInputAction: TextInputAction.search,
             onSubmitted: (value) {
               getEstates();
@@ -151,7 +149,6 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                 child: Text(
                   getTitle(cities),
                   style: TextStyle(
-                    color: Themes.text,
                     fontSize: 14,
                     fontFamily: "IranSansMedium",
                   ),
@@ -167,7 +164,6 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
               },
               child: Icon(
                 CupertinoIcons.search,
-                color: Themes.icon,
               ),
             ),
             SizedBox(
@@ -180,7 +176,6 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
             },
             icon: Icon(
               CupertinoIcons.back,
-              color: Themes.icon,
             ),
           ),
         ),
@@ -221,7 +216,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
               right: 20,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Themes.background,
+                  color: App.theme.dialogBackgroundColor,
                   borderRadius: BorderRadius.circular(100),
                   boxShadow: [
                     BoxShadow(
@@ -244,7 +239,6 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                     child: Icon(
                       Icons.my_location_outlined,
                       size: 30,
-                      color: Themes.icon,
                     ),
                   ),
                 ),
@@ -274,7 +268,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                   decoration: BoxDecoration(
                     color: _showFileOnMyLocation
                         ? Themes.primary
-                        : Themes.background,
+                        : App.theme.dialogBackgroundColor,
                     borderRadius: BorderRadius.circular(100),
                     boxShadow: [
                       BoxShadow(
@@ -298,7 +292,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                       fontFamily: "IranSansMedium",
                       color: _showFileOnMyLocation
                           ? Themes.textLight
-                          : Themes.text,
+                          : null,
                     ),
                   ),
                 ),

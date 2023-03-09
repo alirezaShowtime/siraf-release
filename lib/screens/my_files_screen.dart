@@ -5,6 +5,7 @@ import 'package:siraf3/bloc/delete_file_bloc.dart';
 import 'package:siraf3/bloc/my_files_bloc.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/my_file.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
@@ -84,15 +85,12 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
         },
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Themes.background,
             title: Text(
               "فایل های من",
               style: TextStyle(
                 fontSize: 15,
-                color: Themes.text,
               ),
             ),
-            titleSpacing: 0,
             automaticallyImplyLeading: false,
             leading: IconButton(
               onPressed: () {
@@ -107,16 +105,13 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
               },
               icon: Icon(
                 CupertinoIcons.back,
-                color: Themes.icon,
               ),
             ),
-            elevation: 0.7,
             actions: [
               IconButton(
                 onPressed: _addFile,
                 icon: Icon(
                   CupertinoIcons.add,
-                  color: Themes.icon,
                 ),
               ),
               IconButton(
@@ -127,7 +122,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                     : null,
                 icon: Icon(
                   CupertinoIcons.delete,
-                  color: selectedFiles.isNotEmpty ? Themes.icon : Themes.iconGrey,
+                  color: selectedFiles.isNotEmpty ? null : Themes.iconGrey,
                 ),
                 disabledColor: Themes.iconGrey,
               ),
@@ -143,13 +138,12 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                             "جدید ترین",
                             style: TextStyle(
                               fontSize: 13,
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color,
                             ),
                           ),
                           if (currentSortType == "" || currentSortType == null)
                             Icon(
                               Icons.check,
-                              color: Themes.icon,
                               size: 20,
                             ),
                         ],
@@ -165,13 +159,12 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                             "قدیمی ترین",
                             style: TextStyle(
                               fontSize: 13,
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color,
                             ),
                           ),
                           if (currentSortType == "8")
                             Icon(
                               Icons.check,
-                              color: Themes.icon,
                               size: 20,
                             ),
                         ],
@@ -187,13 +180,12 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                             "در انتظار تایید",
                             style: TextStyle(
                               fontSize: 13,
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color,
                             ),
                           ),
                           if (currentSortType == "1")
                             Icon(
                               Icons.check,
-                              color: Themes.icon,
                               size: 20,
                             ),
                         ],
@@ -209,13 +201,12 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                             "در انتظار پذیرش",
                             style: TextStyle(
                               fontSize: 13,
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color,
                             ),
                           ),
                           if (currentSortType == "5")
                             Icon(
                               Icons.check,
-                              color: Themes.icon,
                               size: 20,
                             ),
                         ],
@@ -231,13 +222,12 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                             "پذیرش شده",
                             style: TextStyle(
                               fontSize: 13,
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color,
                             ),
                           ),
                           if (currentSortType == "7")
                             Icon(
                               Icons.check,
-                              color: Themes.icon,
                               size: 20,
                             ),
                         ],
@@ -253,13 +243,12 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                             "رد شده",
                             style: TextStyle(
                               fontSize: 13,
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color,
                             ),
                           ),
                           if (currentSortType == "3")
                             Icon(
                               Icons.check,
-                              color: Themes.icon,
                               size: 20,
                             ),
                         ],
@@ -273,7 +262,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                 },
                 icon: Icon(
                   CupertinoIcons.sort_down,
-                  color: Themes.icon,
+                  color: App.theme.iconTheme.color,
                 ),
               ),
               MyPopupMenuButton(
@@ -285,7 +274,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                         "انتخاب همه",
                         style: TextStyle(
                           fontSize: 13,
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color,
                         ),
                       ),
                       height: 35,
@@ -301,7 +290,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                 },
                 icon: Icon(
                   Icons.more_vert,
-                  color: Themes.icon,
+                  color: App.theme.iconTheme.color,
                 ),
               ),
             ],
@@ -371,17 +360,16 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
 
     return ListView(
       children: files
-          .map<Widget>((file) => GestureDetector(
-                onTap: isSelectable ? () => changeSelection(file) : () => onTapFile(file),
-                onLongPress: () => changeSelection(file),
-                child: Padding(
-                  padding: EdgeInsets.only(top: (state as MyFilesLoadedState).files.first == file ? 0 : 5),
-                  child: MyFileHorizontalItem(
-                    file: file,
-                    isSelected: selectedFiles.contains(file),
-                  ),
-                ),
-              ))
+          .map<Widget>(
+            (file) => GestureDetector(
+              onTap: isSelectable ? () => changeSelection(file) : () => onTapFile(file),
+              onLongPress: () => changeSelection(file),
+              child: MyFileHorizontalItem(
+                file: file,
+                isSelected: selectedFiles.contains(file),
+              ),
+            ),
+          )
           .toList(),
     );
   }
@@ -453,7 +441,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -473,7 +461,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                       child: Text(
                         'آیا مایل به حذف فایل هستید؟',
                         style: TextStyle(
-                          color: Themes.textGrey,
+                          color: App.theme.tooltipTheme.textStyle?.color,
                           fontSize: 13,
                         ),
                       ),

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:siraf3/bloc/add_file_request_bloc.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/category.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/estate.dart';
@@ -67,9 +69,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
   Widget build(BuildContext context) {
     buildContext = context;
     return Scaffold(
-      backgroundColor: Themes.background,
       appBar: AppBar(
-        backgroundColor: Themes.appBar,
         leading: MyBackButton(),
         title: AppBarTitle("درخواست فایل"),
         automaticallyImplyLeading: false,
@@ -107,7 +107,6 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                         style: TextStyle(
                           fontSize: 13,
                           fontFamily: "IranSansMedium",
-                          color: Themes.text,
                         ),
                       ),
                       GestureDetector(
@@ -168,7 +167,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                         labelText: 'عنوان',
                         border: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: Themes.icon,
+                            color: App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey,
                             width: 0.5,
                           ),
                           borderRadius: BorderRadius.circular(2),
@@ -205,13 +204,13 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                             EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                         hintText:
                             "در این قسمت به موارد مهم ملک مانند نوع ملک و محله اشاره کنید",
-                        hintStyle: TextStyle(fontSize: 13),
-                        labelStyle: TextStyle(fontSize: 14),
+                        hintStyle: TextStyle(fontSize: 13, color: App.theme.tooltipTheme.textStyle?.color),
+                        labelStyle: TextStyle(fontSize: 14, color: App.theme.tooltipTheme.textStyle?.color),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         floatingLabelStyle: TextStyle(color: Themes.primary),
                       ),
                       controller: _titleController,
-                      style: TextStyle(fontSize: 14),
+                      style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color),
                       maxLines: 1,
                       cursorColor: Themes.primary,
                     ),
@@ -261,14 +260,14 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                       ),
                       floatingLabelStyle: TextStyle(color: Themes.primary),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      labelStyle: TextStyle(fontSize: 14),
+                      hintStyle: TextStyle(fontSize: 13, color: App.theme.tooltipTheme.textStyle?.color),
+                      labelStyle: TextStyle(fontSize: 14, color: App.theme.tooltipTheme.textStyle?.color),
                       hintText:
                           "در این قسمت به جزئیات ملک مانند امکانات ، ویژگی ها و ... که برای شمااهمیت دارد اشاره کنید",
-                      hintStyle: TextStyle(fontSize: 13),
                     ),
                     controller: _descriptionController,
                     cursorColor: Themes.primary,
-                    style: TextStyle(fontSize: 14),
+                    style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color),
                   ),
                 ),
                 Section(
@@ -470,7 +469,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -490,7 +489,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                       child: Text(
                         'آیا مایل به ثبت درخواست از ابتدا هستید؟',
                         style: TextStyle(
-                          color: Themes.textGrey,
+                          color: App.theme.tooltipTheme.textStyle?.color,
                           fontSize: 13,
                         ),
                       ),
@@ -598,7 +597,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -619,7 +618,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                             border: InputBorder.none,
                             hintText: "حداقل ${label}",
                             hintStyle: TextStyle(
-                              color: Themes.textGrey,
+                              color: App.theme.tooltipTheme.textStyle?.color,
                               fontSize: 13,
                               fontFamily: "IranSans",
                             ),
@@ -634,7 +633,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color,
                             fontSize: 13,
                             fontFamily: "IranSansMedium",
                           ),
@@ -651,7 +650,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                             child: Text(
                               "",
                               style: TextStyle(
-                                color: Themes.text,
+                                color: App.theme.textTheme.bodyLarge?.color,
                                 fontSize: 11,
                                 fontFamily: "IranSansMedium",
                               ),
@@ -666,7 +665,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                           child: Text(
                             text.trim(),
                             style: TextStyle(
-                              color: Themes.text,
+                              color: App.theme.tooltipTheme.textStyle?.color,
                               fontSize: 11,
                               fontFamily: "IranSansMedium",
                             ),
@@ -689,7 +688,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                             border: InputBorder.none,
                             hintText: "حداکثر ${label}",
                             hintStyle: TextStyle(
-                              color: Themes.textGrey,
+                              color: App.theme.tooltipTheme.textStyle?.color,
                               fontSize: 13,
                               fontFamily: "IranSans",
                             ),
@@ -703,7 +702,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color,
                             fontSize: 13,
                             fontFamily: "IranSansMedium",
                           ),
@@ -720,7 +719,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                             child: Text(
                               "",
                               style: TextStyle(
-                                color: Themes.text,
+                                color: App.theme.tooltipTheme.textStyle?.color,
                                 fontSize: 11,
                                 fontFamily: "IranSansMedium",
                               ),
@@ -735,7 +734,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                           child: Text(
                             text.trim(),
                             style: TextStyle(
-                              color: Themes.text,
+                              color: App.theme.tooltipTheme.textStyle?.color,
                               fontSize: 11,
                               fontFamily: "IranSansMedium",
                             ),

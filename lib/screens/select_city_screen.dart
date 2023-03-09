@@ -359,6 +359,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
         child: Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
           TextNormal(
             e.name!,
+            color: Themes.text,
           ),
           SizedBox(
             width: 5,

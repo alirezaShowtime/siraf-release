@@ -143,6 +143,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
       children: [
         SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
                   _buildSliders(state.file),
                   SizedBox(height: 10),
@@ -188,7 +189,6 @@ class _MyFileScreenState extends State<MyFileScreen> {
                                   Text(
                                     state.file.getPrice()?.value != null ? number_format(state.file.getPrice()!.value) : "توافقی",
                                     style: TextStyle(
-                                      color: Themes.text,
                                       fontSize: 13,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -273,7 +273,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                         style: TextStyle(
                           fontSize: 13,
                           fontFamily: "IranSans",
-                          color: Color(0xff8c8c8c),
+                          color: App.theme.tooltipTheme.textStyle?.color,
                         ),
                       ),
                     ),
@@ -396,7 +396,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                             "ویرایش",
                             style: TextStyle(
                               fontSize: 13,
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color,
                             ),
                           ),
                           height: 35,
@@ -407,7 +407,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                             "آمار بازدید",
                             style: TextStyle(
                               fontSize: 13,
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color,
                             ),
                           ),
                           height: 35,
@@ -493,7 +493,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                 child: Flexible(
                   child: Text(
                     (file.fullCategory != null ? file.fullCategory!.getMainCategoryName().toString().trim() + " | " : "") + file.name!.trim(),
-                    style: TextStyle(color: Themes.text, fontFamily: "IranSans", fontSize: 14, height: 1.3),
+                    style: TextStyle(fontFamily: "IranSans", fontSize: 14, height: 1.3),
                     maxLines: 3,
                   ),
                 ),
@@ -501,7 +501,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
               Text(
                 file.publishedAgo! + ' | ' + (file.city?.name ?? ""),
                 style: TextStyle(
-                  color: Themes.textGrey,
+                  color: App.theme.tooltipTheme.textStyle?.color,
                   fontFamily: "IranSans",
                   fontSize: 11,
                 ),
@@ -522,7 +522,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
             image: AssetImage("assets/images/ic_share.png"),
             width: 16,
             height: 16,
-            color: Themes.icon,
+            color: App.theme.iconTheme.color,
           ),
         ),
       ],
@@ -598,7 +598,6 @@ class _MyFileScreenState extends State<MyFileScreen> {
       child: Text(
         description,
         style: TextStyle(
-          color: Themes.text,
           fontSize: 11.5,
           fontWeight: FontWeight.w400,
           fontFamily: 'IranSans',

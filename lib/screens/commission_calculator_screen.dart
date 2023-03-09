@@ -220,8 +220,6 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
   }
 
   void determineTradeType() {
-    //todo: implement event listener
-
     showDialog2(
       context: context,
       builder: (context) {

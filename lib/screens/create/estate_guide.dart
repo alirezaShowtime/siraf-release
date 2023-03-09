@@ -38,12 +38,10 @@ class _EstateGuideState extends State<EstateGuide> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Themes.appBar,
         elevation: 0.7,
         title: Text(
           "راهنمای انتخاب روش ثبت فایل",
           style: TextStyle(
-            color: Themes.text,
             fontSize: 15,
           ),
         ),
@@ -55,7 +53,6 @@ class _EstateGuideState extends State<EstateGuide> {
           },
           icon: Icon(
             CupertinoIcons.back,
-            color: Themes.icon,
           ),
         ),
       ),
@@ -73,7 +70,6 @@ class _EstateGuideState extends State<EstateGuide> {
                 "انتخاب دفتر / دفاتر املاک",
                 style: TextStyle(
                   fontSize: 14,
-                  color: Themes.text,
                   fontFamily: "IranSansBold",
                 ),
               ),
@@ -86,7 +82,6 @@ class _EstateGuideState extends State<EstateGuide> {
                 style: TextStyle(
                   fontSize: 12,
                   fontFamily: "IranSansMedium",
-                  color: Themes.text,
                 ),
               ),
               SizedBox(

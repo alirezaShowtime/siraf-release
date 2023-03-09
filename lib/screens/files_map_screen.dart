@@ -123,16 +123,15 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
       create: (_) => bloc,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Themes.appBar,
           elevation: 0.7,
           title: TextField2(
             decoration: InputDecoration(
               hintText: "جستجو در فایل ها",
-              hintStyle: TextStyle(color: Themes.textGrey, fontSize: 13),
+              hintStyle: TextStyle(color: App.theme.tooltipTheme.textStyle?.color, fontSize: 13),
               border: InputBorder.none,
             ),
             controller: _searchController,
-            style: TextStyle(color: Themes.text, fontSize: 13),
+            style: TextStyle(fontSize: 13, color: App.theme.textTheme.bodyLarge?.color),
             textInputAction: TextInputAction.search,
             onSubmitted: (value) {
               getFiles();
@@ -154,7 +153,6 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                 child: Text(
                   getTitle(cities),
                   style: TextStyle(
-                    color: Themes.text,
                     fontSize: 14,
                     fontFamily: "IranSansMedium",
                   ),
@@ -170,7 +168,6 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
               },
               child: Icon(
                 CupertinoIcons.search,
-                color: Themes.icon,
               ),
             ),
             SizedBox(
@@ -183,7 +180,6 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
             },
             icon: Icon(
               CupertinoIcons.back,
-              color: Themes.icon,
             ),
           ),
         ),
@@ -246,7 +242,7 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
               right: 10,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Themes.background,
+                  color: App.theme.dialogBackgroundColor,
                   borderRadius: BorderRadius.circular(100),
                   boxShadow: [
                     BoxShadow(
@@ -269,7 +265,6 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                     child: Icon(
                       Icons.my_location_outlined,
                       size: 30,
-                      color: Themes.icon,
                     ),
                   ),
                 ),
@@ -297,7 +292,7 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: _showFileOnMyLocation ? Themes.primary : Themes.background,
+                    color: _showFileOnMyLocation ? Themes.primary : App.theme.dialogBackgroundColor,
                     borderRadius: BorderRadius.circular(100),
                     boxShadow: [
                       BoxShadow(
@@ -319,7 +314,7 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                     style: TextStyle(
                       fontSize: 14,
                       fontFamily: "IranSansMedium",
-                      color: _showFileOnMyLocation ? Themes.textLight : Themes.text,
+                      color: _showFileOnMyLocation ? Themes.textLight : null,
                     ),
                   ),
                 ),

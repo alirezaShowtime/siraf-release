@@ -46,24 +46,19 @@ class _UploadMediaGuideState extends State<UploadMediaGuide> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Themes.appBar,
-        elevation: 0.7,
         title: Text(
           "راهنمای آپلود فایل های تصویری",
           style: TextStyle(
-            color: Themes.text,
             fontSize: 15,
           ),
         ),
         automaticallyImplyLeading: false,
-        titleSpacing: 0,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
           icon: Icon(
             CupertinoIcons.back,
-            color: Themes.icon,
           ),
         ),
       ),
@@ -81,7 +76,6 @@ class _UploadMediaGuideState extends State<UploadMediaGuide> {
                 "تصویر (نقشه)",
                 style: TextStyle(
                   fontSize: 14,
-                  color: Themes.text,
                   fontFamily: "IranSansBold",
                 ),
               ),
@@ -93,7 +87,6 @@ class _UploadMediaGuideState extends State<UploadMediaGuide> {
                 style: TextStyle(
                   fontSize: 12,
                   fontFamily: "IranSansMedium",
-                  color: Themes.text,
                 ),
               ),
               SizedBox(
@@ -103,7 +96,6 @@ class _UploadMediaGuideState extends State<UploadMediaGuide> {
                 "ویدیو",
                 style: TextStyle(
                   fontSize: 14,
-                  color: Themes.text,
                   fontFamily: "IranSansBold",
                 ),
               ),
@@ -115,7 +107,6 @@ class _UploadMediaGuideState extends State<UploadMediaGuide> {
                 style: TextStyle(
                   fontSize: 12,
                   fontFamily: "IranSansMedium",
-                  color: Themes.text,
                 ),
               ),
               SizedBox(
@@ -125,7 +116,6 @@ class _UploadMediaGuideState extends State<UploadMediaGuide> {
                 "تور مجازی",
                 style: TextStyle(
                   fontSize: 14,
-                  color: Themes.text,
                   fontFamily: "IranSansBold",
                 ),
               ),
@@ -137,7 +127,6 @@ class _UploadMediaGuideState extends State<UploadMediaGuide> {
                 style: TextStyle(
                   fontSize: 12,
                   fontFamily: "IranSansMedium",
-                  color: Themes.text,
                 ),
               ),
               SizedBox(height: 20),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/main.dart';
 
 class LoadingDialog extends StatefulWidget {
   String? message;
@@ -16,7 +17,7 @@ class _LoadingDialogState extends State<LoadingDialog> {
     return AlertDialog(
       contentPadding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.symmetric(
         horizontal: widget.showMessage
             ? 0

@@ -38,7 +38,6 @@ class _Section extends State<Section> {
             style: TextStyle(
               fontSize: 13,
               fontFamily: "IranSansMedium",
-              color: Themes.text,
             ),
           ),
           GestureDetector(
@@ -54,7 +53,6 @@ class _Section extends State<Section> {
                 style: TextStyle(
                   fontSize: 13,
                   fontFamily: "IranSansMedium",
-                  color: Themes.text,
                 ),
               ),
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
 
@@ -14,7 +15,6 @@ class _InquiryScreenState extends State<InquiryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Themes.background2,
       appBar: AppBar(
         title: Text(
           "استعلامات ثبتی",
@@ -22,9 +22,6 @@ class _InquiryScreenState extends State<InquiryScreen> {
             fontSize: 16,
           ),
         ),
-        elevation: 0.7,
-        backgroundColor: Themes.appBar,
-        foregroundColor: Themes.text,
         titleSpacing: 0,
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -97,7 +94,7 @@ class _InquiryScreenState extends State<InquiryScreen> {
       child: Container(
         padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
-            color: Color(0xfff8f8f8),
+            color: App.theme.dialogBackgroundColor,
             borderRadius: BorderRadius.circular(15),
             boxShadow: [
               BoxShadow(
@@ -117,7 +114,6 @@ class _InquiryScreenState extends State<InquiryScreen> {
         child: Text(
           title,
           style: TextStyle(
-            color: Themes.text,
             fontSize: 15,
           ),
         ),

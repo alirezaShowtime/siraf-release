@@ -1,4 +1,4 @@
-package com.example.siraf3
+package app.siraf.siraf
 
 import io.flutter.embedding.android.FlutterActivity
 

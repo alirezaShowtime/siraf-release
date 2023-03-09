@@ -34,24 +34,19 @@ class _SendRequestGuideState extends State<SendRequestGuide> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Themes.appBar,
-        elevation: 0.7,
         title: Text(
           "راهنمای ثبت درخواست فایل",
           style: TextStyle(
-            color: Themes.text,
             fontSize: 15,
           ),
         ),
         automaticallyImplyLeading: false,
-        titleSpacing: 0,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
           icon: Icon(
             CupertinoIcons.back,
-            color: Themes.icon,
           ),
         ),
       ),
@@ -71,7 +66,6 @@ class _SendRequestGuideState extends State<SendRequestGuide> {
                 style: TextStyle(
                   fontSize: 12,
                   fontFamily: "IranSansMedium",
-                  color: Themes.text,
                 ),
               ),
               SizedBox(
@@ -81,7 +75,6 @@ class _SendRequestGuideState extends State<SendRequestGuide> {
                 "فیلد انتخاب دفتر / دفاتر املاک : ",
                 style: TextStyle(
                   fontSize: 14,
-                  color: Themes.text,
                   fontFamily: "IranSansBold",
                 ),
               ),
@@ -94,7 +87,6 @@ class _SendRequestGuideState extends State<SendRequestGuide> {
                 style: TextStyle(
                   fontSize: 12,
                   fontFamily: "IranSansMedium",
-                  color: Themes.text,
                 ),
               ),
               SizedBox(

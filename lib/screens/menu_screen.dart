@@ -15,6 +15,7 @@ import 'package:siraf3/screens/my_files_screen.dart';
 import 'package:siraf3/screens/request_file/request_file_screen.dart';
 import 'package:siraf3/screens/request_file/request_list_screen.dart';
 import 'package:siraf3/screens/settings_screen.dart';
+import 'package:siraf3/screens/verify_contract/inquiry_contract_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/accordion.dart';
 
@@ -317,7 +318,9 @@ class _MenuScreenState extends State<MenuScreen> {
                                   Navigator.push(context, MaterialPageRoute(builder: (_) => InquiryScreen()));
                                 },
                                 title: "استعلامات ثبتی"),
-                            AccordionItem(onClick: () {}, title: "استعلامات قرارداد"),
+                            AccordionItem(onClick: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (_) => InquiryContractScreen()));
+                            }, title: "استعلامات قرارداد"),
                           ],
                         ),
                       ),
@@ -335,7 +338,9 @@ class _MenuScreenState extends State<MenuScreen> {
                                   Navigator.push(context, MaterialPageRoute(builder: (_) => CommissionCalculatorScreen()));
                                 },
                                 title: "محاسبه کمیسیون"),
-                            AccordionItem(onClick: () {}, title: "تبدیل رهن به اجاره"),
+                            AccordionItem(onClick: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (_) => CommissionCalculatorScreen()));
+                            }, title: "تبدیل رهن به اجاره"),
                           ],
                         ),
                       ),

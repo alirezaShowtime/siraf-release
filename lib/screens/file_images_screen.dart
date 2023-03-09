@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file_detail.dart';
 import 'package:siraf3/themes.dart';
 
@@ -27,7 +28,6 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
         title: Text(
           widget.file.name ?? '',
           style: TextStyle(
-            color: Colors.white,
             fontWeight: FontWeight.normal,
             fontSize: 15,
           ),
@@ -38,10 +38,8 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
           },
           icon: Icon(
             Icons.arrow_back,
-            color: Colors.white,
           ),
         ),
-        backgroundColor: Themes.appBar,
       ),
       backgroundColor: Colors.black,
       body: PhotoViewGallery.builder(

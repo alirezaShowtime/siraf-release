@@ -21,7 +21,7 @@ class _MyPopupMenuButton extends State<MyPopupMenuButton> {
     return PopupMenuButton(
       tooltip: widget.tooltip,
       color: App.theme.dialogBackgroundColor,
-      icon: widget.icon ?? icon(Icons.more_vert, color: Themes.text),
+      icon: widget.icon ?? icon(Icons.more_vert),
       elevation: 3,
       constraints: BoxConstraints(minWidth: 180),
       shape: RoundedRectangleBorder(

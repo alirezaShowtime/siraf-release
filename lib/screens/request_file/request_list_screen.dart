@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/requests_bloc.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
+import 'package:siraf3/models/request.dart';
 import 'package:siraf3/screens/request_file/request_file_screen.dart';
 import 'package:siraf3/screens/request_file/request_file_show_screen.dart';
 import 'package:siraf3/themes.dart';
@@ -10,7 +12,6 @@ import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
-import 'package:siraf3/models/request.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 class RequestListScreen extends StatefulWidget {
@@ -48,8 +49,6 @@ class _RequestListScreen extends State<RequestListScreen> {
         },
         child: Scaffold(
           appBar: AppBar(
-            titleSpacing: 0,
-            elevation: 0.7,
             leading: MyBackButton(
               onPressed: () {
                 if (isSelectable) {
@@ -62,7 +61,6 @@ class _RequestListScreen extends State<RequestListScreen> {
                 }
               },
             ),
-            backgroundColor: Themes.appBar,
             automaticallyImplyLeading: false,
             title: AppBarTitle(
               "درخواست های من",
@@ -90,25 +88,68 @@ class _RequestListScreen extends State<RequestListScreen> {
                   icon: icon(Icons.sort_rounded),
                   itemBuilder: (_) => [
                     PopupMenuItem(
-                        child:
-                            Text("جدیدترین", style: TextStyle(fontSize: 12))),
+                      child: Text(
+                        "جدیدترین",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: App.theme.textTheme.bodyLarge?.color,
+                        ),
+                      ),
+                    ),
                     PopupMenuItem(
-                        child:
-                            Text("قدیمی ترین", style: TextStyle(fontSize: 12))),
+                      child: Text(
+                        "قدیمی ترین",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: App.theme.textTheme.bodyLarge?.color,
+                        ),
+                      ),
+                    ),
                     PopupMenuItem(
-                        child: Text("در انتظار تایید",
-                            style: TextStyle(fontSize: 12))),
+                      child: Text(
+                        "در انتظار تایید",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: App.theme.textTheme.bodyLarge?.color,
+                        ),
+                      ),
+                    ),
                     PopupMenuItem(
-                        child: Text("در انتظار پذیرش",
-                            style: TextStyle(fontSize: 12))),
+                      child: Text(
+                        "در انتظار پذیرش",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: App.theme.textTheme.bodyLarge?.color,
+                        ),
+                      ),
+                    ),
                     PopupMenuItem(
-                        child:
-                            Text("پذیرش شده", style: TextStyle(fontSize: 12))),
+                      child: Text(
+                        "پذیرش شده",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: App.theme.textTheme.bodyLarge?.color,
+                        ),
+                      ),
+                    ),
                     PopupMenuItem(
-                        child:
-                            Text("عدم پذیرش", style: TextStyle(fontSize: 12))),
+                      child: Text(
+                        "عدم پذیرش",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: App.theme.textTheme.bodyLarge?.color,
+                        ),
+                      ),
+                    ),
                     PopupMenuItem(
-                        child: Text("رد شده", style: TextStyle(fontSize: 12))),
+                      child: Text(
+                        "رد شده",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: App.theme.textTheme.bodyLarge?.color,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -118,7 +159,7 @@ class _RequestListScreen extends State<RequestListScreen> {
                     value: 1,
                     child: Text(
                       "انتخاب همه",
-                      style: TextStyle(fontSize: 12),
+                      style: TextStyle(fontSize: 12, color: App.theme.textTheme.bodyLarge?.color),
                     ),
                   ),
                 ],
@@ -150,17 +191,24 @@ class _RequestListScreen extends State<RequestListScreen> {
 
   Widget item(Request request) {
     return GestureDetector(
-      onTap: () =>
-          isSelectable ? changeSelection(request) : onClickItem(request),
+      onTap: () => isSelectable ? changeSelection(request) : onClickItem(request),
       onLongPress: () => changeSelection(request),
       child: Container(
-        color: Colors.white,
         foregroundDecoration: BoxDecoration(
-          color: selectedRequests.any((element) => element.id == request.id)
-              ? Themes.blue.withOpacity(0.2)
-              : Colors.transparent,
+          color: selectedRequests.any((element) => element.id == request.id) ? Themes.blue.withOpacity(0.2) : Colors.transparent,
         ),
-        margin: EdgeInsets.symmetric(vertical: 4),
+        decoration: BoxDecoration(
+          color: App.theme.dialogBackgroundColor,
+          boxShadow: [
+            BoxShadow(
+              color: App.theme.backgroundColor,
+              blurRadius: 1,
+              spreadRadius: 1,
+              offset: Offset(0, -1),
+            )
+          ],
+        ),
+        // margin: EdgeInsets.symmetric(vertical: 4),
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,7 +243,6 @@ class _RequestListScreen extends State<RequestListScreen> {
                 Text(
                   request.status!,
                   style: TextStyle(
-                    color: Themes.text,
                     fontSize: 12,
                   ),
                 ),
@@ -208,8 +255,7 @@ class _RequestListScreen extends State<RequestListScreen> {
   }
 
   void requestFile() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (_) => RequestFileScreen()));
+    Navigator.push(context, MaterialPageRoute(builder: (_) => RequestFileScreen()));
   }
 
   void removeFile() {
@@ -217,8 +263,7 @@ class _RequestListScreen extends State<RequestListScreen> {
   }
 
   void onClickItem(Request request) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (_) => RequestFileShowScreen()));
+    Navigator.push(context, MaterialPageRoute(builder: (_) => RequestFileShowScreen()));
   }
 
   void getRequests() {

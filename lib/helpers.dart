@@ -8,6 +8,7 @@ import 'package:intl/intl.dart' as fr;
 import 'package:oktoast/oktoast.dart';
 import 'package:path/path.dart' as p;
 import 'package:siraf3/config.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/themes.dart';
@@ -197,6 +198,8 @@ VoidCallback back(BuildContext context) {
 }
 
 FaIcon icon(IconData icon, {Color? color, double size = 24}) {
+  if (color == null) color = App.theme.iconTheme.color;
+
   return FaIcon(icon, color: color, size: size);
 }
 
