@@ -19,6 +19,7 @@ import 'package:siraf3/models/file_consulant.dart';
 import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/edit/edit_file_first.dart';
+import 'package:siraf3/screens/file_view_chart_screen.dart';
 import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
@@ -421,6 +422,15 @@ class _MyFileScreenState extends State<MyFileScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (_) => EditFileFirst(file: file),
+                            ),
+                          );
+
+                          break;
+                        case 1:
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => FileViewChartScreen(id: widget.id, fileTitle: file.name ?? "",),
                             ),
                           );
 
@@ -912,7 +922,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -932,7 +942,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                       child: Text(
                         'آیا مایل به حذف فایل هستید؟',
                         style: TextStyle(
-                          color: Themes.textGrey,
+                          color: App.theme.tooltipTheme.textStyle?.color,
                           fontSize: 13,
                         ),
                       ),
