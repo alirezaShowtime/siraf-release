@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 
 class ListDialog extends StatefulWidget {
@@ -20,12 +21,11 @@ class _ListDialog extends State<ListDialog> {
     return AlertDialog(
       contentPadding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.5)),
-      backgroundColor: Themes.background,
+      backgroundColor: App.theme.dialogBackgroundColor,
       content: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
         ),
-        height: 200,
         child: Wrap(
           children: [
             Column(
@@ -34,17 +34,19 @@ class _ListDialog extends State<ListDialog> {
                   constraints: BoxConstraints(
                     maxHeight: 200,
                   ),
-                  child: ListView(
+                  child: SingleChildScrollView(
                     physics: BouncingScrollPhysics(),
-                    children: widget.list
-                        .map<Widget>(
-                          (item) => buildListItem(
-                            item: item,
-                            isLast: widget.list.last == item,
-                            onItemTap: widget.onItemTap,
-                          ),
-                        )
-                        .toList(),
+                    child: Column(
+                      children: widget.list
+                          .map<Widget>(
+                            (item) => buildListItem(
+                              item: item,
+                              isLast: widget.list.last == item,
+                              onItemTap: widget.onItemTap,
+                            ),
+                          )
+                          .toList(),
+                    ),
                   ),
                 ),
                 MaterialButton(
@@ -92,7 +94,10 @@ class _ListDialog extends State<ListDialog> {
             item["name"],
             style: TextStyle(
               fontSize: 13,
-              color: selectedItems.contains(item) ? Themes.primary : Themes.text,
+              color: selectedItems.any((e) {
+                print(e);
+                return e['name'] == item['name'];
+              }) ? Themes.primary : App.theme.textTheme.bodyLarge?.color,
             ),
           ),
         ),

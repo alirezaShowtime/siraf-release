@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class User {
   String? token;
+  String? refreshToken;
 
   int? id;
   String? name;
@@ -45,6 +46,9 @@ class User {
     if (json["token"] is String) {
       token = json["token"];
     }
+    if (json["refresh"] is String) {
+      refreshToken = json["refresh"];
+    }
     if (json["username"] is String) {
       token = json["username"];
     }
@@ -63,6 +67,7 @@ class User {
       _data["roles"] = roles;
     }
     _data["token"] = token;
+    _data["refresh"] = refreshToken;
     return _data;
   }
 

@@ -377,7 +377,6 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
       MaterialPageRoute(
         builder: (_) => SelectCityScreen(
           showSelected: false,
-          force: true,
           saveCity: false,
           selectedCities: cities,
         ),
@@ -392,7 +391,10 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
       City.saveList(cities, key: "files");
 
       await getCities();
+      return;
     }
+
+    Navigator.pop(context);
   }
 
   BuildContext? errorDialogContext;

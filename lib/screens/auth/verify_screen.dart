@@ -16,7 +16,8 @@ import 'package:http/http.dart' as http;
 class VerifyScreen extends StatefulWidget {
   bool pop;
   String mobile;
-  VerifyScreen({this.pop = false, required this.mobile, Key? key})
+  String? verifyCode;
+  VerifyScreen({this.verifyCode, this.pop = false, required this.mobile, Key? key})
       : super(key: key);
 
   @override
@@ -261,6 +262,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
         var user = User.fromJson(resBody['data']['user']);
 
         user.token = resBody['data']['token']['access'];
+        user.refreshToken = resBody['data']['token']['refresh'];
         user.save();
         if (widget.pop) {
           Navigator.pop(context, 'ok_pop');

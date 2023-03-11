@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/money_input_formatter.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
@@ -78,7 +79,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
               "کمیسیون قرارداد های جعاله بصورت توافقی میباشد.",
               style: TextStyle(
                 fontSize: 11,
-                color: Themes.textGrey,
+                color: App.theme.tooltipTheme.textStyle?.color,
               ),
             ),
             Padding(

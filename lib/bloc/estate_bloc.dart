@@ -1,12 +1,9 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:http/http.dart';
-import 'package:siraf3/http2.dart' as http2;
 import 'package:bloc/bloc.dart';
-import 'package:siraf3/helpers.dart';
-import 'package:siraf3/models/estate.dart';
+import 'package:http/http.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:siraf3/helpers.dart';
+import 'package:siraf3/http2.dart' as http2;
+import 'package:siraf3/models/estate.dart';
 
 class EstateEvent {}
 
@@ -52,37 +49,28 @@ class EstateBloc extends Bloc<EstateEvent, EstateState> {
     if (event is EstateLoadEvent) {
       emit(EstateLoadingState());
 
-      Response response;
+      var url = getEstateUrl(
+        "estate/estates?city_id=" +
+            "[" +
+            event.city_ids.join(',') +
+            "]"
+                "&name=" +
+            (event.search != null ? event.search! : "") +
+            (event.sort != null ? "&sort=" + event.sort! : "") +
+            (event.latLng != null ? "&lat=${event.latLng!.latitude.toString()}&long=${event.latLng!.longitude.toString()}" : ""),
+      );
 
-      try {
-        var url = getEstateUrl(
-          "estate/estates?city_id=" +
-              "[" +
-              event.city_ids.join(',') +
-              "]"
-                  "&name=" +
-              (event.search != null ? event.search! : "") +
-              (event.sort != null ? "&sort=" + event.sort! : "") +
-              (event.latLng != null
-                  ? "&lat=${event.latLng!.latitude.toString()}&long=${event.latLng!.longitude.toString()}"
-                  : ""),
-        );
+      var response = await http2.get(url);
 
-        response = await http2.get(url);
-      } on HttpException catch (e) {
-        emit(EstateErrorState(response: null));
-        return;
-      } on SocketException catch (e) {
-        emit(EstateErrorState(response: null));
-        return;
-      }
+      print(response.statusCode);
+      print(convertUtf8(response.body));
 
       if (isResponseOk(response)) {
         var json = jDecode(response.body);
 
         emit(
           EstateLoadedState(
-            estates: Estate.fromList(json['data']['estats']),
+            estates: Estate.fromList(json['data']['estates']),
             sort_type: event.sort,
           ),
         );

@@ -355,7 +355,6 @@ class _RequestFileScreen extends State<RequestFileScreen> {
         builder: (context) => SelectCityScreen(
           max: 1,
           saveCity: false,
-          force: true,
           selectedCities: city != null ? [city!] : null,
         ),
       ),

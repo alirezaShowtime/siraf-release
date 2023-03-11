@@ -318,7 +318,6 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
       MaterialPageRoute(
         builder: (_) => SelectCityScreen(
           showSelected: false,
-          force: true,
           saveCity: false,
           selectedCities: cities,
         ),
@@ -333,7 +332,10 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
       City.saveList(cities, key: "estates");
 
       await getCities();
+      return;
     }
+
+    Navigator.pop(context);
   }
 
   BuildContext? errorDialogContext;
@@ -341,7 +343,6 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
   void listener(EstateState state) {
     if (state is EstateLoadingState) {
       loadingDialog(context: context, showMessage: false);
-      dismissDialog(errorDialogContext);
     } else if (state is EstateErrorState) {
       dismissDialog(loadingDialogContext);
 
@@ -379,6 +380,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                     ),
                     TryAgain(
                       onPressed: () {
+                        dismissDialog(errorDialogContext);
                         if (_firstTime) {
                           getEstatesFirstTime();
                         } else {
