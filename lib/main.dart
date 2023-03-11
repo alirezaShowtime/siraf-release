@@ -12,6 +12,7 @@ import 'package:siraf3/bloc/login_status.dart';
 import 'package:siraf3/dark_theme_provider.dart';
 import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/screens/home_screen.dart';
+import 'package:siraf3/screens/splash_screens.dart';
 import 'package:siraf3/themes.dart';
 
 void main() async {
@@ -106,7 +107,10 @@ class App extends State<AppStf> {
                 data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
               );
             },
-            home: HomeScreen(),
+            routes: {
+              '/' : (_) => SplashScreen(),
+              '/home' : (_) => HomeScreen(),
+            },
           ),
         );
       }),
