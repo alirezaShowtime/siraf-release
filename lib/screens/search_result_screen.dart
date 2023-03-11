@@ -329,12 +329,6 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
             ? cities.first.name ?? "${cities.length} شهر"
             : "${cities.length} شهر";
   }
-
-  @override
-  void dispose() {
-    super.dispose();
-    homeScreenBloc.close();
-  }
 }
 
 enum ViewType {
