@@ -5,28 +5,19 @@ class Settings {
   Future<bool> showNumberPhoneForAgent() async {
     var pref = await SharedPreferences.getInstance();
 
-    var v = pref.getBool("settings_showNumberPhoneForAgent") ?? true;
-    print("settings_showNumberPhoneForAgent $v");
-
-    return v;
+    return pref.getBool("settings_showNumberPhoneForAgent") ?? true;
   }
 
   Future<bool> showNotification() async {
     var pref = await SharedPreferences.getInstance();
 
-    var v =  pref.getBool("settings_showNotification") ?? true;
-    print("settings_showNotification $v");
-    return v;
+    return pref.getBool("settings_showNotification") ?? true;
   }
 
   Future<bool> darkMode() async {
     var pref = await SharedPreferences.getInstance();
 
-    var v = pref.getBool("settings_darkMode") ?? false;
-
-    print("settings_darkMode $v");
-
-    return v;
+    return pref.getBool("settings_darkMode") ?? false;
   }
 
   void setShowNumberPhoneForAgent(bool value) async {
