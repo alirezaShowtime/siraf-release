@@ -41,6 +41,14 @@ class _FilterScreenState extends State<FilterScreen> {
   List<Category> categories = [];
 
   @override
+  void dispose() {
+    super.dispose();
+
+    categoriesBloc.close();
+    propertyBloc.close();
+  }
+
+  @override
   void initState() {
     super.initState();
 
@@ -309,11 +317,23 @@ class _FilterScreenState extends State<FilterScreen> {
                                 builder: ((context, snapshot) {
                                   if (snapshot.hasData && snapshot.data != null && (snapshot.data as List<Category>).isNotEmpty) {
                                     var items = (snapshot.data as List<Category>).map<Widget>((e) => _subCategoryItem(e)).toList();
+                                    if (items.length <= 3) {
+                                      return Expanded(
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: items
+                                              .map<Widget>((e) => Expanded(
+                                                    child: e,
+                                                  ))
+                                              .toList(),
+                                        ),
+                                      );
+                                    }
                                     return Expanded(
                                       child: ListView(
                                         scrollDirection: Axis.horizontal,
                                         shrinkWrap: true,
-                                        children: items.toList(),
+                                        children: items,
                                       ),
                                     );
                                   }
@@ -600,7 +620,9 @@ class _FilterScreenState extends State<FilterScreen> {
 
   Widget _buildFields(BuildContext context, AsyncSnapshot<PropertyState> snapshot) {
     if (!snapshot.hasData || snapshot.data is PropertyInitState) {
-      return Container();
+      return Container(
+        height: 160,
+      );
     }
 
     if (snapshot.data is PropertyLoadedState) {
@@ -834,6 +856,12 @@ class _FilterScreenState extends State<FilterScreen> {
         ));
       }
 
+      // if (widgets.isEmpty) {
+      //   return Container(
+      //     height: 160,
+      //   );
+      // }
+
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: widgets,
@@ -844,17 +872,21 @@ class _FilterScreenState extends State<FilterScreen> {
     }
     if (snapshot.data is PropertyLoadingState) {
       return Align(
-        alignment: Alignment.center,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          child: Loading(
-            backgroundColor: Colors.transparent,
+          alignment: Alignment.center,
+          child: Container(
+            height: 160,
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Loading(
+              backgroundColor: Colors.transparent,
+            ),
           ),
-        ),
+
       );
     }
 
-    return Container();
+    return Container(
+      height: 160,
+    );
   }
 
   void setMainCat(Category? mainCategory) {

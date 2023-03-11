@@ -93,6 +93,14 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
 
   HSBloc _moreBloc = HSBloc();
 
+  @override
+  void dispose() {
+    super.dispose();
+
+    homeScreenBloc.close();
+    _moreBloc.close();
+  }
+
   int? lastId;
 
   bool _isLoadingMore = false;

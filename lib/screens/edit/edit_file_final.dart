@@ -30,6 +30,14 @@ class _EditFileFinalState extends State<EditFileFinal> {
   UFMBloc ufmBloc = UFMBloc();
 
   @override
+  void dispose() {
+    super.dispose();
+
+    editBloc.close();
+    ufmBloc.close();
+  }
+
+  @override
   void initState() {
     super.initState();
 

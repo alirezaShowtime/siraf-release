@@ -101,6 +101,13 @@ class _EstateScreenState extends State<EstateScreen> {
 
   LatLng defaultLocation = LatLng(34.08892074204623, 49.7009108491914);
 
+  @override
+  void dispose() {
+    super.dispose();
+
+    bloc.close();
+  }
+
   getEstatesFirstTime() async {
     await getCities();
     if (await checkLocationEnabled()) {

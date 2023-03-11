@@ -113,6 +113,14 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
 
   List<Estate> estates = [];
 
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    bloc.close();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

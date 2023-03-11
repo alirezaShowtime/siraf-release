@@ -57,6 +57,13 @@ class _EditFileFirstState extends State<EditFileFirst> {
   late EditFileFormData formData;
 
   @override
+  void dispose() {
+    super.dispose();
+
+    propertyBloc.close();
+  }
+
+  @override
   void initState() {
     super.initState();
 

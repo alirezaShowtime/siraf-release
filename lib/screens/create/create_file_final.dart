@@ -28,6 +28,13 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
   CreateFileBloc bloc = CreateFileBloc();
 
   @override
+  void dispose() {
+    super.dispose();
+
+    bloc.close();
+  }
+
+  @override
   void initState() {
     super.initState();
 

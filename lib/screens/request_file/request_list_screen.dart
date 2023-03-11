@@ -25,6 +25,13 @@ class _RequestListScreen extends State<RequestListScreen> {
   RequestsBloc requestsBloc = RequestsBloc();
 
   @override
+  void dispose() {
+    super.dispose();
+
+    requestsBloc.close();
+  }
+
+  @override
   void initState() {
     super.initState();
 

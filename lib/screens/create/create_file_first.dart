@@ -54,6 +54,13 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
   Map<String, String> selectedOtherFeatures = {};
 
   @override
+  void dispose() {
+    super.dispose();
+
+    propertyBloc.close();
+  }
+
+  @override
   void initState() {
     super.initState();
 

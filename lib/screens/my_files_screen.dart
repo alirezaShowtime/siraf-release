@@ -34,6 +34,16 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
 
   DeleteFileBloc deleteFileBloc = DeleteFileBloc();
 
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    bloc.close();
+
+    deleteFileBloc.close();
+  }
+
   @override
   void initState() {
     super.initState();

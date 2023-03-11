@@ -32,6 +32,13 @@ class _SupportFileScreen extends State<SupportFileScreen> {
   FileConsulantsBloc bloc = FileConsulantsBloc();
 
   @override
+  void dispose() {
+    super.dispose();
+
+    bloc.close();
+  }
+
+  @override
   void initState() {
     super.initState();
 

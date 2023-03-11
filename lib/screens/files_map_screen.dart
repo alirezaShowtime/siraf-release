@@ -118,6 +118,13 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
   CarouselController carouselController = CarouselController();
 
   @override
+  void dispose() {
+    super.dispose();
+
+    bloc.close();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => bloc,

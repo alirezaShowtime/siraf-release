@@ -51,6 +51,13 @@ class _RequestFileScreen extends State<RequestFileScreen> {
   AddFileRequestBloc bloc = AddFileRequestBloc();
 
   @override
+  void dispose() {
+    super.dispose();
+
+    bloc.close();
+  }
+
+  @override
   void initState() {
     super.initState();
 

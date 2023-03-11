@@ -35,6 +35,13 @@ class _BookmarkScreen extends State<BookmarkScreen> {
     getFiles();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+
+    bloc.close();
+  }
+
   int? sort;
 
   getFiles() {

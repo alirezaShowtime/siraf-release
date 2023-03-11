@@ -46,6 +46,15 @@ class _FileScreenState extends State<FileScreen> {
 
   late Bookmark bookmark;
 
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    fileBloc.close();
+    addViolationBloc.close();
+  }
+
   @override
   void initState() {
     super.initState();
