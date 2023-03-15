@@ -12,7 +12,7 @@ Future<http.Response> get(Uri url,
     return http
         .get(url, headers: headers)
         .timeout(
-          timeout ?? Duration(seconds: 20),
+          timeout ?? Duration(seconds: 60), // todo temporary (change to 20 sec)
           onTimeout: () => timeoutErrorResponse(),
         )
         .catchError((_) {

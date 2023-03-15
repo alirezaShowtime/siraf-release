@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:siraf3/config.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/screens/file_screen.dart';
@@ -175,7 +176,7 @@ class _CompareItemState extends State<_CompareItem> {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => Image(
                         image: AssetImage(
-                            "assets/images/image_not_avialable_2.png"),
+                            IMAGE_NOT_AVAILABLE),
                         width: 100,
                         height: 100,
                         fit: BoxFit.cover,

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:siraf3/config.dart';
 
 class MiniVideo extends StatefulWidget {
   ImageProvider<Object> thumbnail;
@@ -80,7 +81,7 @@ class _MiniVideoState extends State<MiniVideo> {
                 fit: widget.imageFit ?? BoxFit.cover,
                 errorBuilder: (_, _1, _2) {
                   return Image(
-                    image: AssetImage("assets/images/image_not_avialable.png"),
+                    image: AssetImage(IMAGE_NOT_AVAILABLE),
                     width: MediaQuery.of(context).size.width,
                     fit: widget.imageFit ?? BoxFit.cover,
                     height: MediaQuery.of(context).size.height,

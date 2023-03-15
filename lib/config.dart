@@ -16,3 +16,6 @@ const defaultElevation = 0.7;
 
 final MAPBOX_TILE_LIGHT = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}";
 final MAPBOX_TILE_DARK = "https://api.mapbox.com/styles/v1/mapbox/navigation-night-v1/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}";
+
+const IMAGE_NOT_AVAILABLE = "assets/images/image_not_avialable.png";
+const IMAGE_NOT_AVAILABLE2 = "assets/images/image_not_avialable_2.png";

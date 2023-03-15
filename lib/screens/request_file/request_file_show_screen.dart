@@ -1,196 +1,196 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:siraf3/bloc/delete_request_bloc.dart';
+import 'package:siraf3/bloc/request_consulants_bloc.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
+import 'package:siraf3/models/request.dart';
+import 'package:siraf3/models/request_consultant.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
-import 'package:siraf3/widgets/my_alert_dialog.dart';
+import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
-import 'package:siraf3/widgets/my_badge.dart';
-import 'package:siraf3/widgets/my_content_dialog.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
-import 'package:siraf3/widgets/my_text_button.dart';
-import 'package:siraf3/widgets/title_dialog.dart';
+import 'package:siraf3/widgets/try_again.dart';
 
 class RequestFileShowScreen extends StatefulWidget {
+  Request request;
+
+  RequestFileShowScreen({required this.request});
+
   @override
   State<RequestFileShowScreen> createState() => _RequestFileShowScreen();
 }
 
 class _RequestFileShowScreen extends State<RequestFileShowScreen> {
-  List<Map<String, dynamic>> list = [
-    {
-      "agentName": "حمید نیایش",
-      "agencyName": "املاک خرم",
-      "star": 3,
-      "numberPhone": "09124304554",
-    },
-    {
-      "agentName": "حمید نیایش",
-      "agencyName": "املاک خرم",
-      "star": 3,
-      "numberPhone": "09124304554",
-    },
-    {
-      "agentName": "حمید نیایش",
-      "agencyName": "املاک خرم",
-      "star": 3,
-      "numberPhone": "09124304554",
-    },
-    {
-      "agentName": "حمید نیایش",
-      "agencyName": "املاک خرم",
-      "star": 3,
-      "numberPhone": "09124304554",
-    },
-    {
-      "agentName": "حمید نیایش",
-      "agencyName": "املاک خرم",
-      "star": 3,
-      "numberPhone": "09124304554",
-    },
-    {
-      "agentName": "حمید نیایش",
-      "agencyName": "املاک خرم",
-      "star": 3,
-      "numberPhone": "09124304554",
-    },
-  ];
+  RequestConsultantBloc requestConsultantBloc = RequestConsultantBloc();
+  DeleteRequestBloc deleteRequestBloc = DeleteRequestBloc();
+
+
+  Map<int, Color?> statusColors = {
+    0: Color(0xfffdb713), // عدم پذیرش
+    1: Color(0xff00cc11), // پذیرش شده
+    2: Color(0xfffd1313), // رد شده
+    3: Colors.grey, // در انتظار پذیرش
+    4: Colors.grey, // در انتظار تایید
+  };
+
+  Map<int, String?> statusHelpTexts = {
+    0: """متاسفانه درخواست شما جهت پیگیری پذیرفته نشد. این موضوع می تواند به دلایل مختلفی مانند غیر واقعی بودن درخواست و توضیحات مبهم رخ داده باشد. در صورت تمایل درخواست خود را جهت رسیدگی مجدد ویرایش نمایید. """, // عدم پذیرش
+    1: """فایل شما توسط مشاور / مشاوران زیر پذیرش شده""", // پذیرش شده
+    2: null, // رد شده
+    3: """لطفا تا پذیرش درخواست فایل خود توسط دفتر / دفاتر امالک شکیبا باشید. این وضعیت نهایتا تا 24 ساعت زمان خواهد""", // در انتظار پذیرش
+    4: """برسی درخواست های فایل به صورت 24 ساعته می باشد و حداکثر 2 ساعت زمان خواهد برد.""", // در انتظار تایید
+  };
+
+  @override
+  void initState() {
+    super.initState();
+
+    deleteRequestBloc.stream.listen(_listenDelete);
+
+    if (widget.request.status == 1) {
+      requestConsultantBloc.add(RequestConsultantEvent(id: widget.request.id!));
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    requestConsultantBloc.close();
+    deleteRequestBloc.close();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        titleSpacing: 0,
-        elevation: 0.7,
-        leading: MyBackButton(),
-        backgroundColor: Themes.appBar,
-        automaticallyImplyLeading: false,
-        title: AppBarTitle("درخواست های من"),
-        actions: [
-          IconButton(
-              onPressed: showConfirmDialog,
-              icon: icon(CupertinoIcons.delete, size: 20)),
-          MyPopupMenuButton(
-            itemBuilder:  (_) => [
-              popupMenuItemWithIcon(title: "ویرایش فایل", iconDate: Icons.edit_rounded, onTap: onClickEditFile),
-            ],
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 18, left: 10, right: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "خرید | تهران ولیصعر",
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              "محدوده قیمت: از # تا # تومان",
-              style: TextStyle(
-                color: Themes.textGrey,
-                fontSize: 11,
-              ),
-            ),
-            Text(
-              "محدوده متراژ: از # تا # متر",
-              style: TextStyle(
-                color: Themes.textGrey,
-                fontSize: 11,
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              "بنخیحسنب حخنیحخنب خنیحخبن خحیسنب خحنیبخحن حخیبن حخیسنبحخ ینسب حخنیسبخح نیخحبن خحسنیبخیسن ب",
-              style: TextStyle(
-                color: Themes.textGrey,
-                fontSize: 11,
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 20),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Colors.grey.shade200, width: 1),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    "1 ساعت پیش",
+    return BlocProvider(
+      create: (_) => requestConsultantBloc,
+      child: Scaffold(
+        appBar: AppBar(
+          titleSpacing: 0,
+          elevation: 0.7,
+          leading: MyBackButton(),
+          automaticallyImplyLeading: false,
+          title: AppBarTitle("درخواست شماره : ${widget.request.id}"),
+          actions: [
+            IconButton(onPressed: showDeleteDialog, icon: icon(CupertinoIcons.delete, size: 20)),
+            MyPopupMenuButton(
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                  child: Text(
+                    "ویرایش درخواست",
                     style: TextStyle(
-                      color: Themes.textGrey,
-                      fontSize: 9,
+                      color: App.theme.textTheme.bodyLarge?.color,
+                      fontSize: 12,
                     ),
                   ),
-                  Row(
-                    children: [
-                      Text(
-                        "کد رهگیری",
-                        style: TextStyle(
-                          color: Themes.textGrey,
-                          fontSize: 9,
-                        ),
-                      ),
-                      MyBadge(
-                        text: "842745353",
-                        padding:
-                            EdgeInsets.symmetric(vertical: 1, horizontal: 6),
-                        margin:
-                            EdgeInsets.symmetric(vertical: 1, horizontal: 2),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              "وضعیت: تایید شده توسط مشاور/مشاوران زیر",
-              style: TextStyle(
-                //todo: text color will be changed sort by status
-                color: Colors.green,
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-              ),
-            ),
-            //todo: if status is pending, show blow widget
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: Text(
-                "لطفا تا پذیرش  درخواست فایل توسط دفتر/دفاتر املاک شکیبا باشید. این وضعیت نهایتا تا ۲۴ ساعت زمان خواهد برد.",
-                style: TextStyle(
-                  color: Themes.textGrey,
-                  fontSize: 10,
+                  onTap: onClickEditFile,
                 ),
-              ),
-            ),
-            //todo: if status is accepted, show blow widget
-            SizedBox(height: 10),
-            Expanded(
-              child: ListView.builder(
-                itemCount: list.length,
-                itemBuilder: (context, i) {
-                  return item(list[i]);
-                },
-              ),
+              ],
             ),
           ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.only(top: 18, left: 10, right: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.request.categoryId!.getMainCategoryName()! + " | ${widget.request.title}",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                "محدوده قیمت: " + ((widget.request.minPrice ?? 0) > 0 ? "از ${widget.request.minPrice} " : "") + ((widget.request.maxPrice ?? 0) > 0 ? "تا ${widget.request.maxPrice} " : "") + "تومان",
+                style: TextStyle(
+                  fontSize: 12,
+                  fontFamily: "IranSansBold",
+                ),
+              ),
+              Text(
+                "محدوده متراژ: " + ((widget.request.minMeter ?? 0) > 0 ? "از ${widget.request.minMeter} " : "") + ((widget.request.maxMeter ?? 0) > 0 ? "تا ${widget.request.maxMeter} " : "") + "متر",
+                style: TextStyle(
+                  fontSize: 12,
+                  fontFamily: "IranSansBold",
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                widget.request.description ?? "",
+                style: TextStyle(
+                  color: App.theme.tooltipTheme.textStyle?.color,
+                  fontSize: 11,
+                  fontFamily: "IranSansMedium",
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 20),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: Colors.grey.shade200, width: 1),
+                  ),
+                ),
+                padding: EdgeInsets.only(bottom: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      widget.request.createDate ?? "",
+                      style: TextStyle(
+                        fontFamily: "IranSansMedium",
+                        fontSize: 12,
+                      ),
+                    ),
+                    Text(
+                      "کد پیگیری : ${widget.request.id}",
+                      style: TextStyle(
+                        fontFamily: "IranSansBold",
+                        fontSize: 12,
+                        color: Themes.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                "وضعیت : ${widget.request.statusString}",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                  backgroundColor: statusColors[widget.request.status]!.withOpacity(0.3),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Text(
+                  statusHelpTexts[widget.request.status!] ?? (widget.request.commentOperator ?? ""),
+                  style: TextStyle(
+                    color: App.theme.tooltipTheme.textStyle?.color,
+                    fontSize: 11,
+                    fontFamily: "IranSansMedium",
+                  ),
+                ),
+              ),
+              //todo: if status is accepted, show blow widget
+              SizedBox(height: 10),
+              if (widget.request.status == 1) BlocBuilder<RequestConsultantBloc, RequestConsultantState>(builder: _requestConsultantBlocBuilder),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget item(Map<String, dynamic> agent) {
+  Widget item(RequestConsultant requestConsultant) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
@@ -207,13 +207,11 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image(
-                  image: NetworkImage(
-                      "https://www.seiu1000.org/sites/main/files/imagecache/hero/main-images/camera_lense_0.jpeg"),
+                  image: NetworkImage("https://auth.siraf.app/media/static/upload/user/avatar/avatar.png"), // todo change image link
                   height: 40,
                   width: 40,
                   fit: BoxFit.fill,
                   loadingBuilder: (context, child, eventProgress) {
-                    if (eventProgress == null) return child;
                     return Image.asset(
                       "assets/images/profile.png",
                       width: 40,
@@ -229,25 +227,24 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    agent["agentName"],
+                    requestConsultant.consultantId!.name ?? "",
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    "(${agent["agencyName"]})",
+                    "(${requestConsultant.estateName})",
                     style: TextStyle(fontSize: 10, color: Themes.textGrey),
                   ),
                   SizedBox(height: 6),
                   RatingBar.builder(
-                    initialRating: (agent["star"] as int).toDouble(),
+                    initialRating: (requestConsultant.consultantId?.rate?.toDouble() ?? 0),
                     minRating: 1,
                     direction: Axis.horizontal,
                     itemCount: 5,
                     itemPadding: EdgeInsets.symmetric(horizontal: 0.25),
-                    itemBuilder: (context, _) =>
-                        icon(Icons.star, color: Colors.amber),
+                    itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
                     itemSize: 10,
                     onRatingUpdate: (double value) {},
                     updateOnDrag: false,
@@ -260,12 +257,8 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
           ),
           Row(
             children: [
-              IconButton(
-                  onPressed: () => startChat(agent),
-                  icon: icon(Icons.chat_outlined, color: Colors.grey.shade500)),
-              IconButton(
-                  onPressed: () => call(agent["numberPhone"]),
-                  icon: icon(Icons.phone_rounded, color: Colors.grey.shade500)),
+              IconButton(onPressed: () => startChat(requestConsultant), icon: icon(Icons.chat_outlined)),
+              IconButton(onPressed: () => call(requestConsultant.consultantId!), icon: icon(Icons.phone_rounded)),
             ],
           ),
         ],
@@ -273,36 +266,232 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
     );
   }
 
-  //event listeners
-  void showConfirmDialog() => showDialog(
-        context: context,
-        builder: (context) => MyAlertDialog(
-          title: TitleDialog(title: "حذف درخواست فایل"),
-          content: MyContentDialog(
-              content: "آیا واقعا میخواهید این درخواست را پاک کنید؟"),
-          actions: [
-            MyTextButton(
-                text: "حذف",
-                onPressed: onClickRemoveFile,
-                rippleColor: Colors.red),
-            MyTextButton(text: "لغو", onPressed: () => Navigator.pop(context)),
-          ],
-        ),
-      );
-
   void onClickEditFile() {
     //todo: implement event listener
   }
 
-  void call(agent) {
-    //todo: implement event listener
+  void call(ConsultantId consultantId) {
+    var phone = "09120000000"; // todo change phone
+    callTo(phone);
   }
 
-  void startChat(Map<String, dynamic> agent) {
-    //todo: implement event listener
+  void startChat(RequestConsultant requestConsultant) {
+
   }
 
-  void onClickRemoveFile() {
-    //todo: implement event listener
+  void removeRequest() {
+    deleteRequestBloc.add(DeleteRequestEvent(ids: [widget.request.id!]));
+  }
+
+  BuildContext? errorDialogContext;
+
+  _listenDelete(DeleteRequestState state) {
+    if (state is DeleteRequestLoadingState) {
+      loadingDialog(context: context);
+    } else if (state is DeleteRequestErrorState) {
+      dismissDialog(loadingDialogContext);
+      String? message;
+
+      if (jDecode(state.response.body)['message'] is String) {
+        message = jDecode(state.response.body)['message'];
+      }
+
+      showDialog2(
+        context: context,
+        barrierDismissible: false,
+        builder: (
+          _c,
+        ) {
+          errorDialogContext = _c;
+          return AlertDialog(
+            contentPadding: EdgeInsets.all(0),
+            content: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              height: 170,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: Text(
+                      'خطا',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TryAgain(
+                    message: message,
+                    onPressed: () {
+                      dismissDialog(errorDialogContext);
+                      removeRequest();
+                    },
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    } else if (state is DeleteRequestSuccessState) {
+      dismissDialog(loadingDialogContext);
+
+      Navigator.pop(context, 'removed');
+    }
+  }
+
+  BuildContext? deleteDialogContext;
+
+  showDeleteDialog() {
+    showDialog2(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) {
+        deleteDialogContext = _;
+        return AlertDialog(
+          contentPadding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          backgroundColor: App.theme.dialogBackgroundColor,
+          content: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Wrap(
+              children: [
+                Column(
+                  children: [
+                    SizedBox(
+                      height: 25,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                      ),
+                      child: Text(
+                        'آیا مایل به حذف فایل هستید؟',
+                        style: TextStyle(
+                          color: App.theme.tooltipTheme.textStyle?.color,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Themes.primary,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(5),
+                          bottomRight: Radius.circular(5),
+                        ),
+                      ),
+                      height: 40,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: MaterialButton(
+                              onPressed: dismissDeleteDialog,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomRight: Radius.circular(5),
+                                ),
+                              ),
+                              color: Themes.primary,
+                              elevation: 1,
+                              height: 40,
+                              child: Text(
+                                "خیر",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontFamily: "IranSansBold",
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                            ),
+                          ),
+                          Expanded(
+                            child: MaterialButton(
+                              onPressed: () async {
+                                dismissDeleteDialog();
+                                removeRequest();
+                              },
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(5),
+                                ),
+                              ),
+                              color: Themes.primary,
+                              elevation: 1,
+                              height: 40,
+                              child: Text(
+                                "بله",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontFamily: "IranSansBold",
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  dismissDeleteDialog() {
+    if (deleteDialogContext != null) {
+      Navigator.pop(deleteDialogContext!);
+    }
+  }
+
+  Widget _requestConsultantBlocBuilder(BuildContext context, RequestConsultantState state) {
+    if (state is RequestConsultantInitState) {
+      return Container();
+    }
+    if (state is RequestConsultantLoadingState) {
+      return Expanded(
+        child: Center(
+          child: Loading(),
+        ),
+      );
+    }
+    if (state is RequestConsultantErrorState) {
+      return Expanded(
+        child: Center(
+          child: TryAgain(onPressed: () {
+            requestConsultantBloc.add(RequestConsultantEvent(id: widget.request.id!));
+          },),
+        ),
+      );
+    }
+
+    state = RequestConsultantLoadedState(consultants: (state as RequestConsultantLoadedState).consultants);
+
+    return Expanded(
+      child: ListView(
+        children: state.consultants.map<Widget>((e) => item(e)).toList(),
+      ),
+    );
   }
 }

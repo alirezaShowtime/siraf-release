@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:siraf3/bloc/delete_request_bloc.dart';
 import 'package:siraf3/bloc/requests_bloc.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/request.dart';
@@ -23,12 +25,14 @@ class _RequestListScreen extends State<RequestListScreen> {
   List<Request> selectedRequests = [];
 
   RequestsBloc requestsBloc = RequestsBloc();
+  DeleteRequestBloc deleteRequestBloc = DeleteRequestBloc();
 
   @override
   void dispose() {
     super.dispose();
 
     requestsBloc.close();
+    deleteRequestBloc.close();
   }
 
   @override
@@ -36,12 +40,18 @@ class _RequestListScreen extends State<RequestListScreen> {
     super.initState();
 
     getRequests();
+    deleteRequestBloc.stream.listen(_listenDelete);
   }
+
+  String? currentSortType;
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => requestsBloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<RequestsBloc>(create: (_) => requestsBloc),
+        BlocProvider<DeleteRequestBloc>(create: (_) => deleteRequestBloc),
+      ],
       child: WillPopScope(
         onWillPop: () async {
           if (isSelectable) {
@@ -94,70 +104,153 @@ class _RequestListScreen extends State<RequestListScreen> {
                 child: MyPopupMenuButton(
                   icon: icon(Icons.sort_rounded),
                   itemBuilder: (_) => [
-                    PopupMenuItem(
-                      child: Text(
-                        "جدیدترین",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: App.theme.textTheme.bodyLarge?.color,
-                        ),
+                    PopupMenuItem<String?>(
+                      value: "newest",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "جدیدترین",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: App.theme.textTheme.bodyLarge?.color,
+                            ),
+                          ),
+                          if (currentSortType == "newest")
+                            Icon(
+                              Icons.check,
+                              size: 20,
+                            ),
+                        ],
                       ),
                     ),
-                    PopupMenuItem(
-                      child: Text(
-                        "قدیمی ترین",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: App.theme.textTheme.bodyLarge?.color,
-                        ),
+                    PopupMenuItem<String?>(
+                      value: "older",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "قدیمی ترین",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: App.theme.textTheme.bodyLarge?.color,
+                            ),
+                          ),
+                          if (currentSortType == "older")
+                            Icon(
+                              Icons.check,
+                              size: 20,
+                            ),
+                        ],
                       ),
                     ),
-                    PopupMenuItem(
-                      child: Text(
-                        "در انتظار تایید",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: App.theme.textTheme.bodyLarge?.color,
-                        ),
+                    PopupMenuItem<String?>(
+                      value: "waitePending",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "در انتظار تایید",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: App.theme.textTheme.bodyLarge?.color,
+                            ),
+                          ),
+                          if (currentSortType == "waitePending")
+                            Icon(
+                              Icons.check,
+                              size: 20,
+                            ),
+                        ],
                       ),
                     ),
-                    PopupMenuItem(
-                      child: Text(
-                        "در انتظار پذیرش",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: App.theme.textTheme.bodyLarge?.color,
-                        ),
+                    PopupMenuItem<String?>(
+                      value: "waiteAccept",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "در انتظار پذیرش",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: App.theme.textTheme.bodyLarge?.color,
+                            ),
+                          ),
+                          if (currentSortType == "waiteAccept")
+                            Icon(
+                              Icons.check,
+                              size: 20,
+                            ),
+                        ],
                       ),
                     ),
-                    PopupMenuItem(
-                      child: Text(
-                        "پذیرش شده",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: App.theme.textTheme.bodyLarge?.color,
-                        ),
+                    PopupMenuItem<String?>(
+                      value: "accepted",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "پذیرش شده",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: App.theme.textTheme.bodyLarge?.color,
+                            ),
+                          ),
+                          if (currentSortType == "accepted")
+                            Icon(
+                              Icons.check,
+                              size: 20,
+                            ),
+                        ],
                       ),
                     ),
-                    PopupMenuItem(
-                      child: Text(
-                        "عدم پذیرش",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: App.theme.textTheme.bodyLarge?.color,
-                        ),
+                    PopupMenuItem<String?>(
+                      value: "notAccept",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "عدم پذیرش",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: App.theme.textTheme.bodyLarge?.color,
+                            ),
+                          ),
+                          if (currentSortType == "notAccept")
+                            Icon(
+                              Icons.check,
+                              size: 20,
+                            ),
+                        ],
                       ),
                     ),
-                    PopupMenuItem(
-                      child: Text(
-                        "رد شده",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: App.theme.textTheme.bodyLarge?.color,
-                        ),
+                    PopupMenuItem<String?>(
+                      value: "fail",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "رد شده",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: App.theme.textTheme.bodyLarge?.color,
+                            ),
+                          ),
+                          if (currentSortType == "fail")
+                            Icon(
+                              Icons.check,
+                              size: 20,
+                            ),
+                        ],
                       ),
                     ),
                   ],
+                  onSelected: (value) {
+                    setState(() {
+                      currentSortType = value;
+                    });
+
+                  },
                 ),
               ),
               MyPopupMenuButton(
@@ -186,12 +279,20 @@ class _RequestListScreen extends State<RequestListScreen> {
     );
   }
 
-  Map<int, String> statuses = {
-    0: "در انتظار تایید",
-    1: "در انتظار تایید",
-    2: "در انتظار تایید",
-    3: "در انتظار تایید",
-    4: "در انتظار تایید",
+  Map<int, Color?> statusBadgeColors = {
+    0: Color(0xfffdb713), // عدم پذیرش
+    1: Color(0xff00cc11), // پذیرش شده
+    2: Color(0xfffd1313), // رد شده
+    3: Colors.grey, // در انتظار پذیرش
+    4: Colors.grey, // در انتظار تایید
+  };
+
+  Map<int, Color?> statusTextColors = {
+    0: Colors.black, // عدم پذیرش
+    1: Colors.black, // پذیرش شده
+    2: Colors.white, // رد شده
+    3: Colors.black, // در انتظار پذیرش
+    4: Colors.black, // در انتظار تایید
   };
 
   bool isSelectable = false;
@@ -231,8 +332,8 @@ class _RequestListScreen extends State<RequestListScreen> {
             Text(
               request.createDate ?? "",
               style: TextStyle(
-                color: Colors.grey.shade400,
-                fontSize: 10,
+                color: App.theme.tooltipTheme.textStyle?.color,
+                fontSize: 12,
               ),
             ),
             SizedBox(height: 10),
@@ -241,16 +342,26 @@ class _RequestListScreen extends State<RequestListScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  "${request.id}",
+                  "کد پیگیری : ${request.id}",
                   style: TextStyle(
-                    color: Colors.grey.shade400,
+                    color: App.theme.primaryColor,
                     fontSize: 12,
+                    fontFamily: "IranSansBold",
                   ),
                 ),
-                Text(
-                  request.status!,
-                  style: TextStyle(
-                    fontSize: 12,
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: statusBadgeColors[request.status!]!, width: 1),
+                    borderRadius: BorderRadius.circular(10),
+                    color: statusBadgeColors[request.status!]!.withOpacity(0.3),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                  child: Text(
+                    request.statusString!,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: "IranSansBold",
+                    ),
                   ),
                 ),
               ],
@@ -266,15 +377,30 @@ class _RequestListScreen extends State<RequestListScreen> {
   }
 
   void removeFile() {
-    //todo: implement event listener
+    var ids = selectedRequests.map((e) => e.id!).toList();
+
+    showDeleteDialog(ids);
   }
 
-  void onClickItem(Request request) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => RequestFileShowScreen()));
+  void onClickItem(Request request) async {
+    var result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => RequestFileShowScreen(
+          request: request,
+        ),
+      ),
+    );
+
+    if (result == "removed") {
+      setState(() {
+        requests.removeWhere((element) => element.id == request.id);
+      });
+    }
   }
 
   void getRequests() {
-    requestsBloc.add(RequestsEvent());
+    requestsBloc.add(RequestsEvent(sort: currentSortType));
   }
 
   List<Request> requests = [];
@@ -351,5 +477,193 @@ class _RequestListScreen extends State<RequestListScreen> {
         isSelectable = true;
       }
     });
+  }
+
+  BuildContext? errorDialogContext;
+
+  _listenDelete(DeleteRequestState state) {
+    if (state is DeleteRequestLoadingState) {
+      loadingDialog(context: context);
+    } else if (state is DeleteRequestErrorState) {
+      dismissDialog(loadingDialogContext);
+      String? message;
+
+      if (jDecode(state.response.body)['message'] is String) {
+        message = jDecode(state.response.body)['message'];
+      }
+
+      showDialog2(
+        context: context,
+        barrierDismissible: false,
+        builder: (
+          _c,
+        ) {
+          errorDialogContext = _c;
+          return AlertDialog(
+            contentPadding: EdgeInsets.all(0),
+            content: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              height: 170,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: Text(
+                      'خطا',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TryAgain(
+                    message: message,
+                    onPressed: () {
+                      dismissDialog(errorDialogContext);
+                      deleteRequests(state.event.ids);
+                    },
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    } else if (state is DeleteRequestSuccessState) {
+      dismissDialog(loadingDialogContext);
+
+      setState(() {
+        requests.removeWhere((element) => state.event.ids.any((e) => element.id == e));
+      });
+    }
+  }
+
+  deleteRequests(List<int> ids) {
+    deleteRequestBloc.add(DeleteRequestEvent(ids: ids));
+  }
+
+  BuildContext? deleteDialogContext;
+
+  showDeleteDialog(List<int> ids) {
+    showDialog2(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) {
+        deleteDialogContext = _;
+        return AlertDialog(
+          contentPadding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          backgroundColor: App.theme.dialogBackgroundColor,
+          content: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Wrap(
+              children: [
+                Column(
+                  children: [
+                    SizedBox(
+                      height: 25,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                      ),
+                      child: Text(
+                        'آیا مایل به حذف فایل هستید؟',
+                        style: TextStyle(
+                          color: App.theme.tooltipTheme.textStyle?.color,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Themes.primary,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(5),
+                          bottomRight: Radius.circular(5),
+                        ),
+                      ),
+                      height: 40,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: MaterialButton(
+                              onPressed: dismissDeleteDialog,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomRight: Radius.circular(5),
+                                ),
+                              ),
+                              color: Themes.primary,
+                              elevation: 1,
+                              height: 40,
+                              child: Text(
+                                "خیر",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontFamily: "IranSansBold",
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                            ),
+                          ),
+                          Expanded(
+                            child: MaterialButton(
+                              onPressed: () async {
+                                dismissDeleteDialog();
+                                deleteRequests(ids);
+                              },
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(5),
+                                ),
+                              ),
+                              color: Themes.primary,
+                              elevation: 1,
+                              height: 40,
+                              child: Text(
+                                "بله",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontFamily: "IranSansBold",
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  dismissDeleteDialog() {
+    if (deleteDialogContext != null) {
+      Navigator.pop(deleteDialogContext!);
+    }
   }
 }

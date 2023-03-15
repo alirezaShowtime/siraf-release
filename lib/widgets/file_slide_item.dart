@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/themes.dart';
@@ -74,7 +75,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                     color: Themes.background,
                     image: DecorationImage(
                         image:
-                            AssetImage("assets/images/image_not_avialable.png"),
+                            AssetImage(IMAGE_NOT_AVAILABLE),
                         alignment: Alignment.center),
                   ),
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/bookmark.dart';
+import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/location_file.dart';
 import 'package:siraf3/themes.dart';
@@ -68,7 +69,7 @@ class _LocationFileItemState extends State<LocationFileItem> {
                   height: imageSize,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => m.Image(
-                    image: AssetImage("assets/images/image_not_avialable_2.png"),
+                    image: AssetImage(IMAGE_NOT_AVAILABLE),
                     width: imageSize,
                     height: imageSize,
                     fit: BoxFit.cover,

@@ -184,21 +184,9 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                     ),
                     height: 35,
                   ),
-                  PopupMenuItem<int>(
-                    value: 1,
-                    child: Text(
-                      "حذف",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: App.theme.textTheme.bodyLarge?.color,
-                      ),
-                    ),
-                    height: 35,
-                  ),
                 ],
                 icon: icon(Icons.more_vert_rounded, color: App.theme.iconTheme.color),
                 onSelected: (val) {
-                  if (val == 0) {
                     setState(() {
                       isSelectable = true;
 
@@ -207,9 +195,6 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                         selectedFiles.add(element);
                       });
                     });
-                  } else if (val == 1) {
-                    //todo delete all selected
-                  }
                 },
               ),
             ],

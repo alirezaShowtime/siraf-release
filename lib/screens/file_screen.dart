@@ -23,6 +23,7 @@ import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/widgets/simple_app_bar.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
@@ -55,12 +56,17 @@ class _FileScreenState extends State<FileScreen> {
     addViolationBloc.close();
   }
 
+  FileState currentState = FileInitState();
+
   @override
   void initState() {
     super.initState();
 
     fileBloc.add(FileFetchEvent(id: widget.id));
     fileBloc.stream.listen((event) async {
+      setState(() {
+        currentState = event;
+      });
       if (event is FileLoadedState) {
         print(await User.getBearerToken());
 
@@ -119,6 +125,7 @@ class _FileScreenState extends State<FileScreen> {
     return BlocProvider(
       create: (context) => fileBloc,
       child: Scaffold(
+        // appBar: currentState is FileLoadingState ? SimpleAppBar(titleText: "در حال بارگذاری...") : null,
         body: SafeArea(
           child: BlocBuilder<FileBloc, FileState>(builder: buildBaseBloc),
         ),
@@ -218,19 +225,19 @@ class _FileScreenState extends State<FileScreen> {
   Widget _buildSliders(FileDetail file) {
     return Stack(
       children: [
-        // if (file.media!.image == null || file.media!.image!.isEmpty)
-        //   Container(
-        //     padding: EdgeInsets.only(bottom: 15),
-        //     height: 250,
-        //     width: double.infinity,
-        //     decoration: BoxDecoration(
-        //       color: Themes.background,
-        //       image: DecorationImage(
-        //           image: AssetImage("assets/images/image_not_avialable.png"),
-        //           alignment: Alignment.center),
-        //     ),
-        //   ),
-        // if (file.media?.image != null && file.media!.image!.isNotEmpty)
+        if (file.media!.image == null || file.media!.image!.isEmpty)
+          Container(
+            padding: EdgeInsets.only(bottom: 15),
+            height: 250,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: App.theme.backgroundColor,
+              image: DecorationImage(
+                  image: AssetImage(IMAGE_NOT_AVAILABLE),
+                  alignment: Alignment.center),
+            ),
+          ),
+        if (file.media?.image != null && file.media!.image!.isNotEmpty)
         CarouselSliderCustom(
           sliders: sliders,
           autoPlay: false,

@@ -49,8 +49,6 @@ class _FileViewChartScreenState extends State<FileViewChartScreen> {
   }
 
   Widget _mainBlocBuilder(BuildContext context, FVCState state) {
-    print(state);
-
     if (state is FVCInitState) {
       return Container();
     }

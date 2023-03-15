@@ -77,27 +77,27 @@ class _SettingsScreen extends State<SettingsScreen> {
               text: widget.user?.username,
             ),
           if (widget.user?.phone != null) item(title: "شماره همراه", text: phoneFormat(widget.user!.phone!)),
-          item(
-            title: "نمایش شماره همراه برای مشاوران",
-            widget: FlutterSwitch(
-              height: 20.0,
-              width: 40.0,
-              padding: 4.0,
-              toggleSize: 10.0,
-              borderRadius: 10.0,
-              activeColor: Themes.blue,
-              inactiveColor: Colors.grey.shade300,
-              value: showNumberPhoneForAgent,
-              activeToggleColor: Colors.white,
-              inactiveToggleColor: Themes.blue,
-              onToggle: (value) {
-                setState(() {
-                  showNumberPhoneForAgent = value;
-                });
-                settings.setShowNumberPhoneForAgent(value);
-              },
-            ),
-          ),
+          // item(
+          //   title: "نمایش شماره همراه برای مشاوران",
+          //   widget: FlutterSwitch(
+          //     height: 20.0,
+          //     width: 40.0,
+          //     padding: 4.0,
+          //     toggleSize: 10.0,
+          //     borderRadius: 10.0,
+          //     activeColor: Themes.blue,
+          //     inactiveColor: Colors.grey.shade300,
+          //     value: showNumberPhoneForAgent,
+          //     activeToggleColor: Colors.white,
+          //     inactiveToggleColor: Themes.blue,
+          //     onToggle: (value) {
+          //       setState(() {
+          //         showNumberPhoneForAgent = value;
+          //       });
+          //       settings.setShowNumberPhoneForAgent(value);
+          //     },
+          //   ),
+          // ),
           item(
             title: "اعلان برنامه",
             widget: FlutterSwitch(

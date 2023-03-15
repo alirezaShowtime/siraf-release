@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/config.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/my_file.dart';
 import 'package:siraf3/themes.dart';
@@ -60,7 +61,7 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
               height: imageSize,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) => Image(
-                image: AssetImage("assets/images/image_not_avialable_2.png"),
+                image: AssetImage(IMAGE_NOT_AVAILABLE),
                 width: imageSize,
                 height: imageSize,
                 fit: BoxFit.cover,

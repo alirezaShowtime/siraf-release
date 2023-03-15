@@ -41,6 +41,8 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
     var response =
         await http2.getWithToken(getFileUrl("file/getFileFavorite/")); // todo implement sort
 
+    print(response.statusCode);
+
     if (isResponseOk(response)) {
       var json = jDecode(response.body);
 

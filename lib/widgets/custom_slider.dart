@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/file_detail.dart';
 import 'package:siraf3/models/user.dart';
@@ -202,7 +203,7 @@ class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> {
             height: MediaQuery.of(context).size.height,
             errorBuilder: (_, _1, _2) {
               return m.Image(
-                image: AssetImage("assets/images/image_not_avialable.png"),
+                image: AssetImage(IMAGE_NOT_AVAILABLE),
                 width: MediaQuery.of(context).size.width,
                 fit: widget.imageFit ?? BoxFit.cover,
                 height: MediaQuery.of(context).size.height,
@@ -240,7 +241,7 @@ class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> {
                 height: MediaQuery.of(context).size.height,
                 errorBuilder: (_, _1, _2) {
                   return m.Image(
-                    image: AssetImage("assets/images/image_not_avialable.png"),
+                    image: AssetImage(IMAGE_NOT_AVAILABLE),
                     width: MediaQuery.of(context).size.width,
                     fit: widget.imageFit ?? BoxFit.cover,
                     height: MediaQuery.of(context).size.height,

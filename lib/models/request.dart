@@ -1,25 +1,46 @@
+
 class Request {
   int? id;
-  FullCategory? categoryId;
+  String? createDate;
+  String? statusString;
+  CategoryId? categoryId;
   int? cityId;
   int? minPrice;
   int? maxPrice;
   String? title;
   int? maxMeter;
   int? minMeter;
-  String? status;
+  int? status;
   String? description;
+  String? commentOperator;
+  bool? isDelete;
   int? userId;
-  String? createDate;
 
-  Request({this.id, this.categoryId, this.cityId, this.minPrice, this.maxPrice, this.title, this.maxMeter, this.minMeter, this.status, this.description, this.userId, this.createDate});
+  Request({this.id, this.createDate, this.statusString, this.categoryId, this.cityId, this.minPrice, this.maxPrice, this.title, this.maxMeter, this.minMeter, this.status, this.description, this.commentOperator, this.isDelete, this.userId});
+
+  static List<Request> fromList(List<dynamic> list) {
+    var list2 = <Request>[];
+
+    for (dynamic item in list) {
+      list2.add(Request.fromJson(item));
+    }
+
+    return list2;
+  }
+
 
   Request.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
       id = json["id"];
     }
-    if (json["category_id"] != null) {
-      categoryId = FullCategory.fromJson(json["category_id"]);
+    if (json["createDate"] is String) {
+      createDate = json["createDate"];
+    }
+    if (json["statusString"] is String) {
+      statusString = json["statusString"];
+    }
+    if (json["category_id"] is Map) {
+      categoryId = json["category_id"] == null ? null : CategoryId.fromJson(json["category_id"]);
     }
     if (json["city_id"] is int) {
       cityId = json["city_id"];
@@ -39,24 +60,31 @@ class Request {
     if (json["minMeter"] is int) {
       minMeter = json["minMeter"];
     }
-    if (json["status"] is String) {
+    if (json["status"] is int) {
       status = json["status"];
     }
     if (json["description"] is String) {
       description = json["description"];
     }
+    if (json["commentOperator"] is String) {
+      commentOperator = json["commentOperator"];
+    }
+    if (json["isDelete"] is bool) {
+      isDelete = json["isDelete"];
+    }
     if (json["user_id"] is int) {
       userId = json["user_id"];
-    }
-    if (json["createDate"] is String) {
-      createDate = json["createDate"];
     }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["id"] = id;
-    _data["category_id"] = categoryId;
+    _data["createDate"] = createDate;
+    _data["statusString"] = statusString;
+    if (categoryId != null) {
+      _data["category_id"] = categoryId?.toJson();
+    }
     _data["city_id"] = cityId;
     _data["minPrice"] = minPrice;
     _data["maxPrice"] = maxPrice;
@@ -65,24 +93,14 @@ class Request {
     _data["minMeter"] = minMeter;
     _data["status"] = status;
     _data["description"] = description;
+    _data["commentOperator"] = commentOperator;
+    _data["isDelete"] = isDelete;
     _data["user_id"] = userId;
     return _data;
   }
-
-
-  static List<Request> fromList(List<dynamic> list) {
-    var list2 = <Request>[];
-
-    for (dynamic item in list) {
-      list2.add(Request.fromJson(item));
-    }
-
-    return list2;
-  }
 }
 
-
-class FullCategory {
+class CategoryId {
   int? id;
   String? name;
   dynamic image;
@@ -90,28 +108,23 @@ class FullCategory {
   bool? isAll;
   int? parentId;
 
-  FullCategory({this.id,
-    this.name,
-    this.image,
-    this.fullCategory,
-    this.isAll,
-    this.parentId});
+  CategoryId({this.id, this.name, this.image, this.fullCategory, this.isAll, this.parentId});
 
-  FullCategory.fromJson(Map<String, dynamic> json) {
-    if (json["id"] is int) {
+  CategoryId.fromJson(Map<String, dynamic> json) {
+    if(json["id"] is int) {
       id = json["id"];
     }
-    if (json["name"] is String) {
+    if(json["name"] is String) {
       name = json["name"];
     }
     image = json["image"];
-    if (json["fullCategory"] is String) {
+    if(json["fullCategory"] is String) {
       fullCategory = json["fullCategory"];
     }
-    if (json["isAll"] is bool) {
+    if(json["isAll"] is bool) {
       isAll = json["isAll"];
     }
-    if (json["parent_id"] is int) {
+    if(json["parent_id"] is int) {
       parentId = json["parent_id"];
     }
   }
