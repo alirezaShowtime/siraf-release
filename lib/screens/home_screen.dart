@@ -13,6 +13,7 @@ import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
+import 'package:siraf3/screens/intro_screen.dart';
 import 'package:siraf3/screens/menu_screen.dart';
 import 'package:siraf3/screens/search_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
@@ -41,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
+    goToIntro();
     listenLink();
 
     if (widget.nextScreen != null) {
@@ -75,21 +77,29 @@ class _HomeScreenState extends State<HomeScreen> {
     _moreBloc.stream.listen(_loadMoreEvent);
   }
 
+  goToIntro() async {
+    var pref = await SharedPreferences.getInstance();
+
+    if (! ((await pref.getBool("IS_INTRO_SHOW")) ?? false)) {
+      pref.setBool("IS_INTRO_SHOW", true);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => IntroScreen()));
+    }
+  }
+
   HSBloc _moreBloc = HSBloc();
 
   int? lastId;
 
   bool _isLoadingMore = false;
 
-  List<File> files = [];
-
   bool _hasNewFiles = true;
+
+  List<File> files = [];
 
   bool _canLoadMore() {
     return (scrollController.position.pixels ==
             scrollController.position.maxScrollExtent) &&
         lastId != null &&
-        // _hasNewFiles && 
          !_isLoadingMore;
   }
 
