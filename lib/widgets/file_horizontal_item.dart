@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/themes.dart';
 
@@ -18,9 +19,9 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
     double imageSize = (MediaQuery.of(context).size.width - 20) / 3.5;
     if (imageSize > 140) imageSize = 140;
     return Container(
-      decoration: BoxDecoration(color: Themes.background2, boxShadow: [
+      decoration: BoxDecoration(color: App.theme.dialogBackgroundColor, boxShadow: [
         BoxShadow(
-          color: Themes.background,
+          color: App.theme.backgroundColor,
           blurRadius: 2,
           spreadRadius: 2,
           offset: Offset(0, -3),
@@ -67,7 +68,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                             Text(
                               widget.file.getFirstPrice(),
                               style: TextStyle(
-                                color: Themes.text,
+                                color: App.theme.textTheme.bodyLarge?.color,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
                                 fontFamily: 'IranSans',
@@ -79,7 +80,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                             Text(
                               widget.file.getSecondPrice(),
                               style: TextStyle(
-                                color: Themes.text,
+                                color: App.theme.textTheme.bodyLarge?.color,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
                                 fontFamily: 'IranSans',
@@ -90,7 +91,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                         Text(
                           widget.file.publishedAgo! + ' | ' + widget.file.city!,
                           style: TextStyle(
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color,
                             fontSize: 9,
                             fontWeight: FontWeight.w400,
                             fontFamily: 'IranSans',
@@ -101,7 +102,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                     Text(
                       widget.file.name!,
                       style: TextStyle(
-                        color: Themes.text,
+                        color: App.theme.textTheme.bodyLarge?.color,
                         fontSize: 12,
                         fontFamily: 'IranSans',
                       ),
@@ -112,7 +113,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                         Text(
                           '',
                           style: TextStyle(
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color,
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             fontFamily: 'IranSans',
@@ -134,7 +135,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                                   .map<Widget>((e) => Text(
                                         "${e.name} ${e.value}",
                                         style: TextStyle(
-                                          color: Themes.text,
+                                          color: App.theme.textTheme.bodyLarge?.color,
                                           fontSize: 10.5,
                                           fontWeight: FontWeight.w400,
                                           fontFamily: 'IranSans',

@@ -23,7 +23,7 @@ import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/loading.dart';
-import 'package:siraf3/widgets/simple_app_bar.dart';
+import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
@@ -46,7 +46,6 @@ class _FileScreenState extends State<FileScreen> {
   bool isFavorite = false;
 
   late Bookmark bookmark;
-
 
   @override
   void dispose() {
@@ -125,10 +124,26 @@ class _FileScreenState extends State<FileScreen> {
     return BlocProvider(
       create: (context) => fileBloc,
       child: Scaffold(
-        // appBar: currentState is FileLoadingState ? SimpleAppBar(titleText: "در حال بارگذاری...") : null,
-        body: SafeArea(
-          child: BlocBuilder<FileBloc, FileState>(builder: buildBaseBloc),
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          scrolledUnderElevation: 0.0,
+          backgroundColor: Colors.transparent,
+          leading: MyBackButton(),
+          actions: [
+            IconButton(
+              onPressed: () async {
+                doWithLogin(context, () async {
+                  bookmark.addOrRemoveFavorite();
+                });
+              },
+              icon: Icon(
+                isFavorite ? Icons.bookmark : Icons.bookmark_border,
+                size: 22,
+              ),
+            ),
+          ],
         ),
+        body: SafeArea(child: BlocBuilder<FileBloc, FileState>(builder: buildBaseBloc)),
       ),
     );
   }
@@ -232,117 +247,49 @@ class _FileScreenState extends State<FileScreen> {
             width: double.infinity,
             decoration: BoxDecoration(
               color: App.theme.backgroundColor,
-              image: DecorationImage(
-                  image: AssetImage(IMAGE_NOT_AVAILABLE),
-                  alignment: Alignment.center),
+              image: DecorationImage(image: AssetImage(IMAGE_NOT_AVAILABLE), alignment: Alignment.center),
             ),
           ),
         if (file.media?.image != null && file.media!.image!.isNotEmpty)
-        CarouselSliderCustom(
-          sliders: sliders,
-          autoPlay: false,
-          height: 250,
-          indicatorsCenterAlign: true,
-          viewportFraction: 1.0,
-          itemMargin: EdgeInsets.only(bottom: 15),
-          indicatorPosition: EdgeInsets.only(left: 0, right: 0, bottom: 0),
-          itemBorderRadius: BorderRadius.zero,
-          imageFit: BoxFit.cover,
-          indicatorSelectedColor: Themes.blue,
-          indicatorColor: Colors.grey,
-          onPageChanged: (i) {
-            setState(() {
-              if (file.media!.image![i].name == null || file.media!.image![i].name == "") {
-                imageName.add(null);
-              } else {
-                imageName.add(" | ${file.media!.image![i].name!.trim()}");
+          CarouselSliderCustom(
+            sliders: sliders,
+            autoPlay: false,
+            height: 250,
+            indicatorsCenterAlign: true,
+            viewportFraction: 1.0,
+            itemMargin: EdgeInsets.only(bottom: 15),
+            indicatorPosition: EdgeInsets.only(left: 0, right: 0, bottom: 0),
+            itemBorderRadius: BorderRadius.zero,
+            imageFit: BoxFit.cover,
+            indicatorSelectedColor: Themes.blue,
+            indicatorColor: Colors.grey,
+            onPageChanged: (i) {
+              setState(() {
+                if (file.media!.image![i].name == null || file.media!.image![i].name == "") {
+                  imageName.add(null);
+                } else {
+                  imageName.add(" | ${file.media!.image![i].name!.trim()}");
+                }
+              });
+            },
+            onImageTap: (s.Slider slider) {
+              if (slider.type == s.SliderType.image) {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => FileImagesScreen(file: file)));
               }
-            });
-          },
-          onImageTap: (s.Slider slider) {
-            if (slider.type == s.SliderType.image) {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => FileImagesScreen(file: file)));
-            }
-            if (slider.type == s.SliderType.virtual_tour) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => WebViewScreen(
-                    title: file.name ?? "",
-                    url: slider.link!,
+              if (slider.type == s.SliderType.virtual_tour) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => WebViewScreen(
+                      title: file.name ?? "",
+                      url: slider.link!,
+                    ),
                   ),
-                ),
-              );
-            }
-          },
-        ),
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Stack(
-                  children: <Widget>[
-                    Positioned(
-                      left: 1.0,
-                      top: 2.0,
-                      child: Icon(CupertinoIcons.back, color: Colors.black26),
-                    ),
-                    Positioned(
-                      right: 1.0,
-                      top: 2.0,
-                      child: Icon(CupertinoIcons.back, color: Colors.black26),
-                    ),
-                    Icon(
-                      CupertinoIcons.back,
-                      color: Themes.iconLight,
-                    ),
-                  ],
-                ),
-              ),
-              IconButton(
-                onPressed: () async {
-                  doWithLogin(context, () async {
-                    bookmark.addOrRemoveFavorite();
-                  });
-                },
-                icon: Stack(
-                  children: [
-                    Positioned(
-                      top: 0.5,
-                      right: 0.5,
-                      child: Icon(
-                        Icons.bookmark_border,
-                        size: 22,
-                        color: Colors.black26,
-                      ),
-                    ),
-                    Positioned(
-                      top: 0.5,
-                      left: 0.5,
-                      child: Icon(
-                        Icons.bookmark_border,
-                        size: 22,
-                        color: Colors.black26,
-                      ),
-                    ),
-                    Icon(
-                      isFavorite ? Icons.bookmark : Icons.bookmark_border,
-                      size: 22,
-                      color: Colors.white,
-                    ),
-                  ],
-                ),
-              ),
-            ],
+                );
+              }
+            },
           ),
-        ),
+        _buildTopBar(file),
         Positioned(
           bottom: 25,
           right: 10,
@@ -859,5 +806,75 @@ class _FileScreenState extends State<FileScreen> {
     if (violationDialogContext != null) {
       Navigator.pop(violationDialogContext!);
     }
+  }
+
+  Widget _buildTopBar(FileDetail file) {
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Stack(
+              children: <Widget>[
+                Positioned(
+                  left: 1.0,
+                  top: 2.0,
+                  child: Icon(CupertinoIcons.back, color: Colors.black26),
+                ),
+                Positioned(
+                  right: 1.0,
+                  top: 2.0,
+                  child: Icon(CupertinoIcons.back, color: Colors.black26),
+                ),
+                Icon(
+                  CupertinoIcons.back,
+                  color: Themes.iconLight,
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            onPressed: () async {
+              doWithLogin(context, () async {
+                bookmark.addOrRemoveFavorite();
+              });
+            },
+            icon: Stack(
+              children: [
+                Positioned(
+                  top: 0.5,
+                  right: 0.5,
+                  child: Icon(
+                    Icons.bookmark_border,
+                    size: 22,
+                    color: Colors.black26,
+                  ),
+                ),
+                Positioned(
+                  top: 0.5,
+                  left: 0.5,
+                  child: Icon(
+                    Icons.bookmark_border,
+                    size: 22,
+                    color: Colors.black26,
+                  ),
+                ),
+                Icon(
+                  isFavorite ? Icons.bookmark : Icons.bookmark_border,
+                  size: 22,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
