@@ -542,7 +542,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
             await FlutterShare.share(
               title: 'اشتراک گذاری فایل',
               text: file.name ?? '',
-              linkUrl: "https://siraf.biz/312" /* + file.id!.toString()*/,
+              linkUrl: FILE_URL + widget.id.toString(),
               chooserTitle: 'اشتراک گذاری در',
             );
           },
@@ -1048,6 +1048,8 @@ class _MyFileScreenState extends State<MyFileScreen> {
 
   Widget _buildTopBar(MyFileDetail file) {
     var iconColor = Themes.iconLight;
+
+    var toolbarOpacity = (file.media?.image?.isNotEmpty ?? false) ? this.toolbarOpacity : 1.0;
 
     if (toolbarOpacity > 0) {
       iconColor = App.theme.appBarTheme.foregroundColor ?? Themes.iconLight;

@@ -70,7 +70,7 @@ class EstateBloc extends Bloc<EstateEvent, EstateState> {
 
         emit(
           EstateLoadedState(
-            estates: Estate.fromList(json['data']['estates']),
+            estates: Estate.fromList(json['data']['estats']),
             sort_type: event.sort,
           ),
         );

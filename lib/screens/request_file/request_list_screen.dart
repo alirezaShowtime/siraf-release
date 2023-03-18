@@ -249,7 +249,7 @@ class _RequestListScreen extends State<RequestListScreen> {
                     setState(() {
                       currentSortType = value;
                     });
-
+                    getRequests();
                   },
                 ),
               ),

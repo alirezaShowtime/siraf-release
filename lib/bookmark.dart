@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/http2.dart' as http2;
@@ -36,7 +37,7 @@ class Bookmark {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -60,9 +61,9 @@ class Bookmark {
                           child: Text(
                             "نشان کردن فایل",
                             style: TextStyle(
-                              color: Themes.text,
                               fontSize: 14,
                               fontFamily: "IranSansMedium",
+                              color: App.theme.textTheme.bodyLarge?.color,
                             ),
                           ),
                           padding: EdgeInsets.symmetric(vertical: 9),
@@ -84,14 +85,14 @@ class Bookmark {
                           border: InputBorder.none,
                           hintText: "در صورت نیاز یادداشت بنویسید.",
                           hintStyle: TextStyle(
-                            color: Themes.textGrey,
+                            color: App.theme.tooltipTheme.textStyle?.color,
                             fontSize: 13,
                             fontFamily: "IranSans",
                           ),
                         ),
                         textAlign: TextAlign.right,
                         style: TextStyle(
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color,
                           fontSize: 13,
                           fontFamily: "IranSansMedium",
                         ),

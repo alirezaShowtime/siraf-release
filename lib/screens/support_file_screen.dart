@@ -7,6 +7,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart';
 import 'package:siraf3/bloc/file_consulants_bloc.dart';
 import 'package:siraf3/dialog.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file_consulant.dart';
 import 'package:siraf3/models/file_detail.dart' as file_detail;
 import 'package:siraf3/models/user.dart';
@@ -129,7 +130,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
       height: 80,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: App.theme.dialogBackgroundColor,
         border: Border(
           bottom: BorderSide(color: Themes.textGrey.withOpacity(0.2), width: 1),
         ),
@@ -163,14 +164,13 @@ class _SupportFileScreen extends State<SupportFileScreen> {
                     Text(
                       item.consultantId?.name ?? "؟؟؟",
                       style: TextStyle(
-                        color: Themes.text,
                         fontSize: 14,
                       ),
                     ),
                     Text(
                       "(${item.estateName.toString()})",
                       style: TextStyle(
-                        color: Themes.textGrey,
+                        color: App.theme.tooltipTheme.textStyle?.color,
                         fontSize: 10,
                       ),
                     ),

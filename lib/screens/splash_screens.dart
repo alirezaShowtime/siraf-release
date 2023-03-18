@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/themes.dart';
-import 'package:siraf3/http2.dart' as http2;
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -18,8 +18,7 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   final Duration duration = const Duration(milliseconds: 500);
   late AnimationController _controller;
   bool isHidden = true;
@@ -56,6 +55,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   bool activeConnection = true;
+
   Future<bool> checkUserConnection() async {
     try {
       final result = await InternetAddress.lookup('google.com');
@@ -137,18 +137,13 @@ class _SplashScreenState extends State<SplashScreen>
                         Container(
                           color: Themes.primary,
                           child: Image(
-                            image:
-                                AssetImage('assets/images/siraf_logo_text.png'),
+                            image: AssetImage('assets/images/siraf_logo_text.png'),
                             width: 120,
                           ),
                         ),
                       ],
                     ),
-                    if (activeConnection)
-                      SpinKitThreeBounce(
-                          size: 15,
-                          color: Colors.white,
-                          duration: Duration(milliseconds: 800)),
+                    if (activeConnection) SpinKitThreeBounce(size: 15, color: Colors.white, duration: Duration(milliseconds: 800)),
                     if (!activeConnection)
                       Text(
                         "خطا در اتصال به اینترنت!",
@@ -196,10 +191,11 @@ class _SplashScreenState extends State<SplashScreen>
 
   void refreshToken() async {
     var user = (await User.fromLocal());
-    var response = await http2.post(Uri.parse("https://auth.siraf.app/api/token/refresh/"), body: jsonEncode({
-      "refresh" : user.refreshToken ?? "",
-    }));
-    
+    var response = await http2.post(Uri.parse("https://auth.siraf.app/api/token/refresh/"),
+        body: jsonEncode({
+          "refresh": user.refreshToken ?? "",
+        }));
+
     if (isResponseOk(response)) {
       var body = jDecode(response.body);
       if (body["access"] is String) {

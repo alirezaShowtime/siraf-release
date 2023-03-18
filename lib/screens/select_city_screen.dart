@@ -132,9 +132,10 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                     hintText: "جستجو در شهر ها",
                     hintStyle: TextStyle(
                       fontSize: 15,
+                      color: App.theme.tooltipTheme.textStyle?.color,
                     ),
                   ),
-                  style: TextStyle(fontSize: 15),
+                  style: TextStyle(fontSize: 15, color: App.theme.textTheme.bodyLarge?.color),
                   controller: _searchFieldCtrl,
                   onChanged: ((value) {
                     doSearch(value.trim());

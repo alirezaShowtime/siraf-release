@@ -23,58 +23,60 @@ class _IntroScreenState extends State<IntroScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IntroductionScreen(
-        rawPages: [
-          _buildPage(imagePath: "assets/images/intro_1.gif", description: "سیراف پل ارتباطی شما با دفاتر املاک"),
-          _buildPage(imagePath: "assets/images/intro_2.gif", description: "تمام فایل های دفاتر املاک در دستان شما"),
-          _buildPage(imagePath: "assets/images/intro_3.gif", description: "ملک های اطرافت رو از روی نقشه پیدا کن"),
-          _buildPage(imagePath: "assets/images/intro_4.gif", description: "قبل از معامله، استعلامات ثبتی لازم رو بگیر و کمیسیون معامله ات رو آنی حساب کن"),
-          _buildPage(imagePath: "assets/images/intro_5.gif", description: "ملک رو به دفاتر املاک قانونی بسپار"),
-          _buildPage(imagePath: "assets/images/intro_6.gif", description: "24 ساعته پشتیبان مشکلات شما هستیم"),
-        ],
-        showNextButton: true,
-        showSkipButton: false,
-        showBackButton: false,
-        showDoneButton: true,
-        next: Text(
-          "بعدی",
-          style: TextStyle(color: Themes.primary, fontSize: 16),
-        ),
-        done: Text(
-          "شروع",
-          style: TextStyle(color: Themes.primary, fontSize: 16),
-        ),
-        onDone: () {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen()));
-        },
-        rtl: true,
-        globalBackgroundColor: Colors.white,
-        globalHeader: Container(
-          padding: EdgeInsets.only(right: 15, top: 20),
-          child: Text(
-            "${currentPage}/4",
-            style: TextStyle(fontSize: 18, color: Themes.secondary2, fontFamily: "IranSansBold"),
+      body: SafeArea(
+        child: IntroductionScreen(
+          rawPages: [
+            _buildPage(imagePath: "assets/images/intro_1.gif", description: "سیراف پل ارتباطی شما با دفاتر املاک"),
+            _buildPage(imagePath: "assets/images/intro_2.gif", description: "تمام فایل های دفاتر املاک در دستان شما"),
+            _buildPage(imagePath: "assets/images/intro_3.gif", description: "ملک های اطرافت رو از روی نقشه پیدا کن"),
+            _buildPage(imagePath: "assets/images/intro_4.gif", description: "قبل از معامله، استعلامات ثبتی لازم رو بگیر و کمیسیون معامله ات رو آنی حساب کن"),
+            _buildPage(imagePath: "assets/images/intro_5.gif", description: "ملک رو به دفاتر املاک قانونی بسپار"),
+            _buildPage(imagePath: "assets/images/intro_6.gif", description: "24 ساعته پشتیبان مشکلات شما هستیم"),
+          ],
+          showNextButton: true,
+          showSkipButton: false,
+          showBackButton: false,
+          showDoneButton: true,
+          next: Text(
+            "بعدی",
+            style: TextStyle(color: Themes.primary, fontSize: 16),
           ),
-        ),
-        dotsDecorator: DotsDecorator(
-          color: Themes.textGrey,
-          activeColor: Themes.primary,
-          shape: CircleBorder(),
-          size: Size(7, 7),
-          activeShape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(7),
+          done: Text(
+            "شروع",
+            style: TextStyle(color: Themes.primary, fontSize: 16),
           ),
-          activeSize: Size(14, 7),
-          spacing: EdgeInsets.only(right: 3)
+          onDone: () {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+          },
+          rtl: true,
+          globalBackgroundColor: Colors.white,
+          globalHeader: Container(
+            padding: EdgeInsets.only(right: 15, top: 20),
+            child: Text(
+              "${currentPage}/6",
+              style: TextStyle(fontSize: 18, color: Themes.secondary2, fontFamily: "IranSansBold"),
+            ),
+          ),
+          dotsDecorator: DotsDecorator(
+            color: Themes.textGrey,
+            activeColor: Themes.primary,
+            shape: CircleBorder(),
+            size: Size(7, 7),
+            activeShape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(7),
+            ),
+            activeSize: Size(14, 7),
+            spacing: EdgeInsets.only(right: 3)
+          ),
+          bodyPadding: EdgeInsets.only(top: 0),
+          controlsPadding: EdgeInsets.symmetric(vertical: 20),
+          onChange: (index) {
+            setState(() {
+              currentPage = index + 1;
+            });
+          },
+          scrollPhysics: AlwaysScrollableScrollPhysics(),
         ),
-        bodyPadding: EdgeInsets.only(top: 150),
-        controlsPadding: EdgeInsets.symmetric(vertical: 20),
-        onChange: (index) {
-          setState(() {
-            currentPage = index + 1;
-          });
-        },
-        scrollPhysics: AlwaysScrollableScrollPhysics(),
       ),
     );
   }

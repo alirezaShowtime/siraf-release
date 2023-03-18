@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:siraf3/bookmark.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/location_file.dart';
 import 'package:siraf3/themes.dart';
 import 'package:flutter/material.dart' as m;
@@ -37,7 +38,7 @@ class _LocationFileItemState extends State<LocationFileItem> {
     if (imageSize > 140) imageSize = 140;
     return Container(
       decoration: BoxDecoration(
-        color: Themes.background2,
+        color: App.theme.dialogBackgroundColor,
         boxShadow: [
           BoxShadow(
             color: Themes.textGrey.withOpacity(0.1),
@@ -107,7 +108,7 @@ class _LocationFileItemState extends State<LocationFileItem> {
                         Text(
                           (widget.locationFile.isRent() ? "ودیعه : " : "قیمت کل : ") + widget.locationFile.getFirstPrice(),
                           style: TextStyle(
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color,
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                             fontFamily: 'IranSans',
@@ -119,7 +120,7 @@ class _LocationFileItemState extends State<LocationFileItem> {
                         if (widget.locationFile.isRent()) Text(
                           "اجاره : " + widget.locationFile.getSecondPrice(),
                           style: TextStyle(
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color,
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             fontFamily: 'IranSans',
@@ -130,7 +131,7 @@ class _LocationFileItemState extends State<LocationFileItem> {
                     Text(
                       widget.locationFile.category!.getMainCategoryName()! + " | " + widget.locationFile.name!,
                       style: TextStyle(
-                        color: Themes.text,
+                        color: App.theme.textTheme.bodyLarge?.color,
                         fontSize: 12,
                         fontFamily: 'IranSans',
                       ),
@@ -141,7 +142,7 @@ class _LocationFileItemState extends State<LocationFileItem> {
                         Text(
                           '',
                           style: TextStyle(
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color,
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             fontFamily: 'IranSans',
@@ -158,7 +159,7 @@ class _LocationFileItemState extends State<LocationFileItem> {
                                   .map<Widget>((e) => Text(
                                         "${e.name} ${e.value}",
                                         style: TextStyle(
-                                          color: Themes.text,
+                                          color: App.theme.textTheme.bodyLarge?.color,
                                           fontSize: 10.5,
                                           fontWeight: FontWeight.w400,
                                           fontFamily: 'IranSans',

@@ -42,7 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    goToIntro();
     listenLink();
 
     if (widget.nextScreen != null) {
@@ -52,9 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     homeScreenBloc = BlocProvider.of<HSBloc>(context);
 
-    checkIsCitySelected();
-
-    // changeViewType();
+    checkScreen();
 
     getViewType();
 
@@ -75,15 +72,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     _moreBloc.stream.listen(_loadMoreEvent);
-  }
-
-  goToIntro() async {
-    var pref = await SharedPreferences.getInstance();
-
-    if (! ((await pref.getBool("IS_INTRO_SHOW")) ?? false)) {
-      pref.setBool("IS_INTRO_SHOW", true);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => IntroScreen()));
-    }
   }
 
   HSBloc _moreBloc = HSBloc();
@@ -133,8 +121,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   late HSBloc homeScreenBloc;
 
-  checkIsCitySelected() async {
+  checkScreen() async {
     var sharedPreferences = await SharedPreferences.getInstance();
+
+    if (! ((await sharedPreferences.getBool("IS_INTRO_SHOW")) ?? false)) {
+      sharedPreferences.setBool("IS_INTRO_SHOW", true);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => IntroScreen()));
+      return;
+    }
 
     if (sharedPreferences.getBool("isFirstOpen") ?? true) {
       await sharedPreferences.setBool("isFirstOpen", false);
@@ -155,6 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
   ViewType viewType = ViewType.List;
 
   getViewType() async {
+    await changeViewType();
     var sh = await SharedPreferences.getInstance();
 
     setState(() {
