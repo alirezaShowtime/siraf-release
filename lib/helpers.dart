@@ -249,3 +249,9 @@ extension Unique<E, Id> on List<E> {
     return list;
   }
 }
+
+extension String2 on String? {
+  bool isNotNullOrEmpty() {
+    return this != null && this!.isNotEmpty;
+  }
+}

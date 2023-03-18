@@ -205,7 +205,8 @@ class Bookmark {
       }
     }
 
-    dismissLoadingDialog();
+    Navigator.of(context, rootNavigator: true).pop();
+    // dismissLoadingDialog();
 
     if (result) {
       isFavorite = !isFavorite;
@@ -237,7 +238,9 @@ class Bookmark {
       notify("خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
     }
 
-    dismissLoadingDialog();
+    Navigator.of(context, rootNavigator: true).pop();
+
+    // dismissLoadingDialog();
 
     if (result) {
       isFavorite = !isFavorite;

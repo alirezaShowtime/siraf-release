@@ -3,6 +3,7 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
 import 'package:siraf3/dark_theme_provider.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/settings.dart';
 import 'package:siraf3/themes.dart';
@@ -66,16 +67,38 @@ class _SettingsScreen extends State<SettingsScreen> {
       ),
       body: ListView(
         children: [
-          if (widget.user?.name != null)
             item(
-              title: "نام و نام خانوادگی",
-              text: widget.user?.name,
-            ),
-          if (widget.user?.username != null)
+                title: "نام و نام خانوادگی",
+                widget: GestureDetector(
+                    onTap: showEditNameDialog,
+                    child: RichText(
+                      text: TextSpan(children: [
+                        TextSpan(
+                          text: widget.user!.name.isNotNullOrEmpty() ? widget.user!.name! : "وارد نشده",
+                          style: TextStyle(fontSize: 11, fontFamily: "IranSansMedium", color: App.theme.textTheme.bodyLarge?.color),
+                        ),
+                        TextSpan(
+                          text: " (ویرایش)",
+                          style: TextStyle(fontSize: 11, color: App.theme.primaryColor, fontFamily: "IranSansMedium"),
+                        ),
+                      ]),
+                    ))),
             item(
-              title: "نام کاربری",
-              text: widget.user?.username,
-            ),
+                title: "نام کاربری",
+                widget: GestureDetector(
+                    onTap: showEditUserNameDialog,
+                    child: RichText(
+                      text: TextSpan(children: [
+                        TextSpan(
+                          text: widget.user!.username.isNotNullOrEmpty() ? widget.user!.username! : "وارد نشده",
+                          style: TextStyle(fontSize: 11, fontFamily: "IranSansMedium", color: App.theme.textTheme.bodyLarge?.color),
+                        ),
+                        TextSpan(
+                          text: " (ویرایش)",
+                          style: TextStyle(fontSize: 11, color: App.theme.primaryColor, fontFamily: "IranSansMedium"),
+                        ),
+                      ]),
+                    ))),
           if (widget.user?.phone != null) item(title: "شماره همراه", text: phoneFormat(widget.user!.phone!)),
           // item(
           //   title: "نمایش شماره همراه برای مشاوران",
@@ -217,6 +240,14 @@ class _SettingsScreen extends State<SettingsScreen> {
   }
 
   checkUpdate() {
+    //todo: set event listener
+  }
+
+  void showEditNameDialog() {
+    //todo: set event listener
+  }
+
+  void showEditUserNameDialog() {
     //todo: set event listener
   }
 }

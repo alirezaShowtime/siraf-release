@@ -33,6 +33,8 @@ class RequestConsultant {
     return _data;
   }
 
+  
+  
   static List<RequestConsultant> fromList(List<dynamic> list) {
     var list2 = <RequestConsultant>[];
 
@@ -49,9 +51,10 @@ class ConsultantId {
   String? avatar;
   String? name;
   int? status;
-  int? rate;
+  double? rate;
+  String? phone;
 
-  ConsultantId({this.id, this.avatar, this.name, this.status, this.rate});
+  ConsultantId({this.id, this.avatar, this.name, this.status, this.rate, this.phone});
 
   ConsultantId.fromJson(Map<String, dynamic> json) {
     if(json["id"] is int) {
@@ -66,8 +69,11 @@ class ConsultantId {
     if(json["status"] is int) {
       status = json["status"];
     }
-    if(json["rate"] is int) {
+    if(json["rate"] is double) {
       rate = json["rate"];
+    }
+    if(json["phone"] is String) {
+      phone = json["phone"];
     }
   }
 
@@ -78,6 +84,7 @@ class ConsultantId {
     _data["name"] = name;
     _data["status"] = status;
     _data["rate"] = rate;
+    _data["phone"] = phone;
     return _data;
   }
 }

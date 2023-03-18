@@ -88,7 +88,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                       fontSize: 12,
                     ),
                   ),
-                  onTap: onClickEditFile,
+                  onTap: onClickEditRequest,
                 ),
               ],
             ),
@@ -266,12 +266,17 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
     );
   }
 
-  void onClickEditFile() {
+  void onClickEditRequest() {
     //todo: implement event listener
   }
 
   void call(ConsultantId consultantId) {
-    var phone = "09120000000"; // todo change phone
+    var phone = consultantId.phone;
+
+    if (phone == null) {
+      return notify("شماره تماس مشاور نامشخص است");
+    }
+
     callTo(phone);
   }
 

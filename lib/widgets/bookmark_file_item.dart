@@ -81,7 +81,7 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
                 ),
                 Positioned(
                   right: 6,
-                  top: 0,
+                  top: -1,
                   child: GestureDetector(
                     onTap: () {
                       bookmark.addOrRemoveFavorite();

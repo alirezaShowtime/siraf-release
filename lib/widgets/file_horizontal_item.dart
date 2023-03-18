@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:siraf3/bookmark.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/themes.dart';
@@ -14,6 +17,21 @@ class FileHorizontalItem extends StatefulWidget {
 }
 
 class _FileHorizontalItemState extends State<FileHorizontalItem> {
+  late Bookmark bookmark;
+
+  @override
+  void initState() {
+    super.initState();
+
+    bookmark = Bookmark(id: widget.file.id!, isFavorite: widget.file.favorite ?? false, context: context);
+
+    bookmark.favoriteStream.stream.listen((isFavorite) {
+      setState(() {
+        widget.file.favorite = isFavorite;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double imageSize = (MediaQuery.of(context).size.width - 20) / 3.5;
@@ -35,17 +53,36 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image(
-              image: NetworkImage(widget.file.images?.first.path ?? ""),
-              width: imageSize,
-              height: imageSize,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Image(
-                image: AssetImage(IMAGE_NOT_AVAILABLE),
-                width: imageSize,
-                height: imageSize,
-                fit: BoxFit.cover,
-              ),
+            child: Stack(
+              children: [
+                Image(
+                  image: NetworkImage(widget.file.images?.first.path ?? ""),
+                  width: imageSize,
+                  height: imageSize,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Image(
+                    image: AssetImage(IMAGE_NOT_AVAILABLE),
+                    width: imageSize,
+                    height: imageSize,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  right: 6,
+                  top: -1,
+                  child: GestureDetector(
+                    onTap: () {
+                      doWithLogin(context, () {
+                        bookmark.addOrRemoveFavorite();
+                      });
+                    },
+                    child: Icon(
+                      CupertinoIcons.bookmark_fill,
+                      color: (widget.file.favorite ?? false) ?  Themes.primary : Colors.white.withOpacity(0.8),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           SizedBox(
