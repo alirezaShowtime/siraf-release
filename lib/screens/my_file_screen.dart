@@ -93,7 +93,23 @@ class _MyFileScreenState extends State<MyFileScreen> {
         Navigator.pop(context, "refresh");
       }
     });
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels > imgHeight && toolbarOpacity == 1) return;
+
+      if (_scrollController.position.pixels <= imgHeight && toolbarOpacity == 0) return;
+
+      setState(() {
+        toolbarOpacity = _scrollController.position.pixels <= imgHeight ? 0 : 1;
+      });
+    });
   }
+
+  ScrollController _scrollController = ScrollController();
+
+  var imgHeight = 200;
+
+  double toolbarOpacity = 0.0;
 
   setSliders(MyFileDetail file) async {
     var data = await file.getSliders();
@@ -143,6 +159,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
     return Stack(
       children: [
         SingleChildScrollView(
+          controller: _scrollController,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -279,7 +296,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 400),
                 ] +
                 state.consulants.map<Widget>((element) => _item(element)).toList() +
                 <Widget>[
@@ -287,6 +304,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                 ],
           ),
         ),
+        _buildTopBar(state.file),
       ],
     );
   }
@@ -333,134 +351,134 @@ class _MyFileScreenState extends State<MyFileScreen> {
             }
           },
         ),
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Stack(
-                  children: <Widget>[
-                    Positioned(
-                      left: 1.0,
-                      top: 2.0,
-                      child: Icon(CupertinoIcons.back, color: Colors.black26),
-                    ),
-                    Positioned(
-                      right: 1.0,
-                      top: 2.0,
-                      child: Icon(CupertinoIcons.back, color: Colors.black26),
-                    ),
-                    Icon(
-                      CupertinoIcons.back,
-                      color: Themes.iconLight,
-                    ),
-                  ],
-                ),
-              ),
-              Row(
-                children: [
-                  IconButton(
-                    onPressed: () async {
-                      showDeleteDialog();
-                    },
-                    icon: Stack(
-                      children: <Widget>[
-                        Positioned(
-                          left: 0.5,
-                          top: 0.5,
-                          child: Icon(CupertinoIcons.delete, color: Colors.black26),
-                        ),
-                        Positioned(
-                          right: 0.5,
-                          top: 0.5,
-                          child: Icon(CupertinoIcons.delete, color: Colors.black26),
-                        ),
-                        Icon(
-                          CupertinoIcons.delete_solid,
-                          color: Themes.iconLight,
-                        ),
-                      ],
-                    ),
-                  ),
-                  MyPopupMenuButton(
-                    itemBuilder: (context) {
-                      return [
-                        PopupMenuItem<int>(
-                          value: 0,
-                          child: Text(
-                            "ویرایش",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: App.theme.textTheme.bodyLarge?.color,
-                            ),
-                          ),
-                          height: 35,
-                        ),
-                        PopupMenuItem<int>(
-                          value: 1,
-                          child: Text(
-                            "آمار بازدید",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: App.theme.textTheme.bodyLarge?.color,
-                            ),
-                          ),
-                          height: 35,
-                        ),
-                      ];
-                    },
-                    onSelected: (value) {
-                      switch (value) {
-                        case 0:
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => EditFileFirst(file: file),
-                            ),
-                          );
-
-                          break;
-                        case 1:
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => FileViewChartScreen(id: widget.id, fileTitle: file.name ?? "",),
-                            ),
-                          );
-
-                          break;
-                      }
-                    },
-                    icon: Stack(
-                      children: <Widget>[
-                        Positioned(
-                          left: 1.0,
-                          top: 1.0,
-                          child: Icon(Icons.more_vert, color: Colors.black26),
-                        ),
-                        Positioned(
-                          right: 1.0,
-                          top: 1.0,
-                          child: Icon(Icons.more_vert, color: Colors.black26),
-                        ),
-                        Icon(
-                          Icons.more_vert,
-                          color: Themes.iconLight,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+        // Positioned(
+        //   top: 0,
+        //   left: 0,
+        //   right: 0,
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     children: [
+        //       IconButton(
+        //         onPressed: () {
+        //           Navigator.pop(context);
+        //         },
+        //         icon: Stack(
+        //           children: <Widget>[
+        //             Positioned(
+        //               left: 1.0,
+        //               top: 2.0,
+        //               child: Icon(CupertinoIcons.back, color: Colors.black26),
+        //             ),
+        //             Positioned(
+        //               right: 1.0,
+        //               top: 2.0,
+        //               child: Icon(CupertinoIcons.back, color: Colors.black26),
+        //             ),
+        //             Icon(
+        //               CupertinoIcons.back,
+        //               color: Themes.iconLight,
+        //             ),
+        //           ],
+        //         ),
+        //       ),
+        //       Row(
+        //         children: [
+        //           IconButton(
+        //             onPressed: () async {
+        //               showDeleteDialog();
+        //             },
+        //             icon: Stack(
+        //               children: <Widget>[
+        //                 Positioned(
+        //                   left: 0.5,
+        //                   top: 0.5,
+        //                   child: Icon(CupertinoIcons.delete, color: Colors.black26),
+        //                 ),
+        //                 Positioned(
+        //                   right: 0.5,
+        //                   top: 0.5,
+        //                   child: Icon(CupertinoIcons.delete, color: Colors.black26),
+        //                 ),
+        //                 Icon(
+        //                   CupertinoIcons.delete_solid,
+        //                   color: Themes.iconLight,
+        //                 ),
+        //               ],
+        //             ),
+        //           ),
+        //           MyPopupMenuButton(
+        //             itemBuilder: (context) {
+        //               return [
+        //                 PopupMenuItem<int>(
+        //                   value: 0,
+        //                   child: Text(
+        //                     "ویرایش",
+        //                     style: TextStyle(
+        //                       fontSize: 13,
+        //                       color: App.theme.textTheme.bodyLarge?.color,
+        //                     ),
+        //                   ),
+        //                   height: 35,
+        //                 ),
+        //                 PopupMenuItem<int>(
+        //                   value: 1,
+        //                   child: Text(
+        //                     "آمار بازدید",
+        //                     style: TextStyle(
+        //                       fontSize: 13,
+        //                       color: App.theme.textTheme.bodyLarge?.color,
+        //                     ),
+        //                   ),
+        //                   height: 35,
+        //                 ),
+        //               ];
+        //             },
+        //             onSelected: (value) {
+        //               switch (value) {
+        //                 case 0:
+        //                   Navigator.push(
+        //                     context,
+        //                     MaterialPageRoute(
+        //                       builder: (_) => EditFileFirst(file: file),
+        //                     ),
+        //                   );
+        //
+        //                   break;
+        //                 case 1:
+        //                   Navigator.push(
+        //                     context,
+        //                     MaterialPageRoute(
+        //                       builder: (_) => FileViewChartScreen(id: widget.id, fileTitle: file.name ?? "",),
+        //                     ),
+        //                   );
+        //
+        //                   break;
+        //               }
+        //             },
+        //             icon: Stack(
+        //               children: <Widget>[
+        //                 Positioned(
+        //                   left: 1.0,
+        //                   top: 1.0,
+        //                   child: Icon(Icons.more_vert, color: Colors.black26),
+        //                 ),
+        //                 Positioned(
+        //                   right: 1.0,
+        //                   top: 1.0,
+        //                   child: Icon(Icons.more_vert, color: Colors.black26),
+        //                 ),
+        //                 Icon(
+        //                   Icons.more_vert,
+        //                   color: Themes.iconLight,
+        //                 ),
+        //               ],
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ],
+        //   ),
+        // ),
         Positioned(
           bottom: 25,
           right: 10,
@@ -1026,5 +1044,154 @@ class _MyFileScreenState extends State<MyFileScreen> {
     if (deleteDialogContext != null) {
       Navigator.pop(deleteDialogContext!);
     }
+  }
+
+  Widget _buildTopBar(MyFileDetail file) {
+    var iconColor = Themes.iconLight;
+
+    if (toolbarOpacity > 0) {
+      iconColor = App.theme.appBarTheme.foregroundColor ?? Themes.iconLight;
+    }
+
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      child: Container(
+        color: App.theme.appBarTheme.backgroundColor?.withOpacity(toolbarOpacity),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Stack(
+                children: <Widget>[
+                  if (toolbarOpacity == 0)
+                    Positioned(
+                      left: 1.0,
+                      top: 2.0,
+                      child: Icon(CupertinoIcons.back, color: Colors.black26),
+                    ),
+                  if (toolbarOpacity == 0)
+                    Positioned(
+                      right: 1.0,
+                      top: 2.0,
+                      child: Icon(CupertinoIcons.back, color: Colors.black26),
+                    ),
+                  Icon(
+                    CupertinoIcons.back,
+                    color: iconColor,
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () async {
+                    showDeleteDialog();
+                  },
+                  icon: Stack(
+                    children: <Widget>[
+                      if (toolbarOpacity == 0)
+                        Positioned(
+                          left: 0.5,
+                          top: 0.5,
+                          child: Icon(CupertinoIcons.delete, color: Colors.black26),
+                        ),
+                      if (toolbarOpacity == 0)
+                        Positioned(
+                          right: 0.5,
+                          top: 0.5,
+                          child: Icon(CupertinoIcons.delete, color: Colors.black26),
+                        ),
+                      Icon(
+                        CupertinoIcons.delete_solid,
+                        color: iconColor,
+                      ),
+                    ],
+                  ),
+                ),
+                MyPopupMenuButton(
+                  itemBuilder: (context) {
+                    return [
+                      PopupMenuItem<int>(
+                        value: 0,
+                        child: Text(
+                          "ویرایش",
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: App.theme.textTheme.bodyLarge?.color,
+                          ),
+                        ),
+                        height: 35,
+                      ),
+                      PopupMenuItem<int>(
+                        value: 1,
+                        child: Text(
+                          "آمار بازدید",
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: App.theme.textTheme.bodyLarge?.color,
+                          ),
+                        ),
+                        height: 35,
+                      ),
+                    ];
+                  },
+                  onSelected: (value) {
+                    switch (value) {
+                      case 0:
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => EditFileFirst(file: file),
+                          ),
+                        );
+
+                        break;
+                      case 1:
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => FileViewChartScreen(
+                              id: widget.id,
+                              fileTitle: file.name ?? "",
+                            ),
+                          ),
+                        );
+
+                        break;
+                    }
+                  },
+                  icon: Stack(
+                    children: <Widget>[
+                      if (toolbarOpacity == 0)
+                        Positioned(
+                          left: 1.0,
+                          top: 1.0,
+                          child: Icon(Icons.more_vert, color: Colors.black26),
+                        ),
+                      if (toolbarOpacity == 0)
+                        Positioned(
+                          right: 1.0,
+                          top: 1.0,
+                          child: Icon(Icons.more_vert, color: Colors.black26),
+                        ),
+                      Icon(
+                        Icons.more_vert,
+                        color: iconColor,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

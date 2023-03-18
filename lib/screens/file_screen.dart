@@ -23,7 +23,6 @@ import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/loading.dart';
-import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
@@ -44,6 +43,8 @@ class _FileScreenState extends State<FileScreen> {
   AddViolationBloc addViolationBloc = AddViolationBloc();
 
   bool isFavorite = false;
+
+  ScrollController _scrollController = ScrollController();
 
   late Bookmark bookmark;
 
@@ -110,7 +111,21 @@ class _FileScreenState extends State<FileScreen> {
         notify("تخلف با موفقیت ثبت شد");
       }
     });
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels > imgHeight && toolbarOpacity == 1) return;
+
+      if (_scrollController.position.pixels <= imgHeight && toolbarOpacity == 0) return;
+
+      setState(() {
+        toolbarOpacity = _scrollController.position.pixels <= imgHeight ? 0 : 1;
+      });
+    });
   }
+
+  var imgHeight = 200;
+
+  double toolbarOpacity = 0.0;
 
   setSliders(FileDetail file) async {
     var data = await file.getSliders();
@@ -124,25 +139,6 @@ class _FileScreenState extends State<FileScreen> {
     return BlocProvider(
       create: (context) => fileBloc,
       child: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          scrolledUnderElevation: 0.0,
-          backgroundColor: Colors.transparent,
-          leading: MyBackButton(),
-          actions: [
-            IconButton(
-              onPressed: () async {
-                doWithLogin(context, () async {
-                  bookmark.addOrRemoveFavorite();
-                });
-              },
-              icon: Icon(
-                isFavorite ? Icons.bookmark : Icons.bookmark_border,
-                size: 22,
-              ),
-            ),
-          ],
-        ),
         body: SafeArea(child: BlocBuilder<FileBloc, FileState>(builder: buildBaseBloc)),
       ),
     );
@@ -172,6 +168,7 @@ class _FileScreenState extends State<FileScreen> {
     return Stack(
       children: [
         SingleChildScrollView(
+          controller: _scrollController,
           child: Column(
             children: [
               _buildSliders(state.file),
@@ -223,6 +220,7 @@ class _FileScreenState extends State<FileScreen> {
             ],
           ),
         ),
+        _buildTopBar(state.file),
         Positioned(
           bottom: 0,
           left: 0,
@@ -289,7 +287,6 @@ class _FileScreenState extends State<FileScreen> {
               }
             },
           ),
-        _buildTopBar(file),
         Positioned(
           bottom: 25,
           right: 10,
@@ -809,71 +806,83 @@ class _FileScreenState extends State<FileScreen> {
   }
 
   Widget _buildTopBar(FileDetail file) {
+    var iconColor = Themes.iconLight;
+
+    if (toolbarOpacity > 0) {
+      iconColor = App.theme.appBarTheme.foregroundColor ?? Themes.iconLight;
+    }
     return Positioned(
       top: 0,
       left: 0,
       right: 0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Stack(
-              children: <Widget>[
-                Positioned(
-                  left: 1.0,
-                  top: 2.0,
-                  child: Icon(CupertinoIcons.back, color: Colors.black26),
-                ),
-                Positioned(
-                  right: 1.0,
-                  top: 2.0,
-                  child: Icon(CupertinoIcons.back, color: Colors.black26),
-                ),
-                Icon(
-                  CupertinoIcons.back,
-                  color: Themes.iconLight,
-                ),
-              ],
-            ),
-          ),
-          IconButton(
-            onPressed: () async {
-              doWithLogin(context, () async {
-                bookmark.addOrRemoveFavorite();
-              });
-            },
-            icon: Stack(
-              children: [
-                Positioned(
-                  top: 0.5,
-                  right: 0.5,
-                  child: Icon(
-                    Icons.bookmark_border,
-                    size: 22,
-                    color: Colors.black26,
+      child: Container(
+        color: App.theme.appBarTheme.backgroundColor?.withOpacity(toolbarOpacity),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Stack(
+                children: <Widget>[
+                  if (toolbarOpacity == 0)
+                    Positioned(
+                      left: 1.0,
+                      top: 2.0,
+                      child: Icon(CupertinoIcons.back, color: Colors.black26),
+                    ),
+                  if (toolbarOpacity == 0)
+                    Positioned(
+                      right: 1.0,
+                      top: 2.0,
+                      child: Icon(CupertinoIcons.back, color: Colors.black26),
+                    ),
+                  Icon(
+                    CupertinoIcons.back,
+                    color: iconColor,
                   ),
-                ),
-                Positioned(
-                  top: 0.5,
-                  left: 0.5,
-                  child: Icon(
-                    Icons.bookmark_border,
-                    size: 22,
-                    color: Colors.black26,
-                  ),
-                ),
-                Icon(
-                  isFavorite ? Icons.bookmark : Icons.bookmark_border,
-                  size: 22,
-                  color: Colors.white,
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+            IconButton(
+              onPressed: () async {
+                doWithLogin(context, () async {
+                  bookmark.addOrRemoveFavorite();
+                });
+              },
+              icon: Stack(
+                children: [
+                  if (toolbarOpacity == 0)
+                    Positioned(
+                      top: 0.5,
+                      right: 0.5,
+                      child: Icon(
+                        Icons.bookmark_border,
+                        size: 22,
+                        color: Colors.black26,
+                      ),
+                    ),
+                  if (toolbarOpacity == 0)
+                    Positioned(
+                      top: 0.5,
+                      left: 0.5,
+                      child: Icon(
+                        Icons.bookmark_border,
+                        size: 22,
+                        color: Colors.black26,
+                      ),
+                    ),
+                  Icon(
+                    isFavorite ? Icons.bookmark : Icons.bookmark_border,
+                    size: 22,
+                    color: iconColor,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
