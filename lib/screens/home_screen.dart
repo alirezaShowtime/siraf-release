@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return (scrollController.position.pixels ==
             scrollController.position.maxScrollExtent) &&
         lastId != null &&
-         !_isLoadingMore;
+        !_isLoadingMore;
   }
 
   void pagination() async {
@@ -124,32 +124,24 @@ class _HomeScreenState extends State<HomeScreen> {
   checkScreen() async {
     var sharedPreferences = await SharedPreferences.getInstance();
 
-    if (! ((await sharedPreferences.getBool("IS_INTRO_SHOW")) ?? false)) {
-      sharedPreferences.setBool("IS_INTRO_SHOW", true);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => IntroScreen()));
-      return;
-    }
-
     if (sharedPreferences.getBool("isFirstOpen") ?? true) {
       await sharedPreferences.setBool("isFirstOpen", false);
       goSelectCity();
-    } else {
-      var mCities = await City.getList();
-      setState(() {
-        cities = mCities;
-
-        filterData = filterData
-          ..cityIds = cities.map<int>((e) => e.id!).toList();
-      });
-
-      getFiles();
+      return;
     }
+
+    var mCities = await City.getList();
+    setState(() {
+      cities = mCities;
+
+      filterData = filterData..cityIds = cities.map<int>((e) => e.id!).toList();
+    });
+    getFiles();
   }
 
   ViewType viewType = ViewType.List;
 
   getViewType() async {
-    await changeViewType();
     var sh = await SharedPreferences.getInstance();
 
     setState(() {
@@ -158,6 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ? ViewType.List
               : ViewType.Slide
           : ViewType.List;
+      viewType = ViewType.List;
     });
   }
 
@@ -189,6 +182,11 @@ class _HomeScreenState extends State<HomeScreen> {
     homeScreenBloc.close();
     _moreBloc.close();
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Container();
+  // }
 
   @override
   Widget build(BuildContext context) {

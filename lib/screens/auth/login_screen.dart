@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/login_status.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/screens/auth/verify_screen.dart';
 import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
@@ -80,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Text(
                 "شماره موبایل خود را وارد کنید",
                 style: TextStyle(
-                  color: Colors.black,
+                  color: App.theme.textTheme.bodyLarge?.color,
                   fontSize: 15,
                 ),
               ),
@@ -88,45 +90,66 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(height: 15),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  hintText: 'شماره موبایل',
-                  contentPadding: const EdgeInsets.all(8),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+              child: Stack(
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'شماره موبایل',
+                      contentPadding: const EdgeInsets.all(8),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: App.theme.tooltipTheme.textStyle?.color ??
+                              Colors.grey,
+                          width: 1,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Themes.primary, width: 1),
+                      ),
+                      errorText: _mobileError,
+                      counterText: "",
+                      hintStyle: TextStyle(
+                        color: App.theme.tooltipTheme.textStyle?.color,
+                      ),
+                      hintTextDirection: TextDirection.rtl,
+                    ),
+                    style: TextStyle(
+                      color: App.theme.textTheme.bodyLarge?.color,
+                    ),
+                    maxLength: 11,
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                    textInputAction: TextInputAction.send,
+                    onFieldSubmitted: (v) => login(),
+                    keyboardType: TextInputType.number,
+                    controller: mobileController,
+                    onSaved: (String? phone) {
+                      this.mobile = phone ?? '';
+                    },
+                    validator: (String? phone) {
+                      if (phone == null || phone.isEmpty) {
+                        return 'شماره موبایل را وارد کنید';
+                      }
+                      if (phone.length != 11) {
+                        return 'شماره موبایل باید 11 رقم باشد';
+                      }
+                      if (!phone.startsWith("09")) {
+                        return 'شماره موبایل باید با 09 شروع شود';
+                      }
+                    },
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Themes.primary, width: 1),
+                  Positioned(
+                    left: 10,
+                    top: 10,
+                    bottom: 10,
+                    child: Icon(
+                      Icons.phone,
+                      color: Themes.primary,
+                    ),
                   ),
-                  errorText: _mobileError,
-                  counterText: "",
-                  suffixIcon: Icon(
-                    Icons.phone,
-                    color: Themes.primary,
-                  ),
-                ),
-                maxLength: 11,
-                maxLines: 1,
-                textAlign: TextAlign.center,
-                textInputAction: TextInputAction.send,
-                onFieldSubmitted: (v) => login(),
-                keyboardType: TextInputType.number,
-                controller: mobileController,
-                onSaved: (String? phone) {
-                  this.mobile = phone ?? '';
-                },
-                validator: (String? phone) {
-                  if (phone == null || phone.isEmpty) {
-                    return 'شماره موبایل را وارد کنید';
-                  }
-                  if (phone.length != 11) {
-                    return 'شماره موبایل باید 11 رقم باشد';
-                  }
-                  if (!phone.startsWith("09")) {
-                    return 'شماره موبایل باید با 09 شروع شود';
-                  }
-                },
+                ],
               ),
             ),
             SizedBox(height: 15),

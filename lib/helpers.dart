@@ -134,6 +134,11 @@ Uri getEstateUrl(String endpoint) {
   return Uri.parse("https://estate.siraf.app/api/${endpoint}");
 }
 
+Uri getTicketUrl(String endpoint) {
+  print(endpoint);
+  return Uri.parse("https://ticket.siraf.app/api/${endpoint}");
+}
+
 String getImageUrl(String file) {
   return "https://auth.siraf.app${file}";
 }

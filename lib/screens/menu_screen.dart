@@ -15,6 +15,7 @@ import 'package:siraf3/screens/my_files_screen.dart';
 import 'package:siraf3/screens/request_file/request_file_screen.dart';
 import 'package:siraf3/screens/request_file/request_list_screen.dart';
 import 'package:siraf3/screens/settings_screen.dart';
+import 'package:siraf3/screens/ticket/ticket_creation_screen.dart';
 import 'package:siraf3/screens/verify_contract/inquiry_contract_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/accordion.dart';
@@ -78,7 +79,8 @@ class _MenuScreenState extends State<MenuScreen> {
                       children: [
                         ClipRRect(
                           child: Image(
-                            image: NetworkImage(getImageUrl(user?.avatar ?? "")),
+                            image:
+                                NetworkImage(getImageUrl(user?.avatar ?? "")),
                             // todo use dynamic avatar link
                             errorBuilder: (context, error, stackTrace) => Image(
                               image: AssetImage("assets/images/profile.png"),
@@ -106,7 +108,9 @@ class _MenuScreenState extends State<MenuScreen> {
                             }
                           },
                           child: Text(
-                            user?.token != null ? (user?.name ?? "") : "ورود به حساب",
+                            user?.token != null
+                                ? (user?.name ?? "")
+                                : "ورود به حساب",
                             style: TextStyle(color: Colors.white, fontSize: 15),
                           ),
                         ),
@@ -137,7 +141,11 @@ class _MenuScreenState extends State<MenuScreen> {
                         ),
                         IconButton(
                           onPressed: () async {
-                            await Navigator.push(context, MaterialPageRoute(builder: (_) => SettingsScreen(user: user)));
+                            await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) =>
+                                        SettingsScreen(user: user)));
 
                             getUser();
                           },
@@ -158,19 +166,23 @@ class _MenuScreenState extends State<MenuScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          decoration: BoxDecoration(color: App.theme.dialogBackgroundColor, borderRadius: BorderRadius.circular(5)),
+                          decoration: BoxDecoration(
+                              color: App.theme.dialogBackgroundColor,
+                              borderRadius: BorderRadius.circular(5)),
                           child: Wrap(
                             children: [
                               _item(
                                 title: "پیام ها",
                                 icon: CupertinoIcons.envelope,
                                 onClick: () {},
-                                padding: EdgeInsets.only(right: 30, left: 15, top: 20, bottom: 20),
+                                padding: EdgeInsets.only(
+                                    right: 30, left: 15, top: 20, bottom: 20),
                               ),
                               _item(
                                 title: "ثبت فایل",
                                 icon: CupertinoIcons.add,
-                                padding: EdgeInsets.only(right: 15, left: 15, top: 20, bottom: 20),
+                                padding: EdgeInsets.only(
+                                    right: 15, left: 15, top: 20, bottom: 20),
                                 onClick: () async {
                                   await doWithLogin(context, () {
                                     Navigator.push(
@@ -187,7 +199,8 @@ class _MenuScreenState extends State<MenuScreen> {
                               _item(
                                 title: "نشان ها",
                                 icon: CupertinoIcons.bookmark,
-                                padding: EdgeInsets.only(right: 15, left: 30, top: 20, bottom: 20),
+                                padding: EdgeInsets.only(
+                                    right: 15, left: 30, top: 20, bottom: 20),
                                 onClick: () {
                                   doWithLogin(context, () {
                                     Navigator.push(
@@ -315,12 +328,21 @@ class _MenuScreenState extends State<MenuScreen> {
                           children: [
                             AccordionItem(
                                 onClick: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (_) => InquiryScreen()));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => InquiryScreen()));
                                 },
                                 title: "استعلامات ثبتی"),
-                            AccordionItem(onClick: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (_) => InquiryContractScreen()));
-                            }, title: "استعلامات قرارداد"),
+                            AccordionItem(
+                                onClick: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) =>
+                                              InquiryContractScreen()));
+                                },
+                                title: "استعلامات قرارداد"),
                           ],
                         ),
                       ),
@@ -335,12 +357,22 @@ class _MenuScreenState extends State<MenuScreen> {
                           children: [
                             AccordionItem(
                                 onClick: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (_) => CommissionCalculatorScreen()));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) =>
+                                              CommissionCalculatorScreen()));
                                 },
                                 title: "محاسبه کمیسیون"),
-                            AccordionItem(onClick: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (_) => CommissionCalculatorScreen()));
-                            }, title: "تبدیل رهن به اجاره"),
+                            AccordionItem(
+                                onClick: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) =>
+                                              CommissionCalculatorScreen()));
+                                },
+                                title: "تبدیل رهن به اجاره"),
                           ],
                         ),
                       ),
@@ -353,11 +385,86 @@ class _MenuScreenState extends State<MenuScreen> {
                         content: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            AccordionItem(onClick: () {}, title: "پشتیبانی ثبت فایل و درخواست"),
-                            AccordionItem(onClick: () {}, title: "پشتیبانی فروش و بازاریابی"),
-                            AccordionItem(onClick: () {}, title: "پشتیبانی فنی"),
-                            AccordionItem(onClick: () {}, title: "گزارشات و پیشنهادات"),
-                            AccordionItem(onClick: () {}, title: "در خواست همکاری"),
+                            AccordionItem(
+                                onClick: () {
+                                  doWithLogin(
+                                    context,
+                                    () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              TicketCreationScreen(),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                title: "پشتیبانی ثبت فایل و درخواست"),
+                            AccordionItem(
+                                onClick: () {
+                                  doWithLogin(
+                                    context,
+                                    () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              TicketCreationScreen(),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                title: "پشتیبانی فروش و بازاریابی"),
+                            AccordionItem(
+                                onClick: () {
+                                  doWithLogin(
+                                    context,
+                                    () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              TicketCreationScreen(),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                title: "پشتیبانی فنی"),
+                            AccordionItem(
+                                onClick: () {
+                                  doWithLogin(
+                                    context,
+                                    () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              TicketCreationScreen(),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                title: "گزارشات و پیشنهادات"),
+                            AccordionItem(
+                                onClick: () {
+                                  doWithLogin(
+                                    context,
+                                    () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              TicketCreationScreen(),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                title: "در خواست همکاری"),
                           ],
                         ),
                       ),

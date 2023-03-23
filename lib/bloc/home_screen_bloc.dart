@@ -50,7 +50,7 @@ class HSBloc extends Bloc<HSEvent, HSState> {
       var url = getFileUrl('file/files/' +
           event.filterData.toQueryString() +
           '&lastId=' +
-          event.lastId.toString() + "&consultantId=2");
+          event.lastId.toString());
 
       print(url.toString());
 

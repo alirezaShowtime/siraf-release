@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
@@ -72,10 +73,8 @@ class _FileSlideItemState extends State<FileSlideItem> {
                   height: 250,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Themes.background,
                     image: DecorationImage(
-                        image:
-                            AssetImage(IMAGE_NOT_AVAILABLE),
+                        image: AssetImage(IMAGE_NOT_AVAILABLE),
                         alignment: Alignment.center),
                   ),
                 ),
@@ -193,7 +192,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                       isFavorite
                           ? CupertinoIcons.bookmark_fill
                           : CupertinoIcons.bookmark,
-                      color: Themes.icon,
+                      color: App.theme.iconTheme.color,
                     ),
                   ),
                   Container(
@@ -211,7 +210,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                                   : "") +
                               widget.file.name!.trim(),
                           style: TextStyle(
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color,
                             fontFamily: "IranSans",
                             fontSize: 13,
                           ),
@@ -220,7 +219,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                         Text(
                           widget.file.publishedAgo! + ' | ' + widget.file.city!,
                           style: TextStyle(
-                            color: Themes.textGrey,
+                            color: App.theme.tooltipTheme.textStyle?.color,
                             fontFamily: "IranSans",
                             fontSize: 11,
                           ),
@@ -235,13 +234,13 @@ class _FileSlideItemState extends State<FileSlideItem> {
                   await FlutterShare.share(
                     title: 'اشتراک گذاری فایل',
                     text: widget.file.name ?? '',
-                    linkUrl: "https://siraf.biz/" + widget.file.id!.toString(),
+                    linkUrl: FILE_URL + widget.file.id!.toString(),
                     chooserTitle: 'اشتراک گذاری در',
                   );
                 },
                 icon: Icon(
                   CupertinoIcons.paperplane,
-                  color: Themes.icon,
+                  color: App.theme.iconTheme.color,
                 ),
               ),
             ],
@@ -256,12 +255,13 @@ class _FileSlideItemState extends State<FileSlideItem> {
                           element.weightList == 2 ||
                           element.weightList == 3 ||
                           element.weightList == 4)
+                      .take(4)
                       .toList()
                       .map<Widget>((e) {
                     return Text(
                       "${e.name} ${e.value}",
                       style: TextStyle(
-                        color: Themes.text,
+                        color: App.theme.textTheme.bodyLarge?.color,
                         fontSize: 10.5,
                         fontWeight: FontWeight.w400,
                         fontFamily: 'IranSans',
@@ -279,16 +279,17 @@ class _FileSlideItemState extends State<FileSlideItem> {
                   TextSpan(
                     text: showSummary ? summary : description,
                     style: TextStyle(
-                      color: Themes.text,
+                      color: App.theme.textTheme.bodyLarge?.color,
                       fontSize: 10.5,
                       fontWeight: FontWeight.w400,
                       fontFamily: 'IranSans',
                     ),
                   ),
-                  TextSpan(
+                  if (description.length > summary.length)
+                    TextSpan(
                       text: showSummary ? ' توضیحات بیشتر' : ' توضیحات کمتر',
                       style: TextStyle(
-                        color: Themes.blue,
+                        color: App.theme.primaryColor,
                         fontSize: 10.5,
                         fontWeight: FontWeight.w400,
                         fontFamily: 'IranSans',
@@ -299,7 +300,8 @@ class _FileSlideItemState extends State<FileSlideItem> {
                           setState(() {
                             showSummary = !showSummary;
                           });
-                        }),
+                        },
+                    ),
                 ],
               ),
             ),

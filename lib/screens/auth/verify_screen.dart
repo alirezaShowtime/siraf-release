@@ -8,6 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/login_status.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/themes.dart';
@@ -17,7 +18,8 @@ class VerifyScreen extends StatefulWidget {
   bool pop;
   String mobile;
   String? verifyCode;
-  VerifyScreen({this.verifyCode, this.pop = false, required this.mobile, Key? key})
+  VerifyScreen(
+      {this.verifyCode, this.pop = false, required this.mobile, Key? key})
       : super(key: key);
 
   @override
@@ -95,46 +97,66 @@ class _VerifyScreenState extends State<VerifyScreen> {
               child: Text(
                 "لطفا کد فعالسازی که به شماره ${widget.mobile} ارسال شده را وارد کنید",
                 style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 15,
+                  color: App.theme.textTheme.bodyLarge?.color,
+                  fontSize: 13.5,
                 ),
               ),
             ),
             SizedBox(height: 15),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextFormField(
-                maxLines: 1,
-                onSaved: (String? code) {
-                  this.code = code ?? '';
-                },
-                validator: (String? code) {
-                  if (code == null || code.trim().isEmpty) {
-                    return 'کد تایید را وارد کنید';
-                  }
-                },
-                keyboardType: TextInputType.number,
-                controller: codeController,
-                decoration: InputDecoration(
-                  hintText: 'کد ارسالی',
-                  contentPadding: const EdgeInsets.all(8),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+              child: Stack(
+                children: [
+                  TextFormField(
+                    maxLines: 1,
+                    onSaved: (String? code) {
+                      this.code = code ?? '';
+                    },
+                    validator: (String? code) {
+                      if (code == null || code.trim().isEmpty) {
+                        return 'کد تایید را وارد کنید';
+                      }
+                    },
+                    keyboardType: TextInputType.number,
+                    controller: codeController,
+                    decoration: InputDecoration(
+                      hintText: 'کد ارسالی',
+                      contentPadding: const EdgeInsets.all(8),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: App.theme.tooltipTheme.textStyle?.color ??
+                              Colors.grey,
+                          width: 1,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Themes.primary, width: 1),
+                      ),
+                      errorText: _codeError,
+                      counterText: "",
+                      hintStyle: TextStyle(
+                        color: App.theme.tooltipTheme.textStyle?.color,
+                      ),
+                    ),
+                    style: TextStyle(
+                      color: App.theme.textTheme.bodyLarge?.color,
+                    ),
+                    textAlign: TextAlign.center,
+                    textInputAction: TextInputAction.send,
+                    onFieldSubmitted: (v) => verify(),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Themes.primary, width: 1),
+                  Positioned(
+                    left: 10,
+                    top: 10,
+                    bottom: 10,
+                    child: Icon(
+                      Icons.phone,
+                      color: Themes.primary,
+                    ),
                   ),
-                  errorText: _codeError,
-                  counterText: "",
-                  suffixIcon: Icon(
-                    Icons.mail,
-                    color: Themes.primary,
-                  ),
-                ),
-                textAlign: TextAlign.center,
-                textInputAction: TextInputAction.send,
-                onFieldSubmitted: (v) => verify(),
+                ],
               ),
             ),
             SizedBox(

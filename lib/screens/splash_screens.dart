@@ -5,10 +5,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/user.dart';
+import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/home_screen.dart';
+import 'package:siraf3/screens/intro_screen.dart';
 import 'package:siraf3/themes.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -207,7 +210,15 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     goNextScreen();
   }
 
-  void goNextScreen() {
+  void goNextScreen() async {
+    var sharedPreferences = await SharedPreferences.getInstance();
+
+    if (! ((await sharedPreferences.getBool("IS_INTRO_SHOW")) ?? false)) {
+      sharedPreferences.setBool("IS_INTRO_SHOW", true);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => IntroScreen()));
+      return;
+    }
+    
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
