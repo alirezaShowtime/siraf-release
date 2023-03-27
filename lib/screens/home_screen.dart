@@ -93,6 +93,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void pagination() async {
     if (_canLoadMore()) {
+      if (_moreBloc.isClosed) {
+        _moreBloc = HSBloc();
+      }
       _moreBloc.add(HSLoadEvent(filterData: filterData, lastId: lastId!));
     }
   }
@@ -150,7 +153,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ? ViewType.List
               : ViewType.Slide
           : ViewType.List;
-      viewType = ViewType.List;
     });
   }
 
@@ -175,17 +177,12 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(context, MaterialPageRoute(builder: (_) => MenuScreen()));
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-
-    homeScreenBloc.close();
-    _moreBloc.close();
-  }
-
   // @override
-  // Widget build(BuildContext context) {
-  //   return Container();
+  // void dispose() {
+  //   super.dispose();
+
+  //   homeScreenBloc.close();
+  //   _moreBloc.close();
   // }
 
   @override
@@ -356,6 +353,9 @@ class _HomeScreenState extends State<HomeScreen> {
   HSState currentBlocState = HSInitState();
 
   getFiles() {
+    if (homeScreenBloc.isClosed) {
+      homeScreenBloc = HSBloc();
+    }
     homeScreenBloc.add(
       HSLoadEvent(
         filterData: filterData,

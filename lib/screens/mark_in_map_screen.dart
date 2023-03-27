@@ -139,7 +139,8 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
                 children: [
                   TileLayerWidget(
                     options: TileLayerOptions(
-                      urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
+                      urlTemplate:
+                          App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
                     ),
                   ),
                   MarkerLayerWidget(
@@ -177,7 +178,8 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
                           ),
                         ],
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                       alignment: Alignment.center,
                       child: Row(
                         children: [
@@ -243,7 +245,10 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
 
     LocationData locationData = await _location.getLocation();
 
-    if (locationData.latitude == null || locationData.longitude == null || locationData.latitude == 0 || locationData.longitude == 0) {
+    if (locationData.latitude == null ||
+        locationData.longitude == null ||
+        locationData.latitude == 0 ||
+        locationData.longitude == 0) {
       notify("موقعیت مکانی دریافت نشد");
       return;
     }

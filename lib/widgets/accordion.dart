@@ -41,7 +41,8 @@ class _AccordionState extends State<Accordion> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
-                color: widget.backgroundColor ?? App.theme.dialogBackgroundColor,
+                color:
+                    widget.backgroundColor ?? App.theme.dialogBackgroundColor,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -51,7 +52,9 @@ class _AccordionState extends State<Accordion> {
                     child: widget.title,
                   ),
                   IconAsset(
-                    icon: widget.open ? "ic_arrow_top.png" : "ic_arrow_bottom.png",
+                    icon: widget.open
+                        ? "ic_arrow_top.png"
+                        : "ic_arrow_bottom.png",
                     width: 14,
                     height: 8,
                     color: App.theme.iconTheme.color,
@@ -62,7 +65,11 @@ class _AccordionState extends State<Accordion> {
               ),
             ),
           ),
-          widget.open ? Padding(padding: const EdgeInsets.only(bottom: 9), child: widget.content) : Container()
+          widget.open
+              ? Padding(
+                  padding: const EdgeInsets.only(bottom: 9),
+                  child: widget.content)
+              : Container()
         ],
       ),
     );

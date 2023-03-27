@@ -31,7 +31,8 @@ class FilesMapScreen extends StatefulWidget {
   State<FilesMapScreen> createState() => _FilesMapScreenState();
 }
 
-class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStateMixin {
+class _FilesMapScreenState extends State<FilesMapScreen>
+    with TickerProviderStateMixin {
   List<City> cities = [];
 
   bool _showFileOnMyLocation = false;
@@ -80,8 +81,12 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
   getFiles({bool showMyLocation = false}) {
     bloc.add(
       LocationFilesEvent(
-        search: _searchController.text.trim().isEmpty ? null : _searchController.text.trim(),
-        latLng: (_showFileOnMyLocation && myLocationMarker != null) ? myLocationMarker!.point : null,
+        search: _searchController.text.trim().isEmpty
+            ? null
+            : _searchController.text.trim(),
+        latLng: (_showFileOnMyLocation && myLocationMarker != null)
+            ? myLocationMarker!.point
+            : null,
         filterData: filterData,
       ),
     );
@@ -134,11 +139,13 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
           title: TextField2(
             decoration: InputDecoration(
               hintText: "جستجو در فایل ها",
-              hintStyle: TextStyle(color: App.theme.tooltipTheme.textStyle?.color, fontSize: 13),
+              hintStyle: TextStyle(
+                  color: App.theme.tooltipTheme.textStyle?.color, fontSize: 13),
               border: InputBorder.none,
             ),
             controller: _searchController,
-            style: TextStyle(fontSize: 13, color: App.theme.textTheme.bodyLarge?.color),
+            style: TextStyle(
+                fontSize: 13, color: App.theme.textTheme.bodyLarge?.color),
             textInputAction: TextInputAction.search,
             onSubmitted: (value) {
               getFiles();
@@ -198,7 +205,8 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                 mapController: _controller,
                 options: MapOptions(
                   center: defaultLocation,
-                  interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                  interactiveFlags:
+                      InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                   zoom: 14.0,
                   plugins: [
                     MarkerClusterPlugin(),
@@ -207,7 +215,8 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                 children: [
                   TileLayerWidget(
                     options: TileLayerOptions(
-                      urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
+                      urlTemplate:
+                          App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
                     ),
                   ),
                   CircleLayerWidget(
@@ -227,10 +236,15 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                         maxZoom: 100,
                       ),
                       markers: markers,
-                      polygonOptions: const PolygonOptions(borderColor: Colors.blueAccent, color: Colors.black12, borderStrokeWidth: 3),
+                      polygonOptions: const PolygonOptions(
+                          borderColor: Colors.blueAccent,
+                          color: Colors.black12,
+                          borderStrokeWidth: 3),
                       builder: (context, markers) {
                         return Container(
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.blue),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.blue),
                           child: Center(
                             child: Text(
                               markers.length.toString(),
@@ -299,7 +313,9 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: _showFileOnMyLocation ? Themes.primary : App.theme.dialogBackgroundColor,
+                    color: _showFileOnMyLocation
+                        ? Themes.primary
+                        : App.theme.dialogBackgroundColor,
                     borderRadius: BorderRadius.circular(100),
                     boxShadow: [
                       BoxShadow(
@@ -357,7 +373,12 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                       autoPlay: false,
                       viewportFraction: 0.9,
                       onPageChanged: (i, _) {
-                        animatedMapMove(_controller, LatLng(double.parse(files.elementAt(i).lat!), double.parse(files.elementAt(i).long!)), _controller.zoom, this);
+                        animatedMapMove(
+                            _controller,
+                            LatLng(double.parse(files.elementAt(i).lat!),
+                                double.parse(files.elementAt(i).long!)),
+                            _controller.zoom,
+                            this);
                       }),
                   carouselController: carouselController,
                 ),
@@ -523,7 +544,10 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
 
     LocationData locationData = await _location.getLocation();
 
-    if (locationData.latitude == null || locationData.longitude == null || locationData.latitude == 0 || locationData.longitude == 0) {
+    if (locationData.latitude == null ||
+        locationData.longitude == null ||
+        locationData.latitude == 0 ||
+        locationData.longitude == 0) {
       return false;
     }
 
@@ -549,7 +573,10 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
 
     LocationData locationData = await _location.getLocation();
 
-    if (locationData.latitude == null || locationData.longitude == null || locationData.latitude == 0 || locationData.longitude == 0) {
+    if (locationData.latitude == null ||
+        locationData.longitude == null ||
+        locationData.latitude == 0 ||
+        locationData.longitude == 0) {
       notify("موقعیت مکانی دریافت نشد");
       return;
     }
@@ -640,12 +667,19 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                                 style: TextStyle(
                                   color: Themes.textLight,
                                   fontSize: 9,
-                                  fontFamily: e.isRent() ? "IranSans" : "IranSansMedium",
+                                  fontFamily: e.isRent()
+                                      ? "IranSans"
+                                      : "IranSansMedium",
                                 ),
                               ),
                               TextSpan(
                                 text: e.getFirstPrice(),
-                                style: TextStyle(color: Themes.textLight, fontSize: e.isRent() ? 9 : 10, fontFamily: e.isRent() ? "IranSans" : "IranSansMedium"),
+                                style: TextStyle(
+                                    color: Themes.textLight,
+                                    fontSize: e.isRent() ? 9 : 10,
+                                    fontFamily: e.isRent()
+                                        ? "IranSans"
+                                        : "IranSansMedium"),
                               ),
                             ],
                           ),
@@ -659,12 +693,19 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                                   style: TextStyle(
                                     color: Themes.textLight,
                                     fontSize: 9,
-                                    fontFamily: e.isRent() ? "IranSans" : "IranSansMedium",
+                                    fontFamily: e.isRent()
+                                        ? "IranSans"
+                                        : "IranSansMedium",
                                   ),
                                 ),
                                 TextSpan(
                                   text: e.getSecondPrice(),
-                                  style: TextStyle(color: Themes.textLight, fontSize: e.isRent() ? 9 : 10, fontFamily: e.isRent() ? "IranSans" : "IranSansMedium"),
+                                  style: TextStyle(
+                                      color: Themes.textLight,
+                                      fontSize: e.isRent() ? 9 : 10,
+                                      fontFamily: e.isRent()
+                                          ? "IranSans"
+                                          : "IranSansMedium"),
                                 ),
                               ],
                             ),

@@ -39,7 +39,10 @@ Future<T?> showDialog2<T>({
 
 BuildContext? loadingDialogContext;
 
-loadingDialog({required BuildContext context, String? message, bool showMessage = true}) async {
+loadingDialog(
+    {required BuildContext context,
+    String? message,
+    bool showMessage = true}) async {
   showDialog2(
     context: context,
     barrierDismissible: false,
@@ -55,8 +58,7 @@ loadingDialog({required BuildContext context, String? message, bool showMessage 
 
 BuildContext? errorDialogContext;
 
-BuildContext? errorDialog(
-    {required BuildContext context, String? message}) {
+BuildContext? errorDialog({required BuildContext context, String? message}) {
   showDialog2(
     context: context,
     barrierDismissible: true,

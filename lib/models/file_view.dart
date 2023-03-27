@@ -1,4 +1,3 @@
-
 class FileView {
   String? date;
   int? count;
@@ -6,10 +5,10 @@ class FileView {
   FileView({this.date, this.count});
 
   FileView.fromJson(Map<String, dynamic> json) {
-    if(json["date"] is String) {
+    if (json["date"] is String) {
       date = json["date"];
     }
-    if(json["count"] is int) {
+    if (json["count"] is int) {
       count = json["count"];
     }
   }
@@ -21,7 +20,6 @@ class FileView {
     return _data;
   }
 
-
   static List<FileView> fromList(List<dynamic> list) {
     var list2 = <FileView>[];
 
@@ -31,5 +29,4 @@ class FileView {
 
     return list2;
   }
-
 }

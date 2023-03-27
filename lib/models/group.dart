@@ -1,4 +1,3 @@
-
 class Group {
   int? id;
   String? name;
@@ -7,10 +6,10 @@ class Group {
   Group({this.id, this.name, this.pId});
 
   Group.fromJson(Map<String, dynamic> json) {
-    if(json["id"] is int) {
+    if (json["id"] is int) {
       id = json["id"];
     }
-    if(json["name"] is String) {
+    if (json["name"] is String) {
       name = json["name"];
     }
     pId = json["p_id"];
@@ -24,7 +23,6 @@ class Group {
     return _data;
   }
 
-  
   static List<Group> fromList(List<dynamic> list) {
     var list2 = <Group>[];
 

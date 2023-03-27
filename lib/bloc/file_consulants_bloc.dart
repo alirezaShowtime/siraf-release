@@ -46,8 +46,8 @@ class FileConsulantsBloc
     var response;
 
     try {
-      response = await http2.get(
-          getEstateUrl("consultant/consultantsFile?fileId=${event.id}"));
+      response = await http2
+          .get(getEstateUrl("consultant/consultantsFile?fileId=${event.id}"));
     } on HttpException catch (_) {
       emit(FileConsulantsErrorState(response: null));
       return;

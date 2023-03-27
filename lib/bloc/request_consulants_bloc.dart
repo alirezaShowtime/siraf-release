@@ -32,7 +32,8 @@ class RequestConsultantErrorState extends RequestConsultantState {
   RequestConsultantErrorState({required this.response});
 }
 
-class RequestConsultantBloc extends Bloc<RequestConsultantEvent, RequestConsultantState> {
+class RequestConsultantBloc
+    extends Bloc<RequestConsultantEvent, RequestConsultantState> {
   RequestConsultantBloc() : super(RequestConsultantInitState()) {
     on(_onEvent);
   }
@@ -40,13 +41,15 @@ class RequestConsultantBloc extends Bloc<RequestConsultantEvent, RequestConsulta
   _onEvent(RequestConsultantEvent event, emit) async {
     emit(RequestConsultantLoadingState());
 
-    var response = await http2.getWithToken(getEstateUrl("requestFile/consultantRequestFile/?id=${event.id}"));
+    var response = await http2.getWithToken(
+        getEstateUrl("requestFile/consultantRequestFile/?id=${event.id}"));
 
     if (isResponseOk(response)) {
       var consultants = <RequestConsultant>[];
 
       if (response.body.isNotEmpty) {
-        consultants = RequestConsultant.fromList(jDecode(response.body)['data']);
+        consultants =
+            RequestConsultant.fromList(jDecode(response.body)['data']);
       }
 
       emit(RequestConsultantLoadedState(consultants: consultants));

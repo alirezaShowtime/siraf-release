@@ -33,7 +33,9 @@ class _MyCard extends State<MyCard> {
                 EdgeInsets.symmetric(vertical: 12, horizontal: 20),
             decoration: BoxDecoration(
               color: widget.background,
-              border: Border.all(color: App.theme.tooltipTheme.textStyle?.color ?? Colors.grey.shade200),
+              border: Border.all(
+                  color: App.theme.tooltipTheme.textStyle?.color ??
+                      Colors.grey.shade200),
             ),
             child: widget.child,
           ),

@@ -88,7 +88,8 @@ class _BookmarkScreen extends State<BookmarkScreen> {
               InkWell(
                 onTap: _compare,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 15),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 7, vertical: 15),
                   child: Text(
                     "مقایسه",
                     style: TextStyle(
@@ -163,7 +164,8 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                     height: 35,
                   ),
                 ],
-                icon: icon(Icons.sort_rounded, color: App.theme.iconTheme.color),
+                icon:
+                    icon(Icons.sort_rounded, color: App.theme.iconTheme.color),
                 onSelected: (val) {
                   setState(() {
                     sort = val;
@@ -185,16 +187,17 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                     height: 35,
                   ),
                 ],
-                icon: icon(Icons.more_vert_rounded, color: App.theme.iconTheme.color),
+                icon: icon(Icons.more_vert_rounded,
+                    color: App.theme.iconTheme.color),
                 onSelected: (val) {
-                    setState(() {
-                      isSelectable = true;
+                  setState(() {
+                    isSelectable = true;
 
-                      selectedFiles.clear();
-                      files.forEach((element) {
-                        selectedFiles.add(element);
-                      });
+                    selectedFiles.clear();
+                    files.forEach((element) {
+                      selectedFiles.add(element);
                     });
+                  });
                 },
               ),
             ],
@@ -252,7 +255,8 @@ class _BookmarkScreen extends State<BookmarkScreen> {
 
   void _compare() async {
     if (selectedFiles.length < 2) {
-      return notify("جهت مقایسه حداقل می بایست دو فایل هم نوع را انتخاب نمایید");
+      return notify(
+          "جهت مقایسه حداقل می بایست دو فایل هم نوع را انتخاب نمایید");
     }
 
     int? parentId;
@@ -274,8 +278,14 @@ class _BookmarkScreen extends State<BookmarkScreen> {
         favorite: true,
         fullCategory: null,
         name: e.fileId!.name,
-        images: e.fileId!.images?.map<file.Images>((e) => file.Images.fromJson(e.toJson())).toList() ?? [],
-        propertys: e.fileId!.propertys?.map<file.Property>((e) => file.Property.fromJson(e.toJson())).toList() ?? [],
+        images: e.fileId!.images
+                ?.map<file.Images>((e) => file.Images.fromJson(e.toJson()))
+                .toList() ??
+            [],
+        propertys: e.fileId!.propertys
+                ?.map<file.Property>((e) => file.Property.fromJson(e.toJson()))
+                .toList() ??
+            [],
         publishedAgo: e.fileId!.publishedAgo,
       );
     }).toList();
@@ -284,7 +294,8 @@ class _BookmarkScreen extends State<BookmarkScreen> {
       print(element.toJson());
     });
 
-    await Navigator.push(context, MaterialPageRoute(builder: (_) => CompareScreen(files: files)));
+    await Navigator.push(context,
+        MaterialPageRoute(builder: (_) => CompareScreen(files: files)));
 
     setState(() {
       selectedFiles.clear();

@@ -52,7 +52,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
 
   List<CircleMarker> circles = [];
 
-   getCities() async {
+  getCities() async {
     var mCities = await City.getList(key: "estates");
     setState(() {
       cities = mCities;
@@ -113,7 +113,6 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
 
   List<Estate> estates = [];
 
-
   @override
   void dispose() {
     super.dispose();
@@ -130,11 +129,13 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
           title: TextField2(
             decoration: InputDecoration(
               hintText: "جستجو در دفاتر املاک",
-              hintStyle: TextStyle(color: App.theme.tooltipTheme.textStyle?.color, fontSize: 13),
+              hintStyle: TextStyle(
+                  color: App.theme.tooltipTheme.textStyle?.color, fontSize: 13),
               border: InputBorder.none,
             ),
             controller: _searchController,
-            style: TextStyle(color: App.theme.textTheme.bodyLarge?.color, fontSize: 13),
+            style: TextStyle(
+                color: App.theme.textTheme.bodyLarge?.color, fontSize: 13),
             textInputAction: TextInputAction.search,
             onSubmitted: (value) {
               getEstates();
@@ -198,12 +199,12 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                   interactiveFlags:
                       InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                   zoom: 14.0,
-                  
                 ),
                 children: [
                   TileLayerWidget(
                     options: TileLayerOptions(
-                      urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
+                      urlTemplate:
+                          App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
                     ),
                   ),
                   CircleLayerWidget(
@@ -298,9 +299,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                     style: TextStyle(
                       fontSize: 15,
                       fontFamily: "IranSansMedium",
-                      color: _showFileOnMyLocation
-                          ? Themes.textLight
-                          : null,
+                      color: _showFileOnMyLocation ? Themes.textLight : null,
                     ),
                   ),
                 ),

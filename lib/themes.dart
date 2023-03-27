@@ -42,7 +42,8 @@ class Themes {
         shadowColor: Color(0x50000000),
         backgroundColor: Themes.appBar,
         foregroundColor: Themes.text,
-        titleTextStyle: TextStyle(fontSize: 16, color: Themes.text, fontFamily: "IranSansMedium"),
+        titleTextStyle: TextStyle(
+            fontSize: 16, color: Themes.text, fontFamily: "IranSansMedium"),
         iconTheme: IconThemeData(
           color: Themes.icon,
         ),
@@ -57,9 +58,8 @@ class Themes {
       ),
       tooltipTheme: TooltipThemeData(
           textStyle: TextStyle(
-            color: Themes.textGrey,
-          )
-      ),
+        color: Themes.textGrey,
+      )),
       shadowColor: Colors.grey.withOpacity(0.1),
       textTheme: TextTheme(
         bodyText1: TextStyle(),
@@ -70,5 +70,4 @@ class Themes {
       ),
     );
   }
-
 }

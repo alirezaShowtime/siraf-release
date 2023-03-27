@@ -71,7 +71,6 @@ class _EditFileSecondState extends State<EditFileSecond> {
   void initState() {
     super.initState();
 
-
     resetEditFileForm = false;
 
     setData();
@@ -106,7 +105,9 @@ class _EditFileSecondState extends State<EditFileSecond> {
         return {
           "isNew": false,
           "title": e.name,
-          "path": e.link != null ? e.link!.substring(e.link!.indexOf('media/')) : null,
+          "path": e.link != null
+              ? e.link!.substring(e.link!.indexOf('media/'))
+              : null,
           "file": e.image,
           "type": type,
           "id": e.id,

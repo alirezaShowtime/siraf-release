@@ -1,24 +1,29 @@
-
 class RequestConsultant {
   int? estateRequestFileId;
   String? estateName;
   String? estateId;
   ConsultantId? consultantId;
 
-  RequestConsultant({this.estateRequestFileId, this.estateName, this.estateId, this.consultantId});
+  RequestConsultant(
+      {this.estateRequestFileId,
+      this.estateName,
+      this.estateId,
+      this.consultantId});
 
   RequestConsultant.fromJson(Map<String, dynamic> json) {
-    if(json["estateRequestFile_id"] is int) {
+    if (json["estateRequestFile_id"] is int) {
       estateRequestFileId = json["estateRequestFile_id"];
     }
-    if(json["estateName"] is String) {
+    if (json["estateName"] is String) {
       estateName = json["estateName"];
     }
-    if(json["estateId"] is String) {
+    if (json["estateId"] is String) {
       estateId = json["estateId"];
     }
-    if(json["consultant_id"] is Map) {
-      consultantId = json["consultant_id"] == null ? null : ConsultantId.fromJson(json["consultant_id"]);
+    if (json["consultant_id"] is Map) {
+      consultantId = json["consultant_id"] == null
+          ? null
+          : ConsultantId.fromJson(json["consultant_id"]);
     }
   }
 
@@ -27,14 +32,12 @@ class RequestConsultant {
     _data["estateRequestFile_id"] = estateRequestFileId;
     _data["estateName"] = estateName;
     _data["estateId"] = estateId;
-    if(consultantId != null) {
+    if (consultantId != null) {
       _data["consultant_id"] = consultantId?.toJson();
     }
     return _data;
   }
 
-  
-  
   static List<RequestConsultant> fromList(List<dynamic> list) {
     var list2 = <RequestConsultant>[];
 
@@ -54,25 +57,26 @@ class ConsultantId {
   double? rate;
   String? phone;
 
-  ConsultantId({this.id, this.avatar, this.name, this.status, this.rate, this.phone});
+  ConsultantId(
+      {this.id, this.avatar, this.name, this.status, this.rate, this.phone});
 
   ConsultantId.fromJson(Map<String, dynamic> json) {
-    if(json["id"] is int) {
+    if (json["id"] is int) {
       id = json["id"];
     }
-    if(json["avatar"] is String) {
+    if (json["avatar"] is String) {
       avatar = json["avatar"];
     }
-    if(json["name"] is String) {
+    if (json["name"] is String) {
       name = json["name"];
     }
-    if(json["status"] is int) {
+    if (json["status"] is int) {
       status = json["status"];
     }
-    if(json["rate"] is double) {
+    if (json["rate"] is double) {
       rate = json["rate"];
     }
-    if(json["phone"] is String) {
+    if (json["phone"] is String) {
       phone = json["phone"];
     }
   }

@@ -34,7 +34,8 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
     double imageSize = (MediaQuery.of(context).size.width - 20) / 3.5;
     if (imageSize > 140) imageSize = 140;
     return Container(
-      decoration: BoxDecoration(color: App.theme.dialogBackgroundColor, boxShadow: [
+      decoration:
+          BoxDecoration(color: App.theme.dialogBackgroundColor, boxShadow: [
         BoxShadow(
           color: App.theme.backgroundColor,
           blurRadius: 1,
@@ -117,7 +118,9 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                       ],
                     ),
                     Text(
-                      widget.file.category!.getMainCategoryName().toString() + " | " + widget.file.name!,
+                      widget.file.category!.getMainCategoryName().toString() +
+                          " | " +
+                          widget.file.name!,
                       style: TextStyle(
                         fontSize: 12,
                         fontFamily: 'IranSans',

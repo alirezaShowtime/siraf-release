@@ -9,7 +9,8 @@ class FileImagesScreen extends StatefulWidget {
   FileDetail file;
   int? index;
 
-  FileImagesScreen({required this.file, this.index, Key? key}) : super(key: key);
+  FileImagesScreen({required this.file, this.index, Key? key})
+      : super(key: key);
 
   @override
   State<FileImagesScreen> createState() => _FileImagesScreenState();
@@ -50,7 +51,8 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
             minScale: 0.5,
             imageProvider: NetworkImage(widget.file.media!.image![index].path!),
             initialScale: PhotoViewComputedScale.contained,
-            heroAttributes: PhotoViewHeroAttributes(tag: widget.file.media!.image![index].id!),
+            heroAttributes: PhotoViewHeroAttributes(
+                tag: widget.file.media!.image![index].id!),
           );
         },
         pageController: PageController(initialPage: widget.index ?? 0),
@@ -60,7 +62,9 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
             width: 20.0,
             height: 20.0,
             child: CircularProgressIndicator(
-              value: event == null ? 0 : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
+              value: event == null
+                  ? 0
+                  : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
             ),
           ),
         ),

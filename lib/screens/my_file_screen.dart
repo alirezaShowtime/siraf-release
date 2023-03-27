@@ -70,10 +70,11 @@ class _MyFileScreenState extends State<MyFileScreen> {
           }
         });
 
-        if (event.file.media!.image![0].name == null || event.file.media!.image![0].name == "") {
-          imageName.add(null);
+        if (event.file.media!.image!.asMap().containsKey(0) &&
+            event.file.media!.image![0].name.isNotNullOrEmpty()) {
+          imageName = " | ${event.file.media!.image![0].name!.trim()}";
         } else {
-          imageName.add(" | ${event.file.media!.image![0].name!.trim()}");
+          imageName = "";
         }
       }
     });
@@ -95,9 +96,11 @@ class _MyFileScreenState extends State<MyFileScreen> {
     });
 
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels > imgHeight && toolbarOpacity == 1) return;
+      if (_scrollController.position.pixels > imgHeight && toolbarOpacity == 1)
+        return;
 
-      if (_scrollController.position.pixels <= imgHeight && toolbarOpacity == 0) return;
+      if (_scrollController.position.pixels <= imgHeight && toolbarOpacity == 0)
+        return;
 
       setState(() {
         toolbarOpacity = _scrollController.position.pixels <= imgHeight ? 0 : 1;
@@ -167,8 +170,10 @@ class _MyFileScreenState extends State<MyFileScreen> {
                   SizedBox(height: 10),
                   _buildTitle(state.file),
                   SizedBox(height: 15),
-                  if (state.file.getMainProperties().isNotEmpty) _buildMainProps(state.file),
-                  if (state.file.getMainProperties().isNotEmpty) SizedBox(height: 15),
+                  if (state.file.getMainProperties().isNotEmpty)
+                    _buildMainProps(state.file),
+                  if (state.file.getMainProperties().isNotEmpty)
+                    SizedBox(height: 15),
                   _buildDescription(state.file),
                   SizedBox(height: 15),
                   if (state.file.getOtherProperties().isNotEmpty)
@@ -176,14 +181,17 @@ class _MyFileScreenState extends State<MyFileScreen> {
                       height: 0.5,
                       color: Themes.textGrey.withOpacity(0.5),
                     ),
-                  if (state.file.getOtherProperties().isNotEmpty) SizedBox(height: 15),
-                  if (state.file.getOtherProperties().isNotEmpty) _buildProps(state.file),
+                  if (state.file.getOtherProperties().isNotEmpty)
+                    SizedBox(height: 15),
+                  if (state.file.getOtherProperties().isNotEmpty)
+                    _buildProps(state.file),
                   SizedBox(height: 15),
                   Divider(
                     height: 0.5,
                     color: Themes.textGrey.withOpacity(0.5),
                   ),
-                  if (state.file.lat != null || state.file.long != null) _buildMap(state.file),
+                  if (state.file.lat != null || state.file.long != null)
+                    _buildMap(state.file),
                   SizedBox(height: 10),
                   Divider(
                     height: 0.5,
@@ -198,14 +206,20 @@ class _MyFileScreenState extends State<MyFileScreen> {
                             children: [
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     "قیمت",
-                                    style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
+                                    style: TextStyle(
+                                        color: Colors.grey.shade500,
+                                        fontSize: 12),
                                   ),
                                   Text(
-                                    state.file.getPrice()?.value != null ? number_format(state.file.getPrice()!.value) : "توافقی",
+                                    state.file.getPrice()?.value != null
+                                        ? number_format(
+                                            state.file.getPrice()!.value)
+                                        : "توافقی",
                                     style: TextStyle(
                                       fontSize: 13,
                                       fontWeight: FontWeight.bold,
@@ -215,7 +229,8 @@ class _MyFileScreenState extends State<MyFileScreen> {
                               ),
                               SizedBox(height: 10),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
@@ -242,7 +257,8 @@ class _MyFileScreenState extends State<MyFileScreen> {
                             children: [
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     "ودیعه",
@@ -253,23 +269,37 @@ class _MyFileScreenState extends State<MyFileScreen> {
                                     ),
                                   ),
                                   Text(
-                                    state.file.getPrice()?.value != null ? number_format(state.file.getPrice()?.value) : "توافقی",
-                                    style: TextStyle(color: Themes.text, fontSize: 13, height: 1, fontWeight: FontWeight.bold),
+                                    state.file.getPrice()?.value != null
+                                        ? number_format(
+                                            state.file.getPrice()?.value)
+                                        : "توافقی",
+                                    style: TextStyle(
+                                        color: Themes.text,
+                                        fontSize: 13,
+                                        height: 1,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
                               SizedBox(height: 10),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
                                     "اجاره ماهانه",
-                                    style: TextStyle(color: greyColor, fontSize: 10.5),
+                                    style: TextStyle(
+                                        color: greyColor, fontSize: 10.5),
                                   ),
                                   Text(
-                                    state.file.getRent()?.value != null ? number_format(state.file.getRent()?.value) : "توافقی",
-                                    style: TextStyle(color: Colors.grey.shade500, fontSize: 11.5),
+                                    state.file.getRent()?.value != null
+                                        ? number_format(
+                                            state.file.getRent()?.value)
+                                        : "توافقی",
+                                    style: TextStyle(
+                                        color: Colors.grey.shade500,
+                                        fontSize: 11.5),
                                   ),
                                 ],
                               ),
@@ -298,7 +328,9 @@ class _MyFileScreenState extends State<MyFileScreen> {
                   ),
                   SizedBox(height: 400),
                 ] +
-                state.consulants.map<Widget>((element) => _item(element)).toList() +
+                state.consulants
+                    .map<Widget>((element) => _item(element))
+                    .toList() +
                 <Widget>[
                   SizedBox(height: 10),
                 ],
@@ -309,7 +341,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
     );
   }
 
-  StreamController<String?> imageName = StreamController();
+  String imageName = "";
 
   List<s.Slider> sliders = [];
 
@@ -330,10 +362,11 @@ class _MyFileScreenState extends State<MyFileScreen> {
           indicatorColor: Colors.grey,
           onPageChanged: (i) {
             setState(() {
-              if (file.media!.image![i].name == null || file.media!.image![i].name == "") {
-                imageName.add(null);
+              if (file.media!.image!.asMap().containsKey(i) &&
+                  file.media!.image![i].name.isNotNullOrEmpty()) {
+                imageName = " | ${file.media!.image![i].name!.trim()}";
               } else {
-                imageName.add(" | ${file.media!.image![i].name!.trim()}");
+                imageName = "";
               }
             });
           },
@@ -482,22 +515,17 @@ class _MyFileScreenState extends State<MyFileScreen> {
         Positioned(
           bottom: 25,
           right: 10,
-          child: StreamBuilder(
-            builder: (context, snapshot) {
-              return Container(
-                color: Colors.white60,
-                padding: EdgeInsets.all(5),
-                child: Text(
-                  widget.id.toString() + (snapshot.data != null ? snapshot.data.toString() : ""),
-                  style: TextStyle(
-                    fontFamily: "IranSans",
-                    color: Color(0xff606060),
-                    fontSize: 13,
-                  ),
-                ),
-              );
-            },
-            stream: imageName.stream,
+          child: Container(
+            color: Colors.white60,
+            padding: EdgeInsets.all(5),
+            child: Text(
+              "${widget.id}$imageName",
+              style: TextStyle(
+                fontFamily: "IranSans",
+                color: Color(0xff606060),
+                fontSize: 13,
+              ),
+            ),
           ),
         ),
       ],
@@ -518,12 +546,18 @@ class _MyFileScreenState extends State<MyFileScreen> {
                 constraints: BoxConstraints(
                   maxWidth: MediaQuery.of(context).size.width - 40 - 25,
                 ),
-                child: Flexible(
-                  child: Text(
-                    (file.fullCategory != null ? file.fullCategory!.getMainCategoryName().toString().trim() + " | " : "") + file.name!.trim(),
-                    style: TextStyle(fontFamily: "IranSans", fontSize: 14, height: 1.3),
-                    maxLines: 3,
-                  ),
+                child: Text(
+                  (file.fullCategory != null
+                          ? file.fullCategory!
+                                  .getMainCategoryName()
+                                  .toString()
+                                  .trim() +
+                              " | "
+                          : "") +
+                      file.name!.trim(),
+                  style: TextStyle(
+                      fontFamily: "IranSans", fontSize: 14, height: 1.3),
+                  maxLines: 3,
                 ),
               ),
               Text(
@@ -688,7 +722,8 @@ class _MyFileScreenState extends State<MyFileScreen> {
               options: MarkerLayerOptions(
                 markers: [
                   Marker(
-                    point: LatLng(double.parse(file.lat!), double.parse(file.long!)),
+                    point: LatLng(
+                        double.parse(file.lat!), double.parse(file.long!)),
                     builder: (_) {
                       return m.Image(
                         image: AssetImage('assets/images/map_marker.png'),
@@ -732,7 +767,9 @@ class _MyFileScreenState extends State<MyFileScreen> {
                   });
                 },
                 child: Icon(
-                  isPropOpen ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                  isPropOpen
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
                   size: 18,
                   color: Color(0xff8c8c8c),
                 ),
@@ -747,7 +784,9 @@ class _MyFileScreenState extends State<MyFileScreen> {
                     .getOtherProperties()
                     .map<Widget>(
                       (e) => Padding(
-                        padding: EdgeInsets.only(bottom: (file.getOtherProperties().last != e ? 5 : 0)),
+                        padding: EdgeInsets.only(
+                            bottom:
+                                (file.getOtherProperties().last != e ? 5 : 0)),
                         child: Text(
                           e.name.toString() + " : " + e.value.toString(),
                           style: TextStyle(
@@ -1049,7 +1088,8 @@ class _MyFileScreenState extends State<MyFileScreen> {
   Widget _buildTopBar(MyFileDetail file) {
     var iconColor = Themes.iconLight;
 
-    var toolbarOpacity = (file.media?.image?.isNotEmpty ?? false) ? this.toolbarOpacity : 1.0;
+    var toolbarOpacity =
+        (file.media?.image?.isNotEmpty ?? false) ? this.toolbarOpacity : 1.0;
 
     if (toolbarOpacity > 0) {
       iconColor = App.theme.appBarTheme.foregroundColor ?? Themes.iconLight;
@@ -1060,7 +1100,8 @@ class _MyFileScreenState extends State<MyFileScreen> {
       left: 0,
       right: 0,
       child: Container(
-        color: App.theme.appBarTheme.backgroundColor?.withOpacity(toolbarOpacity),
+        color:
+            App.theme.appBarTheme.backgroundColor?.withOpacity(toolbarOpacity),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -1101,13 +1142,15 @@ class _MyFileScreenState extends State<MyFileScreen> {
                         Positioned(
                           left: 0.5,
                           top: 0.5,
-                          child: Icon(CupertinoIcons.delete, color: Colors.black26),
+                          child: Icon(CupertinoIcons.delete,
+                              color: Colors.black26),
                         ),
                       if (toolbarOpacity == 0)
                         Positioned(
                           right: 0.5,
                           top: 0.5,
-                          child: Icon(CupertinoIcons.delete, color: Colors.black26),
+                          child: Icon(CupertinoIcons.delete,
+                              color: Colors.black26),
                         ),
                       Icon(
                         CupertinoIcons.delete_solid,

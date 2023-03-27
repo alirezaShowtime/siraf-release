@@ -78,7 +78,8 @@ class App extends State<AppStf> {
       create: (_) {
         return themeChangeProvider;
       },
-      child: Consumer<DarkThemeProvider>(builder: (BuildContext context, value, Widget? child) {
+      child: Consumer<DarkThemeProvider>(
+          builder: (BuildContext context, value, Widget? child) {
         isDark = value.darkTheme;
         theme = value.darkTheme ? darkTheme : lightTheme;
         return OKToast(
@@ -108,8 +109,8 @@ class App extends State<AppStf> {
               );
             },
             routes: {
-              '/' : (_) => SplashScreen(),
-              '/home' : (_) => HomeScreen(),
+              '/': (_) => SplashScreen(),
+              '/home': (_) => HomeScreen(),
             },
           ),
         );
@@ -120,7 +121,8 @@ class App extends State<AppStf> {
 
 class MyBehavior extends ScrollBehavior {
   @override
-  Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
     return child;
   }
 }
@@ -128,6 +130,8 @@ class MyBehavior extends ScrollBehavior {
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

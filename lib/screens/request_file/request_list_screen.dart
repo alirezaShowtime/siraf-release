@@ -259,7 +259,9 @@ class _RequestListScreen extends State<RequestListScreen> {
                     value: 1,
                     child: Text(
                       "انتخاب همه",
-                      style: TextStyle(fontSize: 12, color: App.theme.textTheme.bodyLarge?.color),
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: App.theme.textTheme.bodyLarge?.color),
                     ),
                   ),
                 ],
@@ -299,11 +301,14 @@ class _RequestListScreen extends State<RequestListScreen> {
 
   Widget item(Request request) {
     return GestureDetector(
-      onTap: () => isSelectable ? changeSelection(request) : onClickItem(request),
+      onTap: () =>
+          isSelectable ? changeSelection(request) : onClickItem(request),
       onLongPress: () => changeSelection(request),
       child: Container(
         foregroundDecoration: BoxDecoration(
-          color: selectedRequests.any((element) => element.id == request.id) ? Themes.blue.withOpacity(0.2) : Colors.transparent,
+          color: selectedRequests.any((element) => element.id == request.id)
+              ? Themes.blue.withOpacity(0.2)
+              : Colors.transparent,
         ),
         decoration: BoxDecoration(
           color: App.theme.dialogBackgroundColor,
@@ -322,7 +327,8 @@ class _RequestListScreen extends State<RequestListScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              request.categoryId!.getMainCategoryName()! + " | ${request.title}",
+              request.categoryId!.getMainCategoryName()! +
+                  " | ${request.title}",
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
@@ -351,7 +357,8 @@ class _RequestListScreen extends State<RequestListScreen> {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: statusBadgeColors[request.status!]!, width: 1),
+                    border: Border.all(
+                        color: statusBadgeColors[request.status!]!, width: 1),
                     borderRadius: BorderRadius.circular(10),
                     color: statusBadgeColors[request.status!]!.withOpacity(0.3),
                   ),
@@ -373,7 +380,8 @@ class _RequestListScreen extends State<RequestListScreen> {
   }
 
   void requestFile() {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => RequestFileScreen()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (_) => RequestFileScreen()));
   }
 
   void removeFile() {
@@ -449,7 +457,8 @@ class _RequestListScreen extends State<RequestListScreen> {
                 ),
               ),
               elevation: 0.2,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(7)),
               fillColor: Themes.primary,
             ),
           ],
@@ -541,7 +550,8 @@ class _RequestListScreen extends State<RequestListScreen> {
       dismissDialog(loadingDialogContext);
 
       setState(() {
-        requests.removeWhere((element) => state.event.ids.any((e) => element.id == e));
+        requests.removeWhere(
+            (element) => state.event.ids.any((e) => element.id == e));
       });
     }
   }

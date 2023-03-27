@@ -21,7 +21,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   final Duration duration = const Duration(milliseconds: 500);
   late AnimationController _controller;
   bool isHidden = true;
@@ -140,13 +141,18 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                         Container(
                           color: Themes.primary,
                           child: Image(
-                            image: AssetImage('assets/images/siraf_logo_text.png'),
+                            image:
+                                AssetImage('assets/images/siraf_logo_text.png'),
                             width: 120,
                           ),
                         ),
                       ],
                     ),
-                    if (activeConnection) SpinKitThreeBounce(size: 15, color: Colors.white, duration: Duration(milliseconds: 800)),
+                    if (activeConnection)
+                      SpinKitThreeBounce(
+                          size: 15,
+                          color: Colors.white,
+                          duration: Duration(milliseconds: 800)),
                     if (!activeConnection)
                       Text(
                         "خطا در اتصال به اینترنت!",
@@ -189,15 +195,17 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   void dispose() {
     super.dispose();
 
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
   }
 
   void refreshToken() async {
     var user = (await User.fromLocal());
-    var response = await http2.post(Uri.parse("https://auth.siraf.app/api/token/refresh/"),
-        body: jsonEncode({
-          "refresh": user.refreshToken ?? "",
-        }));
+    var response =
+        await http2.post(Uri.parse("https://auth.siraf.app/api/token/refresh/"),
+            body: jsonEncode({
+              "refresh": user.refreshToken ?? "",
+            }));
 
     if (isResponseOk(response)) {
       var body = jDecode(response.body);
@@ -211,14 +219,15 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 
   void goNextScreen() async {
-    var sharedPreferences = await SharedPreferences.getInstance();
+    // var sharedPreferences = await SharedPreferences.getInstance();
 
-    if (! ((await sharedPreferences.getBool("IS_INTRO_SHOW")) ?? false)) {
-      sharedPreferences.setBool("IS_INTRO_SHOW", true);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => IntroScreen()));
-      return;
-    }
-    
+    // if (!((await sharedPreferences.getBool("IS_INTRO_SHOW")) ?? false)) {
+    //   sharedPreferences.setBool("IS_INTRO_SHOW", true);
+    //   Navigator.pushReplacement(
+    //       context, MaterialPageRoute(builder: (_) => IntroScreen()));
+    //   return;
+    // }
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(

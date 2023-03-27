@@ -55,7 +55,8 @@ class HSBloc extends Bloc<HSEvent, HSState> {
       print(url.toString());
 
       if (await User.hasToken()) {
-        response = await http2.getWithToken(url, timeout: Duration(seconds: 60));
+        response =
+            await http2.getWithToken(url, timeout: Duration(seconds: 60));
       } else {
         response = await http2.get(url, timeout: Duration(seconds: 60));
       }

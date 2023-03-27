@@ -64,7 +64,6 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
   void initState() {
     super.initState();
 
-
     resetCreateFileForm = false;
   }
 
@@ -893,9 +892,9 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
 
   showNumberDialog(PropertyInsert property) {
     StreamController<String> persianNumberText = StreamController();
-    persianNumberText.add(((selectedMainProps[property.value!] ?? '')
-            .replaceAll(',', ''))
-        .toWord());
+    persianNumberText.add(
+        ((selectedMainProps[property.value!] ?? '').replaceAll(',', ''))
+            .toWord());
 
     StreamController<String?> value = StreamController();
     value.add(selectedMainProps[property.value!]);
@@ -1170,9 +1169,9 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
 
   showFeatureNumberDialog(PropertyInsert property) {
     StreamController<String> persianNumberText = StreamController();
-    persianNumberText.add(((selectedMainProps[property.value!] ?? '')
-            .replaceAll(',', ''))
-        .toWord());
+    persianNumberText.add(
+        ((selectedMainProps[property.value!] ?? '').replaceAll(',', ''))
+            .toWord());
 
     StreamController<String?> value = StreamController();
     value.add(selectedMainProps[property.value!]);

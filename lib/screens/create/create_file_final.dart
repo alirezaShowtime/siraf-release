@@ -44,7 +44,8 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
   }
 
   String? securityDescription;
-  TextEditingController _securitySescriptionController = TextEditingController();
+  TextEditingController _securitySescriptionController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -83,172 +84,186 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
           child: Column(children: [
             Expanded(
               child: SingleChildScrollView(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  SizedBox(
-                    height: 10,
-                  ),
-                  GestureDetector(
-                    onTap: _openHelp,
-                    child: Container(
-                      color: Colors.transparent,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "راهنما",
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontFamily: "IranSansMedium",
-                            ),
-                          ),
-                          Icon(
-                            CupertinoIcons.right_chevron,
-                            size: 17,
-                          ),
-                        ],
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 10,
                       ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Divider(
-                    color: Themes.textGrey.withOpacity(0.5),
-                    height: 1,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  GestureDetector(
-                    onTap: _selectEstate,
-                    child: Container(
-                      color: Colors.transparent,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "دفتر / دفاتر املاک (اختیاری)",
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontFamily: "IranSansMedium",
-                            ),
+                      GestureDetector(
+                        onTap: _openHelp,
+                        child: Container(
+                          color: Colors.transparent,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "راهنما",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontFamily: "IranSansMedium",
+                                ),
+                              ),
+                              Icon(
+                                CupertinoIcons.right_chevron,
+                                size: 17,
+                              ),
+                            ],
                           ),
-                          Text(
-                            selectedEstates.isNotEmpty ? "${selectedEstates.length} مورد" : "انتخاب",
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontFamily: "IranSansMedium",
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Divider(
-                    color: Themes.textGrey.withOpacity(0.5),
-                    height: 1,
-                  ),
-                  SizedBox(height: 14),
-                  Text(
-                    "توضیحات محرمانه (اختیاری)",
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Themes.primary,
-                      fontFamily: "IranSansBold",
-                    ),
-                  ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Text(
-                    "در صورت نیاز توضیحاتی که فقط مشاور باید آن را ببیند بنویسید",
-                    style: TextStyle(
-                      fontSize: 11.5,
-                      fontFamily: "IranSansMedium",
-                    ),
-                  ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hintText: "توضیحات محرمانه را بنویسید.",
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Themes.icon,
-                          width: 0.5,
                         ),
-                        borderRadius: BorderRadius.circular(5),
                       ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.red,
-                          width: 1.5,
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Divider(
+                        color: Themes.textGrey.withOpacity(0.5),
+                        height: 1,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      GestureDetector(
+                        onTap: _selectEstate,
+                        child: Container(
+                          color: Colors.transparent,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "دفتر / دفاتر املاک (اختیاری)",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontFamily: "IranSansMedium",
+                                ),
+                              ),
+                              Text(
+                                selectedEstates.isNotEmpty
+                                    ? "${selectedEstates.length} مورد"
+                                    : "انتخاب",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontFamily: "IranSansMedium",
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(5),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Divider(
+                        color: Themes.textGrey.withOpacity(0.5),
+                        height: 1,
+                      ),
+                      SizedBox(height: 14),
+                      Text(
+                        "توضیحات محرمانه (اختیاری)",
+                        style: TextStyle(
+                          fontSize: 14,
                           color: Themes.primary,
-                          width: 1.5,
+                          fontFamily: "IranSansBold",
                         ),
-                        borderRadius: BorderRadius.circular(5),
                       ),
-                      disabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Themes.textGrey,
-                          width: 1.5,
+                      SizedBox(
+                        height: 4,
+                      ),
+                      Text(
+                        "در صورت نیاز توضیحاتی که فقط مشاور باید آن را ببیند بنویسید",
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          fontFamily: "IranSansMedium",
                         ),
-                        borderRadius: BorderRadius.circular(5),
                       ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.red,
-                          width: 1.5,
+                      SizedBox(
+                        height: 4,
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: "توضیحات محرمانه را بنویسید.",
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.icon,
+                              width: 0.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.primary,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.textGrey,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          hintStyle:
+                              TextStyle(fontSize: 14, color: Themes.textGrey),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                         ),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      hintStyle: TextStyle(fontSize: 14, color: Themes.textGrey),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    ),
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: App.theme.textTheme.bodyLarge?.color,
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        securityDescription = value;
-                      });
-                    },
-                    cursorColor: Themes.primary,
-                    maxLines: 50,
-                    minLines: 6,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "توضیحات فایل را وارد کنید";
-                      }
-                      if (value.length <= 40) {
-                        return "حداقل باید 40 کاراکتر بنویسید";
-                      }
-                    },
-                    onSaved: ((newValue) {
-                      setState(() {
-                        securityDescription = newValue;
-                      });
-                    }),
-                    controller: _securitySescriptionController,
-                    onTap: () {
-                      var txtSelection = TextSelection.fromPosition(TextPosition(offset: _securitySescriptionController.text.length - 1));
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: App.theme.textTheme.bodyLarge?.color,
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            securityDescription = value;
+                          });
+                        },
+                        cursorColor: Themes.primary,
+                        maxLines: 50,
+                        minLines: 6,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "توضیحات فایل را وارد کنید";
+                          }
+                          if (value.length <= 40) {
+                            return "حداقل باید 40 کاراکتر بنویسید";
+                          }
+                        },
+                        onSaved: ((newValue) {
+                          setState(() {
+                            securityDescription = newValue;
+                          });
+                        }),
+                        controller: _securitySescriptionController,
+                        onTap: () {
+                          var txtSelection = TextSelection.fromPosition(
+                              TextPosition(
+                                  offset: _securitySescriptionController
+                                          .text.length -
+                                      1));
 
-                      if (_securitySescriptionController.selection == txtSelection) {
-                        _securitySescriptionController.selection = TextSelection.fromPosition(TextPosition(offset: _securitySescriptionController.text.length));
-                      }
-                    },
-                  ),
-                ]),
+                          if (_securitySescriptionController.selection ==
+                              txtSelection) {
+                            _securitySescriptionController.selection =
+                                TextSelection.fromPosition(TextPosition(
+                                    offset: _securitySescriptionController
+                                        .text.length));
+                          }
+                        },
+                      ),
+                    ]),
               ),
             ),
             Row(
@@ -449,9 +464,10 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
         context,
         MaterialPageRoute(
             builder: (_) => HomeScreen(
-              nextScreen: MaterialPageRoute(builder: (_) => MyFilesScreen()),
-            )),
-            (Route<dynamic> route) => false,
+                  nextScreen:
+                      MaterialPageRoute(builder: (_) => MyFilesScreen()),
+                )),
+        (Route<dynamic> route) => false,
       );
     }
   }

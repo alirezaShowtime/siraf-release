@@ -15,13 +15,15 @@ class DeleteFileEvent {
 class DeleteFileListEvent extends DeleteFileEvent {
   List<int> ids;
 
-  DeleteFileListEvent({required this.ids, required token}) : super(token: token);
+  DeleteFileListEvent({required this.ids, required token})
+      : super(token: token);
 }
 
 class DeleteFileSingleEvent extends DeleteFileEvent {
   int id;
 
-  DeleteFileSingleEvent({required this.id, required token}) : super(token: token);
+  DeleteFileSingleEvent({required this.id, required token})
+      : super(token: token);
 }
 
 class DeleteFileState {}
@@ -47,7 +49,8 @@ class DeleteFileBloc extends Bloc<DeleteFileEvent, DeleteFileState> {
     on(_onEvent);
   }
 
-  FutureOr<void> _onEvent(DeleteFileEvent event, Emitter<DeleteFileState> emit) async {
+  FutureOr<void> _onEvent(
+      DeleteFileEvent event, Emitter<DeleteFileState> emit) async {
     List<int> ids = [];
     if (event is DeleteFileSingleEvent) {
       ids = [event.id];

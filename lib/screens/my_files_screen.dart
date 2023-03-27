@@ -34,7 +34,6 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
 
   DeleteFileBloc deleteFileBloc = DeleteFileBloc();
 
-
   @override
   void dispose() {
     super.dispose();
@@ -64,7 +63,9 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
       } else if (event is DeleteFileErrorState) {
         dismissDeleteDialog();
         dismissDialog(loadingDialogContext);
-        errorDialog(context: context, message: "خطایی در حذف فایل رخ داد لطفا مجددا تلاش کنید");
+        errorDialog(
+            context: context,
+            message: "خطایی در حذف فایل رخ داد لطفا مجددا تلاش کنید");
       } else if (event is DeleteFileSuccessState) {
         dismissDeleteDialog();
         dismissDialog(loadingDialogContext);
@@ -127,7 +128,8 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
               IconButton(
                 onPressed: selectedFiles.isNotEmpty
                     ? () {
-                        showDeleteDialog(selectedFiles.map((e) => e.id!).toList());
+                        showDeleteDialog(
+                            selectedFiles.map((e) => e.id!).toList());
                       }
                     : null,
                 icon: Icon(
@@ -328,7 +330,9 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
       return Center(
         child: TryAgain(
           onPressed: _loadFiles,
-          message: state.response != null ? jDecode(state.response!.body)['message'] : "خطا در دریافت اطلاعات پیش آمد مجدد تلاش کنید",
+          message: state.response != null
+              ? jDecode(state.response!.body)['message']
+              : "خطا در دریافت اطلاعات پیش آمد مجدد تلاش کنید",
         ),
       );
     }
@@ -360,7 +364,8 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                 ),
               ),
               elevation: 0.2,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(7)),
               fillColor: Themes.primary,
             ),
           ],
@@ -372,7 +377,9 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
       children: files
           .map<Widget>(
             (file) => GestureDetector(
-              onTap: isSelectable ? () => changeSelection(file) : () => onTapFile(file),
+              onTap: isSelectable
+                  ? () => changeSelection(file)
+                  : () => onTapFile(file),
               onLongPress: () => changeSelection(file),
               child: MyFileHorizontalItem(
                 file: file,
@@ -568,7 +575,8 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
   }
 
   _addFile() {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => CreateFileFirst()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (_) => CreateFileFirst()));
   }
 
   changeSelection(MyFile file) {

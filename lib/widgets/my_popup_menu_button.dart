@@ -12,7 +12,8 @@ class MyPopupMenuButton extends StatefulWidget {
   Widget? icon;
   String? tooltip;
 
-  MyPopupMenuButton({required this.itemBuilder, this.onSelected, this.icon, this.tooltip});
+  MyPopupMenuButton(
+      {required this.itemBuilder, this.onSelected, this.icon, this.tooltip});
 }
 
 class _MyPopupMenuButton extends State<MyPopupMenuButton> {

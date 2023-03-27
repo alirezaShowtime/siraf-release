@@ -1,7 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Settings {
-
   Future<bool> showNumberPhoneForAgent() async {
     var pref = await SharedPreferences.getInstance();
 

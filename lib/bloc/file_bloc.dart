@@ -53,10 +53,6 @@ class FileBloc extends Bloc<FileEvent, FileState> {
         response = await http2.get(url);
       }
 
-      var json = jDecode(response.body);
-
-      print(json);
-
       if (isResponseOk(response)) {
         var json = jDecode(response.body);
         emit(FileLoadedState(

@@ -14,7 +14,6 @@ class AppBarTitle extends StatefulWidget {
 class _AppBarTitle extends State<AppBarTitle> {
   @override
   Widget build(BuildContext context) {
-    return Text(widget.title,
-        style: TextStyle(fontSize: widget.fontSize));
+    return Text(widget.title, style: TextStyle(fontSize: widget.fontSize));
   }
 }

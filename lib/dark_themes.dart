@@ -43,7 +43,10 @@ class DarkThemes {
         shadowColor: Color(0x50ffffff),
         backgroundColor: DarkThemes.appBar,
         foregroundColor: DarkThemes.textLight,
-        titleTextStyle: TextStyle(fontSize: 16, color: DarkThemes.textLight, fontFamily: "IranSansMedium"),
+        titleTextStyle: TextStyle(
+            fontSize: 16,
+            color: DarkThemes.textLight,
+            fontFamily: "IranSansMedium"),
         titleSpacing: 0,
         elevation: 0.7,
         actionsIconTheme: IconThemeData(
@@ -54,10 +57,9 @@ class DarkThemes {
         color: DarkThemes.iconLight,
       ),
       tooltipTheme: TooltipThemeData(
-        textStyle: TextStyle(
-          color: DarkThemes.textMediumLight,
-        )
-      ),
+          textStyle: TextStyle(
+        color: DarkThemes.textMediumLight,
+      )),
       shadowColor: Colors.transparent,
       textTheme: TextTheme(
         bodyText1: TextStyle(),

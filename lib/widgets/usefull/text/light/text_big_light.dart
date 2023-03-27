@@ -6,7 +6,12 @@ class TextBigLight extends StatefulWidget {
   Color color;
   String fontFamily;
 
-  TextBigLight(this.data, {this.color =  Themes.textLight, this.fontFamily = "IranSansMedium", Key? key,}) : super(key: key);
+  TextBigLight(
+    this.data, {
+    this.color = Themes.textLight,
+    this.fontFamily = "IranSansMedium",
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<TextBigLight> createState() => _TextBigLightState();

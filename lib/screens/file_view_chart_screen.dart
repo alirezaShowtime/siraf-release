@@ -13,7 +13,8 @@ class FileViewChartScreen extends StatefulWidget {
   int id;
   String fileTitle;
 
-  FileViewChartScreen({required this.id, required this.fileTitle, Key? key}) : super(key: key);
+  FileViewChartScreen({required this.id, required this.fileTitle, Key? key})
+      : super(key: key);
 
   @override
   State<FileViewChartScreen> createState() => _FileViewChartScreenState();

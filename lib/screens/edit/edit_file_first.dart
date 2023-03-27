@@ -112,8 +112,6 @@ class _EditFileFirstState extends State<EditFileFirst> {
 
   bool propertiesSetes = false;
 
-
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

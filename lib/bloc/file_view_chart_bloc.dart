@@ -29,20 +29,21 @@ class FVCErrorState extends FVCState {
 }
 
 class FVCBloc extends Bloc<FVCEvent, FVCState> {
-  FVCBloc(): super(FVCInitState()) {
+  FVCBloc() : super(FVCInitState()) {
     on(_onEvent);
   }
 
   _onEvent(FVCEvent event, emit) async {
     emit(FVCLoadingState());
 
-    var response = await http2.getWithToken(getFileUrl("fileView/fileView/${event.id}"));
+    var response =
+        await http2.getWithToken(getFileUrl("fileView/fileView/${event.id}"));
 
     print(convertUtf8(response.body));
 
     if (isResponseOk(response)) {
       var body = jDecode(response.body);
-      
+
       emit(FVCLoadedState(views: FileView.fromList(body['data'])));
     } else {
       emit(FVCErrorState(response: response));

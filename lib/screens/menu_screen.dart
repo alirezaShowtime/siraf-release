@@ -16,6 +16,7 @@ import 'package:siraf3/screens/request_file/request_file_screen.dart';
 import 'package:siraf3/screens/request_file/request_list_screen.dart';
 import 'package:siraf3/screens/settings_screen.dart';
 import 'package:siraf3/screens/ticket/ticket_creation_screen.dart';
+import 'package:siraf3/screens/ticket/ticket_list_screen.dart';
 import 'package:siraf3/screens/verify_contract/inquiry_contract_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/accordion.dart';
@@ -385,6 +386,22 @@ class _MenuScreenState extends State<MenuScreen> {
                         content: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            AccordionItem(
+                                onClick: () {
+                                  doWithLogin(
+                                    context,
+                                    () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              TicketListScreen(),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                title: "تیکت های من"),
                             AccordionItem(
                                 onClick: () {
                                   doWithLogin(

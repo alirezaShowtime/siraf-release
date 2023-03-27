@@ -23,7 +23,10 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
   void initState() {
     super.initState();
 
-    bookmark = Bookmark(id: widget.file.id!, isFavorite: widget.file.favorite ?? false, context: context);
+    bookmark = Bookmark(
+        id: widget.file.id!,
+        isFavorite: widget.file.favorite ?? false,
+        context: context);
 
     bookmark.favoriteStream.stream.listen((isFavorite) {
       setState(() {
@@ -37,7 +40,8 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
     double imageSize = (MediaQuery.of(context).size.width - 20) / 3.5;
     if (imageSize > 140) imageSize = 140;
     return Container(
-      decoration: BoxDecoration(color: App.theme.dialogBackgroundColor, boxShadow: [
+      decoration:
+          BoxDecoration(color: App.theme.dialogBackgroundColor, boxShadow: [
         BoxShadow(
           color: App.theme.backgroundColor,
           blurRadius: 2,
@@ -78,7 +82,9 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                     },
                     child: Icon(
                       CupertinoIcons.bookmark_fill,
-                      color: (widget.file.favorite ?? false) ?  Themes.primary : Colors.white.withOpacity(0.8),
+                      color: (widget.file.favorite ?? false)
+                          ? Themes.primary
+                          : Colors.grey.withOpacity(0.5),
                     ),
                   ),
                 ),
@@ -172,7 +178,8 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                                   .map<Widget>((e) => Text(
                                         "${e.name} ${e.value}",
                                         style: TextStyle(
-                                          color: App.theme.textTheme.bodyLarge?.color,
+                                          color: App
+                                              .theme.textTheme.bodyLarge?.color,
                                           fontSize: 10.5,
                                           fontWeight: FontWeight.w400,
                                           fontFamily: 'IranSans',

@@ -1,4 +1,3 @@
-
 import 'package:siraf3/helpers.dart';
 
 class LocationFile {
@@ -12,31 +11,44 @@ class LocationFile {
   bool? favorite;
   String? lat_long;
 
-  LocationFile({this.id, this.name, this.category, this.lat, this.long, this.image, this.propertys, this.favorite});
+  LocationFile(
+      {this.id,
+      this.name,
+      this.category,
+      this.lat,
+      this.long,
+      this.image,
+      this.propertys,
+      this.favorite});
 
   LocationFile.fromJson(Map<String, dynamic> json) {
-    if(json["id"] is int) {
+    if (json["id"] is int) {
       id = json["id"];
     }
-    if(json["name"] is String) {
+    if (json["name"] is String) {
       name = json["name"];
     }
-    if(json["category"] is Map) {
-      category = json["category"] == null ? null : Category.fromJson(json["category"]);
+    if (json["category"] is Map) {
+      category =
+          json["category"] == null ? null : Category.fromJson(json["category"]);
     }
-    if(json["lat"] is String) {
+    if (json["lat"] is String) {
       lat = json["lat"];
     }
-    if(json["long"] is String) {
+    if (json["long"] is String) {
       long = json["long"];
     }
-    if(json["image"] is Map) {
+    if (json["image"] is Map) {
       image = json["image"] == null ? null : Image.fromJson(json["image"]);
     }
-    if(json["propertys"] is List) {
-      propertys = json["propertys"] == null ? null : (json["propertys"] as List).map((e) => Propertys.fromJson(e)).toList();
+    if (json["propertys"] is List) {
+      propertys = json["propertys"] == null
+          ? null
+          : (json["propertys"] as List)
+              .map((e) => Propertys.fromJson(e))
+              .toList();
     }
-    if(json["favorite"] is bool) {
+    if (json["favorite"] is bool) {
       favorite = json["favorite"];
     }
 
@@ -47,21 +59,20 @@ class LocationFile {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["id"] = id;
     _data["name"] = name;
-    if(category != null) {
+    if (category != null) {
       _data["category"] = category?.toJson();
     }
     _data["lat"] = lat;
     _data["long"] = long;
-    if(image != null) {
+    if (image != null) {
       _data["image"] = image?.toJson();
     }
-    if(propertys != null) {
+    if (propertys != null) {
       _data["propertys"] = propertys?.map((e) => e.toJson()).toList();
     }
     _data["favorite"] = favorite;
     return _data;
   }
-
 
   static List<LocationFile> fromList(List<dynamic> list) {
     var list2 = <LocationFile>[];
@@ -72,7 +83,6 @@ class LocationFile {
 
     return list2;
   }
-
 
   String getFirstPrice() {
     if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
@@ -112,16 +122,18 @@ class Propertys {
   Propertys({this.name, this.value, this.list, this.weightList});
 
   Propertys.fromJson(Map<String, dynamic> json) {
-    if(json["name"] is String) {
+    if (json["name"] is String) {
       name = json["name"];
     }
-    if (json["value"] is int || json["value"] is double || json["value"] is String) {
+    if (json["value"] is int ||
+        json["value"] is double ||
+        json["value"] is String) {
       value = json["value"].toString();
     }
-    if(json["list"] is bool) {
+    if (json["list"] is bool) {
       list = json["list"];
     }
-    if(json["weightList"] is int) {
+    if (json["weightList"] is int) {
       weightList = json["weightList"];
     }
   }
@@ -145,28 +157,35 @@ class Image {
   String? name;
   int? fileId;
 
-  Image({this.id, this.createDate, this.path, this.status, this.weight, this.name, this.fileId});
+  Image(
+      {this.id,
+      this.createDate,
+      this.path,
+      this.status,
+      this.weight,
+      this.name,
+      this.fileId});
 
   Image.fromJson(Map<String, dynamic> json) {
-    if(json["id"] is int) {
+    if (json["id"] is int) {
       id = json["id"];
     }
-    if(json["createDate"] is String) {
+    if (json["createDate"] is String) {
       createDate = json["createDate"];
     }
-    if(json["path"] is String) {
+    if (json["path"] is String) {
       path = json["path"];
     }
-    if(json["status"] is bool) {
+    if (json["status"] is bool) {
       status = json["status"];
     }
-    if(json["weight"] is int) {
+    if (json["weight"] is int) {
       weight = json["weight"];
     }
-    if(json["name"] is String) {
+    if (json["name"] is String) {
       name = json["name"];
     }
-    if(json["file_id"] is int) {
+    if (json["file_id"] is int) {
       fileId = json["file_id"];
     }
   }
@@ -192,23 +211,29 @@ class Category {
   bool? isAll;
   int? parentId;
 
-  Category({this.id, this.name, this.image, this.fullCategory, this.isAll, this.parentId});
+  Category(
+      {this.id,
+      this.name,
+      this.image,
+      this.fullCategory,
+      this.isAll,
+      this.parentId});
 
   Category.fromJson(Map<String, dynamic> json) {
-    if(json["id"] is int) {
+    if (json["id"] is int) {
       id = json["id"];
     }
-    if(json["name"] is String) {
+    if (json["name"] is String) {
       name = json["name"];
     }
     image = json["image"];
-    if(json["fullCategory"] is String) {
+    if (json["fullCategory"] is String) {
       fullCategory = json["fullCategory"];
     }
-    if(json["isAll"] is bool) {
+    if (json["isAll"] is bool) {
       isAll = json["isAll"];
     }
-    if(json["parent_id"] is int) {
+    if (json["parent_id"] is int) {
       parentId = json["parent_id"];
     }
   }

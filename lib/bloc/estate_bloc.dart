@@ -57,7 +57,9 @@ class EstateBloc extends Bloc<EstateEvent, EstateState> {
                 "&name=" +
             (event.search != null ? event.search! : "") +
             (event.sort != null ? "&sort=" + event.sort! : "") +
-            (event.latLng != null ? "&lat=${event.latLng!.latitude.toString()}&long=${event.latLng!.longitude.toString()}" : ""),
+            (event.latLng != null
+                ? "&lat=${event.latLng!.latitude.toString()}&long=${event.latLng!.longitude.toString()}"
+                : ""),
       );
 
       var response = await http2.get(url);

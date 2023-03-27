@@ -24,7 +24,8 @@ class SupportFileScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _SupportFileScreen();
 
-  SupportFileScreen({required this.file, required this.isFavorite, required this.id});
+  SupportFileScreen(
+      {required this.file, required this.isFavorite, required this.id});
 
   file_detail.FileDetail file;
 }
@@ -99,7 +100,8 @@ class _SupportFileScreen extends State<SupportFileScreen> {
   }
 
   Widget _buildMainBloc(context, FileConsulantsState state) {
-    if (state is FileConsulantsInitState || state is FileConsulantsLoadingState) {
+    if (state is FileConsulantsInitState ||
+        state is FileConsulantsLoadingState) {
       return Center(
         child: Loading(),
       );
@@ -300,15 +302,18 @@ class _SupportFileScreen extends State<SupportFileScreen> {
     var result = false;
 
     try {
-      var response = await get(getFileUrl('file/addFileFavorite/' + id.toString() + '/'), headers: {
-        "Authorization": await User.getBearerToken(),
-      });
+      var response = await get(
+          getFileUrl('file/addFileFavorite/' + id.toString() + '/'),
+          headers: {
+            "Authorization": await User.getBearerToken(),
+          });
 
       if (isResponseOk(response)) {
         result = true;
       } else {
         var json = jDecode(response.body);
-        notify(json['message'] ?? "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
+        notify(json['message'] ??
+            "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
         result = false;
       }
     } on HttpException {
@@ -328,15 +333,18 @@ class _SupportFileScreen extends State<SupportFileScreen> {
     var result = false;
 
     try {
-      var response = await get(getFileUrl('file/deleteFileFavorite/' + id.toString() + '/'), headers: {
-        "Authorization": await User.getBearerToken(),
-      });
+      var response = await get(
+          getFileUrl('file/deleteFileFavorite/' + id.toString() + '/'),
+          headers: {
+            "Authorization": await User.getBearerToken(),
+          });
 
       if (isResponseOk(response)) {
         result = true;
       } else {
         var json = jDecode(response.body);
-        notify(json['message'] ?? "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
+        notify(json['message'] ??
+            "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
         result = false;
       }
     } on HttpException {

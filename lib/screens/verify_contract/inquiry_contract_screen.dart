@@ -35,7 +35,9 @@ class _InquiryContractScreen extends State<InquiryContractScreen> {
                   padding: EdgeInsets.symmetric(vertical: 15, horizontal: 12),
                   child: TextField2(
                     controller: contractNumberController,
-                    style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color),
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: App.theme.textTheme.bodyLarge?.color),
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration.collapsed(
@@ -52,7 +54,9 @@ class _InquiryContractScreen extends State<InquiryContractScreen> {
                   padding: EdgeInsets.symmetric(vertical: 15, horizontal: 12),
                   child: TextField2(
                     controller: contractDateController,
-                    style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color),
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: App.theme.textTheme.bodyLarge?.color),
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration.collapsed(
                       hintText: "مثال: 1401/09/14",
@@ -68,7 +72,9 @@ class _InquiryContractScreen extends State<InquiryContractScreen> {
                   padding: EdgeInsets.symmetric(vertical: 15, horizontal: 12),
                   child: TextField2(
                     controller: officeAgentIdController,
-                    style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color),
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: App.theme.textTheme.bodyLarge?.color),
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration.collapsed(
@@ -91,7 +97,9 @@ class _InquiryContractScreen extends State<InquiryContractScreen> {
                       Expanded(
                         child: TextField2(
                           controller: numberPhoneController,
-                          style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color),
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: App.theme.textTheme.bodyLarge?.color),
                           textInputAction: TextInputAction.done,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration.collapsed(

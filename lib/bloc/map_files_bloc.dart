@@ -23,11 +23,9 @@ class MapFilesBloc extends Bloc<MapFilesEvent, MapFilesState> {
     on(_onEvent);
   }
 
-
   _onEvent(MapFilesEvent event, Emitter<MapFilesState> emit) {
     emit(MapFilesLoadingState());
 
     // var response = http2.getWithToken(url);
-
   }
 }

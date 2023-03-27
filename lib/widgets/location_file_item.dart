@@ -23,7 +23,10 @@ class _LocationFileItemState extends State<LocationFileItem> {
   void initState() {
     super.initState();
 
-    bookmark = Bookmark(id: widget.locationFile.id!, isFavorite: widget.locationFile.favorite ?? false, context: context);
+    bookmark = Bookmark(
+        id: widget.locationFile.id!,
+        isFavorite: widget.locationFile.favorite ?? false,
+        context: context);
 
     bookmark.favoriteStream.stream.listen((fav) {
       setState(() {
@@ -85,7 +88,9 @@ class _LocationFileItemState extends State<LocationFileItem> {
                     },
                     child: Icon(
                       CupertinoIcons.bookmark_fill,
-                      color: (widget.locationFile.favorite ?? false) ? Themes.primary : Themes.secondary2,
+                      color: (widget.locationFile.favorite ?? false)
+                          ? Themes.primary
+                          : Themes.secondary2,
                     ),
                   ),
                 ),
@@ -106,7 +111,10 @@ class _LocationFileItemState extends State<LocationFileItem> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          (widget.locationFile.isRent() ? "ودیعه : " : "قیمت کل : ") + widget.locationFile.getFirstPrice(),
+                          (widget.locationFile.isRent()
+                                  ? "ودیعه : "
+                                  : "قیمت کل : ") +
+                              widget.locationFile.getFirstPrice(),
                           style: TextStyle(
                             color: App.theme.textTheme.bodyLarge?.color,
                             fontSize: 13,
@@ -114,22 +122,26 @@ class _LocationFileItemState extends State<LocationFileItem> {
                             fontFamily: 'IranSans',
                           ),
                         ),
-                        if (widget.locationFile.isRent()) SizedBox(
-                          height: 3,
-                        ),
-                        if (widget.locationFile.isRent()) Text(
-                          "اجاره : " + widget.locationFile.getSecondPrice(),
-                          style: TextStyle(
-                            color: App.theme.textTheme.bodyLarge?.color,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'IranSans',
+                        if (widget.locationFile.isRent())
+                          SizedBox(
+                            height: 3,
                           ),
-                        ),
+                        if (widget.locationFile.isRent())
+                          Text(
+                            "اجاره : " + widget.locationFile.getSecondPrice(),
+                            style: TextStyle(
+                              color: App.theme.textTheme.bodyLarge?.color,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: 'IranSans',
+                            ),
+                          ),
                       ],
                     ),
                     Text(
-                      widget.locationFile.category!.getMainCategoryName()! + " | " + widget.locationFile.name!,
+                      widget.locationFile.category!.getMainCategoryName()! +
+                          " | " +
+                          widget.locationFile.name!,
                       style: TextStyle(
                         color: App.theme.textTheme.bodyLarge?.color,
                         fontSize: 12,
@@ -154,12 +166,18 @@ class _LocationFileItemState extends State<LocationFileItem> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: widget.locationFile.propertys
-                                  ?.where((element) => element.weightList == 1 || element.weightList == 2 || element.weightList == 3 || element.weightList == 4)
-                                  .take(4).toList()
+                                  ?.where((element) =>
+                                      element.weightList == 1 ||
+                                      element.weightList == 2 ||
+                                      element.weightList == 3 ||
+                                      element.weightList == 4)
+                                  .take(4)
+                                  .toList()
                                   .map<Widget>((e) => Text(
                                         "${e.name} ${e.value}",
                                         style: TextStyle(
-                                          color: App.theme.textTheme.bodyLarge?.color,
+                                          color: App
+                                              .theme.textTheme.bodyLarge?.color,
                                           fontSize: 10.5,
                                           fontWeight: FontWeight.w400,
                                           fontFamily: 'IranSans',

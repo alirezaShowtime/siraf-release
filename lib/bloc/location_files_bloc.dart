@@ -42,7 +42,12 @@ class LocationFilesBloc extends Bloc<LocationFilesEvent, LocationFilesState> {
 
     var response = await http2.getWithToken(
       getFileUrl(
-        "file/locationFiles" + event.filterData.toQueryString() + (event.latLng != null ? "&lat=${event.latLng!.latitude.toString()}&long=${event.latLng!.longitude.toString()}" : "") + (event.search != null ? "&q=${event.search!}" : ""),
+        "file/locationFiles" +
+            event.filterData.toQueryString() +
+            (event.latLng != null
+                ? "&lat=${event.latLng!.latitude.toString()}&long=${event.latLng!.longitude.toString()}"
+                : "") +
+            (event.search != null ? "&q=${event.search!}" : ""),
       ),
       timeout: Duration(seconds: 60),
     );
@@ -56,7 +61,11 @@ class LocationFilesBloc extends Bloc<LocationFilesEvent, LocationFilesState> {
       if (!(data is String)) {
         files = LocationFile.fromList(data);
       }
-      files = files.where((e) => (double.parse(e.lat!) <= 90 && double.parse(e.lat!) >= -90) && (double.parse(e.long!) <= 90 && double.parse(e.long!) >= -90)).toList();
+      files = files
+          .where((e) =>
+              (double.parse(e.lat!) <= 90 && double.parse(e.lat!) >= -90) &&
+              (double.parse(e.long!) <= 90 && double.parse(e.long!) >= -90))
+          .toList();
       files = files.unique((e) => e.lat_long);
       print(files.length);
       files.forEach((element) {

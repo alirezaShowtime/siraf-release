@@ -29,7 +29,8 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
   void initState() {
     super.initState();
 
-    bookmark = Bookmark(id: widget.file.fileId!.id!, isFavorite: true, context: context);
+    bookmark = Bookmark(
+        id: widget.file.fileId!.id!, isFavorite: true, context: context);
 
     bookmark.favoriteStream.stream.listen((isFavorite) {
       if (!isFavorite) {
@@ -43,9 +44,8 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
     double imageSize = (MediaQuery.of(context).size.width - 20) / 3.5;
     if (imageSize > 140) imageSize = 140;
     return Container(
-      decoration: BoxDecoration(
-          color: App.theme.dialogBackgroundColor,
-          boxShadow: [
+      decoration:
+          BoxDecoration(color: App.theme.dialogBackgroundColor, boxShadow: [
         BoxShadow(
           color: App.theme.backgroundColor,
           blurRadius: 1,
@@ -68,7 +68,8 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
             child: Stack(
               children: [
                 Image(
-                  image: NetworkImage(widget.file.fileId?.images?.first.path ?? ""),
+                  image: NetworkImage(
+                      widget.file.fileId?.images?.first.path ?? ""),
                   width: imageSize,
                   height: imageSize,
                   fit: BoxFit.cover,
@@ -130,7 +131,11 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
                       ],
                     ),
                     Text(
-                      widget.file.fileId!.category!.getMainCategoryName().toString() + " | " + widget.file.fileId!.name!,
+                      widget.file.fileId!.category!
+                              .getMainCategoryName()
+                              .toString() +
+                          " | " +
+                          widget.file.fileId!.name!,
                       style: TextStyle(
                         fontSize: 12,
                         fontFamily: 'IranSans',
@@ -153,8 +158,13 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: widget.file.fileId!.propertys
-                                  ?.where((element) => element.weightList == 1 || element.weightList == 2 || element.weightList == 3 || element.weightList == 4)
-                                  .take(4).toList()
+                                  ?.where((element) =>
+                                      element.weightList == 1 ||
+                                      element.weightList == 2 ||
+                                      element.weightList == 3 ||
+                                      element.weightList == 4)
+                                  .take(4)
+                                  .toList()
                                   .map<Widget>((e) => Text(
                                         "${e.name} ${e.value}",
                                         style: TextStyle(

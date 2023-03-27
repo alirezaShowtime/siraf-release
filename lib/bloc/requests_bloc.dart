@@ -36,7 +36,9 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
   _onEvent(RequestsEvent event, Emitter<RequestsState> emit) async {
     emit(RequestsLoadingState());
 
-    var response = await http2.getWithToken(getEstateUrl("requestFile/myRequestFiles/" + (event.sort != null ? "?sort=${event.sort}" : "")));
+    var response = await http2.getWithToken(getEstateUrl(
+        "requestFile/myRequestFiles/" +
+            (event.sort != null ? "?sort=${event.sort}" : "")));
 
     print(response.statusCode);
     print(convertUtf8(response.body));

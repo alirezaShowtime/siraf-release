@@ -245,7 +245,6 @@ Divider divider({double height = 1}) =>
 bool resetCreateFileForm = false;
 bool resetEditFileForm = false;
 
-
 extension Unique<E, Id> on List<E> {
   List<E> unique([Id Function(E element)? id, bool inplace = true]) {
     final ids = Set();

@@ -175,8 +175,7 @@ class _CompareItemState extends State<_CompareItem> {
                       height: 100,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => Image(
-                        image: AssetImage(
-                            IMAGE_NOT_AVAILABLE),
+                        image: AssetImage(IMAGE_NOT_AVAILABLE),
                         width: 100,
                         height: 100,
                         fit: BoxFit.cover,

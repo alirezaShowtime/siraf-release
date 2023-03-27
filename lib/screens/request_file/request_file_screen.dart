@@ -174,7 +174,8 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                         labelText: 'عنوان',
                         border: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey,
+                            color: App.theme.tooltipTheme.textStyle?.color ??
+                                Themes.textGrey,
                             width: 0.5,
                           ),
                           borderRadius: BorderRadius.circular(2),
@@ -211,13 +212,19 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                             EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                         hintText:
                             "در این قسمت به موارد مهم ملک مانند نوع ملک و محله اشاره کنید",
-                        hintStyle: TextStyle(fontSize: 13, color: App.theme.tooltipTheme.textStyle?.color),
-                        labelStyle: TextStyle(fontSize: 14, color: App.theme.tooltipTheme.textStyle?.color),
+                        hintStyle: TextStyle(
+                            fontSize: 13,
+                            color: App.theme.tooltipTheme.textStyle?.color),
+                        labelStyle: TextStyle(
+                            fontSize: 14,
+                            color: App.theme.tooltipTheme.textStyle?.color),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         floatingLabelStyle: TextStyle(color: Themes.primary),
                       ),
                       controller: _titleController,
-                      style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color),
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: App.theme.textTheme.bodyLarge?.color),
                       maxLines: 1,
                       cursorColor: Themes.primary,
                     ),
@@ -267,14 +274,20 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                       ),
                       floatingLabelStyle: TextStyle(color: Themes.primary),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      hintStyle: TextStyle(fontSize: 13, color: App.theme.tooltipTheme.textStyle?.color),
-                      labelStyle: TextStyle(fontSize: 14, color: App.theme.tooltipTheme.textStyle?.color),
+                      hintStyle: TextStyle(
+                          fontSize: 13,
+                          color: App.theme.tooltipTheme.textStyle?.color),
+                      labelStyle: TextStyle(
+                          fontSize: 14,
+                          color: App.theme.tooltipTheme.textStyle?.color),
                       hintText:
                           "در این قسمت به جزئیات ملک مانند امکانات ، ویژگی ها و ... که برای شمااهمیت دارد اشاره کنید",
                     ),
                     controller: _descriptionController,
                     cursorColor: Themes.primary,
-                    style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color),
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: App.theme.textTheme.bodyLarge?.color),
                   ),
                 ),
                 Section(

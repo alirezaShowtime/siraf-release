@@ -61,8 +61,7 @@ class _BookmarkItem extends State<BookmarkItem> {
                   height: imageSize,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Image(
-                    image:
-                        AssetImage(IMAGE_NOT_AVAILABLE),
+                    image: AssetImage(IMAGE_NOT_AVAILABLE),
                     width: imageSize,
                     height: imageSize,
                     fit: BoxFit.cover,

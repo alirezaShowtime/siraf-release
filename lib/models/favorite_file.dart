@@ -205,7 +205,7 @@ class Category {
     _data["parent_id"] = parentId;
     return _data;
   }
-  
+
   String? getMainCategoryName() {
     return fullCategory != null ? fullCategory!.split("-")[0] : null;
   }

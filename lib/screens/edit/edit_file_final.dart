@@ -41,7 +41,6 @@ class _EditFileFinalState extends State<EditFileFinal> {
   void initState() {
     super.initState();
 
-
     resetEditFileForm = false;
 
     setEstates();

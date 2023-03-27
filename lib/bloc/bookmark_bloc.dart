@@ -38,8 +38,8 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
   _onEvent(BookmarkEvent event, Emitter<BookmarkState> emit) async {
     emit(BookmarkLoadingState());
 
-    var response =
-        await http2.getWithToken(getFileUrl("file/getFileFavorite/")); // todo implement sort
+    var response = await http2.getWithToken(
+        getFileUrl("file/getFileFavorite/")); // todo implement sort
 
     print(response.statusCode);
 
