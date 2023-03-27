@@ -219,14 +219,14 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void goNextScreen() async {
-    // var sharedPreferences = await SharedPreferences.getInstance();
+    var sharedPreferences = await SharedPreferences.getInstance();
 
-    // if (!((await sharedPreferences.getBool("IS_INTRO_SHOW")) ?? false)) {
-    //   sharedPreferences.setBool("IS_INTRO_SHOW", true);
-    //   Navigator.pushReplacement(
-    //       context, MaterialPageRoute(builder: (_) => IntroScreen()));
-    //   return;
-    // }
+    if (!((await sharedPreferences.getBool("IS_INTRO_SHOW")) ?? false)) {
+       sharedPreferences.setBool("IS_INTRO_SHOW", true);
+       Navigator.pushReplacement(
+           context, MaterialPageRoute(builder: (_) => IntroScreen()));
+       return;
+    }
 
     Navigator.pushReplacement(
       context,
