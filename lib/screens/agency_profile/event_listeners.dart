@@ -1,6 +1,6 @@
-import 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
+part of 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
 
-extension EventListener on AgencyProfileScreenState {
+extension EventListener on _AgencyProfileScreen {
   void share() {
     //todo: implement event listener
   }
@@ -13,15 +13,15 @@ extension EventListener on AgencyProfileScreenState {
     //todo: implement event listener
   }
 
-  void like(Map<String, dynamic> comment) {
+  void like(Comment comment) {
     //todo: implement event listener
   }
 
-  void answer(Map<String, dynamic> comment) {
+  void answer(Comment comment) {
     //todo: implement event listener
   }
 
-  void dislike(Map<String, dynamic> comment) {}
+  void dislike(Comment comment) {}
 
   void viewMoreDetail({bool? force}) {
     setState(() {
@@ -37,5 +37,31 @@ extension EventListener on AgencyProfileScreenState {
     });
   }
 
-  void sendComment() {}
+  void sendCommentOrRate(int estateId) {
+    String comment = commentController.value.text;
+
+    bool rateIsValid = (rate ?? 0) > 0;
+    bool commentIsValid = comment.isNotEmpty;
+
+    //if true, the comment and the rate will be sent
+    if (commentIsValid && rateIsValid) {
+      commentRateBloc.add(AgencyProfileCommentRateSendCommentAndRateEvent(estateId, rate!, comment));
+    }
+
+    //if true, only the comment will be sent
+    if (commentIsValid && !rateIsValid) {
+      commentRateBloc.add(AgencyProfileCommentRateSendCommentEvent(estateId, comment));
+    }
+
+    //if true, ony the rate will be sent
+    if (!commentIsValid && rateIsValid) {
+      commentRateBloc.add(AgencyProfileCommentRateSendRateEvent(estateId, rate!));
+    }
+  }
+
+  void retry(BuildContext context) {
+    BlocProvider.of<AgencyProfileBloc>(context).add(AgencyProfileLoadingEvent(widget.estateId));
+  }
+
+  void report() {}
 }

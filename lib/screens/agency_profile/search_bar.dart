@@ -1,14 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_octicons/flutter_octicons.dart';
-import 'package:siraf3/helpers.dart';
-import 'package:siraf3/screens/agency_profile/event_listeners.dart';
-import 'package:siraf3/themes.dart';
-import 'package:siraf3/widgets/text_field_2.dart';
+part of 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
 
-import 'agency_profile_screen.dart';
-
-extension SearchBar on AgencyProfileScreenState {
-  Widget searchBar() {
+extension SearchBar on _AgencyProfileScreen {
+  Widget searchBar(String estateName) {
     return Container(
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -32,7 +25,7 @@ extension SearchBar on AgencyProfileScreenState {
                 controller: searchController,
                 maxLines: 1,
                 decoration: InputDecoration(
-                  hintText: "جستجو در امللاک برج",
+                  hintText: "جستجو در $estateName",
                   border: InputBorder.none,
                   isDense: true,
                   hintStyle: TextStyle(

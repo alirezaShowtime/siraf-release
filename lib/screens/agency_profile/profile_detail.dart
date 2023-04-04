@@ -1,16 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:siraf3/helpers.dart';
-import 'package:siraf3/themes.dart';
+part of 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
 
-import 'agency_profile_screen.dart';
-
-extension ProfileDetail on AgencyProfileScreenState {
-  Widget profileDetail() {
+extension ProfileDetail on _AgencyProfileScreen {
+  Widget profileDetail(estateProfileModel.EstateProfile estateProfile) {
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height -
-            (Scaffold.of(scaffoldContext).appBarMaxHeight ?? 0) -
-            170,
+        maxHeight: MediaQuery.of(context).size.height - (Scaffold.of(scaffoldContext).appBarMaxHeight ?? 0) - 170,
       ),
       padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
       decoration: BoxDecoration(
@@ -22,12 +16,13 @@ extension ProfileDetail on AgencyProfileScreenState {
       child: ListView(
         children: [
           Text(
-            "fdkfdspf p[kfpdkl dk ofkp[ ko kk okokdoflk olkokpfkdsfldsfkdfodsfdoskofdsjiofdskfojsdffoidjsfiodf'dposfjoihjdoifdifjdsjifdfoidsjfdposjfdsofijdsoifdjsofidjsfdkf podmnsf fdkfdspf p[kfpdkl dk ofkp[ ko kk okokdoflk olkokpfkdsfldsfkdfodsfdoskofdsjiofdskfojsdffoidjsfiodf'dposfjoihjdoifdifjdsjifdfoidsjfdposjfdsofijdsoifdjsofidjsfdkf podmnsf fdkfdspf p[kfpdkl dk ofkp[ ko kk okokdoflk olkokpfkdsfldsfkdfodsfdoskofdsjiofdskfojsdffoidjsfiodf'dposfjoihjdoifdifjdsjifdfoidsjfdposjfdsofijdsoifdjsofidjsfdkf podmnsf ",
+            estateProfile.description ?? "",
             style: TextStyle(
               color: Themes.textGrey,
               fontSize: 11,
             ),
           ),
+          //todo:: show video thumbnail
           Container(
             margin: const EdgeInsets.symmetric(vertical: 12),
             child: AspectRatio(
@@ -35,8 +30,7 @@ extension ProfileDetail on AgencyProfileScreenState {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: Image(
-                  image: NetworkImage(
-                      "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png"),
+                  image: NetworkImage("https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png"),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -48,33 +42,34 @@ extension ProfileDetail on AgencyProfileScreenState {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               physics: BouncingScrollPhysics(),
-              // padding: const EdgeInsets.symmetric(vertical: 10),
-              itemCount: 10,
-              itemBuilder: (context, i) => agencyImageItem(),
+              itemCount: estateProfile.images?.length ?? 0,
+              itemBuilder: (context, i) => agencyImageItem(estateProfile.images![i]),
             ),
           ),
-          divider(),
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 10),
-            alignment: Alignment.center,
-            child: Text(
-              "مشاورین املاک برج",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 13,
-                color: Themes.text,
+          if (estateProfile.consultants!.length > 0) divider(),
+          if (estateProfile.consultants!.length > 0)
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 10),
+              alignment: Alignment.center,
+              child: Text(
+                "مشاورین ${estateProfile.name}",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                  color: Themes.text,
+                ),
               ),
             ),
-          ),
-          SizedBox(
-            height: 100,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              physics: BouncingScrollPhysics(),
-              itemCount: 10,
-              itemBuilder: (context, i) => agentItem(),
+          if (estateProfile.consultants!.length > 0)
+            SizedBox(
+              height: 100,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                physics: BouncingScrollPhysics(),
+                itemCount: estateProfile.consultants!.length,
+                itemBuilder: (context, i) => agentItem(estateProfile.consultants![i]),
+              ),
             ),
-          ),
         ],
       ),
     );

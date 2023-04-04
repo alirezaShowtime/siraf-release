@@ -1,10 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:siraf3/themes.dart';
-import 'package:siraf3/widgets/avatar.dart';
+part of 'agent_profile_screen.dart';
 
-import 'agent_profile_screen.dart';
-
-extension AnswerItem on AgentProfileScreenState {
+extension AnswerItem on _AgentProfileScreen {
   Widget answerItem(Map<String, dynamic> answer) {
     return Container(
       padding: const EdgeInsets.only(top: 8, bottom: 4, left: 12, right: 12),

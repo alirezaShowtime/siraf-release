@@ -1,13 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:siraf3/helpers.dart';
-import 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
-import 'package:siraf3/screens/agency_profile/event_listeners.dart';
-import 'package:siraf3/themes.dart';
-import 'package:siraf3/widgets/text_field_2.dart';
+part of 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
 
-extension AddCommentWidget on AgencyProfileScreenState {
-  Widget addCommentWidget() {
+extension AddCommentWidget on _AgencyProfileScreen {
+  Widget addCommentWidget(int estateId) {
     return Container(
       color: Colors.white,
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -16,32 +10,33 @@ extension AddCommentWidget on AgencyProfileScreenState {
           Text(
             "امتیاز شما",
             style: TextStyle(
-                color: Themes.text, fontWeight: FontWeight.bold, fontSize: 12),
+              color: Themes.text,
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: RatingBar.builder(
-              initialRating: 4.5,
+              initialRating: 0,
               minRating: 1,
               direction: Axis.horizontal,
               itemCount: 5,
               itemPadding: EdgeInsets.symmetric(horizontal: 10),
-              itemBuilder: (context, _) =>
-                  icon(Icons.star, color: Colors.amber),
+              itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
               itemSize: 35,
-              onRatingUpdate: (double value) => rating = value,
+              onRatingUpdate: (double value) => rate = value,
               glow: false,
               unratedColor: Colors.grey.shade200,
             ),
           ),
           TextField2(
             controller: commentController,
-            style: TextStyle(
-              fontSize: 12,
-            ),
+            style: TextStyle(fontSize: 12),
             maxLines: 8,
             minLines: 4,
             decoration: InputDecoration(
+              contentPadding: EdgeInsets.all(10),
               border: OutlineInputBorder(),
               labelText: "توضیحات",
             ),
@@ -49,19 +44,43 @@ extension AddCommentWidget on AgencyProfileScreenState {
           Align(
             alignment: Alignment.centerLeft,
             child: MaterialButton(
-              onPressed: sendComment,
+              onPressed: () => sendCommentOrRate(estateId),
               color: Themes.primary,
               elevation: 3,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Text(
-                "ثبت",
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+              child: BlocConsumer<AgencyProfileCommentRateBloc, AgencyProfileCommentRateState>(
+                bloc: commentRateBloc,
+                listener: (context, state) {
+                  if (state is AgencyProfileCommentRateSuccessState && state.comment != null) {
+                    setState(() {
+                      estateProfile!.comment!.add(state.comment!);
+                    });
+                    notify("امتیاز/نظر شما ثبت شد.");
+                  }
+
+                  if (state is AgencyProfileCommentRateErrorState) {
+                    notify("خطایی در ثبت امتیاز/نظر پیش آمد.");
+                  }
+                },
+                builder: (context, state) {
+                  if (state is AgencyProfileCommentRateSendingState) {
+                    return SizedBox(
+                      width: 15,
+                      height: 15,
+                      child: SpinKitRing(color: Colors.white, size: 12, lineWidth: 2),
+                    );
+                  }
+                  return Text(
+                    "ثبت",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  );
+                },
               ),
             ),
           ),

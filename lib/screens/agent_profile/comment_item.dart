@@ -1,23 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:siraf3/helpers.dart';
-import 'package:siraf3/screens/agent_profile/answer_item.dart';
-import 'package:siraf3/screens/agent_profile/event_listeners.dart';
-import 'package:siraf3/themes.dart';
-import 'package:siraf3/widgets/avatar.dart';
-import 'package:siraf3/widgets/my_text_button.dart';
-import 'package:siraf3/widgets/my_text_icon_button.dart';
+part of 'agent_profile_screen.dart';
 
-import 'agent_profile_screen.dart';
-
-extension CommentItem on AgentProfileScreenState {
-  Widget commentItem(Map<String, dynamic> comment) {
+extension CommentItem on _AgentProfileScreen {
+  Widget commentItem(Comment comment) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       decoration: BoxDecoration(
         color: Colors.white,
-        border:
-            Border(bottom: BorderSide(color: Colors.grey.shade200, width: 1)),
+        border: Border(bottom: BorderSide(color: Colors.grey.shade200, width: 1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,31 +17,23 @@ extension CommentItem on AgentProfileScreenState {
             children: [
               Row(
                 children: [
-                  Avatar(
-                    size: 40,
-                    imagePath:
-                        "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png",
-                  ),
+                  Avatar(size: 40, imagePath: comment.userId?.avatar ?? ""),
                   SizedBox(width: 10),
                   Text(
-                    comment["user"]["username"],
-                    style: TextStyle(
-                      color: Themes.textGrey,
-                      fontSize: 11,
-                    ),
+                    comment.userId?.name ?? "ناشناس",
+                    style: TextStyle(color: Themes.textGrey, fontSize: 11),
                   ),
                 ],
               ),
               Column(
                 children: [
                   RatingBar.builder(
-                    initialRating: comment["star"],
+                    initialRating: comment.rate ?? 0,
                     minRating: 1,
                     direction: Axis.horizontal,
                     itemCount: 5,
                     itemPadding: EdgeInsets.symmetric(horizontal: 0.25),
-                    itemBuilder: (context, _) =>
-                        icon(Icons.star, color: Colors.amber),
+                    itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
                     itemSize: 10,
                     onRatingUpdate: (double value) {},
                     updateOnDrag: false,
@@ -60,7 +41,8 @@ extension CommentItem on AgentProfileScreenState {
                     unratedColor: Colors.grey.shade300,
                   ),
                   Text(
-                    comment["date"],
+                    //todo:
+                    comment.createDate ?? "",
                     style: TextStyle(
                       color: Themes.textGrey,
                       fontSize: 9,
@@ -71,17 +53,11 @@ extension CommentItem on AgentProfileScreenState {
             ],
           ),
           Container(
-            constraints: BoxConstraints(
-              minHeight: 40,
-            ),
+            constraints: BoxConstraints(minHeight: 40),
             padding: const EdgeInsets.only(right: 5, top: 10, bottom: 10),
             child: Text(
-              // comment["comment"],
-              "oiskdi ko kasdoksofk podfkdpo kf oidkoik oikdksfds f0dkf 0o9sfkd90sfkd90kf0d9skf d90sfkds90 fkd90sfkd90s fk d9dsfd9sfj89ke90ewjo9j 90jfoej r90ejr poj90j9efjo pjds90ocpj 90[jfo lmj 0jmf[9ejolmj9ko90j opfj90 joinj0iokj0 kj90 joijoij 90j [90jpo cmj0fj0inm0injf[ij[o0 k0[mnj0[oinj90in0[njklopmkcofe",
-              style: TextStyle(
-                color: Themes.textGrey,
-                fontSize: 11,
-              ),
+              comment.comment ?? "",
+              style: TextStyle(color: Themes.textGrey, fontSize: 11),
             ),
           ),
           Row(
@@ -92,13 +68,13 @@ extension CommentItem on AgentProfileScreenState {
                   MyTextIconButton(
                     onPressed: () => like(comment),
                     icon: icon(Icons.thumb_up_alt_outlined, size: 15),
-                    text: "122",
+                    text: (comment.likeCount ?? 0).toString(),
                     rippleColor: Themes.text,
                   ),
                   MyTextIconButton(
                     onPressed: () => dislike(comment),
                     icon: icon(Icons.thumb_down_alt_outlined, size: 15),
-                    text: "1",
+                    text: (comment.countDisLike ?? 0).toString(),
                     rippleColor: Themes.text,
                   ),
                 ],
@@ -118,13 +94,8 @@ extension CommentItem on AgentProfileScreenState {
               ),
             ],
           ),
-          if (comment["answers"] != null &&
-              (comment["answers"] as List).length > 0)
-            Column(
-              children: (comment["answers"] as List)
-                  .map((answer) => answerItem(answer))
-                  .toList(),
-            ),
+          //todo: the endpoint get answers of comment is`t implemented yet, so blow code is commented
+          // if (comment["answers"] != null && (comment["answers"] as List).isNotEmpty) Column(children: (comment["answers"] as List).map((answer) => answerItem(answer)).toList())
         ],
       ),
     );

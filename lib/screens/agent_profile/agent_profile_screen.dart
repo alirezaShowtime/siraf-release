@@ -1,27 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_octicons/flutter_octicons.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:siraf3/bloc/agent_profile_comment/agent_profile_comment_rate_bloc.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/models/consultant_info.dart';
 import 'package:siraf3/models/file.dart';
-import 'package:siraf3/screens/agent_profile/add_comment_widget.dart';
-import 'package:siraf3/screens/agent_profile/comment_item.dart';
-import 'package:siraf3/screens/agent_profile/event_listeners.dart';
-import 'package:siraf3/screens/agent_profile/profile_detail.dart';
-import 'package:siraf3/screens/agent_profile/search_bar.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/avatar.dart';
-import 'package:siraf3/widgets/file_horizontal_item.dart';
+import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
+import 'package:siraf3/widgets/my_text_icon_button.dart';
 import 'package:siraf3/widgets/static_star.dart';
+import 'package:siraf3/widgets/text_field_2.dart';
+import 'package:siraf3/widgets/try_again.dart';
+
+import '../../bloc/agent_profile/agent_profile_bloc.dart';
+import '../../widgets/file_horizontal_item.dart';
+
+part 'add_comment_widget.dart';
+
+part 'answer_item.dart';
+
+part 'appbar.dart';
+
+part 'comment_item.dart';
+
+part 'event_listeners.dart';
+
+part 'my_card.dart';
+
+part 'profile.dart';
+
+part 'profile_detail.dart';
+
+part 'search_bar.dart';
+
+part 'widgets.dart';
 
 class AgentProfileScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => AgentProfileScreenState();
+  State<StatefulWidget> createState() => _AgentProfileScreen();
+
+  int consultantId;
+
+  //todo: important , remove default value of consultantId variable and required
+  AgentProfileScreen({this.consultantId = 2});
 }
 
-class AgentProfileScreenState extends State<AgentProfileScreen>
-    with SingleTickerProviderStateMixin {
+class _AgentProfileScreen extends State<AgentProfileScreen> with SingleTickerProviderStateMixin {
   List<File> list = [
     File(
       id: 342,
@@ -70,149 +101,6 @@ class AgentProfileScreenState extends State<AgentProfileScreen>
     ),
   ];
 
-  List<Map<String, dynamic>> comments = [
-    {
-      "comment": "hello world",
-      "star": 3.5,
-      "date": "1401/05/19",
-      "likes": 12,
-      "dislike": 2,
-      "user": {
-        "username": "alireza",
-        "profileImage": "kdiofksdpofkds jfoidkf fd",
-      },
-      "answers": [
-        {
-          "comment": "hello world",
-          "star": 3.5,
-          "date": "1401/05/19",
-          "likes": 12,
-          "dislike": 2,
-          "user": {
-            "username": "alireza",
-            "profileImage": "kdiofksdpofkds jfoidkf fd",
-          },
-        },
-        {
-          "comment": "hello world",
-          "star": 3.5,
-          "date": "1401/05/19",
-          "likes": 12,
-          "dislike": 2,
-          "user": {
-            "username": "alireza",
-            "profileImage": "kdiofksdpofkds jfoidkf fd",
-          },
-        },
-      ],
-    },
-    {
-      "comment": "hello world",
-      "star": 3.5,
-      "date": "1401/05/19",
-      "likes": 12,
-      "dislike": 2,
-      "user": {
-        "username": "alireza",
-        "profileImage": "kdiofksdpofkds jfoidkf fd",
-      },
-      "answers": [
-        {
-          "comment": "hello world",
-          "star": 3.5,
-          "date": "1401/05/19",
-          "likes": 12,
-          "dislike": 2,
-          "user": {
-            "username": "alireza",
-            "profileImage": "kdiofksdpofkds jfoidkf fd",
-          },
-        },
-        {
-          "comment": "hello world",
-          "star": 3.5,
-          "date": "1401/05/19",
-          "likes": 12,
-          "dislike": 2,
-          "user": {
-            "username": "alireza",
-            "profileImage": "kdiofksdpofkds jfoidkf fd",
-          },
-        },
-      ],
-    },
-    {
-      "comment": "hello world",
-      "star": 3.5,
-      "date": "1401/05/19",
-      "likes": 12,
-      "dislike": 2,
-      "user": {
-        "username": "alireza",
-        "profileImage": "kdiofksdpofkds jfoidkf fd",
-      },
-      "answers": [
-        {
-          "comment": "hello world",
-          "star": 3.5,
-          "date": "1401/05/19",
-          "likes": 12,
-          "dislike": 2,
-          "user": {
-            "username": "alireza",
-            "profileImage": "kdiofksdpofkds jfoidkf fd",
-          },
-        },
-        {
-          "comment": "hello world",
-          "star": 3.5,
-          "date": "1401/05/19",
-          "likes": 12,
-          "dislike": 2,
-          "user": {
-            "username": "alireza",
-            "profileImage": "kdiofksdpofkds jfoidkf fd",
-          },
-        },
-      ],
-    },
-    {
-      "comment": "hello world",
-      "star": 3.5,
-      "date": "1401/05/19",
-      "likes": 12,
-      "dislike": 2,
-      "user": {
-        "username": "alireza",
-        "profileImage": "kdiofksdpofkds jfoidkf fd",
-      },
-      "answers": [
-        {
-          "comment": "hello world",
-          "star": 3.5,
-          "date": "1401/05/19",
-          "likes": 12,
-          "dislike": 2,
-          "user": {
-            "username": "alireza",
-            "profileImage": "kdiofksdpofkds jfoidkf fd",
-          },
-        },
-        {
-          "comment": "hello world",
-          "star": 3.5,
-          "date": "1401/05/19",
-          "likes": 12,
-          "dislike": 2,
-          "user": {
-            "username": "alireza",
-            "profileImage": "kdiofksdpofkds jfoidkf fd",
-          },
-        },
-      ],
-    },
-  ];
-
   bool showComment = false;
 
   bool moreDetail = false;
@@ -228,17 +116,21 @@ class AgentProfileScreenState extends State<AgentProfileScreen>
   TextEditingController searchController = TextEditingController();
   TextEditingController commentController = TextEditingController();
 
+  AgentProfileBloc bloc = AgentProfileBloc();
+  AgentProfileCommentRateBloc commentRateBloc = AgentProfileCommentRateBloc();
+
+  ConsultantInfo? consultantInfo;
+
   String? comment;
+  String title = "در حال بارگذاری...";
   double? rating;
 
   @override
   void initState() {
     super.initState();
 
-    collopsController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 400));
-    collopsAnimation =
-        CurvedAnimation(parent: collopsController, curve: Curves.fastOutSlowIn);
+    collopsController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+    collopsAnimation = CurvedAnimation(parent: collopsController, curve: Curves.fastOutSlowIn);
 
     collopsController.addListener(_collopsControllerListener);
   }
@@ -254,257 +146,34 @@ class AgentProfileScreenState extends State<AgentProfileScreen>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: appBar(),
-      body: Builder(builder: (context) {
-        scaffoldContext = context;
-        return GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Column(
-            children: [
-              Container(
-                height: 170,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                color: Colors.white,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Avatar(
-                            size: 80,
-                            imagePath:
-                                "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png"),
-                        Container(
-                          padding: const EdgeInsets.only(left: 2),
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  left: BorderSide(
-                                      color: Colors.grey.shade200, width: 1))),
-                          child: Column(
-                            children: [
-                              Text(
-                                "املاک برج",
-                                style: TextStyle(
-                                  color: Themes.text,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                "93405355345",
-                                style: TextStyle(
-                                  color: Themes.text,
-                                  fontSize: 11,
-                                ),
-                              ),
-                              StaticStar(rating: 4.5),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  card(
-                                      title: "فروشی",
-                                      value: "10",
-                                      onTap: () {}),
-                                  card(
-                                      title: "اجاره ای",
-                                      value: "75",
-                                      onTap: () {}),
-                                  card(
-                                      title: "ساخت و ساز",
-                                      value: "23",
-                                      onTap: () {}),
-                                ],
-                              ),
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  "ds;ofdskj dolspfk dkdofdks oidmnsfk dnf dosmjfoidns d[sk fldpofdspofmks dpolfkdms dms,fp[doskjf ods,fkdpsnf dpsfdms fdskmofds",
-                                  maxLines: 2,
-                                  style: TextStyle(
-                                      color: Themes.textGrey, fontSize: 11),
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: viewMoreDetail,
-                                      child: Text(
-                                        moreDetail ? "کمتر" : "بیشتر...",
-                                        style: TextStyle(
-                                          color: Themes.text,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () => setState(() {
-                                        final bool previousValueOfMoreDetail =
-                                            moreDetail;
-                                        showComment = !showComment;
+      body: BlocConsumer<AgentProfileBloc, AgentProfileState>(
+        bloc: bloc,
+        listener: (context, state) {
+          if (state is AgentProfileSuccessState) {
+            setState(() {
+              consultantInfo = state.consultantInfo!;
+              title = state.consultantInfo.name!;
+            });
+          }
+        },
+        builder: (context, state) {
+          scaffoldContext = context;
 
-                                        viewMoreDetail(force: false);
+          if (state is AgentProfileInitState) return Center(child: Loading());
 
-                                        if (!previousValueOfMoreDetail &&
-                                            !showComment) {
-                                          showSearchBarWidget = true;
-                                        }
+          if (state is AgentProfileErrorState) return retryWidget(context, state.message);
 
-                                        if (!previousValueOfMoreDetail &&
-                                            showComment) {
-                                          showSearchBarWidget = false;
-                                        }
-                                      }),
-                                      child: Text(
-                                        !showComment
-                                            ? "نمایش نظرات (${comments.length})"
-                                            : "فایل های مشاور",
-                                        style: TextStyle(
-                                          color: Themes.text,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizeTransition(
-                sizeFactor: collopsAnimation,
-                axis: Axis.vertical,
-                child: profileDetail(),
-              ),
-              if (showSearchBarWidget) searchBar(),
-              if (showComment)
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: comments.length,
-                    itemBuilder: (context, i) {
-                      if (i == 0) return addCommentWidget();
+          if (state is AgentProfileSuccessState) return profile(state.consultantInfo);
 
-                      return commentItem(comments[i - 0]);
-                    },
-                  ),
-                ),
-              if (!showComment)
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: list.length,
-                    itemBuilder: (context, i) => fileItem(list[i]),
-                  ),
-                ),
-            ],
-          ),
-        );
-      }),
-    );
-  }
-
-  AppBar appBar() {
-    return AppBar(
-      backgroundColor: Themes.appBar,
-      elevation: 0.7,
-      automaticallyImplyLeading: false,
-      leading: MyBackButton(),
-      titleSpacing: 0,
-      title: AppBarTitle("املاک برج"),
-      actions: [
-        IconButton(onPressed: share, icon: icon(Icons.share_rounded)),
-        MyPopupMenuButton(itemBuilder: (_) => []),
-      ],
-    );
-  }
-
-  Widget card(
-      {required String title, required String value, void Function()? onTap}) {
-    return Expanded(
-      child: MyTextButton(
-        onPressed: () {},
-        rippleColor: Colors.grey,
-        child: Container(
-          height: 60,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: Themes.text,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 11,
-                ),
-              ),
-              SizedBox(height: 2),
-              Text(
-                value,
-                style: TextStyle(
-                  color: Themes.textGrey,
-                  fontSize: 10,
-                ),
-              ),
-            ],
-          ),
-        ),
+          return Container();
+        },
       ),
     );
   }
-
-  Widget agencyImageItem() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 3),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Image(
-          image: NetworkImage(
-              "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png"),
-          height: 50,
-          width: 70,
-          fit: BoxFit.fill,
-          loadingBuilder: (context, child, progressEvent) {
-            if (progressEvent == null) return child;
-            return Container(
-              height: 50,
-              width: 70,
-              color: Colors.grey.shade200,
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget fileItem(File file) => FileHorizontalItem(file: file);
 
   void _collopsControllerListener() {
     if (collopsController.isDismissed && !showComment) {
       showSearchBarWidget = true;
     }
-
-    setState(() {});
   }
 }

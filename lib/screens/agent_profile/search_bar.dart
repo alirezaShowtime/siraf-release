@@ -1,13 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_octicons/flutter_octicons.dart';
-import 'package:siraf3/helpers.dart';
-import 'package:siraf3/screens/agent_profile/event_listeners.dart';
-import 'package:siraf3/themes.dart';
-import 'package:siraf3/widgets/text_field_2.dart';
+part of 'agent_profile_screen.dart';
 
-import 'agent_profile_screen.dart';
-
-extension SearchBar on AgentProfileScreenState {
+extension SearchBar on _AgentProfileScreen {
   Widget searchBar() {
     return Container(
       height: 45,
@@ -49,7 +42,7 @@ extension SearchBar on AgentProfileScreenState {
             ),
           ),
           IconButton(
-            onPressed: openFileBox,
+            onPressed: viewFilterFileWidget,
             icon: icon(OctIcons.sliders_16, size: 15),
             constraints: BoxConstraints(),
             padding: EdgeInsets.zero,
