@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
 import 'package:siraf3/dark_theme_provider.dart';
+import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/user.dart';
@@ -180,7 +182,20 @@ class _SettingsScreen extends State<SettingsScreen> {
                 setState(() {
                   darkMode = value;
                 });
+
                 darkThemeProvider.darkTheme = value;
+
+                SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                  statusBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
+                  statusBarBrightness:
+                      darkMode ? Brightness.light : Brightness.dark,
+                  statusBarIconBrightness:
+                      darkMode ? Brightness.light : Brightness.dark,
+                  systemNavigationBarIconBrightness:
+                      darkMode ? Brightness.light : Brightness.dark,
+                  systemNavigationBarColor:
+                      darkMode ? DarkThemes.appBar : Themes.appBar,
+                ));
               },
             ),
           ),

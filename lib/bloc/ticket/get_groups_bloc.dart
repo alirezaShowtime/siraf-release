@@ -34,17 +34,21 @@ class GetGroupsBloc extends Bloc<GetGroupsEvent, GetGroupsState> {
   _onEvent(GetGroupsEvent event, Emitter<GetGroupsState> emit) async {
     emit(GetGroupsLoadingState());
 
-    var response = await http2.get(getTicketUrl("group/groups/"));
+    // var response = await http2.get(getTicketUrl("group/groups/"));
 
-    if (isResponseOk(response)) {
-      var json = jDecode(response.body);
-      emit(
-        GetGroupsLoadedState(
-          groups: Group.fromList(json['data']),
-        ),
-      );
-    } else {
-      emit(GetGroupsErrorState(response: response));
-    }
+    // if (isResponseOk(response)) {
+    //   var json = jDecode(response.body);
+    //   emit(
+    //     GetGroupsLoadedState(
+    //       groups: Group.fromList(json['data']),
+    //     ),
+    //   );
+    // } else {
+    //   emit(GetGroupsErrorState(response: response));
+    // }
+
+    emit(
+      GetGroupsLoadedState(groups: await Group.getList()),
+    );
   }
 }

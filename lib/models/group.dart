@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
 class Group {
   int? id;
   String? name;
@@ -31,5 +35,21 @@ class Group {
     }
 
     return list2;
+  }
+
+  static Future<bool> saveList(List<Group> groups, {String? key}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString(
+        key != null ? "{$key}_groups" : "groups", jsonEncode(groups));
+  }
+
+  
+  static Future<List<Group>> getList({String? key}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var list = jsonDecode(
+            prefs.getString(key != null ? "{$key}_groups" : "groups") ?? '[]')
+        as List<dynamic>;
+
+    return list.map<Group>((e) => Group.fromJson(e)).toList();
   }
 }

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,190 +30,194 @@ class _LoginScreenState extends State<LoginScreen> {
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  LoginStatus loginStatus = LoginStatus();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            Container(
-              height: 200,
-              decoration: BoxDecoration(
-                color: Color(0xff0067a5),
-              ),
-              alignment: Alignment.bottomCenter,
-              padding: EdgeInsets.only(bottom: 5),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Image(
-                    image: AssetImage("assets/images/siraf.png"),
-                    height: 80,
-                    width: 80,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: Icon(
-                          CupertinoIcons.back,
-                          color: Colors.white,
-                          size: 25,
+    return BlocProvider(
+      create: (_) => loginStatus,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Container(
+                height: 200,
+                decoration: BoxDecoration(
+                  color: Color(0xff0067a5),
+                ),
+                alignment: Alignment.bottomCenter,
+                padding: EdgeInsets.only(bottom: 5),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Image(
+                      image: AssetImage("assets/images/siraf.png"),
+                      height: 80,
+                      width: 80,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(
+                            CupertinoIcons.back,
+                            color: Colors.white,
+                            size: 25,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 40,
-                        width: 40,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 35),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Text(
-                "شماره موبایل خود را وارد کنید",
-                style: TextStyle(
-                  color: App.theme.textTheme.bodyLarge?.color,
-                  fontSize: 15,
+                        SizedBox(
+                          height: 40,
+                          width: 40,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ),
-            SizedBox(height: 15),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Stack(
-                children: [
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hintText: 'شماره موبایل',
-                      contentPadding: const EdgeInsets.all(8),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: App.theme.tooltipTheme.textStyle?.color ??
-                              Colors.grey,
-                          width: 1,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: Themes.primary, width: 1),
-                      ),
-                      errorText: _mobileError,
-                      counterText: "",
-                      hintStyle: TextStyle(
-                        color: App.theme.tooltipTheme.textStyle?.color,
-                      ),
-                      hintTextDirection: TextDirection.rtl,
-                    ),
-                    style: TextStyle(
-                      color: App.theme.textTheme.bodyLarge?.color,
-                    ),
-                    maxLength: 11,
-                    maxLines: 1,
-                    textAlign: TextAlign.center,
-                    textInputAction: TextInputAction.send,
-                    onFieldSubmitted: (v) => login(),
-                    keyboardType: TextInputType.number,
-                    controller: mobileController,
-                    onSaved: (String? phone) {
-                      this.mobile = phone ?? '';
-                    },
-                    validator: (String? phone) {
-                      if (phone == null || phone.isEmpty) {
-                        return 'شماره موبایل را وارد کنید';
-                      }
-                      if (phone.length != 11) {
-                        return 'شماره موبایل باید 11 رقم باشد';
-                      }
-                      if (!phone.startsWith("09")) {
-                        return 'شماره موبایل باید با 09 شروع شود';
-                      }
-                    },
+              SizedBox(height: 35),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Text(
+                  "شماره موبایل خود را وارد کنید",
+                  style: TextStyle(
+                    color: App.theme.textTheme.bodyLarge?.color,
+                    fontSize: 15,
                   ),
-                  Positioned(
-                    left: 10,
-                    top: 10,
-                    bottom: 10,
-                    child: Icon(
-                      Icons.phone,
-                      color: Themes.primary,
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-            SizedBox(height: 15),
-            BlocBuilder<LoginStatus, bool>(
-              builder: (context, bool status) {
-                return status
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Container(
-                          child: SpinKitCircle(
-                            color: Colors.white,
-                            size: 40,
+              SizedBox(height: 15),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Stack(
+                  children: [
+                    TextFormField(
+                      decoration: InputDecoration(
+                        hintText: 'شماره موبایل',
+                        contentPadding: const EdgeInsets.all(8),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                            color: App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey,
+                            width: 1,
                           ),
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          decoration: BoxDecoration(
-                              color: Themes.primary,
-                              borderRadius: BorderRadius.circular(10)),
                         ),
-                      )
-                    : Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: GestureDetector(
-                          onTap: login,
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: App.theme.primaryColor, width: 1),
+                        ),
+                        errorText: _mobileError,
+                        counterText: "",
+                        hintStyle: TextStyle(
+                          color: App.theme.tooltipTheme.textStyle?.color,
+                        ),
+                        hintTextDirection: TextDirection.rtl,
+                      ),
+                      style: TextStyle(
+                        color: App.theme.textTheme.bodyLarge?.color,
+                      ),
+                      maxLength: 11,
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      textInputAction: TextInputAction.send,
+                      onFieldSubmitted: (v) => login(),
+                      keyboardType: TextInputType.number,
+                      controller: mobileController,
+                      onSaved: (String? phone) {
+                        this.mobile = phone ?? '';
+                      },
+                      validator: (String? phone) {
+                        if (phone == null || phone.isEmpty) {
+                          return 'شماره موبایل را وارد کنید';
+                        }
+                        if (phone.length != 11) {
+                          return 'شماره موبایل باید 11 رقم باشد';
+                        }
+                        if (!phone.startsWith("09")) {
+                          return 'شماره موبایل باید با 09 شروع شود';
+                        }
+                      },
+                    ),
+                    Positioned(
+                      left: 10,
+                      top: 10,
+                      bottom: 10,
+                      child: Icon(
+                        Icons.phone,
+                        color: App.theme.primaryColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 15),
+              BlocBuilder<LoginStatus, bool>(
+                builder: (context, bool status) {
+                  return status
+                      ? Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
                           child: Container(
-                            child: Text(
-                              'ارسال کد فعالسازی',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
+                            child: SpinKitCircle(
+                              color: Colors.white,
+                              size: 40,
                             ),
                             alignment: Alignment.center,
-                            padding: EdgeInsets.symmetric(vertical: 20),
+                            padding: EdgeInsets.symmetric(vertical: 10),
                             decoration: BoxDecoration(
-                                color: Themes.primary,
+                                color: App.theme.primaryColor,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
-                        ),
-                      );
-              },
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => WebViewScreen(
-                        title: 'قوانین مقررات',
-                        url: 'https://article.siraf.biz/api/v1/rules'),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: GestureDetector(
+                            onTap: login,
+                            child: Container(
+                              child: Text(
+                                'ارسال کد فعالسازی',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.symmetric(vertical: 20),
+                              decoration: BoxDecoration(
+                                  color: App.theme.primaryColor,
+                                  borderRadius: BorderRadius.circular(10)),
+                            ),
+                          ),
+                        );
+                },
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => WebViewScreen(
+                          title: 'قوانین مقررات',
+                          url: 'https://article.siraf.biz/api/v1/rules'),
+                    ),
+                  );
+                },
+                child: Text(
+                  "شرایط استفاده از خدمات، قوانین و حریم خصوصی",
+                  style: TextStyle(
+                    color: App.theme.primaryColor,
+                    fontSize: 15,
                   ),
-                );
-              },
-              child: Text(
-                "شرایط استفاده از خدمات، قوانین و حریم خصوصی",
-                style: TextStyle(
-                  color: Themes.primary,
-                  fontSize: 15,
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -226,7 +229,7 @@ class _LoginScreenState extends State<LoginScreen> {
         : _formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      BlocProvider.of<LoginStatus>(context).add(true);
+      loginStatus.add(true);
 
       http.Response response;
 
@@ -238,12 +241,12 @@ class _LoginScreenState extends State<LoginScreen> {
               "Accept": "application/json",
             });
       } on HttpException catch (e) {
-        BlocProvider.of<LoginStatus>(context).add(false);
+        loginStatus.add(false);
         notify(
             "خطا در ارسال درخواست پیش آمد لطفا اتصال اینترنت خود را بررسی کنید");
         return;
       } on SocketException catch (e) {
-        BlocProvider.of<LoginStatus>(context).add(false);
+        loginStatus.add(false);
         notify(
             "خطا در ارسال درخواست پیش آمد لطفا اتصال اینترنت خود را بررسی کنید");
         return;
@@ -251,7 +254,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       print(response.body);
 
-      BlocProvider.of<LoginStatus>(context).add(false);
+      loginStatus.add(false);
 
       var resBody = jDecode(response.body);
 
@@ -283,5 +286,12 @@ class _LoginScreenState extends State<LoginScreen> {
         notify('خطای غیر منتظره ای رخ داد لطفا بعدا دوباره تلاش کنید');
       }
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    loginStatus.close();
   }
 }

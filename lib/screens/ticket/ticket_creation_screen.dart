@@ -17,6 +17,11 @@ import 'package:siraf3/dialog.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 class TicketCreationScreen extends StatefulWidget {
+  Group? group;
+
+  TicketCreationScreen({this.group, Key? key}) : super(key: key);
+
+
   @override
   State<TicketCreationScreen> createState() => _TicketCreationScreen();
 }
@@ -36,6 +41,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
     super.initState();
 
     getGroups();
+    setSelectedGroup();
     createTicketBloc.stream.listen(_listenCreateState);
   }
 
@@ -294,5 +300,11 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
         );
       },
     );
+  }
+  
+  setSelectedGroup() {
+    setState(() {
+      selectedGroup = widget.group;
+    });
   }
 }

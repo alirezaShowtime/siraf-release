@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/home_screen_bloc.dart';
+import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/city.dart';
@@ -187,6 +189,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var darkMode = App.isDark;
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
+      statusBarBrightness: darkMode ? Brightness.light : Brightness.dark,
+      statusBarIconBrightness: darkMode ? Brightness.light : Brightness.dark,
+      systemNavigationBarIconBrightness:
+          darkMode ? Brightness.light : Brightness.dark,
+      systemNavigationBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
+    ));
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0.7,

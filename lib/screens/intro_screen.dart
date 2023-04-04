@@ -15,6 +15,15 @@ class IntroScreen extends StatefulWidget {
 class _IntroScreenState extends State<IntroScreen> {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.dark,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ));
+
     return WillPopScope(
       onWillPop: () async {
         if (currentPage == 1) {
@@ -65,7 +74,7 @@ class _IntroScreenState extends State<IntroScreen> {
             rtl: true,
             globalBackgroundColor: Colors.white,
             globalHeader: Container(
-              padding: EdgeInsets.only(right: 15, top: 20),
+              padding: EdgeInsets.only(right: 15, top: MediaQuery.of(context).viewPadding.top + 15),
               child: Text(
                 "${currentPage}/6",
                 style: TextStyle(
@@ -109,8 +118,8 @@ class _IntroScreenState extends State<IntroScreen> {
   }
 
   Widget _buildPage({required String imagePath, required String description}) {
-    return Expanded(
-      // height: MediaQuery.of(context).size.height,
+    return Container(
+      height: MediaQuery.of(context).size.height,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,

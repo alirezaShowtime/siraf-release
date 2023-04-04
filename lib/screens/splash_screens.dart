@@ -8,6 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
+import 'package:siraf3/models/group.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/home_screen.dart';
@@ -30,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
 
     _controller = AnimationController(vsync: this, duration: duration);
 
@@ -48,13 +49,13 @@ class _SplashScreenState extends State<SplashScreen>
     setState(() {
       activeConnection = true;
     });
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(Duration(milliseconds: 2500));
     if (await checkUserConnection()) {
-      if (await User.hasToken()) {
-        refreshToken();
-      } else {
-        goNextScreen();
-      }
+      if (await User.hasToken()) await refreshToken();
+
+      await getTicketGroups();
+
+      goNextScreen();
     }
   }
 
@@ -62,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<bool> checkUserConnection() async {
     try {
-      final result = await InternetAddress.lookup('google.com');
+      final result = await InternetAddress.lookup('file.siraf.app');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         setState(() {
           activeConnection = true;
@@ -83,6 +84,12 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Themes.primary,
+      statusBarBrightness: Brightness.light,
+      statusBarIconBrightness: Brightness.light,
+    ));
+
     return Scaffold(
       backgroundColor: Themes.primary,
       body: SafeArea(
@@ -199,7 +206,7 @@ class _SplashScreenState extends State<SplashScreen>
         overlays: SystemUiOverlay.values);
   }
 
-  void refreshToken() async {
+  Future refreshToken() async {
     var user = (await User.fromLocal());
     var response =
         await http2.post(Uri.parse("https://auth.siraf.app/api/token/refresh/"),
@@ -214,18 +221,16 @@ class _SplashScreenState extends State<SplashScreen>
         await user.save();
       }
     }
-
-    goNextScreen();
   }
 
   void goNextScreen() async {
     var sharedPreferences = await SharedPreferences.getInstance();
 
     if (!((await sharedPreferences.getBool("IS_INTRO_SHOW")) ?? false)) {
-       sharedPreferences.setBool("IS_INTRO_SHOW", true);
-       Navigator.pushReplacement(
-           context, MaterialPageRoute(builder: (_) => IntroScreen()));
-       return;
+      sharedPreferences.setBool("IS_INTRO_SHOW", true);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (_) => IntroScreen()));
+      return;
     }
 
     Navigator.pushReplacement(
@@ -234,5 +239,14 @@ class _SplashScreenState extends State<SplashScreen>
         builder: (_) => HomeScreen(),
       ),
     );
+  }
+
+  Future getTicketGroups() async {
+    var response = await http2.get(getTicketUrl("group/groups/"));
+
+    if (isResponseOk(response)) {
+      var json = jDecode(response.body);
+      Group.saveList(Group.fromList(json['data']));
+    }
   }
 }

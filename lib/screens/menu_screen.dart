@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:siraf3/bloc/ticket/get_groups_bloc.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/main.dart';
@@ -39,6 +41,8 @@ class _MenuScreenState extends State<MenuScreen> {
     super.initState();
 
     getUser();
+
+    getGroupsBloc.add(GetGroupsEvent());
   }
 
   getUser() async {
@@ -48,479 +52,385 @@ class _MenuScreenState extends State<MenuScreen> {
     });
   }
 
+  GetGroupsBloc getGroupsBloc = GetGroupsBloc();
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height / 2.5;
 
-    return Scaffold(
-      body: SafeArea(
-        child: ColoredBox(
-          color: App.theme.backgroundColor,
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.width / 3 * 2.075,
-                    padding: EdgeInsets.only(bottom: 60),
-                    margin: EdgeInsets.only(bottom: 50),
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/images/menu_background.png"),
-                        fit: BoxFit.cover,
-                        colorFilter: ColorFilter.mode(
-                          App.isDark ? DarkThemes.secondary2 : Themes.primary,
-                          BlendMode.hardLight,
+    return BlocProvider(
+      create: (_) => getGroupsBloc,
+      child: Scaffold(
+        body: SafeArea(
+          child: ColoredBox(
+            color: App.theme.backgroundColor,
+            child: Column(
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.width / 3 * 2.075,
+                      padding: EdgeInsets.only(bottom: 60),
+                      margin: EdgeInsets.only(bottom: 50),
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/images/menu_background.png"),
+                          fit: BoxFit.cover,
+                          colorFilter: ColorFilter.mode(
+                            App.isDark ? DarkThemes.secondary2 : Themes.primary,
+                            BlendMode.hardLight,
+                          ),
                         ),
                       ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ClipRRect(
-                          child: Image(
-                            image:
-                                NetworkImage(getImageUrl(user?.avatar ?? "")),
-                            // todo use dynamic avatar link
-                            errorBuilder: (context, error, stackTrace) => Image(
-                              image: AssetImage("assets/images/profile.png"),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          ClipRRect(
+                            child: Image(
+                              image:
+                                  NetworkImage(getImageUrl(user?.avatar ?? "")),
+                              // todo use dynamic avatar link
+                              errorBuilder: (context, error, stackTrace) => Image(
+                                image: AssetImage("assets/images/profile.png"),
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                              ),
                               width: 80,
                               height: 80,
                               fit: BoxFit.cover,
                             ),
-                            width: 80,
-                            height: 80,
-                            fit: BoxFit.cover,
+                            borderRadius: BorderRadius.circular(100),
                           ),
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        GestureDetector(
-                          onTap: () async {
-                            if (user == null || user!.phone == null) {
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => LoginScreen(),
-                                ),
-                              );
-
-                              getUser();
-                            }
-                          },
-                          child: Text(
-                            user?.token != null
-                                ? (user?.name ?? "")
-                                : "ورود به حساب",
+                          GestureDetector(
+                            onTap: () async {
+                              if (user == null || user!.phone == null) {
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => LoginScreen(),
+                                  ),
+                                );
+    
+                                getUser();
+                              }
+                            },
+                            child: Text(
+                              user?.token != null
+                                  ? (user?.name ?? "")
+                                  : "ورود به حساب",
+                              style: TextStyle(color: Colors.white, fontSize: 15),
+                            ),
+                          ),
+                          Text(
+                            user?.phone != null ? phoneFormat(user!.phone!) : "",
+                            textDirection: TextDirection.ltr,
                             style: TextStyle(color: Colors.white, fontSize: 15),
                           ),
-                        ),
-                        Text(
-                          user?.phone != null ? phoneFormat(user!.phone!) : "",
-                          textDirection: TextDirection.ltr,
-                          style: TextStyle(color: Colors.white, fontSize: 15),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    top: 7,
-                    left: 7,
-                    right: 7,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(
-                            CupertinoIcons.back,
-                            color: Themes.iconLight,
-                            size: 20,
+                    Positioned(
+                      top: 7,
+                      left: 7,
+                      right: 7,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(
+                              CupertinoIcons.back,
+                              color: Themes.iconLight,
+                              size: 20,
+                            ),
                           ),
-                        ),
-                        IconButton(
-                          onPressed: () async {
-                            await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        SettingsScreen(user: user)));
-
-                            getUser();
-                          },
-                          icon: Icon(
-                            CupertinoIcons.settings,
-                            color: Themes.iconLight,
-                            size: 20,
+                          IconButton(
+                            onPressed: () async {
+                              await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          SettingsScreen(user: user)));
+    
+                              getUser();
+                            },
+                            icon: Icon(
+                              CupertinoIcons.settings,
+                              color: Themes.iconLight,
+                              size: 20,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    bottom: 5,
-                    left: 0,
-                    right: 0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Positioned(
+                      bottom: 5,
+                      left: 0,
+                      right: 0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                color: App.theme.dialogBackgroundColor,
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Wrap(
+                              children: [
+                                _item(
+                                  title: "پیام ها",
+                                  icon: CupertinoIcons.envelope,
+                                  onClick: () {},
+                                  padding: EdgeInsets.only(
+                                      right: 30, left: 15, top: 20, bottom: 20),
+                                ),
+                                _item(
+                                  title: "ثبت فایل",
+                                  icon: CupertinoIcons.add,
+                                  padding: EdgeInsets.only(
+                                      right: 15, left: 15, top: 20, bottom: 20),
+                                  onClick: () async {
+                                    await doWithLogin(context, () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => CreateFileFirst(),
+                                        ),
+                                      );
+                                    });
+    
+                                    getUser();
+                                  },
+                                ),
+                                _item(
+                                  title: "نشان ها",
+                                  icon: CupertinoIcons.bookmark,
+                                  padding: EdgeInsets.only(
+                                      right: 15, left: 30, top: 20, bottom: 20),
+                                  onClick: () {
+                                    doWithLogin(context, () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => BookmarkScreen(),
+                                        ),
+                                      );
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: ListView(
                       children: [
-                        Container(
-                          decoration: BoxDecoration(
-                              color: App.theme.dialogBackgroundColor,
-                              borderRadius: BorderRadius.circular(5)),
-                          child: Wrap(
+                        Accordion(
+                          title: _accordionTitle("فایل ها و در خواست ها"),
+                          onClick: () {
+                            _onClickAccordion(0);
+                          },
+                          open: openedItem == 0,
+                          content: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _item(
-                                title: "پیام ها",
-                                icon: CupertinoIcons.envelope,
-                                onClick: () {},
-                                padding: EdgeInsets.only(
-                                    right: 30, left: 15, top: 20, bottom: 20),
-                              ),
-                              _item(
-                                title: "ثبت فایل",
-                                icon: CupertinoIcons.add,
-                                padding: EdgeInsets.only(
-                                    right: 15, left: 15, top: 20, bottom: 20),
+                              AccordionItem(
                                 onClick: () async {
                                   await doWithLogin(context, () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (_) => CreateFileFirst(),
+                                        builder: (_) => MyFilesScreen(),
                                       ),
                                     );
                                   });
-
+    
                                   getUser();
                                 },
+                                title: "فایل های من",
                               ),
-                              _item(
-                                title: "نشان ها",
-                                icon: CupertinoIcons.bookmark,
-                                padding: EdgeInsets.only(
-                                    right: 15, left: 30, top: 20, bottom: 20),
-                                onClick: () {
-                                  doWithLogin(context, () {
+                              AccordionItem(
+                                onClick: () async {
+                                  await doWithLogin(context, () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (_) => BookmarkScreen(),
+                                        builder: (_) => RequestFileScreen(),
                                       ),
                                     );
                                   });
+    
+                                  getUser();
                                 },
+                                title: "ثبت در خواست",
+                              ),
+                              AccordionItem(
+                                onClick: () async {
+                                  await doWithLogin(context, () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => RequestListScreen(),
+                                      ),
+                                    );
+                                  });
+    
+                                  getUser();
+                                },
+                                title: "در خواست های من",
+                              ),
+                              AccordionItem(
+                                onClick: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => FilesMapScreen(),
+                                    ),
+                                  );
+                                },
+                                title: "ملک های اطراف من",
                               ),
                             ],
                           ),
                         ),
+                        Accordion(
+                          title: _accordionTitle("دفاتر املاک"),
+                          onClick: () {
+                            _onClickAccordion(1);
+                          },
+                          open: openedItem == 1,
+                          content: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AccordionItem(
+                                onClick: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => EstatesMapScreen(),
+                                    ),
+                                  );
+                                },
+                                title: "دفاتر املاک اطراف من",
+                              ),
+                            ],
+                          ),
+                        ),
+                        Accordion(
+                          title: _accordionTitle("استعلامات"),
+                          onClick: () {
+                            _onClickAccordion(2);
+                          },
+                          open: openedItem == 2,
+                          content: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AccordionItem(
+                                  onClick: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => InquiryScreen()));
+                                  },
+                                  title: "استعلامات ثبتی"),
+                              AccordionItem(
+                                  onClick: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                InquiryContractScreen()));
+                                  },
+                                  title: "استعلامات قرارداد"),
+                            ],
+                          ),
+                        ),
+                        Accordion(
+                          title: _accordionTitle("محاسبات"),
+                          onClick: () {
+                            _onClickAccordion(3);
+                          },
+                          open: openedItem == 3,
+                          content: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AccordionItem(
+                                  onClick: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                CommissionCalculatorScreen()));
+                                  },
+                                  title: "محاسبه کمیسیون"),
+                              AccordionItem(
+                                  onClick: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                CommissionCalculatorScreen()));
+                                  },
+                                  title: "تبدیل رهن به اجاره"),
+                            ],
+                          ),
+                        ),
+                        Accordion(
+                          title: _accordionTitle("پشتیبانی"),
+                          onClick: () {
+                            _onClickAccordion(4);
+                          },
+                          open: openedItem == 4,
+                          content: BlocBuilder<GetGroupsBloc, GetGroupsState>(
+                              builder: _buildTicketAccordionContent),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 5),
+                          padding: EdgeInsets.only(bottom: 11, top: 11, right: 7),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: App.theme.dialogBackgroundColor,
+                          ),
+                          child: Text(
+                            "درباره سیراف و قوانین استفاده",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontFamily: "IranSansMedium",
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 5),
+                          padding: EdgeInsets.only(bottom: 11, top: 11, right: 7),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: App.theme.dialogBackgroundColor,
+                          ),
+                          child: Text(
+                            "معرفی برنامه به دیگران(${VERSION})",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontFamily: "IranSansMedium",
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 40),
                       ],
                     ),
                   ),
-                ],
-              ),
-              SizedBox(height: 10),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: ListView(
-                    children: [
-                      Accordion(
-                        title: _accordionTitle("فایل ها و در خواست ها"),
-                        onClick: () {
-                          _onClickAccordion(0);
-                        },
-                        open: openedItem == 0,
-                        content: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AccordionItem(
-                              onClick: () async {
-                                await doWithLogin(context, () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => MyFilesScreen(),
-                                    ),
-                                  );
-                                });
-
-                                getUser();
-                              },
-                              title: "فایل های من",
-                            ),
-                            AccordionItem(
-                              onClick: () async {
-                                await doWithLogin(context, () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => RequestFileScreen(),
-                                    ),
-                                  );
-                                });
-
-                                getUser();
-                              },
-                              title: "ثبت در خواست",
-                            ),
-                            AccordionItem(
-                              onClick: () async {
-                                await doWithLogin(context, () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => RequestListScreen(),
-                                    ),
-                                  );
-                                });
-
-                                getUser();
-                              },
-                              title: "در خواست های من",
-                            ),
-                            AccordionItem(
-                              onClick: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => FilesMapScreen(),
-                                  ),
-                                );
-                              },
-                              title: "ملک های اطراف من",
-                            ),
-                          ],
-                        ),
-                      ),
-                      Accordion(
-                        title: _accordionTitle("دفاتر املاک"),
-                        onClick: () {
-                          _onClickAccordion(1);
-                        },
-                        open: openedItem == 1,
-                        content: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AccordionItem(
-                              onClick: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => EstatesMapScreen(),
-                                  ),
-                                );
-                              },
-                              title: "دفاتر املاک اطراف من",
-                            ),
-                          ],
-                        ),
-                      ),
-                      Accordion(
-                        title: _accordionTitle("استعلامات"),
-                        onClick: () {
-                          _onClickAccordion(2);
-                        },
-                        open: openedItem == 2,
-                        content: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AccordionItem(
-                                onClick: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => InquiryScreen()));
-                                },
-                                title: "استعلامات ثبتی"),
-                            AccordionItem(
-                                onClick: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) =>
-                                              InquiryContractScreen()));
-                                },
-                                title: "استعلامات قرارداد"),
-                          ],
-                        ),
-                      ),
-                      Accordion(
-                        title: _accordionTitle("محاسبات"),
-                        onClick: () {
-                          _onClickAccordion(3);
-                        },
-                        open: openedItem == 3,
-                        content: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AccordionItem(
-                                onClick: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) =>
-                                              CommissionCalculatorScreen()));
-                                },
-                                title: "محاسبه کمیسیون"),
-                            AccordionItem(
-                                onClick: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) =>
-                                              CommissionCalculatorScreen()));
-                                },
-                                title: "تبدیل رهن به اجاره"),
-                          ],
-                        ),
-                      ),
-                      Accordion(
-                        title: _accordionTitle("پشتیبانی"),
-                        onClick: () {
-                          _onClickAccordion(4);
-                        },
-                        open: openedItem == 4,
-                        content: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AccordionItem(
-                                onClick: () {
-                                  doWithLogin(
-                                    context,
-                                    () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              TicketListScreen(),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                title: "تیکت های من"),
-                            AccordionItem(
-                                onClick: () {
-                                  doWithLogin(
-                                    context,
-                                    () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              TicketCreationScreen(),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                title: "پشتیبانی ثبت فایل و درخواست"),
-                            AccordionItem(
-                                onClick: () {
-                                  doWithLogin(
-                                    context,
-                                    () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              TicketCreationScreen(),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                title: "پشتیبانی فروش و بازاریابی"),
-                            AccordionItem(
-                                onClick: () {
-                                  doWithLogin(
-                                    context,
-                                    () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              TicketCreationScreen(),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                title: "پشتیبانی فنی"),
-                            AccordionItem(
-                                onClick: () {
-                                  doWithLogin(
-                                    context,
-                                    () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              TicketCreationScreen(),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                title: "گزارشات و پیشنهادات"),
-                            AccordionItem(
-                                onClick: () {
-                                  doWithLogin(
-                                    context,
-                                    () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              TicketCreationScreen(),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                title: "در خواست همکاری"),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(bottom: 5),
-                        padding: EdgeInsets.only(bottom: 11, top: 11, right: 7),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: App.theme.dialogBackgroundColor,
-                        ),
-                        child: Text(
-                          "درباره سیراف و قوانین استفاده",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontFamily: "IranSansMedium",
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(bottom: 5),
-                        padding: EdgeInsets.only(bottom: 11, top: 11, right: 7),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: App.theme.dialogBackgroundColor,
-                        ),
-                        child: Text(
-                          "معرفی برنامه به دیگران(${VERSION})",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontFamily: "IranSansMedium",
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 40),
-                    ],
-                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -575,5 +485,80 @@ class _MenuScreenState extends State<MenuScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildTicketAccordionContent(
+      BuildContext context, GetGroupsState state) {
+    if (state is GetGroupsLoadedState) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+              AccordionItem(
+                onClick: () {
+                  doWithLogin(
+                    context,
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => TicketListScreen(),
+                        ),
+                      );
+                    },
+                  );
+                },
+                title: "تیکت های من",
+              ),
+            ] +
+            state.groups.map<Widget>((e) {
+              return AccordionItem(
+                onClick: () {
+                  doWithLogin(
+                    context,
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => TicketCreationScreen(
+                            group: e,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                title: e.name ?? "",
+              );
+            }).toList(),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        AccordionItem(
+          onClick: () {
+            doWithLogin(
+              context,
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => TicketListScreen(),
+                  ),
+                );
+              },
+            );
+          },
+          title: "تیکت های من",
+        ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    getGroupsBloc.close();
   }
 }

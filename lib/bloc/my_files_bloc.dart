@@ -49,7 +49,7 @@ class MyFilesBloc extends Bloc<MyFilesEvent, MyFilesState> {
     try {
       response = await http2.getWithToken(
         getFileUrl(
-          "file/myFiles" +
+          "file/myFiles/" +
               (event.sort?.isNotEmpty ?? false ? "?sort=${event.sort!}" : ""),
         ),
       );

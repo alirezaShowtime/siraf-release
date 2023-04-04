@@ -25,9 +25,6 @@ void main() async {
         BlocProvider<HSBloc>(
           create: (_) => HSBloc(),
         ),
-        BlocProvider<LoginStatus>(
-          create: (_) => LoginStatus(),
-        ),
         BlocProvider<CategoriesBloc>(
           create: (_) => CategoriesBloc(),
         ),

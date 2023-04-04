@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 
 import '../themes.dart';
@@ -55,14 +56,14 @@ class _FieldDialog extends State<FieldDialog> {
                         border: InputBorder.none,
                         hintText: widget.hintText,
                         hintStyle: TextStyle(
-                          color: Themes.textGrey,
+                          color: App.theme.tooltipTheme.textStyle?.color,
                           fontSize: 13,
                           fontFamily: "IranSans",
                         ),
                       ),
                       inputFormatters: widget.inputFormatters,
                       style: TextStyle(
-                        color: Themes.text,
+                        color: App.theme.textTheme.bodyLarge?.color,
                         fontSize: 13,
                         fontFamily: "IranSansMedium",
                       ),
@@ -78,7 +79,7 @@ class _FieldDialog extends State<FieldDialog> {
                   child: Text(
                     widget.helperText ?? "",
                     style: TextStyle(
-                      color: Themes.text,
+                      color: App.theme.textTheme.bodyLarge?.color,
                       fontSize: 11,
                       fontFamily: "IranSansMedium",
                     ),
