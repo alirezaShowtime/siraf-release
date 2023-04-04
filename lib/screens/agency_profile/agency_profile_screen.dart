@@ -5,10 +5,16 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/bloc/agency_profile/agency_profile_bloc.dart';
 import 'package:siraf3/bloc/agency_profile_comment/agency_profile_comment_rate_bloc.dart';
+import 'package:siraf3/bloc/files_bloc.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
+import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/consultant_info.dart';
 import 'package:siraf3/models/estate_profile.dart' as estateProfileModel;
 import 'package:siraf3/models/file.dart';
+import 'package:siraf3/models/filter_data.dart';
+import 'package:siraf3/screens/file_screen.dart';
+import 'package:siraf3/screens/filter_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/avatar.dart';
@@ -41,59 +47,12 @@ class AgencyProfileScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _AgencyProfileScreen();
 
   int estateId;
+  String? estateName;
 
-  AgencyProfileScreen({this.estateId = 6});
+  AgencyProfileScreen({required this.estateId, this.estateName});
 }
 
 class _AgencyProfileScreen extends State<AgencyProfileScreen> with SingleTickerProviderStateMixin {
-  List<File> list = [
-    File(
-      id: 342,
-      name: "hello owlrs",
-      description: "fdslfdsfkp[dk dsolpfdjs fiod",
-      city: "تهران",
-      publishedAgo: "یک هفته پیش",
-      propertys: [
-        Property(
-          name: "heloweds",
-          value: "fkds",
-          weightList: 1,
-          list: true,
-        ),
-        Property(
-          name: "heloweds",
-          value: "fkds",
-          weightList: 2,
-          list: true,
-        ),
-        Property(
-          name: "heloweds",
-          value: "fkds",
-          weightList: 3,
-          list: true,
-        ),
-      ],
-      fullCategory: FullCategory(
-        fullCategory: "fdskofk ",
-        name: "dfsofijdsf ",
-        id: 1,
-        image: "fdjspofkdspofk dsf",
-      ),
-      favorite: true,
-      // images: [
-      //   Images(
-      //       idm : "",
-      //       createDatem : "",
-      //       pathm : "",
-      //       statusm : "",
-      //       weightm : "",
-      //       namem : "",
-      //       fileIdm : "",
-      //   ),
-      // ],
-    ),
-  ];
-
   bool showComment = false;
 
   bool moreDetail = false;
@@ -118,6 +77,10 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen> with SingleTickerP
 
   estateProfileModel.EstateProfile? estateProfile;
 
+  FilesBloc filesBloc = FilesBloc();
+  FilesBloc _moreFilesBloc = FilesBloc();
+  late FilterData filterData;
+
   @override
   void initState() {
     super.initState();
@@ -126,36 +89,46 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen> with SingleTickerP
     collopsAnimation = CurvedAnimation(parent: collopsController, curve: Curves.fastOutSlowIn);
 
     collopsController.addListener(_collopsControllerListener);
+
+    setState(() {
+      title = widget.estateName ?? title;
+    });
+
+    setFilterData();
   }
 
   @override
   void dispose() {
     super.dispose();
+    filesBloc.close();
     collopsController.removeListener(_collopsControllerListener);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: appBar(),
-      body: BlocConsumer<AgencyProfileBloc, AgencyProfileState>(
-        listener: (context, state) {
-          if (state is AgencyProfileSuccessState) {
-            setState(() {
-              title = state.estateProfile.name!;
-              estateProfile = state.estateProfile;
-            });
-          }
-        },
-        bloc: bloc..add(AgencyProfileLoadEvent(widget.estateId)),
-        builder: (context, state) {
-          scaffoldContext = context;
-          if (state is AgencyProfileInitial) return Center(child: Loading());
-          if (state is AgencyProfileErrorState) return retryWidget(context, state.message);
-          if (state is AgencyProfileSuccessState) return profile(context, state.estateProfile);
-          return Container();
-        },
+    return BlocProvider(
+      create: (context) => filesBloc,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: appBar(),
+        body: BlocConsumer<AgencyProfileBloc, AgencyProfileState>(
+          listener: (context, state) {
+            if (state is AgencyProfileSuccessState) {
+              setState(() {
+                title = state.estateProfile.name!;
+                estateProfile = state.estateProfile;
+              });
+            }
+          },
+          bloc: bloc..add(AgencyProfileLoadEvent(widget.estateId)),
+          builder: (context, state) {
+            scaffoldContext = context;
+            if (state is AgencyProfileInitial) return Center(child: Loading());
+            if (state is AgencyProfileErrorState) return retryWidget(context, state.message);
+            if (state is AgencyProfileSuccessState) return profile(context, state.estateProfile);
+            return Container();
+          },
+        ),
       ),
     );
   }
@@ -168,7 +141,6 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen> with SingleTickerP
 
   AppBar appBar() {
     return AppBar(
-      backgroundColor: Themes.appBar,
       elevation: 0.7,
       automaticallyImplyLeading: false,
       leading: MyBackButton(),
@@ -177,8 +149,9 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen> with SingleTickerP
       actions: [
         IconButton(onPressed: share, icon: icon(Icons.share_rounded)),
         MyPopupMenuButton(
-          itemBuilder: (_) => [
-            popupMenuItemWithIcon(title: "گزارش تخلف", onTap: report),
+          itemBuilder: (_) =>
+          [
+            popupMenuItem(title: "گزارش تخلف", onTap: report),
           ],
         ),
       ],
@@ -198,8 +171,8 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen> with SingleTickerP
               Text(
                 title,
                 style: TextStyle(
-                  color: Themes.text,
                   fontWeight: FontWeight.bold,
+                  color: App.theme.textTheme.bodyLarge?.color,
                   fontSize: 11,
                 ),
               ),
@@ -207,7 +180,7 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen> with SingleTickerP
               Text(
                 value,
                 style: TextStyle(
-                  color: Themes.textGrey,
+                  color: App.theme.tooltipTheme.textStyle?.color,
                   fontSize: 10,
                 ),
               ),
@@ -269,4 +242,16 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen> with SingleTickerP
       showSearchBarWidget = true;
     }
   }
+
+  List<City> cities = [];
+
+  void setFilterData() async {
+    cities = await City.getList();
+
+    filterData = FilterData(cityIds: cities.map<int>((e) => e.id!).toList(), estateId: widget.estateId);
+    getFiles();
+  }
+
+  List<File> files = [];
+
 }

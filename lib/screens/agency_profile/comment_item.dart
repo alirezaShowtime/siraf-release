@@ -72,13 +72,13 @@ extension CommentItem on _AgencyProfileScreen {
                   MyTextIconButton(
                     onPressed: () => like(comment),
                     icon: icon(Icons.thumb_up_alt_outlined, size: 15),
-                    text: (comment.likeCount ?? 0).toString(),
+                    text: (comment.likeCount ?? 0) > 0 ? (comment.likeCount ?? 0).toString() : "",
                     rippleColor: Themes.text,
                   ),
                   MyTextIconButton(
                     onPressed: () => dislike(comment),
                     icon: icon(Icons.thumb_down_alt_outlined, size: 15),
-                    text: (comment.countDisLike ?? 0).toString(),
+                    text: (comment.countDisLike ?? 0) > 0 ? (comment.countDisLike ?? 0).toString() : "",
                     rippleColor: Themes.text,
                   ),
                 ],

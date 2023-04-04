@@ -9,8 +9,28 @@ extension EventListener on _AgencyProfileScreen {
     //todo: implement event listener
   }
 
-  void openFileBox() {
-    //todo: implement event listener
+  void openFileBox() async {
+    var result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => FilterScreen(
+          originalFilterData: FilterData(
+              cityIds: cities.map<int>((e) => e.id!).toList()),
+          filterData: filterData,
+        ),
+      ),
+    );
+
+    if (result != null && result is FilterData) {
+      setState(() {
+        result.estateId = widget.estateId;
+        filterData = result;
+      });
+
+      print(filterData.toQueryString());
+
+      getFiles();
+    }
   }
 
   void like(Comment comment) {

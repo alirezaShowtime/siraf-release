@@ -216,6 +216,24 @@ bool isValidNumberPhone(String numberPhone) {
   return numberPhone.length == 11;
 }
 
+
+PopupMenuItem<String> popupMenuItem({
+  required String title,
+  Function()? onTap,
+}) {
+  return PopupMenuItem<String>(
+    onTap: onTap,
+    child: Text(
+      title,
+      style: TextStyle(
+        color: App.theme.textTheme.bodyLarge?.color,
+        fontSize: 11,
+      ),
+    )
+  );
+}
+
+
 PopupMenuItem<String> popupMenuItemWithIcon({
   required String title,
   required IconData iconDate,
@@ -230,7 +248,7 @@ PopupMenuItem<String> popupMenuItemWithIcon({
         Text(
           title,
           style: TextStyle(
-            color: Themes.text,
+            color: App.theme.textTheme.bodyLarge?.color,
             fontSize: 11,
           ),
         )

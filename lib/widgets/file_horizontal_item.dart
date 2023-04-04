@@ -44,9 +44,9 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
           BoxDecoration(color: App.theme.dialogBackgroundColor, boxShadow: [
         BoxShadow(
           color: App.theme.backgroundColor,
-          blurRadius: 2,
-          spreadRadius: 2,
-          offset: Offset(0, -3),
+          blurRadius: 1,
+          spreadRadius: 1,
+          offset: Offset(0, -1),
         ),
       ]),
       padding: EdgeInsets.all(10),

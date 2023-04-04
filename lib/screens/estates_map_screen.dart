@@ -356,7 +356,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
               contentPadding: EdgeInsets.all(0),
               content: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: App.theme.dialogBackgroundColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 height: 170,
@@ -686,7 +686,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => AgencyProfileScreen(),
+                                    builder: (_) => AgencyProfileScreen(estateId: estate.id!, estateName: estate.name,),
                                   ),
                                 );
                               },

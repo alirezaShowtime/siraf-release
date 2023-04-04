@@ -9,7 +9,7 @@ extension Profile on _AgencyProfileScreen {
           Container(
             height: 170,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-            color: Colors.white,
+            color: App.theme.dialogBackgroundColor,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -26,14 +26,13 @@ extension Profile on _AgencyProfileScreen {
                           Text(
                             estateProfile.name ?? "",
                             style: TextStyle(
-                              color: Themes.text,
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
                             estateProfile.guildCode ?? "",
-                            style: TextStyle(color: Themes.text, fontSize: 11),
+                            style: TextStyle(fontSize: 11),
                           ),
                           StaticStar(rating: estateProfile.rate ?? 0),
                         ],
@@ -58,11 +57,12 @@ extension Profile on _AgencyProfileScreen {
                           ),
                         ),
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               estateProfile.bio ?? "",
                               maxLines: 2,
-                              style: TextStyle(color: Themes.textGrey, fontSize: 11),
+                              style: TextStyle(color: App.theme.tooltipTheme.textStyle?.color, fontSize: 11),
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -72,7 +72,6 @@ extension Profile on _AgencyProfileScreen {
                                   child: Text(
                                     moreDetail ? "کمتر" : "بیشتر...",
                                     style: TextStyle(
-                                      color: Themes.text,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 9,
                                     ),
@@ -96,7 +95,6 @@ extension Profile on _AgencyProfileScreen {
                                   child: Text(
                                     !showComment ? "نمایش نظرات (${estateProfile.comment?.length ?? 0})" : "فایل های دفتر املاک",
                                     style: TextStyle(
-                                      color: Themes.text,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 9,
                                     ),
@@ -118,7 +116,7 @@ extension Profile on _AgencyProfileScreen {
             axis: Axis.vertical,
             child: profileDetail(estateProfile),
           ),
-          if (showSearchBarWidget) searchBar(estateProfile.name ?? ""),
+          if (!showComment) searchBar(estateProfile.name ?? ""),
           if (showComment)
             Expanded(
               child: ListView.builder(
@@ -126,18 +124,76 @@ extension Profile on _AgencyProfileScreen {
                 itemBuilder: (context, i) {
                   if (i == 0) return addCommentWidget(estateProfile.id!);
 
-                  return commentItem(estateProfile.comment![i - 0]);
+                  return commentItem(estateProfile.comment![i - 1]);
                 },
               ),
             ),
           if (!showComment)
+            // Expanded(
+            //   child: ListView.builder(
+            //     itemCount: list.length,
+            //     itemBuilder: (context, i) => fileItem(list[i]),
+            //   ),
+            // ),
             Expanded(
-              child: ListView.builder(
-                itemCount: list.length,
-                itemBuilder: (context, i) => fileItem(list[i]),
+                child: BlocBuilder<FilesBloc, FilesState>(
+              builder: _buildEstateFilesBloc,
+            )),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEstateFilesBloc(BuildContext context, FilesState state) {
+    if (state is FilesInitState) return Container();
+
+    if (state is FilesLoadingState)
+      return Center(
+        child: Loading(),
+      );
+
+    if (state is FilesErrorState) {
+      return Center(
+        child: TryAgain(
+          onPressed: getFiles,
+          message: state.response != null ? jDecode(state.response!.body)['message'] : null,
+        ),
+      );
+    }
+
+    state = FilesLoadedState(files: (state as FilesLoadedState).files);
+
+    files = state.files;
+
+    return ListView(
+      children: files
+          .map<Widget>(
+            (e) => GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => FileScreen(id: e.id!),
+                  ),
+                );
+              },
+              child: Padding(
+                padding: EdgeInsets.only(top: files.first == e ? 0 : 5),
+                child: FileHorizontalItem(file: e),
               ),
             ),
-        ],
+          )
+          .toList(),
+    );
+  }
+
+  getFiles() {
+    if (filesBloc.isClosed) {
+      filesBloc = FilesBloc();
+    }
+    filesBloc.add(
+      FilesLoadEvent(
+        filterData: filterData,
       ),
     );
   }

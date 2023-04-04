@@ -151,7 +151,7 @@ class _AgentProfileScreen extends State<AgentProfileScreen> with SingleTickerPro
         listener: (context, state) {
           if (state is AgentProfileSuccessState) {
             setState(() {
-              consultantInfo = state.consultantInfo!;
+              consultantInfo = state.consultantInfo;
               title = state.consultantInfo.name!;
             });
           }

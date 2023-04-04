@@ -6,10 +6,10 @@ extension SearchBar on _AgencyProfileScreen {
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: App.theme.dialogBackgroundColor,
         border: Border(
-          bottom: BorderSide(color: Colors.grey.shade200, width: 1),
-          top: BorderSide(color: Colors.grey.shade200, width: 1),
+          bottom: BorderSide(color: App.isDark ? Colors.grey.shade900 : Colors.grey.shade200, width: 1),
+          top: BorderSide(color: App.isDark ? Colors.grey.shade900 : Colors.grey.shade200, width: 1),
         ),
       ),
       child: Row(
@@ -18,7 +18,7 @@ extension SearchBar on _AgencyProfileScreen {
             child: Container(
               decoration: BoxDecoration(
                 border: Border(
-                  right: BorderSide(color: Themes.text, width: 1),
+                  right: BorderSide(color: App.isDark ? Themes.textGrey : Themes.text, width: 1),
                 ),
               ),
               child: TextField2(
@@ -35,7 +35,7 @@ extension SearchBar on _AgencyProfileScreen {
                   contentPadding: EdgeInsets.zero,
                 ),
                 style: TextStyle(
-                  color: Themes.text,
+                  color: App.theme.textTheme.bodyLarge?.color,
                   fontSize: 11,
                 ),
               ),

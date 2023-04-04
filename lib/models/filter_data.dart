@@ -11,6 +11,8 @@ class FilterData {
   bool? hasTour;
   Filters? filters;
   String? search;
+  int? estateId;
+  int? consultantId;
 
   FilterData({
     this.category,
@@ -20,6 +22,8 @@ class FilterData {
     this.hasTour,
     this.filters,
     this.search,
+    this.estateId,
+    this.consultantId,
   });
 
   String toQueryString() {
@@ -43,6 +47,14 @@ class FilterData {
 
     if (hasTour == true) {
       str += getDelimiter(str) + "hasTour=true";
+    }
+
+    if (estateId != null) {
+      str += getDelimiter(str) + "estateId=$estateId";
+    }
+
+    if (consultantId != null) {
+      str += getDelimiter(str) + "consultantId=$consultantId";
     }
 
     if (search != null && search!.trim().isNotEmpty) {

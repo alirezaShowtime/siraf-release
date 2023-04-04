@@ -26,7 +26,7 @@ class _Avatar extends State<Avatar> {
         image: widget.image ?? NetworkImage(widget.imagePath!),
         height: widget.size,
         width: widget.size,
-        fit: BoxFit.fill,
+        fit: BoxFit.cover,
         loadingBuilder: (context, child, progressEvent) {
           if (progressEvent == null) return child;
           return widget.loadingWidget ?? loadingWidget();

@@ -37,8 +37,11 @@ extension AddCommentWidget on _AgencyProfileScreen {
             minLines: 4,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(10),
-              border: OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: App.theme.primaryColor, width: 1.5)
+              ),
               labelText: "توضیحات",
+              labelStyle: TextStyle(color: App.theme.primaryColor),
             ),
           ),
           Align(
