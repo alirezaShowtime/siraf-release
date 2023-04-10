@@ -74,7 +74,7 @@ class _IntroScreenState extends State<IntroScreen> {
             rtl: true,
             globalBackgroundColor: Colors.white,
             globalHeader: Container(
-              padding: EdgeInsets.only(right: 15, top: MediaQuery.of(context).viewPadding.top + 15),
+              padding: EdgeInsets.only(right: 15, top: 10),
               child: Text(
                 "${currentPage}/6",
                 style: TextStyle(
