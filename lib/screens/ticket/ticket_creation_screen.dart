@@ -184,6 +184,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
 
       dismissLoadingDialog();
       if (event.response?.data != null) {
+        print(event.response?.data);
         try {
           message = event.response!.data!['message'];
         } on Exception catch (e) {
