@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:http/http.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
@@ -48,7 +46,7 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
 
       emit(
         BookmarkLoadedState(
-          data: FavoriteFile.fromList(json['data']),
+          data: FavoriteFile.fromList(json['data'] == "" ? [] : json['data']),
         ),
       );
     } else {

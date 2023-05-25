@@ -349,7 +349,7 @@ class _FileScreenState extends State<FileScreen> {
                 ),
               ),
               Text(
-                file.publishedAgo! + ' | ' + file.city!,
+                (file.publishedAgo ?? "") + ' | ' + (file.city ?? ""),
                 style: TextStyle(
                   color: App.theme.tooltipTheme.textStyle?.color,
                   fontFamily: "IranSans",

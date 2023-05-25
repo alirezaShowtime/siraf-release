@@ -47,8 +47,9 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
         scrollPhysics: const BouncingScrollPhysics(),
         builder: (BuildContext context, int index) {
           return PhotoViewGalleryPageOptions(
-            maxScale: 4.0,
-            minScale: 0.5,
+            // maxScale: 4.0,
+            // minScale: 0.5,
+            minScale: 0.1,
             imageProvider: NetworkImage(widget.file.media!.image![index].path!),
             initialScale: PhotoViewComputedScale.contained,
             heroAttributes: PhotoViewHeroAttributes(

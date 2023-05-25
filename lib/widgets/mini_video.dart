@@ -1,33 +1,43 @@
 import 'dart:async';
 
+import 'package:siraf3/screens/video_screen.dart';
+import 'package:siraf3/themes.dart';
+import 'package:siraf3/widgets/loading.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:siraf3/config.dart';
 
 class MiniVideo extends StatefulWidget {
   ImageProvider<Object> thumbnail;
   BoxFit? imageFit;
   String videoUrl;
+  bool autoReverse;
+  Widget? playIcon;
+  double? width;
 
   MiniVideo(
       {required this.thumbnail,
       required this.videoUrl,
       this.imageFit,
+      this.autoReverse = true,
+      this.playIcon,
+      this.width,
       super.key});
 
   @override
-  State<MiniVideo> createState() => _MiniVideoState();
+  State<MiniVideo> createState() => MiniVideoState();
 }
 
-class _MiniVideoState extends State<MiniVideo> {
+class MiniVideoState extends State<MiniVideo> {
   late VideoPlayerController _controller;
+
+  VideoPlayerController getVideoController() => _controller;
 
   @override
   void initState() {
     super.initState();
 
-    _controller = VideoPlayerController.network(
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4');
+    _controller = VideoPlayerController.network(widget.videoUrl);
 
     _controller.initialize().then(_onLinkLoaded).onError((error, stackTrace) {
       print(error);
@@ -37,59 +47,90 @@ class _MiniVideoState extends State<MiniVideo> {
   @override
   Widget build(BuildContext context) {
     return _controller.value.isInitialized
-        ? Stack(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  if (_controller.value.isPlaying) {
-                    _controller.pause();
-                  } else {
-                    _controller.play();
-                  }
-                },
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    child: VideoPlayer(_controller),
-                  ),
-                ),
-              ),
-              if (!_controller.value.isPlaying)
+        ? SizedBox(
+            height: widget.width != null
+                ? _controller.value.size.height /
+                    _controller.value.size.width *
+                    widget.width!
+                : _controller.value.size.height,
+            width: widget.width ?? _controller.value.size.width,
+            child: Stack(
+              children: [
                 GestureDetector(
                   onTap: () {
-                    _controller.play();
+                    if (_controller.value.isPlaying) {
+                      _controller.pause();
+                    } else {
+                      _controller.play();
+                    }
                   },
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Icon(
-                      Icons.play_arrow_outlined,
-                      color: Colors.white,
-                      size: 60,
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: VideoPlayer(_controller),
                     ),
                   ),
                 ),
-            ],
+                if (!_controller.value.isPlaying)
+                  Align(
+                    alignment: Alignment.center,
+                    child: GestureDetector(
+                      onTap: () {
+                        _controller.play();
+                      },
+                      child: widget.playIcon ??
+                          Stack(
+                            children: [
+                              Icon(
+                                CupertinoIcons.play_fill,
+                                size: 44,
+                                color: Themes.primary,
+                              ),
+                              Icon(
+                                CupertinoIcons.play_fill,
+                                size: 40,
+                                color: Themes.iconLight,
+                              ),
+                            ],
+                          ),
+                    ),
+                  ),
+                Positioned(
+                  left: 5,
+                  bottom: 5,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              VideoScreen(videoUrl: widget.videoUrl),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Themes.secondary2.withOpacity(0.8),
+                      ),
+                      child: Icon(
+                        Icons.fullscreen_outlined,
+                        color: Themes.iconLight,
+                        size: 30,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
           )
-        : Stack(
-            children: [
-              Image(
-                image: widget.thumbnail,
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                fit: widget.imageFit ?? BoxFit.cover,
-                errorBuilder: (_, _1, _2) {
-                  return Image(
-                    image: AssetImage(IMAGE_NOT_AVAILABLE),
-                    width: MediaQuery.of(context).size.width,
-                    fit: widget.imageFit ?? BoxFit.cover,
-                    height: MediaQuery.of(context).size.height,
-                    color: Color(0x757f8c8d),
-                  );
-                },
-              ),
-            ],
+        : Center(
+            child: Loading(
+              size: 20.0,
+              backgroundColor: Colors.transparent,
+            ),
           );
   }
 
@@ -100,11 +141,19 @@ class _MiniVideoState extends State<MiniVideo> {
       setState(() {
         if (!_controller.value.isPlaying &&
             _controller.value.isInitialized &&
-            (_controller.value.duration == _controller.value.position)) {
+            (_controller.value.duration == _controller.value.position &&
+                widget.autoReverse)) {
           _controller.seekTo(Duration(seconds: 0));
           _controller.play();
         }
       });
     });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+
+    super.dispose();
   }
 }
