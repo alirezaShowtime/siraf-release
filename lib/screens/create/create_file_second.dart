@@ -755,7 +755,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
 
   void _addMedia() async {
     FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: true);
+        await FilePicker.platform.pickFiles(allowMultiple: true,
+        allowedExtensions: image_extensions + video_extensions + ["zip"], type: FileType.custom);
 
     if (result != null) {
       for (PlatformFile pFile in result.files) {
