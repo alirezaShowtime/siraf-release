@@ -1211,7 +1211,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                         break;
                     }
                   },
-                  icon: Stack(
+                  child: Stack(
                     children: <Widget>[
                       if (toolbarOpacity == 0)
                         Positioned(

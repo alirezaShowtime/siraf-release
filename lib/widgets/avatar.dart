@@ -1,3 +1,4 @@
+import 'package:siraf3/widgets/my_image.dart';
 import 'package:flutter/material.dart';
 
 class Avatar extends StatefulWidget {
@@ -7,13 +8,19 @@ class Avatar extends StatefulWidget {
   String? imagePath;
   double size;
   Widget? loadingWidget;
+  Widget? errorWidget;
   ImageProvider? image;
+  ImageProvider? errorImage;
+  ImageProvider? loadingImage;
 
   Avatar({
     required this.size,
     this.loadingWidget,
     this.imagePath,
     this.image,
+    this.errorWidget,
+    this.loadingImage,
+    this.errorImage,
   });
 }
 
@@ -22,24 +29,17 @@ class _Avatar extends State<Avatar> {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(widget.size),
-      child: Image(
+      child: MyImage(
         image: widget.image ?? NetworkImage(widget.imagePath!),
         height: widget.size,
         width: widget.size,
+        borderRadius: BorderRadius.circular(double.infinity),
         fit: BoxFit.cover,
-        loadingBuilder: (context, child, progressEvent) {
-          if (progressEvent == null) return child;
-          return widget.loadingWidget ?? loadingWidget();
-        },
+        errorWidget: widget.errorWidget,
+        loadingWidget: widget.loadingWidget,
+        errorImage: widget.errorImage,
+        loadingImage: widget.loadingImage,
       ),
-    );
-  }
-
-  Widget loadingWidget() {
-    return Container(
-      height: widget.size,
-      width: widget.size,
-      color: Colors.grey.shade100,
     );
   }
 }

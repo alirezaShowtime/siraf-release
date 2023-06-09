@@ -15,7 +15,7 @@ class GetGroupsInitState extends GetGroupsState {}
 class GetGroupsLoadingState extends GetGroupsState {}
 
 class GetGroupsLoadedState extends GetGroupsState {
-  List<Group> groups;
+  List<GroupModel> groups;
 
   GetGroupsLoadedState({required this.groups});
 }
@@ -48,7 +48,7 @@ class GetGroupsBloc extends Bloc<GetGroupsEvent, GetGroupsState> {
     // }
 
     emit(
-      GetGroupsLoadedState(groups: await Group.getList()),
+      GetGroupsLoadedState(groups: await GroupModel.getList()),
     );
   }
 }

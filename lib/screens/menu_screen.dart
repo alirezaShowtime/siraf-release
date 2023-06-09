@@ -88,8 +88,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         children: [
                           ClipRRect(
                             child: Image(
-                              image:
-                                  NetworkImage(getImageUrl(user?.avatar ?? "")),
+                              image: NetworkImage(getImageUrl(user?.avatar ?? "")),
                               // todo use dynamic avatar link
                               errorBuilder: (context, error, stackTrace) => Image(
                                 image: AssetImage("assets/images/profile.png"),
@@ -112,14 +111,12 @@ class _MenuScreenState extends State<MenuScreen> {
                                     builder: (_) => LoginScreen(),
                                   ),
                                 );
-    
+
                                 getUser();
                               }
                             },
                             child: Text(
-                              user?.token != null
-                                  ? (user?.name ?? "")
-                                  : "ورود به حساب",
+                              user?.token != null ? (user?.name ?? "") : "ورود به حساب",
                               style: TextStyle(color: Colors.white, fontSize: 15),
                             ),
                           ),
@@ -150,12 +147,8 @@ class _MenuScreenState extends State<MenuScreen> {
                           ),
                           IconButton(
                             onPressed: () async {
-                              await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) =>
-                                          SettingsScreen(user: user)));
-    
+                              await Navigator.push(context, MaterialPageRoute(builder: (_) => SettingsScreen(user: user)));
+
                               getUser();
                             },
                             icon: Icon(
@@ -175,23 +168,19 @@ class _MenuScreenState extends State<MenuScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            decoration: BoxDecoration(
-                                color: App.theme.dialogBackgroundColor,
-                                borderRadius: BorderRadius.circular(5)),
+                            decoration: BoxDecoration(color: App.theme.dialogBackgroundColor, borderRadius: BorderRadius.circular(5)),
                             child: Wrap(
                               children: [
                                 _item(
                                   title: "پیام ها",
                                   icon: CupertinoIcons.envelope,
                                   onClick: () {},
-                                  padding: EdgeInsets.only(
-                                      right: 30, left: 15, top: 20, bottom: 20),
+                                  padding: EdgeInsets.only(right: 30, left: 15, top: 20, bottom: 20),
                                 ),
                                 _item(
                                   title: "ثبت فایل",
                                   icon: CupertinoIcons.add,
-                                  padding: EdgeInsets.only(
-                                      right: 15, left: 15, top: 20, bottom: 20),
+                                  padding: EdgeInsets.only(right: 15, left: 15, top: 20, bottom: 20),
                                   onClick: () async {
                                     await doWithLogin(context, () {
                                       Navigator.push(
@@ -201,15 +190,14 @@ class _MenuScreenState extends State<MenuScreen> {
                                         ),
                                       );
                                     });
-    
+
                                     getUser();
                                   },
                                 ),
                                 _item(
                                   title: "نشان ها",
                                   icon: CupertinoIcons.bookmark,
-                                  padding: EdgeInsets.only(
-                                      right: 15, left: 30, top: 20, bottom: 20),
+                                  padding: EdgeInsets.only(right: 15, left: 30, top: 20, bottom: 20),
                                   onClick: () {
                                     doWithLogin(context, () {
                                       Navigator.push(
@@ -254,7 +242,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                       ),
                                     );
                                   });
-    
+
                                   getUser();
                                 },
                                 title: "فایل های من",
@@ -269,7 +257,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                       ),
                                     );
                                   });
-    
+
                                   getUser();
                                 },
                                 title: "ثبت در خواست",
@@ -284,7 +272,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                       ),
                                     );
                                   });
-    
+
                                   getUser();
                                 },
                                 title: "در خواست های من",
@@ -337,19 +325,12 @@ class _MenuScreenState extends State<MenuScreen> {
                             children: [
                               AccordionItem(
                                   onClick: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) => InquiryScreen()));
+                                    Navigator.push(context, MaterialPageRoute(builder: (_) => InquiryScreen()));
                                   },
                                   title: "استعلامات ثبتی"),
                               AccordionItem(
                                   onClick: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) =>
-                                                InquiryContractScreen()));
+                                    Navigator.push(context, MaterialPageRoute(builder: (_) => InquiryContractScreen()));
                                   },
                                   title: "استعلامات قرارداد"),
                             ],
@@ -366,20 +347,12 @@ class _MenuScreenState extends State<MenuScreen> {
                             children: [
                               AccordionItem(
                                   onClick: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) =>
-                                                CommissionCalculatorScreen()));
+                                    Navigator.push(context, MaterialPageRoute(builder: (_) => CommissionCalculatorScreen()));
                                   },
                                   title: "محاسبه کمیسیون"),
                               AccordionItem(
                                   onClick: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) =>
-                                                CommissionCalculatorScreen()));
+                                    Navigator.push(context, MaterialPageRoute(builder: (_) => CommissionCalculatorScreen()));
                                   },
                                   title: "تبدیل رهن به اجاره"),
                             ],
@@ -391,8 +364,7 @@ class _MenuScreenState extends State<MenuScreen> {
                             _onClickAccordion(4);
                           },
                           open: openedItem == 4,
-                          content: BlocBuilder<GetGroupsBloc, GetGroupsState>(
-                              builder: _buildTicketAccordionContent),
+                          content: BlocBuilder<GetGroupsBloc, GetGroupsState>(builder: _buildTicketAccordionContent),
                         ),
                         Container(
                           margin: EdgeInsets.only(bottom: 5),
@@ -487,8 +459,7 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  Widget _buildTicketAccordionContent(
-      BuildContext context, GetGroupsState state) {
+  Widget _buildTicketAccordionContent(BuildContext context, GetGroupsState state) {
     if (state is GetGroupsLoadedState) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,

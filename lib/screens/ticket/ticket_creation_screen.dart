@@ -1,37 +1,37 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/ticket/create_ticket_bloc.dart';
 import 'package:siraf3/bloc/ticket/get_groups_bloc.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/main.dart';
 import 'package:siraf3/models/group.dart';
-import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/screens/ticket/ticket_list_screen.dart';
+import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/block_btn.dart';
-import 'package:siraf3/widgets/field_dialog.dart';
 import 'package:siraf3/widgets/list_dialog.dart';
 import 'package:siraf3/widgets/loading.dart';
-import 'package:siraf3/widgets/section.dart';
 import 'package:siraf3/widgets/simple_app_bar.dart';
-import 'package:siraf3/dialog.dart';
+import 'package:siraf3/widgets/text_form_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TicketCreationScreen extends StatefulWidget {
-  Group? group;
+  GroupModel? group;
+  bool pop;
 
-  TicketCreationScreen({this.group, Key? key}) : super(key: key);
-
+  TicketCreationScreen({this.group, this.pop = false, Key? key}) : super(key: key);
 
   @override
   State<TicketCreationScreen> createState() => _TicketCreationScreen();
 }
 
 class _TicketCreationScreen extends State<TicketCreationScreen> {
-  Group? selectedGroup;
+  GroupModel? selectedGroup;
   String? title;
-  List<Group> groups = [];
+  String? message;
+  List<GroupModel> groups = [];
 
   TextEditingController titleController = TextEditingController();
+  TextEditingController messageController = TextEditingController();
 
   GetGroupsBloc getGroupsBloc = GetGroupsBloc();
   CreateTicketBloc createTicketBloc = CreateTicketBloc();
@@ -51,14 +51,15 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
       create: (_) => getGroupsBloc,
       child: Scaffold(
         appBar: SimpleAppBar(titleText: "پشتیبانی آنلاین"),
-        body: BlocBuilder<GetGroupsBloc, GetGroupsState>(
-            builder: _buildMainContent),
+        body: BlocBuilder<GetGroupsBloc, GetGroupsState>(builder: _buildMainContent),
       ),
     );
   }
 
   void createTicket() {
-    if (selectedGroup == null || title == null) {
+    title = titleController.text.trim().isNotNullOrEmpty() ? titleController.text.trim() : null;
+    message = messageController.text.trim().isNotNullOrEmpty() ? messageController.text.trim() : null;
+    if (selectedGroup == null || title == null || message == null) {
       notify("لطفا موارد فوق را تکمیل نمایید");
       return;
     }
@@ -68,8 +69,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
       return;
     }
 
-    createTicketBloc
-        .add(CreateTicketEvent(title: title!, group: selectedGroup!));
+    createTicketBloc.add(CreateTicketEvent(title: title!, message: message!, group: selectedGroup!));
   }
 
   void determineSupportSection() {
@@ -85,26 +85,9 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
               .toList(),
           onItemTap: (item) {
             setState(() {
-              selectedGroup =
-                  groups.firstWhere((element) => element.id == item["value"]);
+              selectedGroup = groups.firstWhere((element) => element.id == item["value"]);
             });
             Navigator.pop(context);
-          },
-        );
-      },
-    );
-  }
-
-  void determineTitle() {
-    showDialog2(
-      context: context,
-      builder: (context) {
-        return FieldDialog(
-          numberFieldController: titleController,
-          hintText: "عنوان را وارد کنید",
-          onPressed: () {
-            title = titleController.value.text;
-            setState(() {});
           },
         );
       },
@@ -138,33 +121,173 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
       return Center(
         child: TryAgain(
           onPressed: getGroups,
-          message: state.response.statusCode < 500
-              ? jDecode(state.response.body)['message']
-              : null,
+          message: state.response.statusCode < 500 ? jDecode(state.response.body)['message'] : null,
         ),
       );
     }
 
-    state =
-        GetGroupsLoadedState(groups: (state as GetGroupsLoadedState).groups);
+    state = GetGroupsLoadedState(groups: (state as GetGroupsLoadedState).groups);
 
     groups = state.groups;
 
     return Padding(
       padding: EdgeInsets.only(top: 10, left: 10, right: 10),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Section(
-            title: "بخش پشتیبانی",
-            hint: "انتخاب",
-            value: selectedGroup?.name,
+          GestureDetector(
             onTap: determineSupportSection,
+            child: Container(
+              margin: EdgeInsets.only(top: 10),
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Themes.icon,
+                  width: 0.5,
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "بخش پشتیبانی",
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontFamily: "IranSansMedium",
+                      color: Themes.text,
+                    ),
+                  ),
+                  Container(
+                    constraints: BoxConstraints(minWidth: 30),
+                    color: Colors.transparent,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      selectedGroup?.name ?? "انتخاب",
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontFamily: "IranSansMedium",
+                        color: Themes.text,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-          Section(
-            title: "عنوان",
-            hint: "تعیین",
-            value: title,
-            onTap: determineTitle,
+          SizedBox(height: 10),
+          Text(
+            "موضوع",
+            style: TextStyle(
+              fontSize: 13,
+              color: Themes.text,
+              fontFamily: "IranSansMedium",
+            ),
+          ),
+          SizedBox(height: 3),
+          TextFormField2(
+            decoration: InputDecoration(
+              hintText: "چه موضوعی را میخواهید مطرح کنید",
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Themes.icon,
+                  width: 0.5,
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.red,
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Themes.primary,
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Themes.textGrey,
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.red,
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              hintStyle: TextStyle(fontSize: 13),
+              contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            ),
+            style: TextStyle(fontSize: 13, color: Themes.text),
+            cursorColor: Themes.primary,
+            maxLines: 1,
+            minLines: 1,
+            controller: titleController,
+          ),
+          SizedBox(height: 10),
+          Text(
+            "پیام",
+            style: TextStyle(
+              fontSize: 13,
+              color: Themes.text,
+              fontFamily: "IranSansMedium",
+            ),
+          ),
+          SizedBox(height: 3),
+          TextFormField2(
+            decoration: InputDecoration(
+              hintText: "پیام خود را بنویسید",
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Themes.icon,
+                  width: 0.5,
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.red,
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Themes.primary,
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Themes.textGrey,
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.red,
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              hintStyle: TextStyle(fontSize: 13),
+              contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            ),
+            style: TextStyle(fontSize: 13, color: Themes.text),
+            cursorColor: Themes.primary,
+            maxLines: 50,
+            minLines: 6,
+            controller: messageController,
           ),
           BlockBtn(
             text: "شروع گفتگو",
@@ -184,7 +307,6 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
 
       dismissLoadingDialog();
       if (event.response?.data != null) {
-        print(event.response?.data);
         try {
           message = event.response!.data!['message'];
         } on Exception catch (e) {
@@ -198,10 +320,14 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
     } else if (event is CreateTicketSuccessState) {
       dismissLoadingDialog();
       notify("گفتگو با موفقیت ایجاد شد");
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => TicketListScreen()),
-      );
+      if (widget.pop) {
+        Navigator.pop(context, true);
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => TicketListScreen()),
+        );
+      }
     }
   }
 
@@ -215,7 +341,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
           contentPadding: EdgeInsets.all(0),
           content: Container(
             decoration: BoxDecoration(
-              color: App.theme.dialogBackgroundColor,
+              color: Themes.background2,
               borderRadius: BorderRadius.circular(10),
             ),
             height: 170,
@@ -229,7 +355,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.normal,
-                      color: App.theme.textTheme.bodyLarge?.color,
+                      color: Themes.text,
                     ),
                   ),
                 ),
@@ -262,7 +388,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
           contentPadding: EdgeInsets.all(0),
           content: Container(
             decoration: BoxDecoration(
-              color: App.theme.dialogBackgroundColor,
+              color: Themes.background2,
               borderRadius: BorderRadius.circular(10),
             ),
             height: 170,
@@ -291,7 +417,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.normal,
-                      color: App.theme.textTheme.bodyLarge?.color,
+                      color: Themes.text,
                     ),
                   ),
                 ),
@@ -302,7 +428,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
       },
     );
   }
-  
+
   setSelectedGroup() {
     setState(() {
       selectedGroup = widget.group;

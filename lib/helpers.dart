@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,16 +13,19 @@ import 'package:siraf3/main.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/themes.dart';
-import 'package:siraf3/widgets/error_dialog.dart';
-import 'package:siraf3/widgets/loading_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:convert/convert.dart';
+import 'package:crypto/crypto.dart' as crypto;
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+
 
 const image_extensions = <String>["png", "jpg", "jpeg", "tif", 'webp'];
 const video_extensions = <String>["mp4", "mov", "3gp", "avi", "mkv"];
 
 void notify(String msg,
     {TextDirection textDirection = TextDirection.rtl,
-    Duration? duration = null}) {
+      Duration? duration = null}) {
   showToast(
     msg,
     textDirection: textDirection,
@@ -188,9 +192,10 @@ doWithLogin(BuildContext context, void Function() onLoggedIn,
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => LoginScreen(
-          pop: pop,
-        ),
+        builder: (_) =>
+            LoginScreen(
+              pop: pop,
+            ),
       ),
     );
   }
@@ -222,14 +227,14 @@ PopupMenuItem<String> popupMenuItem({
   Function()? onTap,
 }) {
   return PopupMenuItem<String>(
-    onTap: onTap,
-    child: Text(
-      title,
-      style: TextStyle(
-        color: App.theme.textTheme.bodyLarge?.color,
-        fontSize: 11,
-      ),
-    )
+      onTap: onTap,
+      child: Text(
+        title,
+        style: TextStyle(
+          color: App.theme.textTheme.bodyLarge?.color,
+          fontSize: 11,
+        ),
+      )
   );
 }
 
@@ -276,4 +281,56 @@ extension String2 on String? {
   bool isNotNullOrEmpty() {
     return this != null && this!.isNotEmpty;
   }
+}
+
+Future<Directory> getOrCreatePath(dynamic directory) async {
+  if (directory is String) {
+    directory = Directory(directory);
+  }
+
+  var split = (directory as Directory).path.split("/");
+
+  Directory? newDir;
+
+  for (var i = 0; i < split.length - 2; i++) {
+    var l = split.getRange(1, i + 3).toList();
+    newDir = Directory(l.join("/"));
+
+    if (!await newDir.exists()) {
+      newDir.create();
+    }
+  }
+  return newDir!;
+}
+
+Future<String?> getDownloadPath() async {
+  Directory? directory;
+  try {
+    if (Platform.isIOS) {
+      directory = await getApplicationDocumentsDirectory();
+    } else {
+      directory = Directory('/storage/emulated/0/Download');
+      // Put file in global download folder, if for an unknown reason it didn't exist, we fallback
+      // ignore: avoid_slow_async_io
+      if (!await directory.exists()) directory = await getExternalStorageDirectory();
+    }
+  } catch (err) {
+    print("Cannot get download folder path");
+  }
+  return directory!.path;
+}
+
+Future<Directory> ticketDownloadPath() async {
+  return await getOrCreatePath("${await getDownloadPath()}/Siraf/Ticket");
+}
+
+generateMd5(String data) {
+  var content = new Utf8Encoder().convert(data);
+  var md5 = crypto.md5;
+  var digest = md5.convert(content);
+  return hex.encode(digest.bytes);
+}
+
+void push(BuildContext context, StatefulWidget widget) {
+  Navigator.push(context, MaterialPageRoute(builder: (_) => widget));
 }

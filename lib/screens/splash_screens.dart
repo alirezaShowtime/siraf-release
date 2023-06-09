@@ -246,7 +246,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (isResponseOk(response)) {
       var json = jDecode(response.body);
-      Group.saveList(Group.fromList(json['data']));
+      GroupModel.saveList(GroupModel.fromList(json['data']));
     }
   }
 }

@@ -8,9 +8,10 @@ import 'package:siraf3/models/user.dart';
 
 class CreateTicketEvent {
   String title;
-  Group group;
+  String message;
+  GroupModel group;
 
-  CreateTicketEvent({required this.title, required this.group});
+  CreateTicketEvent({required this.title, required this.message, required this.group});
 }
 
 class CreateTicketState {}
@@ -39,7 +40,7 @@ class CreateTicketBloc extends Bloc<CreateTicketEvent, CreateTicketState> {
     try {
       var formData = FormData.fromMap({
         "title": event.title,
-        "message": event.title, // todo temporary
+        "message": event.message,
         "groupId": event.group.id!,
       });
 
