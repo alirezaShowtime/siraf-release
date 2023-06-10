@@ -90,7 +90,7 @@ class _FilterScreenState extends State<FilterScreen> {
     return BlocProvider(
       create: (_) => categoriesBloc,
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: BlocBuilder<CategoriesBloc, CategoriesBlocState>(
             builder: _buildMainWidgets),
       ),
@@ -334,7 +334,6 @@ class _FilterScreenState extends State<FilterScreen> {
                                       snapshot.data != null &&
                                       (snapshot.data as List<Category>)
                                           .isNotEmpty) {
-                                    
                                     var items = (snapshot.data
                                             as List<Category>)
                                         .map<Widget>((e) => _subCategoryItem(e))
@@ -357,51 +356,6 @@ class _FilterScreenState extends State<FilterScreen> {
                                     );
                                   }
                                   return Container();
-                                  return ListView(
-                                    scrollDirection: Axis.horizontal,
-                                    shrinkWrap: true,
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Container(
-                                          constraints: BoxConstraints(
-                                            minWidth: (MediaQuery.of(context)
-                                                        .size
-                                                        .width -
-                                                    40) /
-                                                4,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                                bottom: BorderSide(
-                                              color: _subCategory == null
-                                                  ? Themes.primary
-                                                  : Themes.secondary2
-                                                      .withOpacity(0.5),
-                                              width: 1,
-                                            )),
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            "همه",
-                                            style: TextStyle(
-                                              color: App.isDark
-                                                  ? _subCategory == null
-                                                      ? DarkThemes.textLight
-                                                      : DarkThemes
-                                                          .textMediumLight
-                                                  : _subCategory == null
-                                                      ? Themes.text
-                                                      : Themes.secondary2,
-                                              fontSize: 13,
-                                              fontFamily: _subCategory == null
-                                                  ? "IranSansMedium"
-                                                  : null,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  );
                                 }),
                                 stream: subCategories.stream,
                               ),

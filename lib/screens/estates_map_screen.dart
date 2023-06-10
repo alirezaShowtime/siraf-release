@@ -686,7 +686,10 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => AgencyProfileScreen(estateId: estate.id!, estateName: estate.name,),
+                                    builder: (_) => AgencyProfileScreen(
+                                      estateId: estate.id!,
+                                      estateName: estate.name,
+                                    ),
                                   ),
                                 );
                               },
@@ -744,7 +747,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                       Positioned(
                         bottom: 30,
                         child: Container(
-                          height: 60,
+                          height: 70,
                           width: 122,
                           decoration: BoxDecoration(
                             color: Color(0xff707070),

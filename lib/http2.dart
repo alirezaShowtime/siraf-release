@@ -172,9 +172,9 @@ Future<http.Response> handleReq(Future<http.Response> req) async {
   var response = await req;
   if (LOG_RESPONSE) {
     print("REQUEST : " +
-        response.request!.method.toString() +
+        (response.request?.method.toString() ?? "") +
         " " +
-        response.request!.url.toString());
+        (response.request?.url.toString() ?? ""));
     print("RESPONSE STATUS CODE : " + response.statusCode.toString());
     print("RESPONSE STATUS CODE : " + response.statusCode.toString());
     print("RESPONSE BODY UTF8 : " + convertUtf8(response.body));

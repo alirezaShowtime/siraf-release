@@ -217,7 +217,9 @@ class _FileSlideItemState extends State<FileSlideItem> {
                           maxLines: 2,
                         ),
                         Text(
-                          widget.file.publishedAgo! + ' | ' + widget.file.city!,
+                          widget.file.publishedAgo! +
+                              ' | ' +
+                              (widget.file.city ?? ""),
                           style: TextStyle(
                             color: App.theme.tooltipTheme.textStyle?.color,
                             fontFamily: "IranSans",
