@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/screens/chat/app_bar_chat_widget.dart';
-import 'package:siraf3/screens/chat/chat_message_editor_widget.dart';
-import 'package:siraf3/screens/chat/massage_action.dart';
-import 'package:siraf3/screens/chat/my_message_widget.dart';
-import 'package:siraf3/screens/chat/person_message_widget.dart';
+import 'package:siraf3/screens/ticket/chat/app_bar_chat_widget.dart';
+import 'package:siraf3/screens/ticket/chat/chat_message_editor_widget.dart';
+import 'package:siraf3/screens/ticket/chat/massage_action.dart';
+import 'package:siraf3/screens/ticket/chat/my_message_widget.dart';
+import 'package:siraf3/screens/ticket/chat/person_message_widget.dart';
 
 class ChatScreen extends StatefulWidget {
   @override

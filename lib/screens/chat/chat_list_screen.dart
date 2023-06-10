@@ -16,12 +16,12 @@ import 'package:siraf3/widgets/my_badge.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
-class TicketListScreen extends StatefulWidget {
+class ChatListScreen extends StatefulWidget {
   @override
-  State<TicketListScreen> createState() => _TicketListScreen();
+  State<ChatListScreen> createState() => _ChatListScreen();
 }
 
-class _TicketListScreen extends State<TicketListScreen> {
+class _ChatListScreen extends State<ChatListScreen> {
   TicketsBloc ticketsBloc = TicketsBloc();
 
   @override
