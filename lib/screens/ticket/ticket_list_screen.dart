@@ -63,12 +63,6 @@ class _TicketListScreen extends State<TicketListScreen> {
                   },
                   iconData: CupertinoIcons.delete,
                 ),
-              MyIconButton(
-                onTap: () {
-                  push(context, TicketCreationScreen());
-                },
-                iconData: Icons.add_rounded,
-              ),
               MyPopupMenuButton(
                 itemBuilder: (context) {
                   return [
@@ -87,6 +81,13 @@ class _TicketListScreen extends State<TicketListScreen> {
             ],
           ),
           body: BlocBuilder<TicketListBloc, TicketListState>(builder: _listBlocBuilder),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              push(context, TicketCreationScreen());
+            },
+            backgroundColor: Themes.primary,
+            child: Icon(Icons.add_rounded, color: Colors.white),
+          ),
         ),
       ),
     );

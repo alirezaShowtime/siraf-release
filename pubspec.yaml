@@ -91,7 +91,7 @@ flutter_icons:
   ios: true
   image_path: "assets/icon/ic_launcher.png"
   min_sdk_android: 20
-  
+
 flutter:
 
   uses-material-design: true
