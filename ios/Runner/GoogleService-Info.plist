@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyAEDUaWHPXrE74lFgErehB3f3tVbEpRbIY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>307816304640</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>app.siraf</string>
+	<key>PROJECT_ID</key>
+	<string>siraf-user-v3</string>
+	<key>STORAGE_BUCKET</key>
+	<string>siraf-user-v3.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:307816304640:ios:7d5b8ff0a5f1b873ad08e5</string>
+</dict>
+</plist>

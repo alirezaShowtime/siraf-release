@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,11 +9,14 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/group.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/screens/intro_screen.dart';
 import 'package:siraf3/themes.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -50,7 +54,10 @@ class _SplashScreenState extends State<SplashScreen>
     });
     await Future.delayed(Duration(milliseconds: 2500));
     if (await checkUserConnection()) {
-      if (await User.hasToken()) await refreshToken();
+      if (await User.hasToken()) {
+        await refreshToken();
+        FirebaseMessaging.onMessage.listen(firebaseMessageListener);
+      }
 
       await getTicketGroups();
 
@@ -59,6 +66,44 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   bool activeConnection = true;
+
+  firebaseMessageListener(RemoteMessage message) async {
+    if (message.data.isEmpty) return;
+
+    RemoteNotification? notification = message.notification;
+
+    flutterLocalNotificationsPlugin.initialize(
+        InitializationSettings(
+          android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        ),
+        onSelectNotification: (_) async {});
+    int id;
+    String title, body;
+
+    if (notification != null) {
+      id = message.notification.hashCode;
+      title = notification.title ?? "";
+      body = notification.body ?? "";
+    } else {
+      title = message.data['title'] ?? "";
+      body = message.data['body'] ?? "";
+      id = Random().nextInt(1000000000);
+    }
+
+    flutterLocalNotificationsPlugin.show(
+      id,
+      title,
+      body,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          channel.id,
+          channel.name,
+          channel.description,
+        ),
+      ),
+      payload: jsonEncode(message.data),
+    );
+  }
 
   Future<bool> checkUserConnection() async {
     try {

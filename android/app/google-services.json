@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "307816304640",
+    "project_id": "siraf-user-v3",
+    "storage_bucket": "siraf-user-v3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:307816304640:android:99e154f499a66d2dad08e5",
+        "android_client_info": {
+          "package_name": "app.siraf"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "307816304640-k9nkfkbimdvihvmvrruahb2g9n6pnufd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQ0tmj91VgDgqCOk220UMWwxZDYFHPGkI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "307816304640-k9nkfkbimdvihvmvrruahb2g9n6pnufd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

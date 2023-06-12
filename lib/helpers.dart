@@ -21,6 +21,10 @@ import 'package:url_launcher/url_launcher.dart';
 const image_extensions = <String>["png", "jpg", "jpeg", "tif", 'webp'];
 const video_extensions = <String>["mp4", "mov", "3gp", "avi", "mkv"];
 
+copy(String text) async {
+  await Clipboard.setData(ClipboardData(text: text));
+}
+
 void notify(String? msg, {TextDirection textDirection = TextDirection.rtl, Duration? duration = null}) {
   if (msg == null) return;
   showToast(

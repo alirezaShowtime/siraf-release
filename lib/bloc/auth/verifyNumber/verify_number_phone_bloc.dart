@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 import 'package:siraf3/helpers.dart';
@@ -11,12 +12,14 @@ part 'verify_number_phone_event.dart';
 
 part 'verify_number_phone_state.dart';
 
-class VerifyNumberPhoneBloc extends Bloc<VerifyNumberPhoneEvent, VerifyNumberPhoneState> {
+class VerifyNumberPhoneBloc
+    extends Bloc<VerifyNumberPhoneEvent, VerifyNumberPhoneState> {
   VerifyNumberPhoneBloc() : super(VerifyNumberPhoneInitial()) {
     on<VerifyNumberPhoneRequestEvent>(_request);
   }
 
-  FutureOr<void> _request(VerifyNumberPhoneRequestEvent event, Emitter<VerifyNumberPhoneState> emit) async {
+  FutureOr<void> _request(VerifyNumberPhoneRequestEvent event,
+      Emitter<VerifyNumberPhoneState> emit) async {
     if (state is VerifyNumberPhoneLoading) return;
     emit(VerifyNumberPhoneLoading());
 
@@ -42,6 +45,18 @@ class VerifyNumberPhoneBloc extends Bloc<VerifyNumberPhoneEvent, VerifyNumberPho
 
     await user.save();
 
+    await http2.postJsonWithToken(
+      Uri.parse("https://message.siraf.app/api/fireBase/addDevice/"),
+      body: {
+        "token": await getDeviceToken(),
+        "userId": user.id,
+      },
+    );
+
     return emit(VerifyNumberPhoneSuccess(user));
+  }
+
+  Future<String> getDeviceToken() async {
+    return (await FirebaseMessaging.instance.getToken()).toString();
   }
 }
