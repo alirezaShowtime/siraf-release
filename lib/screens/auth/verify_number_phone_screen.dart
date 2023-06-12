@@ -1,77 +1,111 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/auth/Login/login_bloc.dart';
+import 'package:siraf3/bloc/auth/verifyNumber/verify_number_phone_bloc.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/main.dart';
-import 'package:siraf3/screens/auth/verify_number_phone_screen.dart';
-import 'package:siraf3/screens/webview_screen.dart';
+import 'package:siraf3/screens/auth/login_screen.dart';
+import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/block_btn.dart';
-import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/my_image.dart';
-import 'package:siraf3/widgets/text_form_field_2.dart';
+import 'package:siraf3/widgets/my_text_button.dart';
+import 'package:siraf3/widgets/my_text_icon_button.dart';
+import 'package:siraf3/widgets/text_field_2.dart';
 
-class LoginScreen extends StatefulWidget {
+class VerifyNumberPhoneScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _LoginScreen();
+  State<StatefulWidget> createState() => _VerifyNumberPhoneScreen();
 
+  String numberPhone;
   bool pop;
 
-  LoginScreen({this.pop = false});
+  VerifyNumberPhoneScreen({required this.pop, required this.numberPhone});
 }
 
-class _LoginScreen extends State<LoginScreen> {
-  TextEditingController numberPhoneFieldController = TextEditingController();
+class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
+  TextEditingController codeFieldController = TextEditingController();
 
-  LoginBloc _bloc = LoginBloc();
-  bool showPassword = false;
-  bool numberPhoneFieldEnabled = true;
+  VerifyNumberPhoneBloc verifyNumberPhoneBloc = VerifyNumberPhoneBloc();
+  LoginBloc loginBloc = LoginBloc();
 
   late Size size;
+  late Timer _timer;
+  late int _timeLeft;
 
-  void _blocListener() {
-    _bloc.stream.listen((state) {
-      setState(() => numberPhoneFieldEnabled = state is! LoginLoading);
+  bool codeFieldEnabled = true;
 
-      if (state is LoginError) {
-        notify(state.message);
+  void _startTimer() {
+    setState(() {
+      _timeLeft = 120;
+    });
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_isDisposed) {
+        timer.cancel();
         return;
       }
-
-      if (state is LoginSuccess) {
-        _pushToVerifyScreen(state.numberPhone);
-        return;
-      }
+      setState(() {
+        setState(() {
+          _timeLeft--;
+        });
+        if (_timeLeft == 0) {
+          setState(() {
+            _timer.cancel();
+          });
+        }
+      });
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _blocListener();
+
+    _startTimer();
+
+    verifyNumberPhoneBloc.stream.listen((state) {
+      setState(() => codeFieldEnabled = state is! VerifyNumberPhoneLoading);
+
+      if (state is VerifyNumberPhoneError) {
+        notify(state.message);
+        return;
+      }
+
+      if (state is VerifyNumberPhoneSuccess) {
+        _pushToHome();
+        return;
+      }
+    });
+
+    loginBloc.stream.listen((state) {
+      if (state is LoginError) {
+        notify(state.message);
+        return;
+      }
+
+      if (state is LoginSuccess) {
+        _startTimer();
+        return;
+      }
+    });
+  }
+
+  bool _isDisposed = false;
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
+
+    verifyNumberPhoneBloc.close();
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () {
-        if (!widget.pop) {
-          exitApplication();
-        }
-
-        animationDialog(
-            context: context,
-            builder: (dialogContext) {
-              return ConfirmDialog(
-                dialogContext: dialogContext,
-                content: "آیا واقعا قصد خروج از حساب را دارید؟",
-                onApply: exitApplication,
-              );
-            });
-
-        return Future.value(false);
-      },
+      onWillPop: () => Future.value(false),
       child: AnnotatedRegion(
         value: SystemUiOverlayStyle(
           statusBarColor: Themes.primary,
@@ -107,7 +141,7 @@ class _LoginScreen extends State<LoginScreen> {
                         ),
                         SizedBox(height: 25),
                         Text(
-                          "ورود|ثبت نام",
+                          "تایید شماره موبایل",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 25,
@@ -128,7 +162,7 @@ class _LoginScreen extends State<LoginScreen> {
                       Padding(
                         padding: EdgeInsets.only(right: 5, bottom: 2),
                         child: Text(
-                          "شماره موبایل",
+                          "کد تایید",
                           style: TextStyle(
                             fontSize: 11,
                             color: Colors.grey,
@@ -136,12 +170,11 @@ class _LoginScreen extends State<LoginScreen> {
                           ),
                         ),
                       ),
-                      TextFormField2(
-                        controller: numberPhoneFieldController,
+                      TextField2(
+                        controller: codeFieldController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                          counterText: "",
-                          enabled: numberPhoneFieldEnabled,
+                          enabled: codeFieldEnabled,
                           fillColor: Colors.grey.shade50,
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
@@ -153,53 +186,44 @@ class _LoginScreen extends State<LoginScreen> {
                         textInputAction: TextInputAction.send,
                         textDirection: TextDirection.ltr,
                         autocorrect: false,
-                        maxLength: 11,
                         maxLines: 1,
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Themes.text,
                         ),
-                        validator: (String? phone) {
-                          if (phone == null || phone.isEmpty) {
-                            return 'شماره موبایل را وارد کنید';
-                          }
-                          if (phone.length != 11) {
-                            return 'شماره موبایل باید 11 رقم باشد';
-                          }
-                          if (!phone.startsWith("09")) {
-                            return 'شماره موبایل باید با 09 شروع شود';
-                          }
-                        },
+                      ),
+                      MyTextIconButton(
+                        icon: Icon(Icons.edit_rounded, color: Themes.primary, size: 15),
+                        text: "ویرایش شماره موبایل",
+                        onPressed: editNumberPhone,
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 15, bottom: 10),
+                          child: MyTextButton(
+                            border: _timeLeft == 0,
+                            onPressed: sendAgain,
+                            text: _timeLeft > 0 ? "ارسال مجدد کد (${_timeLeft})" : "ارسال مجدد کد",
+                            disableTextColor: Colors.black,
+                            fontSize: 10,
+                            disable: _timeLeft > 0,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
-              InkWell(
-                borderRadius: BorderRadius.circular(7),
-                onTap: () {
-                  push(context, WebViewScreen(title: 'قوانین مقررات', url: 'https://article.siraf.biz/api/v1/rules'));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: Text(
-                    "شرایط استفاده از خدمات، قوانین و حریم خصوصی",
-                    style: TextStyle(
-                      color: App.theme.primaryColor,
-                      fontFamily: "IRANSansBold",
-                      fontSize: 10,
-                    ),
-                  ),
-                ),
-              ),
-              BlocBuilder<LoginBloc, LoginState>(
-                bloc: _bloc,
+              BlocBuilder<VerifyNumberPhoneBloc, VerifyNumberPhoneState>(
+                bloc: verifyNumberPhoneBloc,
                 builder: (context, state) {
                   return BlockBtn(
-                    onTap: _login,
-                    text: "ارسال کد",
-                    isLoading: state is LoginLoading,
+                    onTap: login,
+                    text: "ورود",
+                    isLoading: state is VerifyNumberPhoneLoading,
                   );
                 },
               ),
@@ -210,20 +234,30 @@ class _LoginScreen extends State<LoginScreen> {
     );
   }
 
-  void _login() {
-    String numberPhone = numberPhoneFieldController.value.text;
+  void login() {
+    String code = codeFieldController.value.text;
 
-    if (!numberPhone.isNotNullOrEmpty()) {
-      return notify("شماره وارد نشده است.");
+    if (!code.isNotNullOrEmpty()) {
+      return notify("کد تایید را وارد نکرده اید");
     }
 
-    _bloc.add(LoginRequestEvent(numberPhone));
+    verifyNumberPhoneBloc.add(VerifyNumberPhoneRequestEvent(numberPhone: widget.numberPhone, code: code));
   }
 
-  void _pushToVerifyScreen(String numberPhone) async {
-    var result = await push(context, VerifyNumberPhoneScreen(pop: widget.pop, numberPhone: numberPhone));
-    if (widget.pop && result == 'ok_pop') {
-      Navigator.pop(context, result);
+  void sendAgain() {
+    loginBloc.add(LoginRequestEvent(widget.numberPhone));
+  }
+
+  void editNumberPhone() {
+    dispose();
+    pushAndRemoveUntil(context, LoginScreen());
+  }
+
+  void _pushToHome() {
+    if (widget.pop) {
+      Navigator.pop(context, 'ok_pop');
+    } else {
+      pushAndRemoveUntil(context, HomeScreen());
     }
   }
 }

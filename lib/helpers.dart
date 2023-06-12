@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart' as fr;
@@ -20,7 +21,8 @@ import 'package:url_launcher/url_launcher.dart';
 const image_extensions = <String>["png", "jpg", "jpeg", "tif", 'webp'];
 const video_extensions = <String>["mp4", "mov", "3gp", "avi", "mkv"];
 
-void notify(String msg, {TextDirection textDirection = TextDirection.rtl, Duration? duration = null}) {
+void notify(String? msg, {TextDirection textDirection = TextDirection.rtl, Duration? duration = null}) {
+  if (msg == null) return;
   showToast(
     msg,
     textDirection: textDirection,
@@ -177,18 +179,11 @@ String phoneFormat(String numberPhone) {
 }
 
 doWithLogin(BuildContext context, void Function() onLoggedIn, {bool pop = true}) async {
-  if (await User.hasToken()) {
-    onLoggedIn();
-  } else {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => LoginScreen(
-          pop: pop,
-        ),
-      ),
-    );
+  if (!await User.hasToken()) {
+    await push(context, LoginScreen(pop: pop));
+    return;
   }
+  onLoggedIn();
 }
 
 VoidCallback back(BuildContext context) {
@@ -317,8 +312,8 @@ generateMd5(String data) {
   return hex.encode(digest.bytes);
 }
 
-void push(BuildContext context, StatefulWidget widget) {
-  Navigator.push(context, MaterialPageRoute(builder: (_) => widget));
+Future<T?> push<T>(BuildContext context, StatefulWidget widget) {
+  return Navigator.push<T>(context, MaterialPageRoute(builder: (_) => widget));
 }
 
 void pushAndRemoveUntil(BuildContext context, Widget screen) {
@@ -327,4 +322,24 @@ void pushAndRemoveUntil(BuildContext context, Widget screen) {
 
 void pushReplacement(BuildContext context, Widget screen) {
   Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => screen));
+}
+
+void exitApplication() {
+  if (Platform.isAndroid) {
+    SystemNavigator.pop();
+  } else {
+    exit(0);
+  }
+}
+
+animationDialog({required BuildContext context, required Widget Function(BuildContext) builder}) {
+  showGeneralDialog(
+    context: context,
+    transitionBuilder: (ctx, a1, _, __) {
+      var curve = Curves.easeInOut.transform(a1.value);
+      return Transform.scale(scale: curve, child: builder.call(ctx));
+    },
+    transitionDuration: const Duration(milliseconds: 300),
+    pageBuilder: (_, __, ___) => Container(),
+  );
 }

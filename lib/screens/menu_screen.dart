@@ -106,13 +106,7 @@ class _MenuScreenState extends State<MenuScreen> {
                           GestureDetector(
                             onTap: () async {
                               if (user == null || user!.phone == null) {
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => LoginScreen(),
-                                  ),
-                                );
-
+                                await push(context, LoginScreen());
                                 getUser();
                               }
                             },
@@ -467,12 +461,12 @@ class _MenuScreenState extends State<MenuScreen> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          AccordionItem(
-            onClick: () {
-              doWithLogin(
-                context,
+              AccordionItem(
+                onClick: () {
+                  doWithLogin(
+                    context,
                     () {
-                  Navigator.push(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (_) => TicketListScreen(),

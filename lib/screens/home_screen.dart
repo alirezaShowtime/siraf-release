@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,6 @@ import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
-import 'package:siraf3/screens/intro_screen.dart';
 import 'package:siraf3/screens/menu_screen.dart';
 import 'package:siraf3/screens/search_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
@@ -24,8 +24,6 @@ import 'package:siraf3/widgets/file_horizontal_item.dart';
 import 'package:siraf3/widgets/file_slide_item.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/try_again.dart';
-
-import 'package:badges/badges.dart' as badges;
 import 'package:uni_links/uni_links.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -60,17 +58,18 @@ class _HomeScreenState extends State<HomeScreen> {
     scrollController.addListener(pagination);
 
     homeScreenBloc.stream.listen((event) {
-      setState(() {
-        currentBlocState = event;
-      });
-      if (event is HSLoadedState) {
-        setState(() {
-          _hasNewFiles = event.files.isNotEmpty;
-          lastId = event.lastId;
-          currentBlocState = event;
-          files = event.files;
-        });
-      }
+      try {
+        setState(() => currentBlocState = event);
+
+        if (event is HSLoadedState) {
+          setState(() {
+            _hasNewFiles = event.files.isNotEmpty;
+            lastId = event.lastId;
+            currentBlocState = event;
+            files = event.files;
+          });
+        }
+      } catch (e) {}
     });
 
     _moreBloc.stream.listen(_loadMoreEvent);
@@ -87,10 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<File> files = [];
 
   bool _canLoadMore() {
-    return (scrollController.position.pixels ==
-            scrollController.position.maxScrollExtent) &&
-        lastId != null &&
-        !_isLoadingMore;
+    return (scrollController.position.pixels == scrollController.position.maxScrollExtent) && lastId != null && !_isLoadingMore;
   }
 
   void pagination() async {
@@ -160,8 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   changeViewType() async {
     var sh = await SharedPreferences.getInstance();
-    sh.setString(
-        "FILE_VIEW_TYPE", viewType == ViewType.List ? "slide" : "list");
+    sh.setString("FILE_VIEW_TYPE", viewType == ViewType.List ? "slide" : "list");
 
     await getViewType();
 
@@ -169,10 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   goSelectCity({showSelected = false}) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (_) => SelectCityScreen(showSelected: showSelected)));
+    Navigator.push(context, MaterialPageRoute(builder: (_) => SelectCityScreen(showSelected: showSelected)));
   }
 
   openMenu() {
@@ -194,8 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
       statusBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
       statusBarBrightness: darkMode ? Brightness.light : Brightness.dark,
       statusBarIconBrightness: darkMode ? Brightness.light : Brightness.dark,
-      systemNavigationBarIconBrightness:
-          darkMode ? Brightness.light : Brightness.dark,
+      systemNavigationBarIconBrightness: darkMode ? Brightness.light : Brightness.dark,
       systemNavigationBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
     ));
 
@@ -233,8 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (_) => FilterScreen(
-                    originalFilterData: FilterData(
-                        cityIds: cities.map<int>((e) => e.id!).toList()),
+                    originalFilterData: FilterData(cityIds: cities.map<int>((e) => e.id!).toList()),
                     filterData: filterData,
                   ),
                 ),
@@ -288,8 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (currentBlocState is HSInitState ||
-              currentBlocState is HSLoadingState)
+          if (currentBlocState is HSInitState || currentBlocState is HSLoadingState)
             Center(
               child: Loading(),
             ),
@@ -297,15 +286,10 @@ class _HomeScreenState extends State<HomeScreen> {
             Center(
               child: TryAgain(
                 onPressed: getFiles,
-                message: (currentBlocState as HSErrorState).response != null
-                    ? jDecode((currentBlocState as HSErrorState)
-                        .response!
-                        .body)['message']
-                    : null,
+                message: (currentBlocState as HSErrorState).response != null ? jDecode((currentBlocState as HSErrorState).response!.body)['message'] : null,
               ),
             ),
-          if (currentBlocState is HSLoadedState &&
-              (currentBlocState as HSLoadedState).files.isEmpty)
+          if (currentBlocState is HSLoadedState && (currentBlocState as HSLoadedState).files.isEmpty)
             Center(
               child: Text(
                 "فایلی موجود نیست فیلتر را حدف کنید",
@@ -314,8 +298,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-          if (currentBlocState is HSLoadedState &&
-              (currentBlocState as HSLoadedState).files.isNotEmpty)
+          if (currentBlocState is HSLoadedState && (currentBlocState as HSLoadedState).files.isNotEmpty)
             Expanded(
               child: ListView(
                 controller: scrollController,
@@ -330,11 +313,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 );
                               },
                               child: Padding(
-                                padding: EdgeInsets.only(
-                                    top: files.first == file ? 0 : 5),
-                                child: viewType == ViewType.List
-                                    ? FileHorizontalItem(file: file)
-                                    : FileSlideItem(file: file),
+                                padding: EdgeInsets.only(top: files.first == file ? 0 : 5),
+                                child: viewType == ViewType.List ? FileHorizontalItem(file: file) : FileSlideItem(file: file),
                               ),
                             ))
                         .toList() +
