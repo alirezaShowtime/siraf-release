@@ -4,8 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:siraf3/bloc/property_bloc.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/category.dart';
@@ -19,11 +21,8 @@ import 'package:siraf3/screens/mark_in_map_screen.dart';
 import 'package:siraf3/screens/select_category_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
-import 'package:siraf3/dialog.dart';
 
 class CreateFileFirst extends StatefulWidget {
   const CreateFileFirst({super.key});
@@ -603,6 +602,8 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
       title: "",
       ownerPhone: "",
       visitPhone: "",
+      ownerName: "",
+      visitName: "",
       files: [],
       estates: [],
     );

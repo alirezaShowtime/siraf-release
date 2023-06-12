@@ -1,32 +1,24 @@
+import 'dart:async';
+import 'dart:io';
+import 'dart:io' as io;
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/create_file_form_data.dart';
 import 'package:siraf3/screens/create/create_file_final.dart';
-import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/create/upload_media_guide.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
-import 'dart:io' as io;
-import 'package:path/path.dart' as p;
 import 'package:siraf3/widgets/text_form_field_2.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
-import 'dart:async';
-import 'dart:typed_data';
-
-import 'package:flutter/material.dart';
-import 'dart:io';
-
-import 'package:video_thumbnail/video_thumbnail.dart';
-import 'package:path_provider/path_provider.dart';
-
-import 'package:siraf3/dialog.dart';
 
 class CreateFileSecond extends StatefulWidget {
   CreateFileFormData formData;
@@ -41,7 +33,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   String? title;
   String? visitPhone;
   String? ownerPhone;
-  String? description;
+  String? visitName;
+  String? ownerName;
   GlobalKey<FormState> formKey = GlobalKey();
 
   Map<int, String> hints = {
@@ -64,7 +57,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   TextEditingController _titleController = TextEditingController();
   TextEditingController _ownerPhoneController = TextEditingController();
   TextEditingController _visitPhoneController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
+  TextEditingController _ownerNameController = TextEditingController();
+  TextEditingController _visitNameController = TextEditingController();
 
   @override
   void initState() {
@@ -174,45 +168,45 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                         child: GridView(
                           shrinkWrap: true,
                           gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
+                          SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount:
-                                MediaQuery.of(context).size.width < 330 ? 4 : 5,
+                            MediaQuery.of(context).size.width < 330 ? 4 : 5,
                           ),
                           children: <Widget>[
-                                Container(
-                                  padding: EdgeInsets.all(5),
+                            Container(
+                              padding: EdgeInsets.all(5),
+                              alignment: Alignment.center,
+                              child: DottedBorder(
+                                color: Themes.iconGrey,
+                                borderType: BorderType.RRect,
+                                radius: Radius.circular(5),
+                                child: Container(
+                                  color: Colors.transparent,
                                   alignment: Alignment.center,
-                                  child: DottedBorder(
-                                    color: Themes.iconGrey,
-                                    borderType: BorderType.RRect,
-                                    radius: Radius.circular(5),
-                                    child: Container(
-                                      color: Colors.transparent,
-                                      alignment: Alignment.center,
-                                      child: IconButton(
-                                        highlightColor: Colors.transparent,
-                                        splashColor: Colors.transparent,
-                                        onPressed: _addMedia,
-                                        icon: Icon(
-                                          CupertinoIcons.plus,
-                                          size: 28,
-                                          color: Themes.iconGrey,
-                                        ),
-                                      ),
+                                  child: IconButton(
+                                    highlightColor: Colors.transparent,
+                                    splashColor: Colors.transparent,
+                                    onPressed: _addMedia,
+                                    icon: Icon(
+                                      CupertinoIcons.plus,
+                                      size: 28,
+                                      color: Themes.iconGrey,
                                     ),
                                   ),
                                 ),
-                              ] +
+                              ),
+                            ),
+                          ] +
                               mediaBoxes
                                   .map<Widget>(
                                     (e) => GestureDetector(
-                                      onTap: () {
-                                        showOptionsDialog(
-                                            mediaBoxes.indexOf(e));
-                                      },
-                                      child: e,
-                                    ),
-                                  )
+                                  onTap: () {
+                                    showOptionsDialog(
+                                        mediaBoxes.indexOf(e));
+                                  },
+                                  child: e,
+                                ),
+                              )
                                   .toList(),
                         ),
                       ),
@@ -240,9 +234,9 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       TextFormField2(
                         decoration: InputDecoration(
                           hintText:
-                              hints.containsKey(widget.formData.category.id!)
-                                  ? hints[widget.formData.category.id!]
-                                  : "مثال : آپارتمان 120 متری، میدان ونک",
+                          hints.containsKey(widget.formData.category.id!)
+                              ? hints[widget.formData.category.id!]
+                              : "مثال : آپارتمان 120 متری، میدان ونک",
                           border: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: Themes.icon,
@@ -279,7 +273,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             borderRadius: BorderRadius.circular(5),
                           ),
                           hintStyle:
-                              TextStyle(fontSize: 14, color: Themes.textGrey),
+                          TextStyle(fontSize: 14, color: Themes.textGrey),
                           contentPadding: EdgeInsets.symmetric(
                               horizontal: 10, vertical: 10),
                         ),
@@ -312,10 +306,84 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       ),
                       SizedBox(height: 14),
                       Text(
+                        "نام و نام خانوادگی مالک",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Themes.text,
+                          fontFamily: "IranSansBold",
+                        ),
+                      ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      TextFormField2(
+                        decoration: InputDecoration(
+                          hintText: "نام و نام خانوادگی صاحب ملک را بنویسید.",
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.icon,
+                              width: 0.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.primary,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.textGrey,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          hintStyle: TextStyle(fontSize: 14),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        ),
+                        style: TextStyle(fontSize: 14, color: Themes.text),
+                        onChanged: (value) {
+                          setState(() {
+                            ownerName = value;
+                          });
+                        },
+                        textInputAction: TextInputAction.next,
+                        cursorColor: Themes.primary,
+                        maxLines: 1,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "لطفا نام و نام خانوادگی را بنویسید";
+                          }
+                        },
+                        onSaved: ((newValue) {
+                          setState(() {
+                            ownerName = newValue;
+                          });
+                        }),
+                        controller: _ownerNameController,
+                      ),
+                      SizedBox(height: 14),
+                      Text(
                         "شماره تماس مالک",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.primary,
+                          color: Themes.text,
                           fontFamily: "IranSansBold",
                         ),
                       ),
@@ -360,16 +428,13 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             ),
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          hintStyle:
-                              TextStyle(fontSize: 14, color: Themes.textGrey),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
+                          hintStyle: TextStyle(fontSize: 14),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          helperStyle: TextStyle(fontSize: 0.01),
                         ),
+                        maxLength: 11,
                         keyboardType: TextInputType.number,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: App.theme.textTheme.bodyLarge?.color,
-                        ),
+                        style: TextStyle(fontSize: 14, color: Themes.text),
                         onChanged: (value) {
                           setState(() {
                             ownerPhone = value;
@@ -397,10 +462,86 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                         height: 14,
                       ),
                       Text(
+                        "نام و نام خانوادگی جهت هماهنگی بازدید",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Themes.text,
+                          fontFamily: "IranSansBold",
+                        ),
+                      ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      TextFormField2(
+                        decoration: InputDecoration(
+                          hintText: "نام و نام خانوادگی جهت هماهنگی بازدید را بنویسید.",
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.icon,
+                              width: 0.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.primary,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.textGrey,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          hintStyle: TextStyle(fontSize: 14),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        ),
+                        style: TextStyle(fontSize: 14, color: Themes.text),
+                        onChanged: (value) {
+                          setState(() {
+                            visitName = value;
+                          });
+                        },
+                        textInputAction: TextInputAction.next,
+                        cursorColor: Themes.primary,
+                        maxLines: 1,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "نام و نام خانوادگی جهت هماهنگی بازدید را وارد کنید";
+                          }
+                        },
+                        onSaved: ((newValue) {
+                          setState(() {
+                            visitName = newValue;
+                          });
+                        }),
+                        controller: _visitNameController,
+                      ),
+                      SizedBox(
+                        height: 14,
+                      ),
+                      Text(
                         "شماره تماس بازدید",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.primary,
+                          color: Themes.text,
                           fontFamily: "IranSansBold",
                         ),
                       ),
@@ -445,21 +586,18 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             ),
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          hintStyle:
-                              TextStyle(fontSize: 14, color: Themes.textGrey),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
+                          hintStyle: TextStyle(fontSize: 14),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          helperStyle: TextStyle(fontSize: 0.01),
                         ),
                         keyboardType: TextInputType.number,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: App.theme.textTheme.bodyLarge?.color,
-                        ),
+                        style: TextStyle(fontSize: 14, color: Themes.text),
                         onChanged: (value) {
                           setState(() {
                             visitPhone = value;
                           });
                         },
+                        maxLength: 11,
                         textInputAction: TextInputAction.next,
                         cursorColor: Themes.primary,
                         maxLines: 1,
@@ -477,98 +615,6 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                           });
                         }),
                         controller: _visitPhoneController,
-                      ),
-                      SizedBox(height: 14),
-                      Text(
-                        "توضیحات",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Themes.primary,
-                          fontFamily: "IranSansBold",
-                        ),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      Text(
-                        "در توضیحات به جزئیات و ویژگی ها قابل توجه، دسترسی های محلی و موقعیت ملک اشاره کنید و از درج شماره تماس یا آدرس مستقیم در آن خودداری نمایید.",
-                        style: TextStyle(
-                          fontSize: 11.5,
-                          fontFamily: "IranSansMedium",
-                        ),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      TextFormField2(
-                        decoration: InputDecoration(
-                          hintText: "توضیحات را بنویسید.",
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.icon,
-                              width: 0.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.primary,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.textGrey,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          hintStyle:
-                              TextStyle(fontSize: 14, color: Themes.textGrey),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                        ),
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: App.theme.textTheme.bodyLarge?.color,
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            description = value;
-                          });
-                        },
-                        cursorColor: Themes.primary,
-                        maxLines: 50,
-                        minLines: 6,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "توضیحات فایل را وارد کنید";
-                          }
-                          if (value.length <= 40) {
-                            return "حداقل باید 40 کاراکتر بنویسید";
-                          }
-                        },
-                        onSaved: ((newValue) {
-                          setState(() {
-                            description = newValue;
-                          });
-                        }),
-                        controller: _descriptionController,
                       ),
                     ],
                   ),
@@ -736,7 +782,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
     widget.formData.title = title!;
     widget.formData.ownerPhone = ownerPhone!;
     widget.formData.visitPhone = visitPhone!;
-    widget.formData.description = description!;
+    widget.formData.ownerName = ownerName!;
+    widget.formData.visitName = visitName!;
 
     await Navigator.push(
       context,
@@ -755,7 +802,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
 
   void _addMedia() async {
     FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: true,
+    await FilePicker.platform.pickFiles(allowMultiple: true,
         allowedExtensions: image_extensions + video_extensions + ["zip"], type: FileType.custom);
 
     if (result != null) {
@@ -906,10 +953,10 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
         Directory tempDir = await getTemporaryDirectory();
 
         File tempVideo =
-            File("${tempDir.path}/assets/" + file.uri.pathSegments.last)
-              ..createSync(recursive: true)
-              ..writeAsBytesSync(byteData.buffer
-                  .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+        File("${tempDir.path}/assets/" + file.uri.pathSegments.last)
+          ..createSync(recursive: true)
+          ..writeAsBytesSync(byteData.buffer
+              .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
 
         final fileName = await VideoThumbnail.thumbnailFile(
           video: tempVideo.path,
@@ -947,9 +994,9 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
             fit: BoxFit.cover,
             colorFilter: type != FileType2.image
                 ? ColorFilter.mode(
-                    Themes.iconGrey,
-                    BlendMode.hardLight,
-                  )
+              Themes.iconGrey,
+              BlendMode.hardLight,
+            )
                 : null,
           ),
         ),
@@ -959,8 +1006,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
     );
   }
 
-  Widget optionItem(
-      {required String value, required bool isLast, void Function()? onTap}) {
+  Widget optionItem({required String value, required bool isLast, void Function()? onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -969,9 +1015,9 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
             bottom: isLast
                 ? BorderSide.none
                 : BorderSide(
-                    color: Themes.textGrey.withOpacity(0.3),
-                    width: 0.7,
-                  ),
+              color: Themes.textGrey.withOpacity(0.3),
+              width: 0.7,
+            ),
           ),
         ),
         padding: EdgeInsets.symmetric(vertical: 10),
@@ -999,7 +1045,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
 
   _editFile(int index) async {
     FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: false);
+    await FilePicker.platform.pickFiles(allowMultiple: false);
 
     if (result != null) {
       io.File file = io.File(result.files.first.path!);
@@ -1064,7 +1110,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
       builder: (_) {
         mediaTitleDialogContext = _;
         TextEditingController _controller =
-            TextEditingController(text: files[index]['title']);
+        TextEditingController(text: files[index]['title']);
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -1079,7 +1125,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                   children: [
                     Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       child: TextField2(
                         maxLines: 1,
                         controller: _controller,

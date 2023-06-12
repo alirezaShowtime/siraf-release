@@ -1,6 +1,6 @@
+import 'package:latlong2/latlong.dart';
 import 'package:siraf3/models/category.dart';
 import 'package:siraf3/models/city.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:siraf3/models/estate.dart';
 
 class CreateFileFormData {
@@ -10,6 +10,8 @@ class CreateFileFormData {
   String address;
   String visitPhone;
   String ownerPhone;
+  String visitName;
+  String ownerName;
   Map<String, String> properties;
   List<Map<String, dynamic>> files;
   String title;
@@ -24,6 +26,8 @@ class CreateFileFormData {
     required this.address,
     required this.visitPhone,
     required this.ownerPhone,
+    required this.visitName,
+    required this.ownerName,
     required this.properties,
     required this.files,
     required this.title,
