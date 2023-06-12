@@ -8,6 +8,7 @@ import 'package:siraf3/main.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/bookmark_screen.dart';
+import 'package:siraf3/screens/chat/chat_list_screen.dart';
 import 'package:siraf3/screens/commission_calculator_screen.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/estates_map_screen.dart';
@@ -183,7 +184,9 @@ class _MenuScreenState extends State<MenuScreen> {
                                 _item(
                                   title: "پیام ها",
                                   icon: CupertinoIcons.envelope,
-                                  onClick: () {},
+                                  onClick: () {
+                                    Navigator.push(context, MaterialPageRoute(builder: (_) => ChatListScreen()));
+                                  },
                                   padding: EdgeInsets.only(
                                       right: 30, left: 15, top: 20, bottom: 20),
                                 ),

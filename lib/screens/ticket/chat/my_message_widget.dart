@@ -1,26 +1,31 @@
 import 'package:auto_direction/auto_direction.dart';
 import 'package:flutter/material.dart';
-import 'package:siraf3/screens/chat/massage_action.dart';
+import 'package:siraf3/helpers.dart';
+import 'package:siraf3/screens/ticket/chat/massage_action.dart';
 import 'package:siraf3/themes.dart';
 
-class PersonMessage extends StatefulWidget {
+class MyMessage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _PersonMessage();
+  State<StatefulWidget> createState() => _MyMessage();
 
   Widget? child;
   String? text;
   String time;
+  bool isSeen;
   bool isFirst;
+  bool isSent;
 
-  PersonMessage({
+  MyMessage({
     required this.time,
     this.child,
     this.text,
+    this.isSeen = false,
     this.isFirst = false,
+    this.isSent = true,
   });
 }
 
-class _PersonMessage extends State<PersonMessage> {
+class _MyMessage extends State<MyMessage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -36,12 +41,12 @@ class _PersonMessage extends State<PersonMessage> {
         margin: EdgeInsets.symmetric(vertical: 2),
         padding: EdgeInsets.only(top: 7, left: 10, right: 10, bottom: 4),
         decoration: BoxDecoration(
-          color: Colors.grey.shade200,
+          color: Themes.primary,
           borderRadius: BorderRadius.only(
-            topRight: Radius.circular(18),
-            topLeft: Radius.circular(widget.isFirst ? 14 : 5),
-            bottomRight: Radius.circular(18),
-            bottomLeft: Radius.circular(0),
+            topLeft: Radius.circular(18),
+            topRight: Radius.circular(widget.isFirst ? 14 : 5),
+            bottomLeft: Radius.circular(18),
+            bottomRight: Radius.circular(0),
           ),
         ),
         child: Column(
@@ -59,7 +64,7 @@ class _PersonMessage extends State<PersonMessage> {
                         child: Text(
                           widget.text!,
                           style: TextStyle(
-                            color: Themes.text,
+                            color: Colors.white,
                             fontSize: 12,
                           ),
                         ),
@@ -67,12 +72,31 @@ class _PersonMessage extends State<PersonMessage> {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 2, right: 2, top: 4),
-              child: Text(
-                widget.time,
-                style: TextStyle(color: Themes.text, fontSize: 9, height: 1),
-              ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                if (widget.isSent)
+                  icon(
+                    widget.isSeen ? Icons.done_all_rounded : Icons.done_rounded,
+                    color: Colors.white,
+                    size: 12,
+                  ),
+                if (!widget.isSent)
+                  icon(
+                    Icons.schedule_rounded,
+                    color: Colors.white,
+                    size: 12,
+                  ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 2, right: 2, top: 4),
+                  child: Text(
+                    widget.time,
+                    style:
+                        TextStyle(color: Colors.white, fontSize: 9, height: 1),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
