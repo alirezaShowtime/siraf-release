@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/dark_themes.dart';
+import 'package:siraf3/firebase_listener.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/city.dart';
@@ -73,6 +74,8 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     _moreBloc.stream.listen(_loadMoreEvent);
+
+    listenNotification();
   }
 
   HSBloc _moreBloc = HSBloc();
