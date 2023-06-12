@@ -10,7 +10,6 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/group.dart';
 import 'package:siraf3/models/user.dart';
-import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/screens/intro_screen.dart';
 import 'package:siraf3/themes.dart';
@@ -246,7 +245,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (isResponseOk(response)) {
       var json = jDecode(response.body);
-      Group.saveList(Group.fromList(json['data']));
+      GroupModel.saveList(GroupModel.fromList(json['data']));
     }
   }
 }

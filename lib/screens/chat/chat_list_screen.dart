@@ -65,8 +65,7 @@ class _ChatListScreen extends State<ChatListScreen> {
               if (selectedTickets.isNotEmpty)
                 IconButton(
                   onPressed: () {
-                    showDeleteDialog(
-                        selectedTickets.map((e) => e.id!).toList());
+                    showDeleteDialog(selectedTickets.map((e) => e.id!).toList());
                   },
                   icon: Icon(
                     CupertinoIcons.delete,
@@ -97,15 +96,11 @@ class _ChatListScreen extends State<ChatListScreen> {
                     isSelectable = true;
                   });
                 },
-                icon: Icon(
-                  Icons.more_vert,
-                  color: App.theme.iconTheme.color,
-                ),
+                iconData: Icons.more_vert,
               ),
             ],
           ),
-          body:
-              BlocBuilder<TicketsBloc, TicketsState>(builder: _listBlocBuilder),
+          body: BlocBuilder<TicketsBloc, TicketsState>(builder: _listBlocBuilder),
           floatingActionButton: FloatingActionButton(
             onPressed: createTicket,
             backgroundColor: Themes.primary,
@@ -124,8 +119,7 @@ class _ChatListScreen extends State<ChatListScreen> {
         if (isSelectable) {
           _changeSelection(ticket);
         } else {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => ChatScreen()));
+          Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen()));
         }
       },
       onLongPress: () {
@@ -135,9 +129,7 @@ class _ChatListScreen extends State<ChatListScreen> {
         height: 65,
         color: App.theme.dialogBackgroundColor,
         foregroundDecoration: BoxDecoration(
-          color: selectedTickets.any((e) => e.id == ticket.id)
-              ? Themes.blue.withOpacity(0.2)
-              : Colors.transparent,
+          color: selectedTickets.any((e) => e.id == ticket.id) ? Themes.blue.withOpacity(0.2) : Colors.transparent,
         ),
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
         child: Row(
@@ -234,8 +226,7 @@ class _ChatListScreen extends State<ChatListScreen> {
   }
 
   void createTicket() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (_) => TicketCreationScreen()));
+    Navigator.push(context, MaterialPageRoute(builder: (_) => TicketCreationScreen()));
   }
 
   Widget _listBlocBuilder(BuildContext context, TicketsState state) {

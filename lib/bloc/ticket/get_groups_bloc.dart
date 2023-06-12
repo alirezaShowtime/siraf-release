@@ -1,9 +1,5 @@
-import 'dart:async';
-
-import 'package:http/http.dart';
-import 'package:siraf3/http2.dart' as http2;
 import 'package:bloc/bloc.dart';
-import 'package:siraf3/helpers.dart';
+import 'package:http/http.dart';
 import 'package:siraf3/models/group.dart';
 
 class GetGroupsEvent {}
@@ -15,7 +11,7 @@ class GetGroupsInitState extends GetGroupsState {}
 class GetGroupsLoadingState extends GetGroupsState {}
 
 class GetGroupsLoadedState extends GetGroupsState {
-  List<Group> groups;
+  List<GroupModel> groups;
 
   GetGroupsLoadedState({required this.groups});
 }
@@ -48,7 +44,7 @@ class GetGroupsBloc extends Bloc<GetGroupsEvent, GetGroupsState> {
     // }
 
     emit(
-      GetGroupsLoadedState(groups: await Group.getList()),
+      GetGroupsLoadedState(groups: await GroupModel.getList()),
     );
   }
 }

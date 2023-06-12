@@ -10,6 +10,8 @@ class MyTextIconButton extends StatefulWidget {
   String? text;
   Color? color;
   Color? rippleColor;
+  Border? border;
+  TextDirection? textDirection;
   void Function()? onPressed;
 
   MyTextIconButton({
@@ -19,30 +21,39 @@ class MyTextIconButton extends StatefulWidget {
     this.color,
     this.rippleColor,
     this.onPressed,
+    this.textDirection = TextDirection.rtl,
+    this.border,
   });
 }
 
 class _MyTextIconButton extends State<MyTextIconButton> {
   @override
   Widget build(BuildContext context) {
-    return MyTextButton(
-      onPressed: widget.onPressed,
-      rippleColor: widget.rippleColor,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          widget.icon,
-          SizedBox(width: 2),
-          widget.child ??
-              Text(
-                widget.text!,
-                style: TextStyle(
-                  color: widget.color ?? widget.rippleColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 11,
+    return Container(
+      decoration: BoxDecoration(
+        border: widget.border,
+      ),
+      child: MyTextButton(
+        onPressed: widget.onPressed,
+        rippleColor: widget.rippleColor,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          textDirection: widget.textDirection,
+          children: [
+            widget.icon,
+            SizedBox(width: 2),
+            widget.child ??
+                Text(
+                  widget.text!,
+                  style: TextStyle(
+                    color: widget.color ?? widget.rippleColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 11,
+                  ),
                 ),
-              ),
-        ],
+          ],
+        ),
       ),
     );
   }

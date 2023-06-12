@@ -272,10 +272,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                 onSelected: (value) {
                   _loadFiles(sort: value);
                 },
-                icon: Icon(
-                  CupertinoIcons.sort_down,
-                  color: App.theme.iconTheme.color,
-                ),
+                iconData: CupertinoIcons.sort_down,
               ),
               MyPopupMenuButton(
                 itemBuilder: (context) {
@@ -300,10 +297,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                     isSelectable = true;
                   });
                 },
-                icon: Icon(
-                  Icons.more_vert,
-                  color: App.theme.iconTheme.color,
-                ),
+                iconData: Icons.more_vert,
               ),
             ],
           ),

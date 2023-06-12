@@ -1,19 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:siraf3/bloc/ticket/tickets_bloc.dart';
+import 'package:siraf3/bloc/ticket/list/ticket_list_bloc.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/main.dart';
 import 'package:siraf3/models/ticket.dart';
-import 'package:siraf3/screens/ticket/chat/chat_screen.dart';
+import 'package:siraf3/screens/ticket/ticket_chat/ticket_chat_screen.dart';
 import 'package:siraf3/screens/ticket/ticket_creation_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
+import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
-import 'package:siraf3/widgets/my_badge.dart';
+import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
+import 'package:siraf3/widgets/my_popup_menu_item.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 class TicketListScreen extends StatefulWidget {
@@ -22,13 +23,13 @@ class TicketListScreen extends StatefulWidget {
 }
 
 class _TicketListScreen extends State<TicketListScreen> {
-  TicketsBloc ticketsBloc = TicketsBloc();
+  TicketListBloc ticketsBloc = TicketListBloc();
 
   @override
   void initState() {
     super.initState();
 
-    ticketsBloc.add(TicketsEvent());
+    ticketsBloc.add(TicketListRequestEvent());
   }
 
   List<Ticket> tickets = [];
@@ -40,9 +41,7 @@ class _TicketListScreen extends State<TicketListScreen> {
     return BlocProvider(
       create: (_) => ticketsBloc,
       child: WillPopScope(
-        onWillPop: () async {
-          return _handleBack();
-        },
+        onWillPop: () async => _handleBack(),
         child: Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
@@ -55,39 +54,19 @@ class _TicketListScreen extends State<TicketListScreen> {
                 }
               },
             ),
-            title: Row(
-              children: [
-                AppBarTitle("تیک های پشتیبانی"),
-                MyBadge(text: "12"),
-              ],
-            ),
+            title: AppBarTitle("تیک های پشتیبانی"),
             actions: [
               if (selectedTickets.isNotEmpty)
-                IconButton(
-                  onPressed: () {
-                    showDeleteDialog(
-                        selectedTickets.map((e) => e.id!).toList());
+                MyIconButton(
+                  onTap: () {
+                    showDeleteDialog(selectedTickets.map((e) => e.id!).toList());
                   },
-                  icon: Icon(
-                    CupertinoIcons.delete,
-                    color: null,
-                  ),
-                  disabledColor: Themes.iconGrey,
+                  iconData: CupertinoIcons.delete,
                 ),
               MyPopupMenuButton(
                 itemBuilder: (context) {
                   return [
-                    PopupMenuItem<int>(
-                      value: 0,
-                      child: Text(
-                        "انتخاب همه",
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: App.theme.textTheme.bodyLarge?.color,
-                        ),
-                      ),
-                      height: 35,
-                    ),
+                    MyPopupMenuItem<int>(value: 0, label: "انتخاب همه", icon: Icons.check_circle_outline_rounded),
                   ];
                 },
                 onSelected: (value) {
@@ -97,21 +76,17 @@ class _TicketListScreen extends State<TicketListScreen> {
                     isSelectable = true;
                   });
                 },
-                icon: Icon(
-                  Icons.more_vert,
-                  color: App.theme.iconTheme.color,
-                ),
+                iconData: Icons.more_vert,
               ),
             ],
           ),
-          body:
-              BlocBuilder<TicketsBloc, TicketsState>(builder: _listBlocBuilder),
+          body: BlocBuilder<TicketListBloc, TicketListState>(builder: _listBlocBuilder),
           floatingActionButton: FloatingActionButton(
-            onPressed: createTicket,
+            onPressed: () {
+              push(context, TicketCreationScreen());
+            },
             backgroundColor: Themes.primary,
-            shape: CircleBorder(),
-            tooltip: "ایجاد تیکت",
-            child: icon(Icons.add_rounded, color: Colors.white),
+            child: Icon(Icons.add_rounded, color: Colors.white),
           ),
         ),
       ),
@@ -119,155 +94,119 @@ class _TicketListScreen extends State<TicketListScreen> {
   }
 
   Widget item(Ticket ticket) {
-    return GestureDetector(
-      onTap: () {
-        if (isSelectable) {
-          _changeSelection(ticket);
-        } else {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => ChatScreen()));
-        }
-      },
-      onLongPress: () {
-        _changeSelection(ticket);
-      },
-      child: Container(
-        height: 65,
-        color: App.theme.dialogBackgroundColor,
-        foregroundDecoration: BoxDecoration(
-          color: selectedTickets.any((e) => e.id == ticket.id)
-              ? Themes.blue.withOpacity(0.2)
-              : Colors.transparent,
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                // ClipRRect(
-                //   borderRadius: BorderRadius.circular(100),
-                //   child: Image(
-                //     image: NetworkImage(
-                //         "https://www.seiu1000.org/sites/main/files/imagecache/hero/main-images/camera_lense_0.jpeg"),
-                //     width: 50,
-                //     height: 50,
-                //     fit: BoxFit.fill,
-                //     alignment: Alignment.center,
-                //     loadingBuilder: (context, child, loadingProgress) {
-                //       if (loadingProgress == null) return child;
-                //       return Image.asset(
-                //         "assets/images/profile.png",
-                //         width: 50,
-                //         height: 50,
-                //         fit: BoxFit.fill,
-                //         alignment: Alignment.center,
-                //       );
-                //     },
-                //   ),
-                // ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 3, bottom: 3, right: 5),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            ticket.groupName ?? "",
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                            ),
+    return Material(
+      color: !ticket.status! ? Colors.white : Colors.grey.shade100,
+      child: InkWell(
+        onTap: () {
+          if (!ticket.status!) return;
+
+          push(context, TicketChatScreen(ticket: ticket));
+        },
+        child: Container(
+          height: 65,
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(color: Colors.black12, width: 0.5),
+            ),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: Avatar(
+                  imagePath: ticket.ticketSender?.avatar ?? "",
+                  size: 50,
+                  errorImage: AssetImage("assets/images/profile.jpg"),
+                  loadingImage: AssetImage("assets/images/profile.jpg"),
+                ),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "${ticket.groupName ?? "ناشناس"} | ",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Themes.text,
+                            fontWeight: FontWeight.bold,
                           ),
-                          Text(
-                            " | ",
-                            style: TextStyle(
-                              color: App.theme.tooltipTheme.textStyle?.color,
-                              fontSize: 13,
-                            ),
-                          ),
-                          Text(
-                            ticket.title ?? "",
+                        ),
+                        Expanded(
+                          child: Text(
+                            ticket.title ?? "بدون موضوع",
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: App.theme.tooltipTheme.textStyle?.color,
-                              fontSize: 13,
+                              fontSize: 10,
+                              color: Themes.textGrey,
+                              // fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ],
-                      ),
-                      Text(
-                        ticket.lastMessage?.trim() ?? "",
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: App.theme.tooltipTheme.textStyle?.color,
                         ),
-                        maxLines: 1,
+                      ],
+                    ),
+                    Text(
+                      ticket.lastMessage?.trim() ?? "",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.grey.shade400,
+                        height: 2,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                MyBadge(text: "23"), // todo change dynamically
-                Text(
-                  "12:54", // todo change dynamically
-                  style: TextStyle(
-                    color: App.theme.tooltipTheme.textStyle?.color,
-                    fontSize: 11,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "${ticket.lastMessageCreateTime} ${ticket.lastMessageCreateDate}",
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 9),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  SizedBox(height: 10),
+                  Text(
+                    ticket.statusMessage!,
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void createTicket() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (_) => TicketCreationScreen()));
-  }
+  Widget _listBlocBuilder(BuildContext context, TicketListState state) {
+    if (state is TicketListInitial) return Container();
 
-  Widget _listBlocBuilder(BuildContext context, TicketsState state) {
-    if (state is TicketsInitState) return Container();
+    if (state is TicketListLoading) return Center(child: Loading());
 
-    if (state is TicketsLoadingState)
-      return Center(
-        child: Loading(),
-      );
-
-    if (state is TicketsErrorState) {
+    if (state is TicketListError) {
       return Center(
         child: TryAgain(
+          message: state.message,
           onPressed: (() {
-            ticketsBloc.add(TicketsEvent());
+            ticketsBloc.add(TicketListRequestEvent());
           }),
         ),
       );
     }
 
-    state = TicketsLoadedState(tickets: (state as TicketsLoadedState).tickets);
-
-    tickets = state.tickets;
-
-    if (tickets.isEmpty) {
-      return Center(
-        child: Text(
-          "گفتگویی وجود ندارد یک تیکت ایجاد کنید",
-          style: TextStyle(fontSize: 13),
-        ),
-      );
-    }
+    tickets = (state as TicketListSuccess).tickets;
 
     return ListView(
       children: tickets.map<Widget>((e) => item(e)).toList(),
@@ -285,7 +224,7 @@ class _TicketListScreen extends State<TicketListScreen> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: App.theme.dialogBackgroundColor,
+          backgroundColor: Themes.themeData().dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -305,7 +244,7 @@ class _TicketListScreen extends State<TicketListScreen> {
                       child: Text(
                         'آیا مایل به حذف فایل هستید؟',
                         style: TextStyle(
-                          color: App.theme.tooltipTheme.textStyle?.color,
+                          color: Themes.themeData().tooltipTheme.textStyle?.color,
                           fontSize: 13,
                         ),
                       ),
@@ -388,18 +327,6 @@ class _TicketListScreen extends State<TicketListScreen> {
     if (deleteDialogContext != null) {
       Navigator.pop(deleteDialogContext!);
     }
-  }
-
-  _changeSelection(Ticket ticket) {
-    setState(() {
-      if (selectedTickets.any((e) => e.id == ticket.id)) {
-        selectedTickets.remove(ticket);
-      } else {
-        selectedTickets.add(ticket);
-      }
-
-      isSelectable = selectedTickets.isNotEmpty;
-    });
   }
 
   _handleBack() {

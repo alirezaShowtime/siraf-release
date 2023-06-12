@@ -1,27 +1,26 @@
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+import 'package:convert/convert.dart';
+import 'package:crypto/crypto.dart' as crypto;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart' as fr;
 import 'package:oktoast/oktoast.dart';
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/themes.dart';
-import 'package:siraf3/widgets/error_dialog.dart';
-import 'package:siraf3/widgets/loading_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const image_extensions = <String>["png", "jpg", "jpeg", "tif", 'webp'];
 const video_extensions = <String>["mp4", "mov", "3gp", "avi", "mkv"];
 
-void notify(String msg,
-    {TextDirection textDirection = TextDirection.rtl,
-    Duration? duration = null}) {
+void notify(String msg, {TextDirection textDirection = TextDirection.rtl, Duration? duration = null}) {
   showToast(
     msg,
     textDirection: textDirection,
@@ -102,8 +101,7 @@ callToSupport() async {
   if (await canLaunch(url)) {
     await launch(url);
   } else {
-    notify(
-        'نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_PHONE + 'تماس بگیرید');
+    notify('نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_PHONE + 'تماس بگیرید');
   }
 }
 
@@ -162,8 +160,7 @@ bool isResponseOk(http.Response response) {
 
 const API_HOST = 'auth.siraf.app';
 
-Uri createAuthUrlByEndPoint(String endPoint,
-    {Map<String, dynamic>? queryParams = null}) {
+Uri createAuthUrlByEndPoint(String endPoint, {Map<String, dynamic>? queryParams = null}) {
   return Uri.https(API_HOST, "api/user/${endPoint}", queryParams);
 }
 
@@ -174,14 +171,12 @@ String phoneFormat(String numberPhone) {
     numberPhone = "0$numberPhone";
   }
 
-  var formatted =
-      "${numberPhone.substring(0, 4)}  ${numberPhone.substring(4, 7)}  ${numberPhone.substring(7, 11)}";
+  var formatted = "${numberPhone.substring(0, 4)}  ${numberPhone.substring(4, 7)}  ${numberPhone.substring(7, 11)}";
 
   return zeroPrefix ? formatted : formatted.replaceFirst("09", "9");
 }
 
-doWithLogin(BuildContext context, void Function() onLoggedIn,
-    {bool pop = true}) async {
+doWithLogin(BuildContext context, void Function() onLoggedIn, {bool pop = true}) async {
   if (await User.hasToken()) {
     onLoggedIn();
   } else {
@@ -216,23 +211,20 @@ bool isValidNumberPhone(String numberPhone) {
   return numberPhone.length == 11;
 }
 
-
 PopupMenuItem<String> popupMenuItem({
   required String title,
   Function()? onTap,
 }) {
   return PopupMenuItem<String>(
-    onTap: onTap,
-    child: Text(
-      title,
-      style: TextStyle(
-        color: App.theme.textTheme.bodyLarge?.color,
-        fontSize: 11,
-      ),
-    )
-  );
+      onTap: onTap,
+      child: Text(
+        title,
+        style: TextStyle(
+          color: App.theme.textTheme.bodyLarge?.color,
+          fontSize: 11,
+        ),
+      ));
 }
-
 
 PopupMenuItem<String> popupMenuItemWithIcon({
   required String title,
@@ -257,8 +249,7 @@ PopupMenuItem<String> popupMenuItemWithIcon({
   );
 }
 
-Divider divider({double height = 1}) =>
-    Divider(color: Colors.grey.shade200, height: height);
+Divider divider({double height = 1}) => Divider(color: Colors.grey.shade200, height: height);
 
 bool resetCreateFileForm = false;
 bool resetEditFileForm = false;
@@ -276,4 +267,64 @@ extension String2 on String? {
   bool isNotNullOrEmpty() {
     return this != null && this!.isNotEmpty;
   }
+}
+
+Future<Directory> getOrCreatePath(dynamic directory) async {
+  if (directory is String) {
+    directory = Directory(directory);
+  }
+
+  var split = (directory as Directory).path.split("/");
+
+  Directory? newDir;
+
+  for (var i = 0; i < split.length - 2; i++) {
+    var l = split.getRange(1, i + 3).toList();
+    newDir = Directory(l.join("/"));
+
+    if (!await newDir.exists()) {
+      newDir.create();
+    }
+  }
+  return newDir!;
+}
+
+Future<String?> getDownloadPath() async {
+  Directory? directory;
+  try {
+    if (Platform.isIOS) {
+      directory = await getApplicationDocumentsDirectory();
+    } else {
+      directory = Directory('/storage/emulated/0/Download');
+      // Put file in global download folder, if for an unknown reason it didn't exist, we fallback
+      // ignore: avoid_slow_async_io
+      if (!await directory.exists()) directory = await getExternalStorageDirectory();
+    }
+  } catch (err) {
+    print("Cannot get download folder path");
+  }
+  return directory!.path;
+}
+
+Future<Directory> ticketDownloadPath() async {
+  return await getOrCreatePath("${await getDownloadPath()}/Siraf/Ticket");
+}
+
+generateMd5(String data) {
+  var content = new Utf8Encoder().convert(data);
+  var md5 = crypto.md5;
+  var digest = md5.convert(content);
+  return hex.encode(digest.bytes);
+}
+
+void push(BuildContext context, StatefulWidget widget) {
+  Navigator.push(context, MaterialPageRoute(builder: (_) => widget));
+}
+
+void pushAndRemoveUntil(BuildContext context, Widget screen) {
+  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => screen), (route) => false);
+}
+
+void pushReplacement(BuildContext context, Widget screen) {
+  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => screen));
 }

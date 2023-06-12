@@ -299,10 +299,7 @@ class _EstateScreenState extends State<EstateScreen> {
 
                   getEstates();
                 },
-                icon: Icon(
-                  CupertinoIcons.sort_down,
-                  color: Themes.icon,
-                ),
+                iconData: CupertinoIcons.sort_down,
               ),
             SizedBox(
               width: 10,

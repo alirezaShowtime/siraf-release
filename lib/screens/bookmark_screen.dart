@@ -164,8 +164,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                     height: 35,
                   ),
                 ],
-                icon:
-                    icon(Icons.sort_rounded, color: App.theme.iconTheme.color),
+                iconData: Icons.sort_rounded,
                 onSelected: (val) {
                   setState(() {
                     sort = val;
@@ -187,8 +186,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                     height: 35,
                   ),
                 ],
-                icon: icon(Icons.more_vert_rounded,
-                    color: App.theme.iconTheme.color),
+                iconData: Icons.more_vert_rounded,
                 onSelected: (val) {
                   setState(() {
                     isSelectable = true;

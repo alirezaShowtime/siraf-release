@@ -102,7 +102,7 @@ class _RequestListScreen extends State<RequestListScreen> {
               Transform.translate(
                 offset: Offset(-10, 0),
                 child: MyPopupMenuButton(
-                  icon: icon(Icons.sort_rounded),
+                  iconData: Icons.sort_rounded,
                   itemBuilder: (_) => [
                     PopupMenuItem<String?>(
                       value: "newest",
