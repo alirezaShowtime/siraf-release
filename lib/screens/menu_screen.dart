@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +8,7 @@ import 'package:siraf3/config.dart';
 import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/user.dart';
+import 'package:siraf3/rabbit_mq_data.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/bookmark_screen.dart';
 import 'package:siraf3/screens/chat/chat_list_screen.dart';
@@ -23,6 +26,7 @@ import 'package:siraf3/screens/ticket/ticket_list_screen.dart';
 import 'package:siraf3/screens/verify_contract/inquiry_contract_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/accordion.dart';
+import 'package:badges/badges.dart' as badge;
 
 import '../helpers.dart';
 
@@ -44,6 +48,8 @@ class _MenuScreenState extends State<MenuScreen> {
     getUser();
 
     getGroupsBloc.add(GetGroupsEvent());
+
+    listenRabbitData();
   }
 
   getUser() async {
@@ -76,7 +82,8 @@ class _MenuScreenState extends State<MenuScreen> {
                       margin: EdgeInsets.only(bottom: 50),
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage("assets/images/menu_background.png"),
+                          image:
+                              AssetImage("assets/images/menu_background.png"),
                           fit: BoxFit.cover,
                           colorFilter: ColorFilter.mode(
                             App.isDark ? DarkThemes.secondary2 : Themes.primary,
@@ -89,9 +96,11 @@ class _MenuScreenState extends State<MenuScreen> {
                         children: [
                           ClipRRect(
                             child: Image(
-                              image: NetworkImage(getImageUrl(user?.avatar ?? "")),
+                              image:
+                                  NetworkImage(getImageUrl(user?.avatar ?? "")),
                               // todo use dynamic avatar link
-                              errorBuilder: (context, error, stackTrace) => Image(
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Image(
                                 image: AssetImage("assets/images/profile.png"),
                                 width: 80,
                                 height: 80,
@@ -111,12 +120,17 @@ class _MenuScreenState extends State<MenuScreen> {
                               }
                             },
                             child: Text(
-                              user?.token != null ? (user?.name ?? "") : "ورود به حساب",
-                              style: TextStyle(color: Colors.white, fontSize: 15),
+                              user?.token != null
+                                  ? (user?.name ?? "")
+                                  : "ورود به حساب",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 15),
                             ),
                           ),
                           Text(
-                            user?.phone != null ? phoneFormat(user!.phone!) : "",
+                            user?.phone != null
+                                ? phoneFormat(user!.phone!)
+                                : "",
                             textDirection: TextDirection.ltr,
                             style: TextStyle(color: Colors.white, fontSize: 15),
                           ),
@@ -142,7 +156,11 @@ class _MenuScreenState extends State<MenuScreen> {
                           ),
                           IconButton(
                             onPressed: () async {
-                              await Navigator.push(context, MaterialPageRoute(builder: (_) => SettingsScreen(user: user)));
+                              await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          SettingsScreen(user: user)));
 
                               getUser();
                             },
@@ -163,21 +181,35 @@ class _MenuScreenState extends State<MenuScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            decoration: BoxDecoration(color: App.theme.dialogBackgroundColor, borderRadius: BorderRadius.circular(5)),
+                            decoration: BoxDecoration(
+                                color: App.theme.dialogBackgroundColor,
+                                borderRadius: BorderRadius.circular(5)),
                             child: Wrap(
                               children: [
                                 _item(
                                   title: "پیام ها",
                                   icon: CupertinoIcons.envelope,
+                                  hasBadge: hasNewMessage,
                                   onClick: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (_) => ChatListScreen()));
+                                    if (hasNewMessage) {
+                                      setState(() {
+                                        hasNewMessage = false;
+                                      });
+                                      hasNewMessageStream.add(hasNewMessage);
+                                    }
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => ChatListScreen()));
                                   },
-                                  padding: EdgeInsets.only(right: 30, left: 15, top: 20, bottom: 20),
+                                  padding: EdgeInsets.only(
+                                      right: 30, left: 15, top: 20, bottom: 20),
                                 ),
                                 _item(
                                   title: "ثبت فایل",
                                   icon: CupertinoIcons.add,
-                                  padding: EdgeInsets.only(right: 15, left: 15, top: 20, bottom: 20),
+                                  padding: EdgeInsets.only(
+                                      right: 15, left: 15, top: 20, bottom: 20),
                                   onClick: () async {
                                     await doWithLogin(context, () {
                                       Navigator.push(
@@ -194,7 +226,8 @@ class _MenuScreenState extends State<MenuScreen> {
                                 _item(
                                   title: "نشان ها",
                                   icon: CupertinoIcons.bookmark,
-                                  padding: EdgeInsets.only(right: 15, left: 30, top: 20, bottom: 20),
+                                  padding: EdgeInsets.only(
+                                      right: 15, left: 30, top: 20, bottom: 20),
                                   onClick: () {
                                     doWithLogin(context, () {
                                       Navigator.push(
@@ -322,12 +355,19 @@ class _MenuScreenState extends State<MenuScreen> {
                             children: [
                               AccordionItem(
                                   onClick: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (_) => InquiryScreen()));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => InquiryScreen()));
                                   },
                                   title: "استعلامات ثبتی"),
                               AccordionItem(
                                   onClick: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (_) => InquiryContractScreen()));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                InquiryContractScreen()));
                                   },
                                   title: "استعلامات قرارداد"),
                             ],
@@ -344,12 +384,20 @@ class _MenuScreenState extends State<MenuScreen> {
                             children: [
                               AccordionItem(
                                   onClick: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (_) => CommissionCalculatorScreen()));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                CommissionCalculatorScreen()));
                                   },
                                   title: "محاسبه کمیسیون"),
                               AccordionItem(
                                   onClick: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (_) => CommissionCalculatorScreen()));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                CommissionCalculatorScreen()));
                                   },
                                   title: "تبدیل رهن به اجاره"),
                             ],
@@ -361,11 +409,13 @@ class _MenuScreenState extends State<MenuScreen> {
                             _onClickAccordion(4);
                           },
                           open: openedItem == 4,
-                          content: BlocBuilder<GetGroupsBloc, GetGroupsState>(builder: _buildTicketAccordionContent),
+                          content: BlocBuilder<GetGroupsBloc, GetGroupsState>(
+                              builder: _buildTicketAccordionContent),
                         ),
                         Container(
                           margin: EdgeInsets.only(bottom: 5),
-                          padding: EdgeInsets.only(bottom: 11, top: 11, right: 7),
+                          padding:
+                              EdgeInsets.only(bottom: 11, top: 11, right: 7),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             color: App.theme.dialogBackgroundColor,
@@ -380,7 +430,8 @@ class _MenuScreenState extends State<MenuScreen> {
                         ),
                         Container(
                           margin: EdgeInsets.only(bottom: 5),
-                          padding: EdgeInsets.only(bottom: 11, top: 11, right: 7),
+                          padding:
+                              EdgeInsets.only(bottom: 11, top: 11, right: 7),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             color: App.theme.dialogBackgroundColor,
@@ -429,6 +480,7 @@ class _MenuScreenState extends State<MenuScreen> {
     required IconData icon,
     required EdgeInsets padding,
     required GestureTapCallback onClick,
+    bool hasBadge = false,
   }) {
     return InkWell(
       onTap: onClick,
@@ -437,9 +489,16 @@ class _MenuScreenState extends State<MenuScreen> {
         padding: padding,
         child: Column(
           children: [
-            Icon(
-              icon,
-              size: 27,
+            badge.Badge(
+              badgeContent: Text(''),
+              showBadge: hasBadge,
+              position: badge.BadgePosition.custom(top: -13, start: -6),
+              badgeStyle: badge.BadgeStyle(badgeColor: Themes.primary),
+              child: Icon(
+                icon,
+                size: 27,
+                color: Themes.icon,
+              ),
             ),
             SizedBox(
               height: 5,
@@ -456,7 +515,8 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  Widget _buildTicketAccordionContent(BuildContext context, GetGroupsState state) {
+  Widget _buildTicketAccordionContent(
+      BuildContext context, GetGroupsState state) {
     if (state is GetGroupsLoadedState) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -523,9 +583,22 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
+  void listenRabbitData() {
+    hasNewMessageStream.close();
+    hasNewMessageStream = StreamController<bool>();
+
+    hasNewMessageStream.stream.listen((event) {
+      setState(() {});
+    });
+  }
+
+  bool disposed = false;
+
   @override
   void dispose() {
     super.dispose();
+
+    disposed = true;
 
     getGroupsBloc.close();
   }

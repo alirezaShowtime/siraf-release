@@ -48,15 +48,11 @@ class VerifyNumberPhoneBloc
     await http2.postJsonWithToken(
       Uri.parse("https://message.siraf.app/api/fireBase/addDevice/"),
       body: {
-        "token": await getDeviceToken(),
+        "token": (await FirebaseMessaging.instance.getToken()).toString(),
         "userId": user.id,
       },
     );
 
     return emit(VerifyNumberPhoneSuccess(user));
-  }
-
-  Future<String> getDeviceToken() async {
-    return (await FirebaseMessaging.instance.getToken()).toString();
   }
 }

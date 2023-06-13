@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -15,6 +17,8 @@ import 'package:siraf3/main.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
+import 'package:siraf3/rabbit_mq_consum.dart';
+import 'package:siraf3/rabbit_mq_data.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
 import 'package:siraf3/screens/menu_screen.dart';
@@ -76,6 +80,9 @@ class _HomeScreenState extends State<HomeScreen> {
     _moreBloc.stream.listen(_loadMoreEvent);
 
     listenNotification();
+
+    consumRabbitMq();
+    listenRabbitData();
   }
 
   HSBloc _moreBloc = HSBloc();
@@ -89,7 +96,10 @@ class _HomeScreenState extends State<HomeScreen> {
   List<File> files = [];
 
   bool _canLoadMore() {
-    return (scrollController.position.pixels == scrollController.position.maxScrollExtent) && lastId != null && !_isLoadingMore;
+    return (scrollController.position.pixels ==
+            scrollController.position.maxScrollExtent) &&
+        lastId != null &&
+        !_isLoadingMore;
   }
 
   void pagination() async {
@@ -159,7 +169,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   changeViewType() async {
     var sh = await SharedPreferences.getInstance();
-    sh.setString("FILE_VIEW_TYPE", viewType == ViewType.List ? "slide" : "list");
+    sh.setString(
+        "FILE_VIEW_TYPE", viewType == ViewType.List ? "slide" : "list");
 
     await getViewType();
 
@@ -167,11 +178,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   goSelectCity({showSelected = false}) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => SelectCityScreen(showSelected: showSelected)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => SelectCityScreen(showSelected: showSelected)));
   }
 
-  openMenu() {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => MenuScreen()));
+  openMenu() async {
+    await Navigator.push(context, MaterialPageRoute(builder: (_) => MenuScreen()));
+
+    listenRabbitData();
+    setState(() {});
   }
 
   // @override
@@ -189,7 +206,8 @@ class _HomeScreenState extends State<HomeScreen> {
       statusBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
       statusBarBrightness: darkMode ? Brightness.light : Brightness.dark,
       statusBarIconBrightness: darkMode ? Brightness.light : Brightness.dark,
-      systemNavigationBarIconBrightness: darkMode ? Brightness.light : Brightness.dark,
+      systemNavigationBarIconBrightness:
+          darkMode ? Brightness.light : Brightness.dark,
       systemNavigationBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
     ));
 
@@ -209,14 +227,18 @@ class _HomeScreenState extends State<HomeScreen> {
         leading: Padding(
           padding: const EdgeInsets.only(right: 15),
           child: IconButton(
-            onPressed: () {
-              openMenu();
-            },
-            icon: Image(
-              image: AssetImage("assets/images/ic_menu.png"),
-              width: 30,
-              height: 30,
-              color: App.theme.iconTheme.color,
+            onPressed: openMenu,
+            icon: badges.Badge(
+              badgeContent: Text(''),
+              showBadge: hasNewMessage,
+              position: badges.BadgePosition.custom(top: -17, start: -4),
+              badgeStyle: badges.BadgeStyle(badgeColor: Themes.primary),
+              child: Image(
+                image: AssetImage("assets/images/ic_menu.png"),
+                width: 25,
+                height: 25,
+                color: Themes.icon,
+              ),
             ),
           ),
         ),
@@ -227,7 +249,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (_) => FilterScreen(
-                    originalFilterData: FilterData(cityIds: cities.map<int>((e) => e.id!).toList()),
+                    originalFilterData: FilterData(
+                        cityIds: cities.map<int>((e) => e.id!).toList()),
                     filterData: filterData,
                   ),
                 ),
@@ -281,7 +304,8 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (currentBlocState is HSInitState || currentBlocState is HSLoadingState)
+          if (currentBlocState is HSInitState ||
+              currentBlocState is HSLoadingState)
             Center(
               child: Loading(),
             ),
@@ -289,10 +313,15 @@ class _HomeScreenState extends State<HomeScreen> {
             Center(
               child: TryAgain(
                 onPressed: getFiles,
-                message: (currentBlocState as HSErrorState).response != null ? jDecode((currentBlocState as HSErrorState).response!.body)['message'] : null,
+                message: (currentBlocState as HSErrorState).response != null
+                    ? jDecode((currentBlocState as HSErrorState)
+                        .response!
+                        .body)['message']
+                    : null,
               ),
             ),
-          if (currentBlocState is HSLoadedState && (currentBlocState as HSLoadedState).files.isEmpty)
+          if (currentBlocState is HSLoadedState &&
+              (currentBlocState as HSLoadedState).files.isEmpty)
             Center(
               child: Text(
                 "فایلی موجود نیست فیلتر را حدف کنید",
@@ -301,7 +330,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-          if (currentBlocState is HSLoadedState && (currentBlocState as HSLoadedState).files.isNotEmpty)
+          if (currentBlocState is HSLoadedState &&
+              (currentBlocState as HSLoadedState).files.isNotEmpty)
             Expanded(
               child: ListView(
                 controller: scrollController,
@@ -316,8 +346,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 );
                               },
                               child: Padding(
-                                padding: EdgeInsets.only(top: files.first == file ? 0 : 5),
-                                child: viewType == ViewType.List ? FileHorizontalItem(file: file) : FileSlideItem(file: file),
+                                padding: EdgeInsets.only(
+                                    top: files.first == file ? 0 : 5),
+                                child: viewType == ViewType.List
+                                    ? FileHorizontalItem(file: file)
+                                    : FileSlideItem(file: file),
                               ),
                             ))
                         .toList() +
@@ -401,6 +434,15 @@ class _HomeScreenState extends State<HomeScreen> {
         notify("لینک قابل پردازش نیست");
       });
     }
+  }
+
+  void listenRabbitData() {
+    hasNewMessageStream.close();
+    hasNewMessageStream = StreamController<bool>();
+
+    hasNewMessageStream.stream.listen((event) {
+      setState(() {});
+    });
   }
 }
 

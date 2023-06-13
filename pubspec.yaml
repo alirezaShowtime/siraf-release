@@ -78,6 +78,7 @@ dependencies:
   firebase_core: ^2.13.1
   firebase_messaging: ^14.6.2
   flutter_local_notifications: ^8.2.0
+  dart_amqp: ^0.2.5
 
 dev_dependencies:
   flutter_test:
