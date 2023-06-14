@@ -237,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 image: AssetImage("assets/images/ic_menu.png"),
                 width: 25,
                 height: 25,
-                color: Themes.icon,
+                color: App.theme.iconTheme.color,
               ),
             ),
           ),
@@ -324,7 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
               (currentBlocState as HSLoadedState).files.isEmpty)
             Center(
               child: Text(
-                "فایلی موجود نیست فیلتر را حدف کنید",
+                "فایلی یافت نشد",
                 style: TextStyle(
                   fontSize: 15,
                 ),

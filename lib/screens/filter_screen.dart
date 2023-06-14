@@ -17,6 +17,7 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/text_form_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:siraf3/widgets/usefull/text/light/text_normal_light.dart';
+import 'package:flutter/services.dart';
 
 class FilterScreen extends StatefulWidget {
   FilterData originalFilterData;
@@ -72,7 +73,6 @@ class _FilterScreenState extends State<FilterScreen> {
 
           filters = widget.filterData.filters ?? Filters();
         } else {
-          print("nooooo");
           setMainCat(event.categories
               .where((element) => element.parentId == null)
               .first);
@@ -89,10 +89,17 @@ class _FilterScreenState extends State<FilterScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => categoriesBloc,
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: BlocBuilder<CategoriesBloc, CategoriesBlocState>(
-            builder: _buildMainWidgets),
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.light,
+        ),
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          body: BlocBuilder<CategoriesBloc, CategoriesBlocState>(
+              builder: _buildMainWidgets),
+        ),
       ),
     );
   }

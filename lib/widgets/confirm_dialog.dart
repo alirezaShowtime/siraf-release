@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/dialog.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/widgets/dialog_button.dart';
 
 import '../themes.dart';
@@ -10,17 +11,23 @@ class ConfirmDialog extends StatefulWidget {
 
   String content;
   String? title;
+  String applyText;
+  String cancelText;
   void Function()? onCancel;
   void Function()? onApply;
+  Color? titleColor;
 
   BuildContext dialogContext;
 
   ConfirmDialog({
-    required this.content,
     required this.dialogContext,
+    required this.content,
     this.title,
     this.onApply,
     this.onCancel,
+    this.applyText = "تایید",
+    this.cancelText = "لغو",
+    this.titleColor
   });
 }
 
@@ -28,8 +35,7 @@ class _ConfirmDialog extends State<ConfirmDialog> {
   @override
   void initState() {
     super.initState();
-    //todo
-    // dialogContext = widget.dialogContext;
+    dialogContext = widget.dialogContext;
   }
 
   @override
@@ -43,7 +49,7 @@ class _ConfirmDialog extends State<ConfirmDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(height: 27),
+          SizedBox(height: 10),
           if (widget.title != null)
             Container(
               padding: const EdgeInsets.only(left: 15, right: 15),
@@ -51,48 +57,48 @@ class _ConfirmDialog extends State<ConfirmDialog> {
               child: Text(
                 widget.title!,
                 style: TextStyle(
-                  color: Themes.text,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "IRANSansBold",
+                  color: widget.titleColor ?? App.theme.textTheme.bodyLarge?.color,
+                  fontFamily: "IranSansBold",
                   fontSize: 16,
                 ),
               ),
             ),
+          SizedBox(height: 10),
           Container(
-            padding: const EdgeInsets.only(top: 8, left: 15, right: 25),
-            constraints: BoxConstraints(minHeight: 70),
+            padding: const EdgeInsets.only(left: 15, right: 25),
             alignment: Alignment.topRight,
             child: Text(
               widget.content,
-              style: TextStyle(color: Themes.textGrey, fontSize: 12),
+              style: TextStyle(color: App.theme.textTheme.bodyLarge?.color, fontSize: 12.5),
             ),
           ),
+          SizedBox(height: 15),
           SizedBox(height: 1.7),
           ClipRRect(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
             child: ColoredBox(
-              color: Themes.primary,
+              color: App.theme.primaryColor,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: DialogButton(
-                      onPressed: widget.onApply,
-                      labelText: "تایید",
+                      labelText: widget.cancelText,
+                      onPressed: () {
+                        widget.onCancel?.call();
+                        dismissDialog(context);
+                      },
                     ),
                   ),
                   Container(
-                    width: 1,
+                    width: 0.5,
                     height: 55,
                     color: Colors.white,
                   ),
                   Expanded(
                     child: DialogButton(
-                      onPressed: () {
-                        widget.onCancel?.call();
-                        dismissDialog(context);
-                      },
-                      labelText: "لغو",
+                      labelText: widget.applyText,
+                      onPressed: widget.onApply,
                     ),
                   ),
                 ],

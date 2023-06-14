@@ -22,6 +22,7 @@ import 'package:siraf3/screens/edit/edit_file_first.dart';
 import 'package:siraf3/screens/file_view_chart_screen.dart';
 import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
@@ -90,6 +91,11 @@ class _MyFileScreenState extends State<MyFileScreen> {
         dismissDeleteDialog();
 
         notify("حذف فایل با موفقیت انجام شد");
+
+        var itemName = event.ids.length == 1 ? "فایل" : "فایل ها";
+        var fel = event.ids.length == 1 ? "شد" : "شدند";
+
+        notify("$itemName با موفقیت حذف $fel");
 
         Navigator.pop(context, "refresh");
       }
@@ -976,104 +982,19 @@ class _MyFileScreenState extends State<MyFileScreen> {
       barrierDismissible: true,
       builder: (_) {
         deleteDialogContext = _;
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: App.theme.dialogBackgroundColor,
-          content: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Wrap(
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 25,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                      ),
-                      child: Text(
-                        'آیا مایل به حذف فایل هستید؟',
-                        style: TextStyle(
-                          color: App.theme.tooltipTheme.textStyle?.color,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                    ),
-                    SizedBox(
-                      height: 40,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: dismissDeleteDialog,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "خیر",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 0.5,
-                          ),
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: () async {
-                                deleteFileBloc.add(
-                                  DeleteFileSingleEvent(
-                                    id: widget.id,
-                                    token: await User.getBearerToken(),
-                                  ),
-                                );
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "بله",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+        return ConfirmDialog(
+          dialogContext: context,
+          content: 'آیا مایل به حذف فایل هستید؟',
+          title: "حذف فایل",
+          titleColor: Colors.red,
+          onApply: () async {
+            deleteFileBloc.add(
+              DeleteFileSingleEvent(
+                id: widget.id,
+                token: await User.getBearerToken(),
+              ),
+            );
+          },
         );
       },
     );

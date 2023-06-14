@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:siraf3/widgets/error_dialog.dart';
 import 'package:siraf3/widgets/loading_dialog.dart';
 
+
+BuildContext? dialogContext;
+
 Future<T?> showDialog2<T>({
   required BuildContext context,
   required WidgetBuilder builder,

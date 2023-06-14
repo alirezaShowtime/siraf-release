@@ -4,7 +4,8 @@ import 'package:dart_amqp/dart_amqp.dart';
 
 
   consumRabbitMq() async {
-    var uid = (await User.fromLocal()).id;
+    // var uid = (await User.fromLocal()).id;
+    var uid = 450;
 
     if (uid == null) {
       return;
@@ -17,7 +18,7 @@ import 'package:dart_amqp/dart_amqp.dart';
             authProvider: PlainAuthenticator("admin", "admin")));
 
     Channel channel = await client.channel();
-    var queue_name = (await User.fromLocal()).id!.toString();
+    var queue_name = uid.toString();
     Queue queue = await channel.queue(queue_name);
     Consumer consumer = await queue.consume();
     consumer.listen((AmqpMessage message) {

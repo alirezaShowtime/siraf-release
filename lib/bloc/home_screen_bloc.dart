@@ -66,7 +66,7 @@ class HSBloc extends Bloc<HSEvent, HSState> {
         var files = File.fromList(json['data']['files']).toList();
 
         emit(
-            HSLoadedState(files: files, lastId: json['data']["lastId"] as int));
+            HSLoadedState(files: files, lastId: json['data']["lastId"] as int?));
       } else {
         var json = jDecode(response.body);
 

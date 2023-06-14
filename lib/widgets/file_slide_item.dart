@@ -240,8 +240,10 @@ class _FileSlideItemState extends State<FileSlideItem> {
                     chooserTitle: 'اشتراک گذاری در',
                   );
                 },
-                icon: Icon(
-                  CupertinoIcons.paperplane,
+                icon: Image(
+                  image: AssetImage("assets/images/ic_share.png"),
+                  width: 16,
+                  height: 16,
                   color: App.theme.iconTheme.color,
                 ),
               ),

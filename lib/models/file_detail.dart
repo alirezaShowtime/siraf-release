@@ -21,7 +21,7 @@ class FileDetail {
   List<Property>? property;
   FullCategory? fullCategory;
   String? publishedAgo;
-  String? city;
+  City? city;
   Media? media;
   bool? favorite;
 
@@ -91,8 +91,10 @@ class FileDetail {
     if (json["publishedAgo"] is String) {
       publishedAgo = json["publishedAgo"];
     }
-    if (json["city"] is String) {
-      city = json["city"];
+    if (json["city"] is Map) {
+      city = json["city"] == null
+          ? null
+          : City.fromJson(json["city"]);
     }
     if (json["media"] is Map) {
       media = json["media"] == null ? null : Media.fromJson(json["media"]);
@@ -142,7 +144,7 @@ class FileDetail {
     return prices.asMap().containsKey(0) ? prices[0] : null;
   }
 
-  Property? getRent() {
+  Property? getVadie() {
     var prices = getPrices();
 
     return prices.asMap().containsKey(1) ? prices[1] : null;
@@ -216,6 +218,39 @@ class FileDetail {
     }
 
     return images + videos + virtualTours;
+  }
+}
+
+class City {
+  int? id;
+  String? name;
+  String? weight;
+  String? countFile;
+
+  City({this.id, this.name, this.weight, this.countFile});
+
+  City.fromJson(Map<String, dynamic> json) {
+    if(json["id"] is int) {
+      id = json["id"];
+    }
+    if(json["name"] is String) {
+      name = json["name"];
+    }
+    if(json["weight"] is String) {
+      weight = json["weight"];
+    }
+    if(json["countFile"] is String) {
+      countFile = json["countFile"];
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["id"] = id;
+    _data["name"] = name;
+    _data["weight"] = weight;
+    _data["countFile"] = countFile;
+    return _data;
   }
 }
 

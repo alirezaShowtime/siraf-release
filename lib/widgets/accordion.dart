@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/icon_asset.dart';
+import 'package:flutter/material.dart';
+import 'package:badges/badges.dart' as badge;
 
 class Accordion extends StatefulWidget {
   final Widget title;
@@ -9,6 +10,7 @@ class Accordion extends StatefulWidget {
   bool open;
   Function? onClick;
   Color? backgroundColor;
+  bool hasBadge;
 
   Accordion({
     Key? key,
@@ -16,6 +18,7 @@ class Accordion extends StatefulWidget {
     required this.content,
     this.open = false,
     this.onClick,
+    this.hasBadge = false,
     this.backgroundColor,
   }) : super(key: key);
 
@@ -41,16 +44,29 @@ class _AccordionState extends State<Accordion> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
-                color:
-                    widget.backgroundColor ?? App.theme.dialogBackgroundColor,
+                // color: widget.backgroundColor ?? App.theme.dialogBackgroundColor,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 7, top: 7, right: 7),
-                    child: widget.title,
-                  ),
+                  widget.hasBadge
+                      ? badge.Badge(
+                          badgeContent: Text(''),
+                          showBadge: true,
+                          position:
+                              badge.BadgePosition.custom(top: -12, start: 1),
+                          badgeStyle:
+                              badge.BadgeStyle(badgeColor: App.theme.primaryColor),
+                          child: Padding(
+                            padding:
+                                EdgeInsets.only(bottom: 7, top: 7, right: 12),
+                            child: widget.title,
+                          ),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.only(bottom: 7, top: 7, right: 7),
+                          child: widget.title,
+                        ),
                   IconAsset(
                     icon: widget.open
                         ? "ic_arrow_top.png"
@@ -92,8 +108,9 @@ class AccordionItem extends StatefulWidget {
 
   String title;
   GestureTapCallback onClick;
+  bool hasBadge;
 
-  AccordionItem({required this.onClick, required this.title});
+  AccordionItem({required this.onClick, required this.title, this.hasBadge = false});
 }
 
 class _AccordionItem extends State<AccordionItem> {
@@ -102,12 +119,19 @@ class _AccordionItem extends State<AccordionItem> {
     return InkWell(
       onTap: widget.onClick,
       radius: 15,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-        child: Text(
-          widget.title,
-          style: TextStyle(
-            fontSize: 12,
+      child: badge.Badge(
+        badgeContent: Text(''),
+        showBadge: widget.hasBadge,
+        position: badge.BadgePosition.custom(top: -12, start: 5),
+        badgeStyle: badge.BadgeStyle(badgeColor: App.theme.primaryColor),
+        child: Padding(
+          padding: EdgeInsets.only(
+              top: 5, bottom: 5, right: (widget.hasBadge ? 18 : 10)),
+          child: Text(
+            widget.title,
+            style: TextStyle(
+              fontSize: 12,
+            ),
           ),
         ),
       ),

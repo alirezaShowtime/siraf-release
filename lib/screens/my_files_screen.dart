@@ -11,7 +11,9 @@ import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/my_file_screen.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_file_horizontal_item.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/try_again.dart';
@@ -75,6 +77,11 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
           isSelectable = false;
           files.removeWhere((element) => event.ids.any((e) => e == element.id));
         });
+
+        var itemName = event.ids.length == 1 ? "فایل" : "فایل ها";
+        var fel = event.ids.length == 1 ? "شد" : "شدند";
+
+        notify("$itemName با موفقیت حذف $fel");
       }
     });
   }
@@ -103,7 +110,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
               ),
             ),
             automaticallyImplyLeading: false,
-            leading: IconButton(
+            leading: MyBackButton(
               onPressed: () {
                 if (isSelectable) {
                   setState(() {
@@ -114,9 +121,6 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                   Navigator.pop(context);
                 }
               },
-              icon: Icon(
-                CupertinoIcons.back,
-              ),
             ),
             actions: [
               IconButton(
@@ -449,108 +453,15 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
       barrierDismissible: true,
       builder: (_) {
         deleteDialogContext = _;
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: App.theme.dialogBackgroundColor,
-          content: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Wrap(
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 25,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                      ),
-                      child: Text(
-                        'آیا مایل به حذف فایل هستید؟',
-                        style: TextStyle(
-                          color: App.theme.tooltipTheme.textStyle?.color,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Themes.primary,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(5),
-                          bottomRight: Radius.circular(5),
-                        ),
-                      ),
-                      height: 40,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: dismissDeleteDialog,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "خیر",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: () async {
-                                deleteFileBloc.add(
-                                  DeleteFileListEvent(
-                                    ids: ids,
-                                    token: await User.getBearerToken(),
-                                  ),
-                                );
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "بله",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+        var itemName = ids.length == 1 ? "فایل" : "فایل ها";
+        return ConfirmDialog(
+          dialogContext: context,
+          content: 'آیا مایل به حذف ${itemName} هستید؟',
+          title: "حذف ${itemName}",
+          titleColor: Colors.red,
+          onApply: () {
+            _deleteFiles(ids);
+          },
         );
       },
     );
@@ -603,5 +514,14 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
     if (result is String && result == "refresh") {
       _loadFiles();
     }
+  }
+
+  _deleteFiles(List<int> ids) async {
+    deleteFileBloc.add(
+      DeleteFileListEvent(
+        ids: ids,
+        token: await User.getBearerToken(),
+      ),
+    );
   }
 }

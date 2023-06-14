@@ -1,39 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/themes.dart';
 
-class MyPopupMenu extends StatefulWidget {
+class MyPopupMenuButton extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _MyPopupMenu();
+  State<StatefulWidget> createState() => _MyPopupMenuButton();
 
-  List<PopupMenuItem> items;
+  List<PopupMenuItem> Function(BuildContext context) itemBuilder;
+  void Function(dynamic value)? onSelected;
 
-  Widget icon;
-
+  IconData? iconData;
+  Widget? child;
+  Widget? icon;
   String? tooltip;
+  dynamic initialValue;
 
-  MyPopupMenu({
-    required this.items,
-    required this.icon,
+  MyPopupMenuButton({
+    required this.itemBuilder,
+    this.onSelected,
+    this.iconData,
     this.tooltip,
+    this.child,
+    this.initialValue,
+    this.icon,
   });
 }
 
-class _MyPopupMenu extends State<MyPopupMenu> {
+class _MyPopupMenuButton extends State<MyPopupMenuButton> {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(15.0)),
-      ),
-      elevation: 12,
-      offset: Offset(0, 50),
-      icon: widget.icon,
+      initialValue: widget.initialValue,
       tooltip: widget.tooltip,
-      itemBuilder: (context) {
-        return widget.items.map((item) {
-          (item.child as Text).style!.merge(TextStyle(fontSize: 13));
-          return item;
-        }).toList();
-      },
+      child: widget.child,
+      color: Colors.white,
+      icon: widget.iconData != null ? Icon(widget.iconData, color: Themes.text) : widget.icon,
+      padding: EdgeInsets.symmetric(vertical: 5),
+      elevation: 2,
+      offset: Offset(10, 10),
+      shadowColor: Colors.black54,
+      constraints: BoxConstraints(minWidth: 180),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      itemBuilder: widget.itemBuilder,
+      onSelected: widget.onSelected,
     );
   }
 }

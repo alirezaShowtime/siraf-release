@@ -4,12 +4,14 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
 import 'package:siraf3/dark_theme_provider.dart';
 import 'package:siraf3/dark_themes.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/settings.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/widgets/confirm_dialog.dart';
 
 import '../widgets/app_bar_title.dart';
 import '../widgets/my_back_button.dart';
@@ -73,54 +75,56 @@ class _SettingsScreen extends State<SettingsScreen> {
       ),
       body: ListView(
         children: [
-          item(
-              title: "نام و نام خانوادگی",
-              widget: GestureDetector(
-                  onTap: showEditNameDialog,
-                  child: RichText(
-                    text: TextSpan(children: [
-                      TextSpan(
-                        text: widget.user!.name.isNotNullOrEmpty()
-                            ? widget.user!.name!
-                            : "وارد نشده",
-                        style: TextStyle(
-                            fontSize: 11,
-                            fontFamily: "IranSansMedium",
-                            color: App.theme.textTheme.bodyLarge?.color),
-                      ),
-                      TextSpan(
-                        text: " (ویرایش)",
-                        style: TextStyle(
-                            fontSize: 11,
-                            color: App.theme.primaryColor,
-                            fontFamily: "IranSansMedium"),
-                      ),
-                    ]),
-                  ))),
-          item(
-              title: "نام کاربری",
-              widget: GestureDetector(
-                  onTap: showEditUserNameDialog,
-                  child: RichText(
-                    text: TextSpan(children: [
-                      TextSpan(
-                        text: widget.user!.username.isNotNullOrEmpty()
-                            ? widget.user!.username!
-                            : "وارد نشده",
-                        style: TextStyle(
-                            fontSize: 11,
-                            fontFamily: "IranSansMedium",
-                            color: App.theme.textTheme.bodyLarge?.color),
-                      ),
-                      TextSpan(
-                        text: " (ویرایش)",
-                        style: TextStyle(
-                            fontSize: 11,
-                            color: App.theme.primaryColor,
-                            fontFamily: "IranSansMedium"),
-                      ),
-                    ]),
-                  ))),
+          if (widget.user!.id != null)
+            item(
+                title: "نام و نام خانوادگی",
+                widget: GestureDetector(
+                    onTap: showEditNameDialog,
+                    child: RichText(
+                      text: TextSpan(children: [
+                        TextSpan(
+                          text: widget.user!.name.isNotNullOrEmpty()
+                              ? widget.user!.name!
+                              : "وارد نشده",
+                          style: TextStyle(
+                              fontSize: 11,
+                              fontFamily: "IranSansMedium",
+                              color: App.theme.textTheme.bodyLarge?.color),
+                        ),
+                        TextSpan(
+                          text: " (ویرایش)",
+                          style: TextStyle(
+                              fontSize: 11,
+                              color: App.theme.primaryColor,
+                              fontFamily: "IranSansMedium"),
+                        ),
+                      ]),
+                    ))),
+          if (widget.user!.id != null)
+            item(
+                title: "نام کاربری",
+                widget: GestureDetector(
+                    onTap: showEditUserNameDialog,
+                    child: RichText(
+                      text: TextSpan(children: [
+                        TextSpan(
+                          text: widget.user!.username.isNotNullOrEmpty()
+                              ? widget.user!.username!
+                              : "وارد نشده",
+                          style: TextStyle(
+                              fontSize: 11,
+                              fontFamily: "IranSansMedium",
+                              color: App.theme.textTheme.bodyLarge?.color),
+                        ),
+                        TextSpan(
+                          text: " (ویرایش)",
+                          style: TextStyle(
+                              fontSize: 11,
+                              color: App.theme.primaryColor,
+                              fontFamily: "IranSansMedium"),
+                        ),
+                      ]),
+                    ))),
           if (widget.user?.phone != null)
             item(title: "شماره همراه", text: phoneFormat(widget.user!.phone!)),
           // item(
@@ -144,27 +148,29 @@ class _SettingsScreen extends State<SettingsScreen> {
           //     },
           //   ),
           // ),
-          item(
-            title: "اعلان برنامه",
-            widget: FlutterSwitch(
-              height: 20.0,
-              width: 40.0,
-              padding: 4.0,
-              toggleSize: 10.0,
-              borderRadius: 10.0,
-              activeColor: Themes.blue,
-              inactiveColor: Colors.grey.shade300,
-              value: showNotification,
-              activeToggleColor: Colors.white,
-              inactiveToggleColor: Themes.blue,
-              onToggle: (value) {
-                setState(() {
-                  showNotification = value;
-                });
-                settings.setShowNotification(value);
-              },
+
+          if (widget.user!.id != null)
+            item(
+              title: "اعلان برنامه",
+              widget: FlutterSwitch(
+                height: 20.0,
+                width: 40.0,
+                padding: 4.0,
+                toggleSize: 10.0,
+                borderRadius: 10.0,
+                activeColor: Themes.blue,
+                inactiveColor: Colors.grey.shade300,
+                value: showNotification,
+                activeToggleColor: Colors.white,
+                inactiveToggleColor: Themes.blue,
+                onToggle: (value) {
+                  setState(() {
+                    showNotification = value;
+                  });
+                  settings.setShowNotification(value);
+                },
+              ),
             ),
-          ),
           item(
             title: "حالت شب",
             widget: FlutterSwitch(
@@ -292,9 +298,21 @@ class _SettingsScreen extends State<SettingsScreen> {
 
   //onClick Listeners
   logout() {
-    //todo: set event listener
-    User.remove();
-    Navigator.pop(context);
+    showDialog2(
+      context: context,
+      builder: (_) => ConfirmDialog(
+        dialogContext: context,
+        content: "از مایل به خروج از حساب هستید؟",
+        title: "خروج",
+        titleColor: Colors.red,
+        applyText: "خروج",
+        onApply: () {
+          Navigator.pop(_);
+          User.remove();
+          Navigator.pop(context);
+        },
+      ),
+    );
   }
 
   twoVerification() {

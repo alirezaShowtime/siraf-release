@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/category.dart';
 
 class FilterData {
@@ -118,6 +119,23 @@ class FilterData {
         (this.hasImage ?? false) ||
         (this.hasVideo ?? false) ||
         (this.hasTour ?? false);
+  }
+
+  int filterCount() {
+    int count = 0;
+
+    if (hasImage ?? false) count++;
+    if (hasVideo ?? false) count++;
+    if (hasTour ?? false) count++;
+
+    if (filters?.mater.isNotNullOrEmpty() ?? false) count++;
+
+    if ((filters?.price.isNotNullOrEmpty() ?? false) || (filters?.prices.isNotNullOrEmpty() ?? false) || (filters?.rent.isNotNullOrEmpty() ?? false)) count++;
+
+    if (category != null || mainCategory != null) count++;
+
+
+    return count;
   }
 }
 

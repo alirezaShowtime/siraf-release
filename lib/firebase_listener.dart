@@ -3,11 +3,14 @@ import 'dart:math';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:siraf3/settings.dart';
 
 import 'main.dart';
 
-listenNotification() {
-  FirebaseMessaging.onMessage.listen(firebaseMessageListener);
+listenNotification() async {
+  if (await (Settings().showNotification())) {
+    FirebaseMessaging.onMessage.listen(firebaseMessageListener);
+  }
 }
 
 firebaseMessageListener(RemoteMessage message) async {

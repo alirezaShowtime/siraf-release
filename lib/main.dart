@@ -18,6 +18,7 @@ import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/firebase_options.dart';
 import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/screens/splash_screens.dart';
+import 'package:siraf3/settings.dart';
 import 'package:siraf3/themes.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -84,46 +85,85 @@ late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  if (await (Settings().showNotification())) {
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  channel = AndroidNotificationChannel(
-    'high_importance_channel',
-    'High Importance Notifications',
-    "High Importance Notifications Description",
-    importance: Importance.high,
-  );
+    channel = AndroidNotificationChannel(
+      'high_importance_channel',
+      'High Importance Notifications',
+      "High Importance Notifications Description",
+      importance: Importance.high,
+    );
 
-  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
 
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
-  
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
+
   runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider<GetCitiesBloc>(
-          create: (_) => GetCitiesBloc(),
-        ),
-        BlocProvider<HSBloc>(
-          create: (_) => HSBloc(),
-        ),
-        BlocProvider<CategoriesBloc>(
-          create: (_) => CategoriesBloc(),
-        ),
-      ],
-      child: AppStf(),
+    RestartWidget(
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<GetCitiesBloc>(
+            create: (_) => GetCitiesBloc(),
+          ),
+          BlocProvider<HSBloc>(
+            create: (_) => HSBloc(),
+          ),
+          BlocProvider<CategoriesBloc>(
+            create: (_) => CategoriesBloc(),
+          ),
+        ],
+        child: AppStf(),
+      ),
     ),
   );
+}
+
+
+
+class RestartWidget extends StatefulWidget {
+  RestartWidget({required this.child});
+
+  final Widget child;
+
+  static void restartApp(BuildContext context) {
+    context.findAncestorStateOfType<_RestartWidgetState>()?.restartApp();
+  }
+
+  @override
+  _RestartWidgetState createState() => _RestartWidgetState();
+}
+
+class _RestartWidgetState extends State<RestartWidget> {
+  Key key = UniqueKey();
+
+  void restartApp() {
+    setState(() {
+      key = UniqueKey();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return KeyedSubtree(
+      key: key,
+      child: widget.child,
+    );
+  }
 }
 
 class AppStf extends StatefulWidget {

@@ -31,11 +31,20 @@ void notify(String? msg, {TextDirection textDirection = TextDirection.rtl, Durat
     msg,
     textDirection: textDirection,
     duration: duration,
-    textPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+    radius: 10,
+    dismissOtherToast: true,
+    margin: EdgeInsets.only(bottom: 10, left: 10, right: 10),
+    constraints: BoxConstraints(minWidth: double.infinity),
+    backgroundColor: Color(0xff333333),
+    textPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+    position: ToastPosition(align: Alignment.bottomCenter),
+    textAlign: TextAlign.right,
+    textMaxLines: 2,
+    textOverflow: TextOverflow.ellipsis,
     textStyle: TextStyle(
-      fontFamily: 'IranSans',
-      color: Themes.textLight,
-      fontSize: 15.5,
+      fontFamily: 'IranSansMedium',
+      color: Colors.white,
+      fontSize: 12,
     ),
   );
 }
@@ -246,6 +255,23 @@ PopupMenuItem<String> popupMenuItemWithIcon({
       ],
     ),
   );
+}
+
+
+extension List2<E> on List<E>? {
+  List<List<E>> chunk(int chunkSize) {
+    var chunks = <List<E>>[];
+    if (this.isNotNullOrEmpty()) {
+      for (var i = 0; i < this!.length; i += chunkSize) {
+        chunks.add(this!.sublist(i, i + chunkSize > this!.length ? this!.length : i + chunkSize));
+      }
+    }
+    return chunks;
+  }
+
+  bool isNotNullOrEmpty() {
+    return this != null && this!.isNotEmpty;
+  }
 }
 
 Divider divider({double height = 1}) => Divider(color: Colors.grey.shade200, height: height);

@@ -2,55 +2,39 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:siraf3/helpers.dart';
-import 'package:siraf3/models/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
+import 'package:siraf3/helpers.dart';
+import 'package:siraf3/http2.dart' as http2;
+import 'package:siraf3/models/user.dart';
 
 const LOG_RESPONSE = true;
 
-Future<http.Response> get(Uri url,
-    {Map<String, String>? headers, Duration? timeout}) async {
+const applicationJsonUTF8 = {HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'};
+
+Future<http.Response> get(Uri url, {Map<String, String>? headers, Duration? timeout}) async {
   try {
-    return handleReq(
-      http
-          .get(url, headers: headers)
-          .timeout(
-            timeout ?? Duration(seconds: 20),
-            onTimeout: () => timeoutErrorResponse(),
-          )
-          .catchError((_) {
-        return timeoutErrorResponse();
-      }),
-    );
+    var req = http.get(url, headers: headers).timeout(timeout ?? Duration(seconds: 30), onTimeout: timeoutErrorResponse).catchError((_) => timeoutErrorResponse());
+
+    return handleReq(req);
   } catch (_) {
+    print(_);
     return timeoutErrorResponse();
   }
 }
 
-Future<http.Response> post(Uri url,
-    {Object? body,
-    Encoding? encoding,
-    Map<String, String>? headers,
-    Duration? timeout}) async {
+Future<http.Response> post(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {
   try {
-    return handleReq(
-      http
-          .post(url, body: body, encoding: encoding, headers: headers)
-          .timeout(
-            timeout ?? Duration(minutes: 10),
-            onTimeout: () => timeoutErrorResponse(),
-          )
-          .catchError((_) {
-        return timeoutErrorResponse();
-      }),
-    );
+    var req = http.post(url, body: body, encoding: encoding, headers: headers).timeout(timeout ?? Duration(minutes: 30), onTimeout: timeoutErrorResponse).catchError((_) => timeoutErrorResponse());
+
+    return handleReq(req, requestBody: body);
   } catch (_) {
+    print(_);
     return timeoutErrorResponse();
   }
 }
 
-Future<http.Response> getWithToken(Uri url,
-    {Map<String, String>? headers, Duration? timeout}) async {
+Future<http.Response> getWithToken(Uri url, {Map<String, String>? headers, Duration? timeout}) async {
   if (!await User.hasToken()) {
     return authErrorResponse();
   }
@@ -65,11 +49,7 @@ Future<http.Response> getWithToken(Uri url,
   return get(url, headers: headers, timeout: timeout);
 }
 
-Future<http.Response> postWithToken(Uri url,
-    {Object? body,
-    Encoding? encoding,
-    Map<String, String>? headers,
-    Duration? timeout}) async {
+Future<http.Response> postWithToken(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {
   if (!await User.hasToken()) {
     return authErrorResponse();
   }
@@ -84,14 +64,8 @@ Future<http.Response> postWithToken(Uri url,
   return post(url, body: body, encoding: encoding, headers: headers);
 }
 
-Future<http.Response> postJsonWithToken(Uri url,
-    {Object? body,
-    Encoding? encoding,
-    Map<String, String>? headers,
-    Duration? timeout}) async {
-  if (!await User.hasToken()) {
-    return authErrorResponse();
-  }
+Future<http.Response> postJsonWithToken(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {
+  if (!await User.hasToken()) return authErrorResponse();
 
   headers = (headers ?? {})
     ..addAll(
@@ -101,34 +75,10 @@ Future<http.Response> postJsonWithToken(Uri url,
       },
     );
 
-  return post(url,
-      body: jsonEncode(body), encoding: encoding, headers: headers);
+  return post(url, body: jsonEncode(body), encoding: encoding, headers: headers);
 }
 
-Future<http.Response> delete(Uri url,
-    {Object? body,
-    Encoding? encoding,
-    Map<String, String>? headers,
-    Duration? timeout}) async {
-  try {
-    return handleReq(
-      http
-          .delete(url, body: body, encoding: encoding, headers: headers)
-          .timeout(
-            timeout ?? Duration(minutes: 10),
-            onTimeout: () => timeoutErrorResponse(),
-          )
-          .catchError((_) {
-        return timeoutErrorResponse();
-      }),
-    );
-  } catch (_) {
-    return timeoutErrorResponse();
-  }
-}
-
-Future<http.Response> deleteWithToken(Uri url,
-    {Map<String, String>? headers, Duration? timeout}) async {
+Future<http.Response> deleteWithToken(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {
   if (!await User.hasToken()) {
     return authErrorResponse();
   }
@@ -140,46 +90,70 @@ Future<http.Response> deleteWithToken(Uri url,
       },
     );
 
-  return delete(url, headers: headers, timeout: timeout);
+  return delete(url, body: body, encoding: encoding, headers: headers);
+}
+
+Future<http.Response> delete(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {
+  try {
+    var req = http2.delete(url, body: body, encoding: encoding, headers: headers).timeout(timeout ?? Duration(minutes: 10), onTimeout: timeoutErrorResponse).catchError((_) => timeoutErrorResponse());
+
+    return handleReq(req, requestBody: body);
+  } catch (_) {
+    print(_);
+    return timeoutErrorResponse();
+  }
 }
 
 http.Response authErrorResponse() {
-  return http.Response(
-      jsonEncode({
-        "message":
-            encodeUtf8("احراز هویت ناموفق لطفا مجدد وارد حساب کاربری شوید"),
-        "status": false
-      }),
-      401,
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
-      });
+  return generateErrorResponse(message: "احراز هویت ناموفق لطفا مجدد وارد حساب کاربری شوید", statusCode: 401);
 }
 
 http.Response timeoutErrorResponse() {
-  return http.Response(
-      jsonEncode({
-        "message": encodeUtf8("خطا در دریافت اطلاعات مجدد تلاش کنید"),
-        "status": false
-      }),
-      408,
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
-      });
+  return generateErrorResponse(message: "خطا در دریافت اطلاعات مجدد تلاش کنید", statusCode: 408);
 }
 
-Future<http.Response> handleReq(Future<http.Response> req) async {
+Future<http.Response> handleReq(Future<http.Response> req, {Object? requestBody}) async {
   var response = await req;
-  if (LOG_RESPONSE) {
-    print("REQUEST : " +
-        (response.request?.method.toString() ?? "") +
-        " " +
-        (response.request?.url.toString() ?? ""));
-    print("RESPONSE STATUS CODE : " + response.statusCode.toString());
-    print("RESPONSE STATUS CODE : " + response.statusCode.toString());
-    print("RESPONSE BODY UTF8 : " + convertUtf8(response.body));
-    print("RESPONSE BODY RAW : " + response.body);
+
+  if (LOG_RESPONSE && response.request != null) logRequest(response, requestBody: requestBody);
+
+  if (response.statusCode >= 500) {
+    return generateErrorResponse(message: "خطایی در سمت سرور پیش آمد لطفا بعدا تلاش کنید");
   }
 
   return response;
+}
+
+void logRequest(http.Response response, {Object? requestBody}) async {
+  Logger logger = Logger();
+
+  var messages = [];
+
+  messages.add("\n\n\nREQUEST ${response.request!.method.toUpperCase()} ${response.statusCode}");
+
+  if (await User.hasToken()) {
+    messages.add("\n\nUSER TOKEN : ${await User.getBearerToken()}");
+  }
+
+  messages.add("\n\nTO :  ${Uri.decodeFull(response.request!.url.toString())}");
+  messages.add("\n\nHEADERS :  ${convertUtf8(getPrettyJSONString(response.request!.headers..remove("Authorization")))}");
+  messages.add("\n\nQUERIES :  ${convertUtf8(getPrettyJSONString(response.request!.url.queryParameters))}");
+
+  messages.add("\n\n\nREQUEST BODY : ${convertUtf8(getPrettyJSONString(requestBody))}");
+  messages.add("\n\n\nRESPONSE BODY : ${convertUtf8(getPrettyJSONString(jsonDecode(response.body)))}");
+
+  logger.i(messages.join());
+}
+
+http.Response generateErrorResponse({int statusCode = 500, String message = "خطایی غیر منتظره رخ داد"}) {
+  return http.Response(
+    jsonEncode({"message": encodeUtf8(message), "status": false}),
+    statusCode,
+    headers: applicationJsonUTF8,
+  );
+}
+
+String getPrettyJSONString(jsonObject) {
+  var encoder = new JsonEncoder.withIndent("     ");
+  return encoder.convert(jsonObject);
 }

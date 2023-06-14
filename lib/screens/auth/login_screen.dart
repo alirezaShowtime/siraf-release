@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/auth/Login/login_bloc.dart';
+import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/screens/auth/verify_number_phone_screen.dart';
@@ -54,34 +55,16 @@ class _LoginScreen extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
-        if (!widget.pop) {
-          exitApplication();
-        }
-
-        animationDialog(
-            context: context,
-            builder: (dialogContext) {
-              return ConfirmDialog(
-                dialogContext: dialogContext,
-                content: "آیا واقعا قصد خروج از حساب را دارید؟",
-                onApply: exitApplication,
-              );
-            });
-
-        return Future.value(false);
-      },
-      child: AnnotatedRegion(
+    return AnnotatedRegion(
         value: SystemUiOverlayStyle(
-          statusBarColor: Themes.primary,
+          statusBarColor: App.theme.primaryColor,
           statusBarBrightness: Brightness.light,
           statusBarIconBrightness: Brightness.light,
         ),
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           extendBody: true,
-          backgroundColor: Themes.background2,
+          backgroundColor: App.theme.dialogBackgroundColor,
           body: Column(
             children: [
               Stack(
@@ -142,7 +125,7 @@ class _LoginScreen extends State<LoginScreen> {
                         decoration: InputDecoration(
                           counterText: "",
                           enabled: numberPhoneFieldEnabled,
-                          fillColor: Colors.grey.shade50,
+                          fillColor: App.isDark ? DarkThemes.background : Colors.grey.shade50,
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
                             borderRadius: BorderRadius.circular(10),
@@ -158,7 +141,7 @@ class _LoginScreen extends State<LoginScreen> {
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color,
                         ),
                         validator: (String? phone) {
                           if (phone == null || phone.isEmpty) {
@@ -206,8 +189,7 @@ class _LoginScreen extends State<LoginScreen> {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 
   void _login() {

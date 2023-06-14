@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
-import 'package:siraf3/models/file_detail.dart';
+import 'package:siraf3/models/file_detail.dart' as fd;
 import 'package:siraf3/widgets/slider.dart' as s;
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'dart:io' as io;
@@ -216,7 +216,7 @@ class MyFileDetail {
 
     var videos = <s.Slider>[];
 
-    for (Video video in media!.video!) {
+    for (fd.Video video in media!.video!) {
       final fileName = await VideoThumbnail.thumbnailFile(
         video: video.path!,
         thumbnailPath: (await getTemporaryDirectory()).path,

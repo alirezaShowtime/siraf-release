@@ -68,8 +68,6 @@ class DeleteFileBloc extends Bloc<DeleteFileEvent, DeleteFileState> {
           "Authorization": event.token,
         });
 
-    print(response.body);
-
     if (isResponseOk(response)) {
       emit(DeleteFileSuccessState(ids: ids));
     } else {

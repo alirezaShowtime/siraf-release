@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/ticket/get_groups_bloc.dart';
 import 'package:siraf3/config.dart';
@@ -67,9 +68,14 @@ class _MenuScreenState extends State<MenuScreen> {
 
     return BlocProvider(
       create: (_) => getGroupsBloc,
-      child: Scaffold(
-        body: SafeArea(
-          child: ColoredBox(
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.light,
+        ),
+        child: Scaffold(
+          body: ColoredBox(
             color: App.theme.backgroundColor,
             child: Column(
               children: [
@@ -86,7 +92,7 @@ class _MenuScreenState extends State<MenuScreen> {
                               AssetImage("assets/images/menu_background.png"),
                           fit: BoxFit.cover,
                           colorFilter: ColorFilter.mode(
-                            App.isDark ? DarkThemes.secondary2 : Themes.primary,
+                            App.isDark ? DarkThemes.background : Themes.primary,
                             BlendMode.hardLight,
                           ),
                         ),
@@ -138,7 +144,7 @@ class _MenuScreenState extends State<MenuScreen> {
                       ),
                     ),
                     Positioned(
-                      top: 7,
+                      top: MediaQuery.of(context).padding.top,
                       left: 7,
                       right: 7,
                       child: Row(
@@ -247,7 +253,6 @@ class _MenuScreenState extends State<MenuScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -497,7 +502,7 @@ class _MenuScreenState extends State<MenuScreen> {
               child: Icon(
                 icon,
                 size: 27,
-                color: Themes.icon,
+                color: App.theme.iconTheme.color,
               ),
             ),
             SizedBox(

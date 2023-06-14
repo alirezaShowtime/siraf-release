@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 
 class MyPopupMenuButton extends StatefulWidget {
@@ -30,12 +31,12 @@ class _MyPopupMenuButton extends State<MyPopupMenuButton> {
       initialValue: widget.initialValue,
       tooltip: widget.tooltip,
       child: widget.child,
-      color: Colors.white,
-      icon: widget.iconData != null ? Icon(widget.iconData, color: Themes.themeData().iconTheme.color) : null,
+      color: App.theme.dialogBackgroundColor,
+      icon: widget.iconData != null ? Icon(widget.iconData, color: App.theme.iconTheme.color) : null,
       padding: EdgeInsets.symmetric(vertical: 5),
       elevation: 2,
       offset: Offset(10, 10),
-      shadowColor: Colors.black54,
+      shadowColor: App.isDark ? Colors.grey.withOpacity(0.3) : Colors.black54,
       constraints: BoxConstraints(minWidth: 180),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),

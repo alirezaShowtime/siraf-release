@@ -193,10 +193,6 @@ class _FileScreenState extends State<FileScreen> {
             if (state.file.getOtherProperties().isNotEmpty)
               _buildProps(state.file),
             SizedBox(height: 15),
-            Divider(
-              height: 0.7,
-              color: Themes.textGrey,
-            ),
             if (state.file.lat != null || state.file.long != null)
               _buildMap(state.file),
             SizedBox(
@@ -349,7 +345,7 @@ class _FileScreenState extends State<FileScreen> {
                 ),
               ),
               Text(
-                (file.publishedAgo ?? "") + ' | ' + (file.city ?? ""),
+                (file.publishedAgo ?? "") + ' | ' + (file.city?.name ?? ""),
                 style: TextStyle(
                   color: App.theme.tooltipTheme.textStyle?.color,
                   fontFamily: "IranSans",
@@ -460,6 +456,19 @@ class _FileScreenState extends State<FileScreen> {
   }
 
   Widget _buildMap(FileDetail file) {
+    var lat = double.parse(file.lat!);
+    var long = double.parse(file.long!);
+    if (lat > 90 || lat < -90 || long > 90 || long < -90) {
+      return Container(
+        width: double.infinity,
+        height: 200,
+        alignment: Alignment.center,
+        child: Text(
+          "موقعیت مکانی صحیح نیست ${lat} , ${long}",
+          style: TextStyle(fontSize: 13, fontFamily: "IranSansMedium", color: Colors.red),
+        ),
+      );
+    }
     return GestureDetector(
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
@@ -469,7 +478,6 @@ class _FileScreenState extends State<FileScreen> {
             center: LatLng(double.parse(file.lat!), double.parse(file.long!)),
             zoom: 13.0,
             onTap: (_, _1) {
-              // MapsLauncher.launchCoordinates(file.lat!, file.long!);
               launchUrl(Uri.parse('geo:0,0?q=${file.lat!},${file.long!}'));
             },
           ),
@@ -621,8 +629,8 @@ class _FileScreenState extends State<FileScreen> {
                                   color: greyColor, fontSize: 10, height: 1),
                             ),
                             Text(
-                              file.getRent()?.value != null
-                                  ? number_format(file.getRent()!.value)
+                              file.getVadie()?.value != null
+                                  ? number_format(file.getVadie()!.value)
                                   : "توافقی",
                               style: TextStyle(
                                   color: Themes.text,
@@ -641,7 +649,7 @@ class _FileScreenState extends State<FileScreen> {
                               style: TextStyle(color: greyColor, fontSize: 13),
                             ),
                             Text(
-                              number_format(file.rent),
+                              file.rent != null ? number_format(file.rent) : "توافقی",
                               style: TextStyle(
                                   color: Colors.grey.shade500, fontSize: 11),
                             ),
