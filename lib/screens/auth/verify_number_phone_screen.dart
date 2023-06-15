@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/auth/Login/login_bloc.dart';
 import 'package:siraf3/bloc/auth/verifyNumber/verify_number_phone_bloc.dart';
+import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/home_screen.dart';
@@ -14,6 +15,7 @@ import 'package:siraf3/widgets/my_image.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:siraf3/widgets/my_text_icon_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
+import 'package:siraf3/main.dart';
 
 class VerifyNumberPhoneScreen extends StatefulWidget {
   @override
@@ -108,14 +110,14 @@ class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
       onWillPop: () => Future.value(false),
       child: AnnotatedRegion(
         value: SystemUiOverlayStyle(
-          statusBarColor: Themes.primary,
+          statusBarColor: App.theme.primaryColor,
           statusBarBrightness: Brightness.light,
           statusBarIconBrightness: Brightness.light,
         ),
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           extendBody: true,
-          backgroundColor: Themes.background2,
+          backgroundColor: App.theme.dialogBackgroundColor,
           body: Column(
             children: [
               Stack(
@@ -175,7 +177,7 @@ class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           enabled: codeFieldEnabled,
-                          fillColor: Colors.grey.shade50,
+                          fillColor: App.isDark ? DarkThemes.background : Colors.grey.shade50,
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
                             borderRadius: BorderRadius.circular(10),
@@ -191,11 +193,11 @@ class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color,
                         ),
                       ),
                       MyTextIconButton(
-                        icon: Icon(Icons.edit_rounded, color: Themes.primary, size: 15),
+                        icon: Icon(Icons.edit_rounded, color: App.theme.primaryColor, size: 15),
                         text: "ویرایش شماره موبایل",
                         onPressed: editNumberPhone,
                       ),
@@ -272,7 +274,7 @@ class _LogoBackground extends CustomPainter {
     var waveWidth = size.width / 3;
 
     var paint = Paint()
-      ..color = Themes.primary
+      ..color = App.theme.primaryColor
       ..strokeWidth = 5;
 
     Path path = Path();

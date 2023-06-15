@@ -11,6 +11,7 @@ import 'package:siraf3/screens/request_file/request_file_screen.dart';
 import 'package:siraf3/screens/request_file/request_file_show_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
+import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
@@ -272,6 +273,7 @@ class _RequestListScreen extends State<RequestListScreen> {
                     selectedRequests.addAll(requests);
                   });
                 },
+                iconData: Icons.more_vert,
               ),
             ],
           ),
@@ -553,6 +555,11 @@ class _RequestListScreen extends State<RequestListScreen> {
         requests.removeWhere(
             (element) => state.event.ids.any((e) => element.id == e));
       });
+
+      var itemName = state.event.ids.length == 1 ? "درخواست" : "درخواست ها";
+      var fel = state.event.ids.length == 1 ? "شد" : "شدند";
+
+      notify("$itemName با موفقیت حذف $fel");
     }
   }
 
@@ -568,104 +575,16 @@ class _RequestListScreen extends State<RequestListScreen> {
       barrierDismissible: true,
       builder: (_) {
         deleteDialogContext = _;
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: App.theme.dialogBackgroundColor,
-          content: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Wrap(
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 25,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                      ),
-                      child: Text(
-                        'آیا مایل به حذف فایل هستید؟',
-                        style: TextStyle(
-                          color: App.theme.tooltipTheme.textStyle?.color,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Themes.primary,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(5),
-                          bottomRight: Radius.circular(5),
-                        ),
-                      ),
-                      height: 40,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: dismissDeleteDialog,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "خیر",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: () async {
-                                dismissDeleteDialog();
-                                deleteRequests(ids);
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "بله",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+        var itemName = ids.length == 1 ? "درخواست" : "درخواست ها";
+        return ConfirmDialog(
+          dialogContext: context,
+          content: 'آیا مایل به حذف ${itemName} هستید؟',
+          title: "حذف ${itemName}",
+          titleColor: Colors.red,
+          onApply: () {
+            dismissDeleteDialog();
+            deleteRequests(ids);
+          },
         );
       },
     );

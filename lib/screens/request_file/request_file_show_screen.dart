@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +13,7 @@ import 'package:siraf3/models/request.dart';
 import 'package:siraf3/models/request_consultant.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
+import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
@@ -92,6 +95,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                   onTap: onClickEditRequest,
                 ),
               ],
+              iconData: Icons.more_vert,
             ),
           ],
         ),
@@ -375,6 +379,8 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
       dismissDialog(loadingDialogContext);
 
       Navigator.pop(context, 'removed');
+
+      notify("درخواست با موفقیت حذف شد");
     }
   }
 
@@ -386,104 +392,15 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
       barrierDismissible: true,
       builder: (_) {
         deleteDialogContext = _;
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: App.theme.dialogBackgroundColor,
-          content: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Wrap(
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 25,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                      ),
-                      child: Text(
-                        'آیا مایل به حذف فایل هستید؟',
-                        style: TextStyle(
-                          color: App.theme.tooltipTheme.textStyle?.color,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Themes.primary,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(5),
-                          bottomRight: Radius.circular(5),
-                        ),
-                      ),
-                      height: 40,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: dismissDeleteDialog,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "خیر",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: () async {
-                                dismissDeleteDialog();
-                                removeRequest();
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "بله",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+        return ConfirmDialog(
+          dialogContext: context,
+          content: 'آیا مایل به حذف درخواست هستید؟',
+          title: "حذف درخواست",
+          titleColor: Colors.red,
+          onApply: () {
+            dismissDeleteDialog();
+            removeRequest();
+          },
         );
       },
     );
@@ -508,9 +425,14 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
       );
     }
     if (state is RequestConsultantErrorState) {
+      if (jDecode(state.response?.body ?? "{}")['code'] == 400) {
+        consultants = [];
+        return Container();
+      }
       return Expanded(
         child: Center(
           child: TryAgain(
+            message: jDecode(state.response?.body ?? "{}")['message'],
             onPressed: () {
               requestConsultantBloc
                   .add(RequestConsultantEvent(id: widget.request.id!));
@@ -523,10 +445,14 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
     state = RequestConsultantLoadedState(
         consultants: (state as RequestConsultantLoadedState).consultants);
 
+    consultants = state.consultants;
+
     return Expanded(
       child: ListView(
-        children: state.consultants.map<Widget>((e) => item(e)).toList(),
+        children: consultants.map<Widget>((e) => item(e)).toList(),
       ),
     );
   }
+
+  List<RequestConsultant> consultants = [];
 }

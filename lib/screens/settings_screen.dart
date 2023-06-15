@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
+import 'package:siraf3/bloc/check_version_bloc.dart';
 import 'package:siraf3/dark_theme_provider.dart';
 import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/dialog.dart';
@@ -12,6 +13,7 @@ import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/settings.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/app_bar_title.dart';
 import '../widgets/my_back_button.dart';
@@ -40,6 +42,42 @@ class _SettingsScreen extends State<SettingsScreen> {
     super.initState();
 
     setData();
+
+    checkVersionBloc.stream.listen((event) {
+      if (event is CheckVersionLoadingState) {
+        loadingDialog(context: context, showMessage: false);
+      }
+      if (event is CheckVersionErrorState) {
+        dismissDialog(loadingDialogContext);
+
+        notify("خطا در دریافت اطلاعات لطفا مجدد تلاش کنید");
+      }
+      if (event is CheckVersionSuccessState) {
+        dismissDialog(loadingDialogContext);
+        if (event.hasUpdate) {
+          showDialog2(
+            context: context,
+            barrierDismissible: true,
+            builder: (_context) {
+              return ConfirmDialog(
+                dialogContext: context,
+                content:
+                    "نسخه جدیدی از برنامه موجود است آیا میخواهید بروزرسانی کنید؟",
+                applyText: "بله",
+                cancelText: "خیر",
+                onApply: () => openBazarOrOpenUrl(event.downloadUrl),
+                title: "بروزرسانی",
+              );
+            },
+          );
+        } else {
+          setState(() {
+            isLastVersion = true;
+          });
+          notify("آخرین نسخه برنامه نصب می باشد");
+        }
+      }
+    });
   }
 
   setData() async {
@@ -240,21 +278,24 @@ class _SettingsScreen extends State<SettingsScreen> {
             onTap: twoVerification,
           ),
           item(
-            title: "نسخه برنامه(3.0.0)",
+            title:
+                "نسخه برنامه(3.0.0)",
             widget: Text(
-              "بررسی بروزرسانی",
+              isLastVersion ? "آخرین نسخه نصب میباشد" : "بررسی بروزرسانی",
               style: TextStyle(
-                color: Themes.blue,
+                color: isLastVersion ? Themes.text : Themes.blue,
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            onTap: checkUpdate,
+            onTap: isLastVersion ? () {} : checkUpdate,
           ),
         ],
       ),
     );
   }
+
+  bool isLastVersion = false;
 
   Widget item(
       {required String title,
@@ -320,8 +361,10 @@ class _SettingsScreen extends State<SettingsScreen> {
   }
 
   checkUpdate() {
-    //todo: set event listener
+    checkVersionBloc.add(CheckVersionEvent());
   }
+
+  CheckVersionBloc checkVersionBloc = CheckVersionBloc();
 
   void showEditNameDialog() {
     //todo: set event listener
@@ -352,4 +395,12 @@ class _SettingsScreen extends State<SettingsScreen> {
   }
 
   bool isSlideViewType = false;
+
+  openBazarOrOpenUrl(String downloadUrl) async {
+    if (await canLaunchUrl(Uri.parse("bazaar://details?id=app.siraf"))) {
+      launchUrl(Uri.parse("bazaar://details?id=app.siraf"));
+    } else if (await canLaunchUrl(Uri.parse(downloadUrl))) {
+      launchUrl(Uri.parse(downloadUrl), mode: LaunchMode.externalApplication);
+    }
+  }
 }

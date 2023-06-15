@@ -17,6 +17,7 @@ import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/screens/send_request_guide.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
+import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:flutter/material.dart';
@@ -97,28 +98,28 @@ class _RequestFileScreen extends State<RequestFileScreen> {
               physics: BouncingScrollPhysics(),
               children: [
                 SizedBox(height: 10),
-                Container(
-                  margin: EdgeInsets.only(top: 10),
-                  padding: EdgeInsets.only(bottom: 10),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                          color: Themes.textGrey.withOpacity(0.5), width: 1),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "راهنما",
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontFamily: "IranSansMedium",
-                        ),
+                GestureDetector(
+                  onTap: onClickGuideItem,
+                  child: Container(
+                    margin: EdgeInsets.only(top: 10),
+                    padding: EdgeInsets.only(bottom: 10),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                            color: Themes.textGrey.withOpacity(0.5), width: 1),
                       ),
-                      GestureDetector(
-                        onTap: onClickGuideItem,
-                        child: Container(
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "راهنما",
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontFamily: "IranSansMedium",
+                          ),
+                        ),
+                        Container(
                           constraints: BoxConstraints(
                             minWidth: 30,
                           ),
@@ -126,8 +127,8 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                           alignment: Alignment.centerLeft,
                           child: icon(Icons.chevron_right_rounded),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(height: 20),
@@ -485,100 +486,16 @@ class _RequestFileScreen extends State<RequestFileScreen> {
       barrierDismissible: true,
       builder: (_) {
         resetDialogContext = _;
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: App.theme.dialogBackgroundColor,
-          content: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Wrap(
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 25,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                      ),
-                      child: Text(
-                        'آیا مایل به ثبت درخواست از ابتدا هستید؟',
-                        style: TextStyle(
-                          color: App.theme.tooltipTheme.textStyle?.color,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                    ),
-                    SizedBox(
-                      height: 40,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: dismissResetDialog,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "خیر",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 0.5,
-                          ),
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: () {
-                                _resetData();
-                                dismissResetDialog();
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "بله",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+        return ConfirmDialog(
+          dialogContext: context,
+          content: 'آیا مایل به ثبت درخواست از ابتدا هستید؟',
+          applyText: "بله",
+          cancelText: "خیر",
+          title: "بازنشانی",
+          onApply: () {
+            _resetData();
+            dismissResetDialog();
+          },
         );
       },
     );
@@ -615,11 +532,12 @@ class _RequestFileScreen extends State<RequestFileScreen> {
         );
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Wrap(
               children: [
@@ -774,8 +692,8 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(5),
+                                  bottomLeft: Radius.circular(16),
+                                  bottomRight: Radius.circular(16),
                                 ),
                               ),
                               color: Themes.primary,

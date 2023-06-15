@@ -8,6 +8,7 @@ class User {
 
   int? id;
   String? name;
+  String? bio;
   String? username;
   dynamic email;
   String? phone;
@@ -18,6 +19,7 @@ class User {
   User({
     this.id,
     this.name,
+    this.bio,
     this.phone,
     this.email,
     this.avatar,
@@ -31,6 +33,9 @@ class User {
     }
     if (json["name"] is String) {
       name = json["name"];
+    }
+    if (json["bio"] is String) {
+      bio = json["bio"];
     }
     email = json["email"];
     if (json["phone"] is String) {
@@ -58,6 +63,7 @@ class User {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["id"] = id;
     _data["name"] = name;
+    _data["bio"] = bio;
     _data["username"] = username;
     _data["email"] = email;
     _data["phone"] = phone;

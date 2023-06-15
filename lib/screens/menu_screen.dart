@@ -10,6 +10,7 @@ import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/rabbit_mq_data.dart';
+import 'package:siraf3/screens/auth/edit_profile_screen.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:siraf3/screens/bookmark_screen.dart';
 import 'package:siraf3/screens/chat/chat_list_screen.dart';
@@ -28,6 +29,7 @@ import 'package:siraf3/screens/verify_contract/inquiry_contract_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/accordion.dart';
 import 'package:badges/badges.dart' as badge;
+import 'package:siraf3/widgets/avatar.dart';
 
 import '../helpers.dart';
 
@@ -100,23 +102,21 @@ class _MenuScreenState extends State<MenuScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          ClipRRect(
-                            child: Image(
-                              image:
-                                  NetworkImage(getImageUrl(user?.avatar ?? "")),
-                              // todo use dynamic avatar link
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Image(
-                                image: AssetImage("assets/images/profile.png"),
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
+                          GestureDetector(
+                            onTap: () async {
+                              await Navigator.push(context, MaterialPageRoute(builder: (_) => EditProfileScreen()));
+                              getUser();
+                            },
+                            child: ClipRRect(
+                              child: Avatar(
+                                image:
+                                    NetworkImage(getImageUrl(user?.avatar ?? "")),
+                                errorWidget: _profileWidget(),
+                                loadingWidget: _profileWidget(),
+                                size: 80,
                               ),
-                              width: 80,
-                              height: 80,
-                              fit: BoxFit.cover,
+                              borderRadius: BorderRadius.circular(100),
                             ),
-                            borderRadius: BorderRadius.circular(100),
                           ),
                           GestureDetector(
                             onTap: () async {
@@ -459,6 +459,16 @@ class _MenuScreenState extends State<MenuScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _profileWidget() {
+    return Container(
+      color: Themes.primary.withOpacity(0.7),
+      width: 80,
+      height: 80,
+      alignment: Alignment.center,
+      child: Icon(Icons.person_rounded, color: Colors.white, size: 34),
     );
   }
 

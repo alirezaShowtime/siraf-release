@@ -129,7 +129,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                   CupertinoIcons.add,
                 ),
               ),
-              IconButton(
+              if (selectedFiles.isNotEmpty) IconButton(
                 onPressed: selectedFiles.isNotEmpty
                     ? () {
                         showDeleteDialog(

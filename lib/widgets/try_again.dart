@@ -22,6 +22,7 @@ class _TryAgainState extends State<TryAgain> {
           style: TextStyle(
             fontSize: 14,
           ),
+          textAlign: TextAlign.center,
         ),
         SizedBox(
           height: 10,

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart';
 import 'package:siraf3/helpers.dart';
@@ -37,7 +39,7 @@ class DeleteRequestBloc extends Bloc<DeleteRequestEvent, DeleteRequestState> {
     emit(DeleteRequestLoadingState());
 
     var response = await http2.postJsonWithToken(
-      getEstateUrl("requestFile/deleteRequestFiles/"),
+      getEstateUrl("requestFile/deleteRequestFiles/?requestIds="+ jsonEncode(event.ids)),
       body: {
         "requestIds": event.ids,
       },

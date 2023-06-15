@@ -16,6 +16,7 @@ import 'package:siraf3/models/create_file_form_data.dart';
 import 'package:siraf3/screens/create/create_file_final.dart';
 import 'package:siraf3/screens/create/upload_media_guide.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/text_form_field_2.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
@@ -168,45 +169,45 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                         child: GridView(
                           shrinkWrap: true,
                           gridDelegate:
-                          SliverGridDelegateWithFixedCrossAxisCount(
+                              SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount:
-                            MediaQuery.of(context).size.width < 330 ? 4 : 5,
+                                MediaQuery.of(context).size.width < 330 ? 4 : 5,
                           ),
                           children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.all(5),
-                              alignment: Alignment.center,
-                              child: DottedBorder(
-                                color: Themes.iconGrey,
-                                borderType: BorderType.RRect,
-                                radius: Radius.circular(5),
-                                child: Container(
-                                  color: Colors.transparent,
+                                Container(
+                                  padding: EdgeInsets.all(5),
                                   alignment: Alignment.center,
-                                  child: IconButton(
-                                    highlightColor: Colors.transparent,
-                                    splashColor: Colors.transparent,
-                                    onPressed: _addMedia,
-                                    icon: Icon(
-                                      CupertinoIcons.plus,
-                                      size: 28,
-                                      color: Themes.iconGrey,
+                                  child: DottedBorder(
+                                    color: Themes.iconGrey,
+                                    borderType: BorderType.RRect,
+                                    radius: Radius.circular(5),
+                                    child: Container(
+                                      color: Colors.transparent,
+                                      alignment: Alignment.center,
+                                      child: IconButton(
+                                        highlightColor: Colors.transparent,
+                                        splashColor: Colors.transparent,
+                                        onPressed: _addMedia,
+                                        icon: Icon(
+                                          CupertinoIcons.plus,
+                                          size: 28,
+                                          color: Themes.iconGrey,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          ] +
+                              ] +
                               mediaBoxes
                                   .map<Widget>(
                                     (e) => GestureDetector(
-                                  onTap: () {
-                                    showOptionsDialog(
-                                        mediaBoxes.indexOf(e));
-                                  },
-                                  child: e,
-                                ),
-                              )
+                                      onTap: () {
+                                        showOptionsDialog(
+                                            mediaBoxes.indexOf(e));
+                                      },
+                                      child: e,
+                                    ),
+                                  )
                                   .toList(),
                         ),
                       ),
@@ -234,9 +235,9 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       TextFormField2(
                         decoration: InputDecoration(
                           hintText:
-                          hints.containsKey(widget.formData.category.id!)
-                              ? hints[widget.formData.category.id!]
-                              : "مثال : آپارتمان 120 متری، میدان ونک",
+                              hints.containsKey(widget.formData.category.id!)
+                                  ? hints[widget.formData.category.id!]
+                                  : "مثال : آپارتمان 120 متری، میدان ونک",
                           border: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: Themes.icon,
@@ -273,7 +274,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             borderRadius: BorderRadius.circular(5),
                           ),
                           hintStyle:
-                          TextStyle(fontSize: 14, color: Themes.textGrey),
+                              TextStyle(fontSize: 14, color: Themes.textGrey),
                           contentPadding: EdgeInsets.symmetric(
                               horizontal: 10, vertical: 10),
                         ),
@@ -355,7 +356,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             borderRadius: BorderRadius.circular(5),
                           ),
                           hintStyle: TextStyle(fontSize: 14),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                         ),
                         style: TextStyle(fontSize: 14, color: Themes.text),
                         onChanged: (value) {
@@ -429,7 +431,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             borderRadius: BorderRadius.circular(5),
                           ),
                           hintStyle: TextStyle(fontSize: 14),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                           helperStyle: TextStyle(fontSize: 0.01),
                         ),
                         maxLength: 11,
@@ -474,7 +477,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       ),
                       TextFormField2(
                         decoration: InputDecoration(
-                          hintText: "نام و نام خانوادگی جهت هماهنگی بازدید را بنویسید.",
+                          hintText:
+                              "نام و نام خانوادگی جهت هماهنگی بازدید را بنویسید.",
                           border: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: Themes.icon,
@@ -511,7 +515,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             borderRadius: BorderRadius.circular(5),
                           ),
                           hintStyle: TextStyle(fontSize: 14),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                         ),
                         style: TextStyle(fontSize: 14, color: Themes.text),
                         onChanged: (value) {
@@ -587,7 +592,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             borderRadius: BorderRadius.circular(5),
                           ),
                           hintStyle: TextStyle(fontSize: 14),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                           helperStyle: TextStyle(fontSize: 0.01),
                         ),
                         keyboardType: TextInputType.number,
@@ -658,100 +664,16 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
       barrierDismissible: true,
       builder: (_) {
         resetDialogContext = _;
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: App.theme.dialogBackgroundColor,
-          content: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Wrap(
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 25,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                      ),
-                      child: Text(
-                        'آیا مایل به ثبت فایل از ابتدا هستید؟',
-                        style: TextStyle(
-                          color: App.theme.tooltipTheme.textStyle?.color,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                    ),
-                    SizedBox(
-                      height: 40,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: dismissResetDialog,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "خیر",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 0.5,
-                          ),
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: () {
-                                _resetData();
-                                dismissResetDialog();
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "بله",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+        return ConfirmDialog(
+          dialogContext: context,
+          content: 'آیا مایل به ثبت فایل از ابتدا هستید؟',
+          applyText: "بله",
+          cancelText: "خیر",
+          title: "بازنشانی",
+          onApply: () {
+            _resetData();
+            dismissResetDialog();
+          },
         );
       },
     );
@@ -801,9 +723,10 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   List<Map<String, dynamic>> files = [];
 
   void _addMedia() async {
-    FilePickerResult? result =
-    await FilePicker.platform.pickFiles(allowMultiple: true,
-        allowedExtensions: image_extensions + video_extensions + ["zip"], type: FileType.custom);
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: true,
+        allowedExtensions: image_extensions + video_extensions + ["zip"],
+        type: FileType.custom);
 
     if (result != null) {
       for (PlatformFile pFile in result.files) {
@@ -854,18 +777,19 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
         optionsDialog = _;
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Wrap(
               children: [
                 Column(
                   children: <Widget>[
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -873,12 +797,12 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(5),
-                                  topRight: Radius.circular(5),
+                                  topLeft: Radius.circular(16),
+                                  topRight: Radius.circular(16),
                                 ),
                                 color: Themes.primary,
                               ),
-                              height: 40,
+                              height: 50,
                               alignment: Alignment.center,
                               child: Text(
                                 "تنظیمات امکانات تصویری",
@@ -953,10 +877,10 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
         Directory tempDir = await getTemporaryDirectory();
 
         File tempVideo =
-        File("${tempDir.path}/assets/" + file.uri.pathSegments.last)
-          ..createSync(recursive: true)
-          ..writeAsBytesSync(byteData.buffer
-              .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+            File("${tempDir.path}/assets/" + file.uri.pathSegments.last)
+              ..createSync(recursive: true)
+              ..writeAsBytesSync(byteData.buffer
+                  .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
 
         final fileName = await VideoThumbnail.thumbnailFile(
           video: tempVideo.path,
@@ -994,9 +918,9 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
             fit: BoxFit.cover,
             colorFilter: type != FileType2.image
                 ? ColorFilter.mode(
-              Themes.iconGrey,
-              BlendMode.hardLight,
-            )
+                    Themes.iconGrey,
+                    BlendMode.hardLight,
+                  )
                 : null,
           ),
         ),
@@ -1006,7 +930,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
     );
   }
 
-  Widget optionItem({required String value, required bool isLast, void Function()? onTap}) {
+  Widget optionItem(
+      {required String value, required bool isLast, void Function()? onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -1015,9 +940,9 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
             bottom: isLast
                 ? BorderSide.none
                 : BorderSide(
-              color: Themes.textGrey.withOpacity(0.3),
-              width: 0.7,
-            ),
+                    color: Themes.textGrey.withOpacity(0.3),
+                    width: 0.7,
+                  ),
           ),
         ),
         padding: EdgeInsets.symmetric(vertical: 10),
@@ -1045,7 +970,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
 
   _editFile(int index) async {
     FilePickerResult? result =
-    await FilePicker.platform.pickFiles(allowMultiple: false);
+        await FilePicker.platform.pickFiles(allowMultiple: false);
 
     if (result != null) {
       io.File file = io.File(result.files.first.path!);
@@ -1110,7 +1035,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
       builder: (_) {
         mediaTitleDialogContext = _;
         TextEditingController _controller =
-        TextEditingController(text: files[index]['title']);
+            TextEditingController(text: files[index]['title']);
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -1125,7 +1050,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                   children: [
                     Padding(
                       padding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       child: TextField2(
                         maxLines: 1,
                         controller: _controller,

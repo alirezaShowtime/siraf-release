@@ -11,9 +11,12 @@ class EditFileFormData {
   String address;
   String visitPhone;
   String ownerPhone;
+  String visitName;
+  String ownerName;
   Map<String, String> properties;
   String title;
   String description;
+  String secDescription;
   List<Estate> estates;
   MediaData mediaData;
 
@@ -25,9 +28,12 @@ class EditFileFormData {
     required this.address,
     required this.visitPhone,
     required this.ownerPhone,
+    required this.visitName,
+    required this.ownerName,
     required this.properties,
     required this.title,
     required this.description,
+    required this.secDescription,
     required this.estates,
     required this.mediaData,
   });

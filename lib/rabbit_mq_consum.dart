@@ -4,8 +4,7 @@ import 'package:dart_amqp/dart_amqp.dart';
 
 
   consumRabbitMq() async {
-    // var uid = (await User.fromLocal()).id;
-    var uid = 450;
+    var uid = (await User.fromLocal()).id;
 
     if (uid == null) {
       return;

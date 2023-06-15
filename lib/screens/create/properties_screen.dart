@@ -396,11 +396,11 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
         );
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Wrap(
               children: [
@@ -512,7 +512,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                       stream: persianNumberText.stream,
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -532,13 +532,13 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(5),
+                                  bottomLeft: Radius.circular(16),
+                                  bottomRight: Radius.circular(16),
                                 ),
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "تایید",
                                 style: TextStyle(
@@ -579,11 +579,11 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
         listDialog = _;
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Wrap(
               children: [
@@ -599,7 +599,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -610,13 +610,13 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(5),
+                                  bottomLeft: Radius.circular(16),
+                                  bottomRight: Radius.circular(16),
                                 ),
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "تایید",
                                 style: TextStyle(

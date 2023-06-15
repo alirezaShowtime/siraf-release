@@ -48,8 +48,9 @@ class RequestConsultantBloc
       var consultants = <RequestConsultant>[];
 
       if (response.body.isNotEmpty) {
-        consultants =
-            RequestConsultant.fromList(jDecode(response.body)['data']);
+        consultants = jDecode(response.body)['data'] == ""
+            ? []
+            : RequestConsultant.fromList(jDecode(response.body)['data']);
       }
 
       emit(RequestConsultantLoadedState(consultants: consultants));

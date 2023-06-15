@@ -21,6 +21,7 @@ import 'package:siraf3/screens/select_category_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:siraf3/models/property.dart' as p;
@@ -104,6 +105,9 @@ class _EditFileFirstState extends State<EditFileFirst> {
         title: widget.file.name ?? "",
         ownerPhone: "",
         visitPhone: "",
+        visitName: "",
+        ownerName: "",
+        secDescription: "", // todo dynamic
         estates: [],
         mediaData: MediaData(),
       );
@@ -807,111 +811,28 @@ class _EditFileFirstState extends State<EditFileFirst> {
 
   BuildContext? resetDialogContext;
 
+
   showResetDialog() {
     showDialog2(
       context: context,
       barrierDismissible: true,
       builder: (_) {
         resetDialogContext = _;
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
-          content: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Wrap(
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 25,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                      ),
-                      child: Text(
-                        'آیا مایل به ثبت فایل از ابتدا هستید؟',
-                        style: TextStyle(
-                          color: Themes.textGrey,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                    ),
-                    SizedBox(
-                      height: 40,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: dismissResetDialog,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "خیر",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 0.5,
-                          ),
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: () {
-                                _resetData();
-                                dismissResetDialog();
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "بله",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+        return ConfirmDialog(
+          dialogContext: context,
+          content: 'آیا مایل به ثبت فایل از ابتدا هستید؟',
+          applyText: "بله",
+          cancelText: "خیر",
+          title: "بازنشانی",
+          onApply: () {
+            _resetData();
+            dismissResetDialog();
+          },
         );
       },
     );
   }
-
+  
   dismissResetDialog() {
     if (resetDialogContext != null) {
       Navigator.pop(resetDialogContext!);
@@ -1048,11 +969,11 @@ class _EditFileFirstState extends State<EditFileFirst> {
         );
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Wrap(
               children: [
@@ -1163,7 +1084,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                       stream: persianNumberText.stream,
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -1185,13 +1106,13 @@ class _EditFileFirstState extends State<EditFileFirst> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(5),
+                                  bottomLeft: Radius.circular(16),
+                                  bottomRight: Radius.circular(16),
                                 ),
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "تایید",
                                 style: TextStyle(
@@ -1232,11 +1153,11 @@ class _EditFileFirstState extends State<EditFileFirst> {
         listDialog = _;
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Wrap(
               children: [
@@ -1252,7 +1173,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                       ),
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -1263,13 +1184,13 @@ class _EditFileFirstState extends State<EditFileFirst> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(5),
+                                  bottomLeft: Radius.circular(16),
+                                  bottomRight: Radius.circular(16),
                                 ),
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "تایید",
                                 style: TextStyle(
@@ -1321,11 +1242,11 @@ class _EditFileFirstState extends State<EditFileFirst> {
         );
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Wrap(
               children: [
@@ -1437,7 +1358,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                       stream: persianNumberText.stream,
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -1458,13 +1379,13 @@ class _EditFileFirstState extends State<EditFileFirst> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(5),
+                                  bottomLeft: Radius.circular(16),
+                                  bottomRight: Radius.circular(16),
                                 ),
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "تایید",
                                 style: TextStyle(
@@ -1506,11 +1427,11 @@ class _EditFileFirstState extends State<EditFileFirst> {
 
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Wrap(
               children: [
@@ -1527,7 +1448,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                       ),
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -1538,13 +1459,13 @@ class _EditFileFirstState extends State<EditFileFirst> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(5),
+                                  bottomLeft: Radius.circular(16),
+                                  bottomRight: Radius.circular(16),
                                 ),
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "تایید",
                                 style: TextStyle(

@@ -10,10 +10,12 @@ import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/screens/create/upload_media_guide.dart';
 import 'package:siraf3/screens/edit/edit_file_final.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/slider.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'dart:io' as io;
 import 'package:path/path.dart' as p;
+import 'package:siraf3/widgets/text_form_field_2.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'dart:async';
 import 'dart:io';
@@ -35,7 +37,8 @@ class _EditFileSecondState extends State<EditFileSecond> {
   String? title;
   String? visitPhone;
   String? ownerPhone;
-  String? description;
+  String? visitName;
+  String? ownerName;
 
   List<Widget> mediaBoxes = [];
   List<Map<String, dynamic>> files = [];
@@ -65,7 +68,8 @@ class _EditFileSecondState extends State<EditFileSecond> {
   TextEditingController _titleController = TextEditingController();
   TextEditingController _ownerPhoneController = TextEditingController();
   TextEditingController _visitPhoneController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
+  TextEditingController _ownerNameController = TextEditingController();
+  TextEditingController _visitNameController = TextEditingController();
 
   @override
   void initState() {
@@ -81,9 +85,10 @@ class _EditFileSecondState extends State<EditFileSecond> {
 
     setState(() {
       _titleController.text = widget.file.name ?? "";
-      _descriptionController.text = widget.file.description ?? "";
       // _ownerPhoneController.text = widget.file.ownerPhoneNumber ?? "";
       // _visitPhoneController.text = widget.file.visitPhoneNumber ?? "";
+      // _ownerNameController.text = widget.file.ownerName ?? "";
+      // _visitNameController.text = widget.file.visitName ?? "";
 
       files = sliders.map<Map<String, dynamic>>((e) {
         FileType2 type;
@@ -393,17 +398,92 @@ class _EditFileSecondState extends State<EditFileSecond> {
                       ),
                       SizedBox(height: 14),
                       Text(
-                        "شماره تماس مالک",
+                        "نام و نام خانوادگی مالک",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.primary,
+                          color: Themes.text,
                           fontFamily: "IranSansBold",
                         ),
                       ),
                       SizedBox(
                         height: 4,
                       ),
-                      TextFormField(
+                      TextFormField2(
+                        decoration: InputDecoration(
+                          hintText: "نام و نام خانوادگی صاحب ملک را بنویسید.",
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.icon,
+                              width: 0.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.primary,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.textGrey,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          hintStyle: TextStyle(fontSize: 14),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                        ),
+                        style: TextStyle(fontSize: 14, color: Themes.text),
+                        onChanged: (value) {
+                          setState(() {
+                            ownerName = value;
+                          });
+                        },
+                        textInputAction: TextInputAction.next,
+                        cursorColor: Themes.primary,
+                        maxLines: 1,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "لطفا نام و نام خانوادگی را بنویسید";
+                          }
+                        },
+                        onSaved: ((newValue) {
+                          setState(() {
+                            ownerName = newValue;
+                          });
+                        }),
+                        controller: _ownerNameController,
+                      ),
+                      SizedBox(height: 14),
+                      Text(
+                        "شماره تماس مالک",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Themes.text,
+                          fontFamily: "IranSansBold",
+                        ),
+                      ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      TextFormField2(
                         decoration: InputDecoration(
                           hintText: "شماره تماس صاحب ملک را بنویسید.",
                           border: OutlineInputBorder(
@@ -444,8 +524,9 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           hintStyle: TextStyle(fontSize: 14),
                           contentPadding: EdgeInsets.symmetric(
                               horizontal: 10, vertical: 10),
+                          helperStyle: TextStyle(fontSize: 0.01),
                         ),
-                        minLines: 1,
+                        maxLength: 11,
                         keyboardType: TextInputType.number,
                         style: TextStyle(fontSize: 14, color: Themes.text),
                         onChanged: (value) {
@@ -457,7 +538,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         cursorColor: Themes.primary,
                         maxLines: 1,
                         validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
+                          if (value == null || value.isEmpty) {
                             return "شماره تماس مالک را وارد کنید";
                           }
                           if (value.length != 11) {
@@ -470,18 +551,84 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           });
                         }),
                         controller: _ownerPhoneController,
-                        onTap: () {
-                          var txtSelection = TextSelection.fromPosition(
-                              TextPosition(
-                                  offset:
-                                      _ownerPhoneController.text.length - 1));
-
-                          if (_ownerPhoneController.selection == txtSelection) {
-                            _ownerPhoneController.selection =
-                                TextSelection.fromPosition(TextPosition(
-                                    offset: _ownerPhoneController.text.length));
+                      ),
+                      SizedBox(
+                        height: 14,
+                      ),
+                      Text(
+                        "نام و نام خانوادگی جهت هماهنگی بازدید",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Themes.text,
+                          fontFamily: "IranSansBold",
+                        ),
+                      ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      TextFormField2(
+                        decoration: InputDecoration(
+                          hintText:
+                              "نام و نام خانوادگی جهت هماهنگی بازدید را بنویسید.",
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.icon,
+                              width: 0.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.primary,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Themes.textGrey,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          hintStyle: TextStyle(fontSize: 14),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                        ),
+                        style: TextStyle(fontSize: 14, color: Themes.text),
+                        onChanged: (value) {
+                          setState(() {
+                            visitName = value;
+                          });
+                        },
+                        textInputAction: TextInputAction.next,
+                        cursorColor: Themes.primary,
+                        maxLines: 1,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "نام و نام خانوادگی جهت هماهنگی بازدید را وارد کنید";
                           }
                         },
+                        onSaved: ((newValue) {
+                          setState(() {
+                            visitName = newValue;
+                          });
+                        }),
+                        controller: _visitNameController,
                       ),
                       SizedBox(
                         height: 14,
@@ -490,14 +637,14 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         "شماره تماس بازدید",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.primary,
+                          color: Themes.text,
                           fontFamily: "IranSansBold",
                         ),
                       ),
                       SizedBox(
                         height: 4,
                       ),
-                      TextFormField(
+                      TextFormField2(
                         decoration: InputDecoration(
                           hintText: "شماره تماس جهت هماهنگی بازدید را بنویسید.",
                           border: OutlineInputBorder(
@@ -538,8 +685,8 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           hintStyle: TextStyle(fontSize: 14),
                           contentPadding: EdgeInsets.symmetric(
                               horizontal: 10, vertical: 10),
+                          helperStyle: TextStyle(fontSize: 0.01),
                         ),
-                        minLines: 1,
                         keyboardType: TextInputType.number,
                         style: TextStyle(fontSize: 14, color: Themes.text),
                         onChanged: (value) {
@@ -547,11 +694,12 @@ class _EditFileSecondState extends State<EditFileSecond> {
                             visitPhone = value;
                           });
                         },
+                        maxLength: 11,
                         textInputAction: TextInputAction.next,
                         cursorColor: Themes.primary,
                         maxLines: 1,
                         validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
+                          if (value == null || value.isEmpty) {
                             return "شماره تماس بازدید را وارد کنید";
                           }
                           if (value.length != 11) {
@@ -564,121 +712,6 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           });
                         }),
                         controller: _visitPhoneController,
-                        onTap: () {
-                          var txtSelection = TextSelection.fromPosition(
-                              TextPosition(
-                                  offset:
-                                      _visitPhoneController.text.length - 1));
-
-                          if (_visitPhoneController.selection == txtSelection) {
-                            _visitPhoneController.selection =
-                                TextSelection.fromPosition(TextPosition(
-                                    offset: _visitPhoneController.text.length));
-                          }
-                        },
-                      ),
-                      SizedBox(height: 14),
-                      Text(
-                        "توضیحات",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Themes.primary,
-                          fontFamily: "IranSansBold",
-                        ),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      Text(
-                        "در توضیحات به جزئیات و ویژگی ها قابل توجه، دسترسی های محلی و موقعیت ملک اشاره کنید و از درج شماره تماس یا آدرس مستقیم در آن خودداری نمایید.",
-                        style: TextStyle(
-                          fontSize: 11.5,
-                          fontFamily: "IranSansMedium",
-                          color: Themes.text,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          hintText: "توضیحات را بنویسید.",
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.icon,
-                              width: 0.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.primary,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.textGrey,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          hintStyle: TextStyle(fontSize: 14),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                        ),
-                        style: TextStyle(fontSize: 14, color: Themes.text),
-                        onChanged: (value) {
-                          setState(() {
-                            description = value;
-                          });
-                        },
-                        cursorColor: Themes.primary,
-                        maxLines: 50,
-                        minLines: 6,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return "توضیحات فایل را وارد کنید";
-                          }
-                          if (value.length <= 40) {
-                            return "حداقل باید 40 کاراکتر بنویسید";
-                          }
-                        },
-                        onSaved: ((newValue) {
-                          setState(() {
-                            description = newValue;
-                          });
-                        }),
-                        controller: _descriptionController,
-                        onTap: () {
-                          var txtSelection = TextSelection.fromPosition(
-                              TextPosition(
-                                  offset:
-                                      _descriptionController.text.length - 1));
-
-                          if (_descriptionController.selection ==
-                              txtSelection) {
-                            _descriptionController.selection =
-                                TextSelection.fromPosition(TextPosition(
-                                    offset:
-                                        _descriptionController.text.length));
-                          }
-                        },
                       ),
                     ],
                   ),
@@ -722,100 +755,16 @@ class _EditFileSecondState extends State<EditFileSecond> {
       barrierDismissible: true,
       builder: (_) {
         resetDialogContext = _;
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.background,
-          content: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Wrap(
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 25,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                      ),
-                      child: Text(
-                        'آیا مایل به ثبت فایل از ابتدا هستید؟',
-                        style: TextStyle(
-                          color: Themes.textGrey,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                    ),
-                    SizedBox(
-                      height: 40,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: dismissResetDialog,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "خیر",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 0.5,
-                          ),
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: () {
-                                _resetData();
-                                dismissResetDialog();
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "بله",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+        return ConfirmDialog(
+          dialogContext: context,
+          content: 'آیا مایل به ثبت فایل از ابتدا هستید؟',
+          applyText: "بله",
+          cancelText: "خیر",
+          title: "بازنشانی",
+          onApply: () {
+            _resetData();
+            dismissResetDialog();
+          },
         );
       },
     );
@@ -867,7 +816,8 @@ class _EditFileSecondState extends State<EditFileSecond> {
     widget.formData.title = _titleController.text;
     widget.formData.ownerPhone = _ownerPhoneController.text;
     widget.formData.visitPhone = _visitPhoneController.text;
-    widget.formData.description = _descriptionController.text;
+    widget.formData.ownerName = _ownerNameController.text;
+    widget.formData.visitName = _visitNameController.text;
 
     await Navigator.push(
       context,
@@ -939,11 +889,12 @@ class _EditFileSecondState extends State<EditFileSecond> {
         optionsDialog = _;
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Wrap(
               children: [
@@ -958,8 +909,8 @@ class _EditFileSecondState extends State<EditFileSecond> {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(5),
-                                  topRight: Radius.circular(5),
+                                  topLeft: Radius.circular(16),
+                                  topRight: Radius.circular(16),
                                 ),
                                 color: Themes.primary,
                               ),
