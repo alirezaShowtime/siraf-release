@@ -14,7 +14,7 @@ import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/firebase_listener.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
-import 'package:siraf3/models/city.dart';
+import 'package:siraf3/models/city.dart' as city;
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/rabbit_mq_consum.dart';
@@ -131,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   ScrollController scrollController = ScrollController();
 
-  List<City> cities = [];
+  List<city.City> cities = [];
 
   late HSBloc homeScreenBloc;
 
@@ -144,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    var mCities = await City.getList();
+    var mCities = await city.City.getList();
     setState(() {
       cities = mCities;
 
@@ -391,7 +391,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  String getTitle(List<City> cities) {
+  String getTitle(List<city.City> cities) {
     return cities.isEmpty
         ? "انتخاب شهر"
         : cities.length == 1

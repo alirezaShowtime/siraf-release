@@ -9,7 +9,7 @@ class File {
   String? publishedAgo;
   List<Property>? propertys;
   FullCategory? fullCategory;
-  String? city;
+  City? city;
 
   File(
       {this.id,
@@ -55,8 +55,8 @@ class File {
           ? null
           : FullCategory.fromJson(json["category"]);
     }
-    if (json["city"] is String) {
-      city = json["city"];
+    if (json["city"] is Map) {
+      city = json["city"] != null ? City.fromJson(json["city"]) : null;
     }
 
     if (propertys != null) {
@@ -197,6 +197,39 @@ class Property {
     _data["value"] = value;
     _data["list"] = list;
     _data["weightList"] = weightList;
+    return _data;
+  }
+}
+
+class City {
+  int? id;
+  String? name;
+  String? weight;
+  String? countFile;
+
+  City({this.id, this.name, this.weight, this.countFile});
+
+  City.fromJson(Map<String, dynamic> json) {
+    if(json["id"] is int) {
+      id = json["id"];
+    }
+    if(json["name"] is String) {
+      name = json["name"];
+    }
+    if(json["weight"] is String) {
+      weight = json["weight"];
+    }
+    if(json["countFile"] is String) {
+      countFile = json["countFile"];
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["id"] = id;
+    _data["name"] = name;
+    _data["weight"] = weight;
+    _data["countFile"] = countFile;
     return _data;
   }
 }

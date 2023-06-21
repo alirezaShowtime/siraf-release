@@ -8,7 +8,7 @@ import 'package:siraf3/bloc/agency_profile_comment/agency_profile_comment_rate_b
 import 'package:siraf3/bloc/files_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
-import 'package:siraf3/models/city.dart';
+import 'package:siraf3/models/city.dart' as city;
 import 'package:siraf3/models/consultant_info.dart';
 import 'package:siraf3/models/estate_profile.dart' as estateProfileModel;
 import 'package:siraf3/models/file.dart';
@@ -243,10 +243,10 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen> with SingleTickerP
     }
   }
 
-  List<City> cities = [];
+  List<city.City> cities = [];
 
   void setFilterData() async {
-    cities = await City.getList();
+    cities = await city.City.getList();
 
     filterData = FilterData(cityIds: cities.map<int>((e) => e.id!).toList(), estateId: widget.estateId);
     getFiles();

@@ -177,12 +177,15 @@ class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           enabled: codeFieldEnabled,
-                          fillColor: App.isDark ? DarkThemes.background : Colors.grey.shade50,
+                          fillColor: App.isDark
+                              ? DarkThemes.background
+                              : Colors.grey.shade50,
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
                           filled: true,
                         ),
                         textInputAction: TextInputAction.send,
@@ -197,7 +200,8 @@ class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
                         ),
                       ),
                       MyTextIconButton(
-                        icon: Icon(Icons.edit_rounded, color: App.theme.primaryColor, size: 15),
+                        icon: Icon(Icons.edit_rounded,
+                            color: App.theme.primaryColor, size: 15),
                         text: "ویرایش شماره موبایل",
                         onPressed: editNumberPhone,
                       ),
@@ -208,7 +212,9 @@ class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
                           child: MyTextButton(
                             border: _timeLeft == 0,
                             onPressed: sendAgain,
-                            text: _timeLeft > 0 ? "ارسال مجدد کد (${_timeLeft})" : "ارسال مجدد کد",
+                            text: _timeLeft > 0
+                                ? "ارسال مجدد کد (${_timeLeft})"
+                                : "ارسال مجدد کد",
                             disableTextColor: Colors.black,
                             fontSize: 10,
                             disable: _timeLeft > 0,
@@ -243,7 +249,8 @@ class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
       return notify("کد تایید را وارد نکرده اید");
     }
 
-    verifyNumberPhoneBloc.add(VerifyNumberPhoneRequestEvent(numberPhone: widget.numberPhone, code: code));
+    verifyNumberPhoneBloc.add(VerifyNumberPhoneRequestEvent(
+        numberPhone: widget.numberPhone, code: code));
   }
 
   void sendAgain() {
@@ -252,7 +259,7 @@ class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
 
   void editNumberPhone() {
     dispose();
-    pushAndRemoveUntil(context, LoginScreen());
+    Navigator.pop(context);
   }
 
   void _pushToHome() {

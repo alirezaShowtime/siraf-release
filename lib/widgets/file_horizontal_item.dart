@@ -134,7 +134,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                         Text(
                           (widget.file.publishedAgo ?? "") +
                               ' | ' +
-                              (widget.file.city ?? ""),
+                              (widget.file.city?.name ?? ""),
                           style: TextStyle(
                             color: App.theme.textTheme.bodyLarge?.color,
                             fontSize: 9,

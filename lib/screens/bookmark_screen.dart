@@ -271,7 +271,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
     List<file.File> files = selectedFiles.map<file.File>((e) {
       return file.File(
         id: e.fileId!.id,
-        city: e.fileId!.city,
+        city: file.City(name: e.fileId!.city),
         // description: e.fileId!.description,
         favorite: true,
         fullCategory: null,

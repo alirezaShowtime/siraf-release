@@ -53,53 +53,7 @@ class AgentProfileScreen extends StatefulWidget {
 }
 
 class _AgentProfileScreen extends State<AgentProfileScreen> with SingleTickerProviderStateMixin {
-  List<File> list = [
-    File(
-      id: 342,
-      name: "hello owlrs",
-      description: "fdslfdsfkp[dk dsolpfdjs fiod",
-      city: "تهران",
-      publishedAgo: "یک هفته پیش",
-      propertys: [
-        Property(
-          name: "heloweds",
-          value: "fkds",
-          weightList: 1,
-          list: true,
-        ),
-        Property(
-          name: "heloweds",
-          value: "fkds",
-          weightList: 2,
-          list: true,
-        ),
-        Property(
-          name: "heloweds",
-          value: "fkds",
-          weightList: 3,
-          list: true,
-        ),
-      ],
-      fullCategory: FullCategory(
-        fullCategory: "fdskofk ",
-        name: "dfsofijdsf ",
-        id: 1,
-        image: "fdjspofkdspofk dsf",
-      ),
-      favorite: true,
-      // images: [
-      //   Images(
-      //       idm : "",
-      //       createDatem : "",
-      //       pathm : "",
-      //       statusm : "",
-      //       weightm : "",
-      //       namem : "",
-      //       fileIdm : "",
-      //   ),
-      // ],
-    ),
-  ];
+  List<File> list = [];
 
   bool showComment = false;
 

@@ -5,12 +5,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/search_screen.dart';
-import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
 import 'package:siraf3/widgets/file_slide_item.dart';
 import 'package:siraf3/widgets/loading.dart';
@@ -111,7 +109,6 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
 
   ScrollController scrollController = ScrollController();
 
-  List<City> cities = [];
 
   HSBloc homeScreenBloc = HSBloc();
 
