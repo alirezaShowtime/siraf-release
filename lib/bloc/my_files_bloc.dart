@@ -52,6 +52,7 @@ class MyFilesBloc extends Bloc<MyFilesEvent, MyFilesState> {
           "file/myFiles/" +
               (event.sort?.isNotEmpty ?? false ? "?sort=${event.sort!}" : ""),
         ),
+        timeout: Duration(seconds: 5000)
       );
     } on HttpException catch (e) {
       emit(MyFilesErrorState(response: null));

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:siraf3/bloc/ticket/get_groups_bloc.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/dark_themes.dart';
@@ -105,13 +106,15 @@ class _MenuScreenState extends State<MenuScreen> {
                         children: [
                           GestureDetector(
                             onTap: () async {
-                              await Navigator.push(context, MaterialPageRoute(builder: (_) => EditProfileScreen()));
+                              await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => EditProfileScreen()));
                               getUser();
                             },
                             child: ClipRRect(
                               child: Avatar(
-                                image:
-                                    NetworkImage(getImageUrl(user?.avatar ?? "")),
+                                image: NetworkImage(user?.avatar ?? ""),
                                 errorWidget: _profileWidget(),
                                 loadingWidget: _profileWidget(),
                                 size: 80,
@@ -420,7 +423,10 @@ class _MenuScreenState extends State<MenuScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => RulesScreen()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => RulesScreen()));
                           },
                           child: Container(
                             margin: EdgeInsets.only(bottom: 5),
@@ -439,19 +445,29 @@ class _MenuScreenState extends State<MenuScreen> {
                             ),
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.only(bottom: 5),
-                          padding:
-                              EdgeInsets.only(bottom: 11, top: 11, right: 7),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: App.theme.dialogBackgroundColor,
-                          ),
-                          child: Text(
-                            "معرفی برنامه به دیگران(${VERSION})",
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontFamily: "IranSansMedium",
+                        GestureDetector(
+                          onTap: () async {
+                            await FlutterShare.share(
+                              title: 'اشتراک گذاری برنامه',
+                              text: "اپلیکیشن سیراف",
+                              linkUrl: "https://siraf.app/app",
+                              chooserTitle: 'اشتراک گذاری در',
+                            );
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(bottom: 5),
+                            padding:
+                                EdgeInsets.only(bottom: 11, top: 11, right: 7),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: App.theme.dialogBackgroundColor,
+                            ),
+                            child: Text(
+                              "معرفی برنامه به دیگران(${VERSION})",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontFamily: "IranSansMedium",
+                              ),
                             ),
                           ),
                         ),
@@ -543,8 +559,8 @@ class _MenuScreenState extends State<MenuScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
               AccordionItem(
-                onClick: () {
-                  doWithLogin(
+                onClick: () async {
+                  await doWithLogin(
                     context,
                     () {
                       Navigator.push(
@@ -555,6 +571,8 @@ class _MenuScreenState extends State<MenuScreen> {
                       );
                     },
                   );
+
+                  getUser();
                 },
                 title: "تیکت های من",
               ),

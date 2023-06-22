@@ -45,13 +45,23 @@ class _MyFileScreenState extends State<MyFileScreen> {
   DeleteFileBloc deleteFileBloc = DeleteFileBloc();
 
   Map<int, String> progress_fa = {
-    1: "منتظر تایید",
-    2: "در حال پیگیری",
+    1: "در انتظار پذیرش",
+    2: "رد شده",
     3: "رد شده",
     4: "تایید شده",
-    5: "در انتظار پذیرش املاک",
-    6: "توسط دفاتر پذیرش نشده",
+    5: "در انتظار پذیرش",
+    6: "پذیرش نشده",
     7: "پذیرش شده",
+  };
+
+  Map<int, Color> progress_color = {
+    1: Themes.textGrey,
+    2: Colors.red,
+    3: Colors.red,
+    4: Colors.green,
+    5: App.isDark ? Themes.textLight : Themes.text,
+    6: Colors.yellow,
+    7: Colors.green,
   };
 
   @override
@@ -112,7 +122,22 @@ class _MyFileScreenState extends State<MyFileScreen> {
         toolbarOpacity = _scrollController.position.pixels <= imgHeight ? 0 : 1;
       });
     });
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels > imgHeight + 50 && titleShow)
+        return;
+
+      if (_scrollController.position.pixels <= imgHeight + 50 && !titleShow)
+        return;
+
+      setState(() {
+        titleShow = _scrollController.position.pixels > imgHeight + 50;
+      });
+    });
   }
+
+  bool titleShow = false;
+  MyFileDetail? file;
 
   ScrollController _scrollController = ScrollController();
 
@@ -163,6 +188,8 @@ class _MyFileScreenState extends State<MyFileScreen> {
     }
 
     state = state as MyFileLoadedState;
+
+    file = state.file;
 
     //ops
     return Stack(
@@ -322,17 +349,31 @@ class _MyFileScreenState extends State<MyFileScreen> {
                     alignment: Alignment.centerRight,
                     child: Padding(
                       padding: const EdgeInsets.only(right: 15),
-                      child: Text(
-                        "وضعیت : " + (progress_fa[widget.progress] ?? "نامشخص"),
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontFamily: "IranSans",
-                          color: App.theme.tooltipTheme.textStyle?.color,
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: "وضعیت : ",
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontFamily: "IranSansMedium",
+                                color: App.theme.textTheme.bodyLarge?.color,
+                              ),
+                            ),
+                            TextSpan(
+                              text: (progress_fa[widget.progress] ?? "نامشخص"),
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontFamily: "IranSansMedium",
+                                color: progress_color[widget.progress],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(height: 400),
+                  SizedBox(height: 65),
                 ] +
                 state.consulants
                     .map<Widget>((element) => _item(element))
@@ -426,7 +467,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                 ),
                 child: Text(
                   (file.fullCategory != null
-                          ? file.fullCategory!
+                          ? file.category!
                                   .getMainCategoryName()
                                   .toString()
                                   .trim() +
@@ -439,7 +480,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                 ),
               ),
               Text(
-                file.publishedAgo! + ' | ' + (file.city?.name ?? ""),
+                file.publishedAgo! + ' | ' + (file.cityFull?.name ?? ""),
                 style: TextStyle(
                   color: App.theme.tooltipTheme.textStyle?.color,
                   fontFamily: "IranSans",
@@ -450,14 +491,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
           ),
         ),
         IconButton(
-          onPressed: () async {
-            await FlutterShare.share(
-              title: 'اشتراک گذاری فایل',
-              text: file.name ?? '',
-              linkUrl: FILE_URL + widget.id.toString(),
-              chooserTitle: 'اشتراک گذاری در',
-            );
-          },
+          onPressed: () => share(file),
           icon: m.Image(
             image: AssetImage("assets/images/ic_share.png"),
             width: 16,
@@ -898,30 +932,54 @@ class _MyFileScreenState extends State<MyFileScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Stack(
-                children: <Widget>[
-                  if (toolbarOpacity == 0)
-                    Positioned(
-                      left: 1.0,
-                      top: 2.0,
-                      child: Icon(CupertinoIcons.back, color: Colors.black26),
-                    ),
-                  if (toolbarOpacity == 0)
-                    Positioned(
-                      right: 1.0,
-                      top: 2.0,
-                      child: Icon(CupertinoIcons.back, color: Colors.black26),
-                    ),
-                  Icon(
-                    CupertinoIcons.back,
-                    color: iconColor,
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Stack(
+                    children: <Widget>[
+                      if (toolbarOpacity == 0)
+                        Positioned(
+                          left: 1.0,
+                          top: 2.0,
+                          child:
+                              Icon(CupertinoIcons.back, color: Colors.black26),
+                        ),
+                      if (toolbarOpacity == 0)
+                        Positioned(
+                          right: 1.0,
+                          top: 2.0,
+                          child:
+                              Icon(CupertinoIcons.back, color: Colors.black26),
+                        ),
+                      Icon(
+                        CupertinoIcons.back,
+                        color: iconColor,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                if (titleShow)
+                  SizedBox(
+                    width: 160,
+                    child: Text(
+                      (file.name ?? "") +
+                          (file.name ?? "") +
+                          (file.name ?? "") +
+                          (file.name ?? "") +
+                          (file.name ?? ""),
+                      style: TextStyle(
+                        fontFamily: "IranSansMedium",
+                        color: Themes.text,
+                        fontSize: 12.5,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+              ],
             ),
             Row(
               children: [
@@ -952,6 +1010,20 @@ class _MyFileScreenState extends State<MyFileScreen> {
                     ],
                   ),
                 ),
+                if (titleShow)
+                  IconButton(
+                    onPressed: () => share(file),
+                    icon: Stack(
+                      children: <Widget>[
+                        m.Image(
+                          image: AssetImage("assets/images/ic_share.png"),
+                          width: 16,
+                          height: 16,
+                          color: App.theme.iconTheme.color,
+                        ),
+                      ],
+                    ),
+                  ),
                 MyPopupMenuButton(
                   itemBuilder: (context) {
                     return [
@@ -1025,12 +1097,23 @@ class _MyFileScreenState extends State<MyFileScreen> {
                     ],
                   ),
                 ),
-                SizedBox(width: 10,),
+                SizedBox(
+                  width: 10,
+                ),
               ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void share(MyFileDetail file) async {
+    await FlutterShare.share(
+      title: 'اشتراک گذاری فایل',
+      text: file.name ?? '',
+      linkUrl: FILE_URL + widget.id.toString(),
+      chooserTitle: 'اشتراک گذاری در',
     );
   }
 }
