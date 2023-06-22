@@ -22,6 +22,7 @@ import 'package:siraf3/screens/inquiry_screen.dart';
 import 'package:siraf3/screens/my_files_screen.dart';
 import 'package:siraf3/screens/request_file/request_file_screen.dart';
 import 'package:siraf3/screens/request_file/request_list_screen.dart';
+import 'package:siraf3/screens/rules_screen.dart';
 import 'package:siraf3/screens/settings_screen.dart';
 import 'package:siraf3/screens/ticket/ticket_creation_screen.dart';
 import 'package:siraf3/screens/ticket/ticket_list_screen.dart';
@@ -417,19 +418,24 @@ class _MenuScreenState extends State<MenuScreen> {
                           content: BlocBuilder<GetGroupsBloc, GetGroupsState>(
                               builder: _buildTicketAccordionContent),
                         ),
-                        Container(
-                          margin: EdgeInsets.only(bottom: 5),
-                          padding:
-                              EdgeInsets.only(bottom: 11, top: 11, right: 7),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: App.theme.dialogBackgroundColor,
-                          ),
-                          child: Text(
-                            "درباره سیراف و قوانین استفاده",
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontFamily: "IranSansMedium",
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) => RulesScreen()));
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(bottom: 5),
+                            padding:
+                                EdgeInsets.only(bottom: 11, top: 11, right: 7),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: App.theme.dialogBackgroundColor,
+                            ),
+                            child: Text(
+                              "درباره سیراف و قوانین استفاده",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontFamily: "IranSansMedium",
+                              ),
                             ),
                           ),
                         ),
