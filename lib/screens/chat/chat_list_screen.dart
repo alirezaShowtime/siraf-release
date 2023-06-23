@@ -1,19 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:siraf3/bloc/ticket/tickets_bloc.dart';
-import 'package:siraf3/dialog.dart';
+import 'package:siraf3/bloc/chat/list/chat_list_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
-import 'package:siraf3/models/ticket.dart';
-import 'package:siraf3/screens/ticket/chat/chat_screen.dart';
-import 'package:siraf3/screens/ticket/ticket_creation_screen.dart';
+import 'package:siraf3/models/chat_item.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
+import 'package:siraf3/widgets/avatar.dart';
+import 'package:siraf3/widgets/empty.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
-import 'package:siraf3/widgets/my_badge.dart';
+import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
+import 'package:siraf3/widgets/my_popup_menu_item.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 class ChatListScreen extends StatefulWidget {
@@ -22,27 +22,25 @@ class ChatListScreen extends StatefulWidget {
 }
 
 class _ChatListScreen extends State<ChatListScreen> {
-  TicketsBloc ticketsBloc = TicketsBloc();
+  ChatListBloc chatListBloc = ChatListBloc();
 
   @override
   void initState() {
     super.initState();
 
-    ticketsBloc.add(TicketsEvent());
+    chatListBloc.add(ChatListRequestEvent());
   }
 
-  List<Ticket> tickets = [];
-  List<Ticket> selectedTickets = [];
+  List<ChatItem> chats = [];
+  List<ChatItem> selectedChats = [];
   bool isSelectable = false;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ticketsBloc,
+      create: (_) => chatListBloc,
       child: WillPopScope(
-        onWillPop: () async {
-          return _handleBack();
-        },
+        onWillPop: () async => _handleBack(),
         child: Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
@@ -55,349 +53,210 @@ class _ChatListScreen extends State<ChatListScreen> {
                 }
               },
             ),
-            title: Row(
-              children: [
-                AppBarTitle("تیک های پشتیبانی"),
-                MyBadge(text: "12"),
-              ],
-            ),
+            title: AppBarTitle("لیست پیام ها"),
             actions: [
-              if (selectedTickets.isNotEmpty)
-                IconButton(
-                  onPressed: () {
-                    showDeleteDialog(selectedTickets.map((e) => e.id!).toList());
-                  },
-                  icon: Icon(
-                    CupertinoIcons.delete,
-                    color: null,
-                  ),
-                  disabledColor: Themes.iconGrey,
+              if (selectedChats.isNotEmpty)
+                MyIconButton(
+                  iconData: CupertinoIcons.trash,
+                  onTap: () {},
                 ),
               MyPopupMenuButton(
                 itemBuilder: (context) {
                   return [
-                    PopupMenuItem<int>(
-                      value: 0,
-                      child: Text(
-                        "انتخاب همه",
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: App.theme.textTheme.bodyLarge?.color,
-                        ),
-                      ),
-                      height: 35,
-                    ),
+                    MyPopupMenuItem<int>(enable: selectedChats.length < chats.length, value: 0, label: "انتخاب همه"),
+                    if (selectedChats.isNotEmpty) MyPopupMenuItem<int>(value: 1, label: "لغو انتخاب همه"),
                   ];
                 },
                 onSelected: (value) {
-                  setState(() {
-                    selectedTickets.clear();
-                    selectedTickets.addAll(tickets);
-                    isSelectable = true;
-                  });
+                  if (value == 0) {
+                    setState(() {
+                      selectedChats.clear();
+                      selectedChats.addAll(chats);
+                      isSelectable = true;
+                    });
+                  }
+                  if (value == 1) {
+                    setState(() {
+                      selectedChats.clear();
+                      isSelectable = false;
+                    });
+                  }
                 },
                 iconData: Icons.more_vert,
               ),
             ],
           ),
-          body: BlocBuilder<TicketsBloc, TicketsState>(builder: _listBlocBuilder),
-          floatingActionButton: FloatingActionButton(
-            onPressed: createTicket,
-            backgroundColor: Themes.primary,
-            shape: CircleBorder(),
-            tooltip: "ایجاد تیکت",
-            child: icon(Icons.add_rounded, color: Colors.white),
+          body: BlocBuilder<ChatListBloc, ChatListState>(builder: _listBlocBuilder),
+        ),
+      ),
+    );
+  }
+
+  Widget item(ChatItem chatItem) {
+    bool isSelected = selectedChats.contains(chatItem);
+
+    return Material(
+      color: Colors.white,
+      child: InkWell(
+        onLongPress: () {
+          if (!isSelected) {
+            setState(() {
+              selectedChats.add(chatItem);
+              isSelectable = true;
+            });
+            return;
+          }
+        },
+        onTap: () {
+          if (isSelected) {
+            setState(() {
+              selectedChats.remove(chatItem);
+            });
+            return;
+          }
+        },
+        child: Container(
+          height: 65,
+          foregroundDecoration: !isSelected ? null : BoxDecoration(color: Themes.primary.withOpacity(0.1)),
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(color: Colors.black12, width: 0.5),
+            ),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: Avatar(
+                  imagePath: chatItem.consultantAvatar ?? "",
+                  size: 50,
+                  errorImage: AssetImage("assets/images/profile.jpg"),
+                  loadingImage: AssetImage("assets/images/profile.jpg"),
+                ),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "${chatItem.consultantName ?? "مشاور"} | ",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Themes.text,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            chatItem.fileTitle ?? "نامشخص",
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Themes.textGrey,
+                              // fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      chatItem.message?.type == "file " ? "سند" : (chatItem.message?.message ?? ""),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.grey.shade500,
+                        height: 2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (chatItem.message?.isConsultant == false)
+                        Icon(
+                          chatItem.message!.isSeen! ? Icons.done_all_rounded : Icons.check_rounded,
+                          color: App.theme.primaryColor,
+                          size: 18,
+                        ),
+                      SizedBox(width: 4),
+                      Text(
+                        chatItem.message?.timeAgo ?? "",
+                        style: TextStyle(color: Colors.grey.shade600, fontSize: 9, height: 1),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  if (chatItem.message?.countUnseen != null && chatItem.message!.countUnseen! > 0 && chatItem.message?.isConsultant == true)
+                    Container(
+                      height: 20,
+                      constraints: BoxConstraints(minWidth: 20),
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Themes.primary,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: Text(
+                        "${chatItem.message!.countUnseen!}",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontFamily: "IranSansMedium",
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget item(Ticket ticket) {
-    return GestureDetector(
-      onTap: () {
-        if (isSelectable) {
-          _changeSelection(ticket);
-        } else {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen()));
-        }
-      },
-      onLongPress: () {
-        _changeSelection(ticket);
-      },
-      child: Container(
-        height: 65,
-        color: App.theme.dialogBackgroundColor,
-        foregroundDecoration: BoxDecoration(
-          color: selectedTickets.any((e) => e.id == ticket.id) ? Themes.blue.withOpacity(0.2) : Colors.transparent,
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                // ClipRRect(
-                //   borderRadius: BorderRadius.circular(100),
-                //   child: Image(
-                //     image: NetworkImage(
-                //         "https://www.seiu1000.org/sites/main/files/imagecache/hero/main-images/camera_lense_0.jpeg"),
-                //     width: 50,
-                //     height: 50,
-                //     fit: BoxFit.fill,
-                //     alignment: Alignment.center,
-                //     loadingBuilder: (context, child, loadingProgress) {
-                //       if (loadingProgress == null) return child;
-                //       return Image.asset(
-                //         "assets/images/profile.png",
-                //         width: 50,
-                //         height: 50,
-                //         fit: BoxFit.fill,
-                //         alignment: Alignment.center,
-                //       );
-                //     },
-                //   ),
-                // ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 3, bottom: 3, right: 5),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            ticket.groupName ?? "",
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            " | ",
-                            style: TextStyle(
-                              color: App.theme.tooltipTheme.textStyle?.color,
-                              fontSize: 13,
-                            ),
-                          ),
-                          Text(
-                            ticket.title ?? "",
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: App.theme.tooltipTheme.textStyle?.color,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        ticket.lastMessage?.trim() ?? "",
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: App.theme.tooltipTheme.textStyle?.color,
-                        ),
-                        maxLines: 1,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                MyBadge(text: "23"), // todo change dynamically
-                Text(
-                  "12:54", // todo change dynamically
-                  style: TextStyle(
-                    color: App.theme.tooltipTheme.textStyle?.color,
-                    fontSize: 11,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget _listBlocBuilder(BuildContext context, ChatListState state) {
+    if (state is ChatListInitial) return Container();
 
-  void createTicket() {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => TicketCreationScreen()));
-  }
+    if (state is ChatListLoading) return Center(child: Loading());
 
-  Widget _listBlocBuilder(BuildContext context, TicketsState state) {
-    if (state is TicketsInitState) return Container();
-
-    if (state is TicketsLoadingState)
-      return Center(
-        child: Loading(),
-      );
-
-    if (state is TicketsErrorState) {
+    if (state is ChatListError) {
       return Center(
         child: TryAgain(
-          onPressed: (() {
-            ticketsBloc.add(TicketsEvent());
-          }),
+          message: state.message,
+          onPressed: () => chatListBloc.add(ChatListRequestEvent()),
         ),
       );
     }
 
-    state = TicketsLoadedState(tickets: (state as TicketsLoadedState).tickets);
+    chats = (state as ChatListSuccess).chatList;
 
-    tickets = state.tickets;
-
-    if (tickets.isEmpty) {
-      return Center(
-        child: Text(
-          "گفتگویی وجود ندارد یک تیکت ایجاد کنید",
-          style: TextStyle(fontSize: 13),
-        ),
-      );
-    }
+    if (!chats.isNotNullOrEmpty()) return Center(child: Empty());
 
     return ListView(
-      children: tickets.map<Widget>((e) => item(e)).toList(),
+      children: chats.map<Widget>((e) => item(e)).toList(),
     );
   }
 
   BuildContext? deleteDialogContext;
 
-  showDeleteDialog(List<int> ids) {
-    showDialog2(
-      context: context,
-      barrierDismissible: true,
-      builder: (_) {
-        deleteDialogContext = _;
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: App.theme.dialogBackgroundColor,
-          content: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Wrap(
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 25,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                      ),
-                      child: Text(
-                        'آیا مایل به حذف فایل هستید؟',
-                        style: TextStyle(
-                          color: App.theme.tooltipTheme.textStyle?.color,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Themes.primary,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(5),
-                          bottomRight: Radius.circular(5),
-                        ),
-                      ),
-                      height: 40,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: dismissDeleteDialog,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "خیر",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: () async {
-                                // todo delete tickets
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "بله",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  dismissDeleteDialog() {
-    if (deleteDialogContext != null) {
-      Navigator.pop(deleteDialogContext!);
-    }
-  }
-
-  _changeSelection(Ticket ticket) {
-    setState(() {
-      if (selectedTickets.any((e) => e.id == ticket.id)) {
-        selectedTickets.remove(ticket);
-      } else {
-        selectedTickets.add(ticket);
-      }
-
-      isSelectable = selectedTickets.isNotEmpty;
-    });
-  }
-
   _handleBack() {
     if (isSelectable) {
       setState(() {
         isSelectable = false;
-        selectedTickets.clear();
+        selectedChats.clear();
       });
       return false;
     }

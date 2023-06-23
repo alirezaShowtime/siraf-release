@@ -203,10 +203,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                       });
                                       hasNewMessageStream.add(hasNewMessage);
                                     }
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) => ChatListScreen()));
+                                    push(context, ChatListScreen());
                                   },
                                   padding: EdgeInsets.only(
                                       right: 30, left: 15, top: 20, bottom: 20),
