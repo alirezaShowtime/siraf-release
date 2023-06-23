@@ -14,7 +14,10 @@ const applicationJsonUTF8 = {HttpHeaders.contentTypeHeader: 'application/json; c
 
 Future<http.Response> get(Uri url, {Map<String, String>? headers, Duration? timeout}) async {
   try {
-    var req = http.get(url, headers: headers).timeout(timeout ?? Duration(seconds: 30), onTimeout: timeoutErrorResponse).catchError((_) => timeoutErrorResponse());
+    var req = http
+        .get(url, headers: headers)
+        .timeout(timeout ?? Duration(seconds: 30), onTimeout: timeoutErrorResponse)
+        .catchError((_) => timeoutErrorResponse());
 
     return handleReq(req);
   } catch (_) {
@@ -25,7 +28,10 @@ Future<http.Response> get(Uri url, {Map<String, String>? headers, Duration? time
 
 Future<http.Response> post(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {
   try {
-    var req = http.post(url, body: body, encoding: encoding, headers: headers).timeout(timeout ?? Duration(minutes: 30), onTimeout: timeoutErrorResponse).catchError((_) => timeoutErrorResponse());
+    var req = http
+        .post(url, body: body, encoding: encoding, headers: headers)
+        .timeout(timeout ?? Duration(minutes: 30), onTimeout: timeoutErrorResponse)
+        .catchError((_) => timeoutErrorResponse());
 
     return handleReq(req, requestBody: body);
   } catch (_) {
@@ -35,67 +41,82 @@ Future<http.Response> post(Uri url, {Object? body, Encoding? encoding, Map<Strin
 }
 
 Future<http.Response> getWithToken(Uri url, {Map<String, String>? headers, Duration? timeout}) async {
-  if (!await User.hasToken()) {
-    return authErrorResponse();
+  try {
+    if (!await User.hasToken()) {
+      return authErrorResponse();
+    }
+
+    headers = (headers ?? {})
+      ..addAll(
+        {
+          'Authorization': await User.getBearerToken(),
+        },
+      );
+  } catch (e) {
+    print(e);
   }
-
-  headers = (headers ?? {})
-    ..addAll(
-      {
-        'Authorization': await User.getBearerToken(),
-      },
-    );
-
   return get(url, headers: headers, timeout: timeout);
 }
 
 Future<http.Response> postWithToken(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {
-  if (!await User.hasToken()) {
-    return authErrorResponse();
+  try {
+    if (!await User.hasToken()) {
+      return authErrorResponse();
+    }
+
+    headers = (headers ?? {})
+      ..addAll(
+        {
+          'Authorization': await User.getBearerToken(),
+        },
+      );
+  } catch (e) {
+    print(e);
   }
-
-  headers = (headers ?? {})
-    ..addAll(
-      {
-        'Authorization': await User.getBearerToken(),
-      },
-    );
-
   return post(url, body: body, encoding: encoding, headers: headers);
 }
 
 Future<http.Response> postJsonWithToken(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {
-  if (!await User.hasToken()) return authErrorResponse();
+  try {
+    if (!await User.hasToken()) return authErrorResponse();
 
-  headers = (headers ?? {})
-    ..addAll(
-      {
-        HttpHeaders.contentTypeHeader: 'application/json',
-        'Authorization': await User.getBearerToken(),
-      },
-    );
-
+    headers = (headers ?? {})
+      ..addAll(
+        {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          'Authorization': await User.getBearerToken(),
+        },
+      );
+  } catch (e) {
+    print(e);
+  }
   return post(url, body: jsonEncode(body), encoding: encoding, headers: headers);
 }
 
 Future<http.Response> deleteWithToken(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {
-  if (!await User.hasToken()) {
-    return authErrorResponse();
+  try {
+    if (!await User.hasToken()) {
+      return authErrorResponse();
+    }
+
+    headers = (headers ?? {})
+      ..addAll(
+        {
+          'Authorization': await User.getBearerToken(),
+        },
+      );
+  } catch (e) {
+    print(e);
   }
-
-  headers = (headers ?? {})
-    ..addAll(
-      {
-        'Authorization': await User.getBearerToken(),
-      },
-    );
-
   return delete(url, body: body, encoding: encoding, headers: headers);
 }
 
 Future<http.Response> delete(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {
   try {
-    var req = http2.delete(url, body: body, encoding: encoding, headers: headers).timeout(timeout ?? Duration(minutes: 10), onTimeout: timeoutErrorResponse).catchError((_) => timeoutErrorResponse());
+    var req = http2
+        .delete(url, body: body, encoding: encoding, headers: headers)
+        .timeout(timeout ?? Duration(minutes: 10), onTimeout: timeoutErrorResponse)
+        .catchError((_) => timeoutErrorResponse());
 
     return handleReq(req, requestBody: body);
   } catch (_) {

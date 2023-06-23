@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
-import 'package:siraf3/main.dart';
+import 'package:flutter/material.dart';
 
 class LoadingDialog extends StatefulWidget {
   String? message;
   bool showMessage;
+
   LoadingDialog({this.message, this.showMessage = true, super.key});
 
   @override
@@ -14,44 +15,39 @@ class LoadingDialog extends StatefulWidget {
 class _LoadingDialogState extends State<LoadingDialog> {
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      contentPadding: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-      backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.symmetric(
-        horizontal: widget.showMessage
-            ? 0
-            : (MediaQuery.of(context).size.width - 100) / 2,
-      ),
-      content: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        height: widget.showMessage ? 170 : 100,
-        alignment: Alignment.center,
-        child: widget.showMessage
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: Text(
-                      widget.message ?? 'در حال ارسال درخواست صبور باشید',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 13,
-                        fontWeight: FontWeight.normal,
+    return WillPopScope(
+      onWillPop: () => Future.value(false),
+      child: AlertDialog(
+        contentPadding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        backgroundColor: Colors.white,
+        insetPadding: EdgeInsets.zero,
+        content: !widget.showMessage
+            ? Loading()
+            : Container(
+                height: 85,
+                alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(horizontal: 18),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(color: Themes.primary),
+                    SizedBox(width: 18),
+                    Expanded(
+                      child: Text(
+                        widget.message ?? 'در حال ارسال درخواست صبور باشید',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          color: Themes.text,
+                          fontSize: 11,
+                          fontFamily: "IranSansBold",
+                        ),
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Loading(),
-                ],
-              )
-            : Loading(),
+                  ],
+                ),
+              ),
       ),
     );
   }
