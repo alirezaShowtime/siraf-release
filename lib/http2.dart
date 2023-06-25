@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:http/http.dart' as http;
-import 'package:logger/logger.dart';
+import 'package:dio/dio.dart' as dio;
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
+import 'package:siraf3/models/user.dart';
+import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 import 'package:siraf3/models/user.dart';
 
 const LOG_RESPONSE = true;
@@ -14,10 +16,7 @@ const applicationJsonUTF8 = {HttpHeaders.contentTypeHeader: 'application/json; c
 
 Future<http.Response> get(Uri url, {Map<String, String>? headers, Duration? timeout}) async {
   try {
-    var req = http
-        .get(url, headers: headers)
-        .timeout(timeout ?? Duration(seconds: 30), onTimeout: timeoutErrorResponse)
-        .catchError((_) => timeoutErrorResponse());
+    var req = http.get(url, headers: headers).timeout(timeout ?? Duration(seconds: 30), onTimeout: timeoutErrorResponse).catchError((_) => timeoutErrorResponse());
 
     return handleReq(req);
   } catch (_) {
@@ -41,73 +40,61 @@ Future<http.Response> post(Uri url, {Object? body, Encoding? encoding, Map<Strin
 }
 
 Future<http.Response> getWithToken(Uri url, {Map<String, String>? headers, Duration? timeout}) async {
-  try {
-    if (!await User.hasToken()) {
-      return authErrorResponse();
-    }
-
-    headers = (headers ?? {})
-      ..addAll(
-        {
-          'Authorization': await User.getBearerToken(),
-        },
-      );
-  } catch (e) {
-    print(e);
+  if (!await User.hasToken()) {
+    return authErrorResponse();
   }
+
+  headers = (headers ?? {})
+    ..addAll(
+      {
+        'Authorization': await User.getBearerToken(),
+      },
+    );
+
   return get(url, headers: headers, timeout: timeout);
 }
 
 Future<http.Response> postWithToken(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {
-  try {
-    if (!await User.hasToken()) {
-      return authErrorResponse();
-    }
-
-    headers = (headers ?? {})
-      ..addAll(
-        {
-          'Authorization': await User.getBearerToken(),
-        },
-      );
-  } catch (e) {
-    print(e);
+  if (!await User.hasToken()) {
+    return authErrorResponse();
   }
+
+  headers = (headers ?? {})
+    ..addAll(
+      {
+        'Authorization': await User.getBearerToken(),
+      },
+    );
+
   return post(url, body: body, encoding: encoding, headers: headers);
 }
 
 Future<http.Response> postJsonWithToken(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {
-  try {
-    if (!await User.hasToken()) return authErrorResponse();
+  if (!await User.hasToken()) return authErrorResponse();
 
-    headers = (headers ?? {})
-      ..addAll(
-        {
-          HttpHeaders.contentTypeHeader: 'application/json',
-          'Authorization': await User.getBearerToken(),
-        },
-      );
-  } catch (e) {
-    print(e);
-  }
+  headers = (headers ?? {})
+    ..addAll(
+      {
+        HttpHeaders.contentTypeHeader: 'application/json',
+        'Authorization': await User.getBearerToken(),
+      },
+    );
+
   return post(url, body: jsonEncode(body), encoding: encoding, headers: headers);
 }
 
 Future<http.Response> deleteWithToken(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {
-  try {
-    if (!await User.hasToken()) {
-      return authErrorResponse();
-    }
-
-    headers = (headers ?? {})
-      ..addAll(
-        {
-          'Authorization': await User.getBearerToken(),
-        },
-      );
-  } catch (e) {
-    print(e);
+  if (!await User.hasToken()) {
+    return authErrorResponse();
   }
+
+  headers = (headers ?? {})
+    ..addAll(
+      {
+        'Authorization': await User.getBearerToken(),
+      },
+    );
+
   return delete(url, body: body, encoding: encoding, headers: headers);
 }
 
@@ -142,6 +129,11 @@ Future<http.Response> handleReq(Future<http.Response> req, {Object? requestBody}
     return generateErrorResponse(message: "خطایی در سمت سرور پیش آمد لطفا بعدا تلاش کنید");
   }
 
+  print("response.headers['content-type'] ${response.headers["content-type"]}");
+  if (response.headers["content-type"] != "application/json") {
+    return generateErrorResponse(message: "خطایی در سمت سرور پیش آمد لطفا بعدا تلاش کنید");
+  }
+
   return response;
 }
 
@@ -161,9 +153,18 @@ void logRequest(http.Response response, {Object? requestBody}) async {
   messages.add("\n\nQUERIES :  ${convertUtf8(getPrettyJSONString(response.request!.url.queryParameters))}");
 
   messages.add("\n\n\nREQUEST BODY : ${convertUtf8(getPrettyJSONString(requestBody))}");
-  messages.add("\n\n\nRESPONSE BODY : ${convertUtf8(getPrettyJSONString(jsonDecode(response.body)))}");
+  messages.add("\n\n\nRESPONSE HEADERS : ${getPrettyJSONString(response.headers)}");
+  try {
+    messages.add("\n\n\nRESPONSE BODY : ${convertUtf8(getPrettyJSONString(jsonDecode(response.body)))}");
+  } catch (e) {
+    messages.add("\n\n\nRESPONSE BODY have HTML format :(");
+  }
 
-  logger.i(messages.join());
+  if (response.statusCode == 200) {
+    logger.i(messages.join());
+  } else {
+    logger.e(messages.join());
+  }
 }
 
 http.Response generateErrorResponse({int statusCode = 500, String message = "خطایی غیر منتظره رخ داد"}) {
@@ -177,4 +178,34 @@ http.Response generateErrorResponse({int statusCode = 500, String message = "خ�
 String getPrettyJSONString(jsonObject) {
   var encoder = new JsonEncoder.withIndent("     ");
   return encoder.convert(jsonObject);
+}
+
+void logRequestDio(dio.Response response) async {
+  Logger logger = Logger();
+  var userToken = await User.getBearerToken();
+  var messages = [];
+
+  messages.add("\n\n\nREQUEST POST ${response.statusCode}");
+
+  if (await User.hasToken()) {
+    messages.add("\n\nUSER TOKEN : $userToken");
+  }
+
+  messages.add("\n\nTO :  ${Uri.decodeFull(response.requestOptions.baseUrl)}");
+  messages.add("\n\nHEADERS :  ${convertUtf8(getPrettyJSONString(response.requestOptions.headers..remove("Authorization")))}");
+  messages.add("\n\nQUERIES :  ${convertUtf8(getPrettyJSONString(response.realUri.queryParameters))}");
+
+  messages.add("\n\n\nREQUEST BODY : ${getPrettyJSONString(response.requestOptions.data)}");
+  messages.add("\n\n\nRESPONSE HEADERS : ${getPrettyJSONString(response.headers)}");
+  try {
+    messages.add("\nRESPONSE BODY : ${getPrettyJSONString(response.data)}");
+  } catch (e) {
+    messages.add("\n\n\nRESPONSE BODY have HTML format :(");
+  }
+
+  if (response.statusCode == 200) {
+    logger.i(messages.join());
+  } else {
+    logger.e(messages.join());
+  }
 }

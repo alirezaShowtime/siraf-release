@@ -335,6 +335,10 @@ Future<Directory> ticketDownloadPath() async {
   return await getOrCreatePath("${await getDownloadPath()}/Siraf/Ticket");
 }
 
+Future<Directory> chatDownloadPath() async {
+  return await getOrCreatePath("${await getDownloadPath()}/Siraf/Chat");
+}
+
 generateMd5(String data) {
   var content = new Utf8Encoder().convert(data);
   var md5 = crypto.md5;
@@ -372,4 +376,17 @@ animationDialog({required BuildContext context, required Widget Function(BuildCo
     transitionDuration: const Duration(milliseconds: 300),
     pageBuilder: (_, __, ___) => Container(),
   );
+}
+String generateUniquePath(String path) {
+  var regExp = RegExp(r"_\((\d+)\)\.(\w+)$");
+  var extension = RegExp(r"\w+$").firstMatch(path)!.group(0)!;
+
+  if (regExp.hasMatch(path)) {
+    var found = regExp.allMatches(path).toList()[0].group(0)!;
+    var extension = regExp.allMatches(path).toList()[0].group(2)!;
+    var repeat = int.parse(regExp.allMatches(path).toList()[0].group(1)!) + 1;
+
+    return path.replaceAll(found, "_($repeat).$extension");
+  }
+  return path.replaceAll(".$extension", "_(1).$extension");
 }

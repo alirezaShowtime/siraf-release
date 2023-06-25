@@ -1,64 +1,59 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_file/open_file.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:siraf3/bloc/ticket/downloadFile/ticket_download_file_bloc.dart';
+import 'package:siraf3/bloc/chat/downloadFile/download_file_bloc.dart';
 import 'package:siraf3/extensions/int_extension.dart';
-import 'package:siraf3/extensions/string_extension.dart';
-import 'package:siraf3/models/ticket_details.dart';
-import 'package:siraf3/screens/ticket/ticket_chat/message_config.dart';
+import 'package:siraf3/models/chat_message.dart';
+import 'package:siraf3/screens/chat/chat/chat_message_config.dart';
 
-class MessageFileWidget extends StatefulWidget {
+class ChatMessageFileWidget extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _MessageFileWidget();
+  State<StatefulWidget> createState() => _ChatMessageFileWidget();
 
-  FileMessage fileMessage;
-  MessageConfig messageConfig;
+  ChatFileMessage fileMessage;
+  ChatMessageConfig messageConfig;
   TextDirection textDirection;
 
-  MessageFileWidget({required this.fileMessage, required this.messageConfig, this.textDirection = TextDirection.ltr});
+  ChatMessageFileWidget({required this.fileMessage, required this.messageConfig, this.textDirection = TextDirection.ltr});
 }
 
-class _MessageFileWidget extends State<MessageFileWidget> with SingleTickerProviderStateMixin {
-  late AnimationController loadingController;
+class _ChatMessageFileWidget extends State<ChatMessageFileWidget> with SingleTickerProviderStateMixin {
+  late final AnimationController loadingController = AnimationController(vsync: this, duration: Duration(seconds: 3))..repeat();
 
-  TicketDownloadFileBloc ticketDownloadFileBloc = TicketDownloadFileBloc();
+  DownloadFileBloc downloadFileBloc = DownloadFileBloc();
 
   CancelToken? cancelToken;
 
   @override
   void initState() {
     super.initState();
-    loadingController = AnimationController(vsync: this, duration: Duration(seconds: 3))..repeat();
-    ticketDownloadFileBloc.add(TicketDownloadFileIsExist(widget.fileMessage));
-  }
 
-  @override
-  void dispose() {
-    loadingController.dispose();
-    super.dispose();
+    downloadFileBloc.add(DownloadFileIsExist(widget.fileMessage));
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder(
-      bloc: ticketDownloadFileBloc,
-      builder: (context, TicketDownloadFileState state) {
-        if (state is TicketDownloadFileInitial) {
-          return widget.fileMessage.uploadedPath.isFill() ? _fileDownloadedWidget(widget.fileMessage.uploadedPath!) : _fileInitWidget();
+      bloc: downloadFileBloc,
+      builder: (context, DownloadFileState state) {
+        if (state is DownloadFileInitial) {
+          return _fileInitWidget();
         }
 
-        if (state is TicketDownloadFileSuccess) {
-          return _fileDownloadedWidget(state.file.path);
+        if (state is DownloadFileSuccess) {
+          return _fileDownloadedWidget(state.file);
         }
 
-        if (state is TicketDownloadFileError) {
+        if (state is DownloadFileError) {
           return _fileErrorDownload(state.now, state.count);
         }
 
-        if (state is TicketDownloadFileLoading) {
+        if (state is DownloadFileLoading) {
           cancelToken = state.cancelToken;
           return _fileDownloadingWidget(state.now, state.count);
         }
@@ -77,12 +72,12 @@ class _MessageFileWidget extends State<MessageFileWidget> with SingleTickerProvi
     );
   }
 
-  Widget _fileDownloadedWidget(String filePath) {
+  Widget _fileDownloadedWidget(File file) {
     return _baseFileWidget(
       icon: Icon(Icons.insert_drive_file_rounded, color: widget.messageConfig.background, size: 24),
       fileName: widget.fileMessage.name,
       fileInfo: "${widget.fileMessage.fileSize} ${widget.fileMessage.extension.toUpperCase()}",
-      onTap: () => onClickOpen(filePath),
+      onTap: () => onClickOpen(file),
     );
   }
 
@@ -194,15 +189,15 @@ class _MessageFileWidget extends State<MessageFileWidget> with SingleTickerProvi
 
     await Permission.manageExternalStorage.request();
 
-    ticketDownloadFileBloc.add(TicketDownloadFileRequest(widget.fileMessage));
+    downloadFileBloc.add(DownloadFileRequest(widget.fileMessage));
   }
 
-  void onClickOpen(String path) {
-    OpenFile.open(path);
+  void onClickOpen(File file) {
+    OpenFile.open(file.path);
   }
 
   void onClickTryAgain() {
-    ticketDownloadFileBloc.add(TicketDownloadFileResume(widget.fileMessage));
+    downloadFileBloc.add(DownloadFileResume(widget.fileMessage));
   }
 
   void onClickCancel() {

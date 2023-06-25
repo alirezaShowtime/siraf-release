@@ -9,7 +9,12 @@ abstract class TicketDownloadFileEvent {
   Future<String> savingPath() async {
     Directory directory = await ticketDownloadPath();
 
-    return "${directory.path}/${generateMd5(fileMessage.name)}.${fileMessage.extension}";
+    var path = "${directory.path}/${generateMd5(fileMessage.name)}.${fileMessage.extension}";
+    if (await File(path).exists()) {
+      return generateUniquePath(path);
+    }
+
+    return path;
   }
 }
 

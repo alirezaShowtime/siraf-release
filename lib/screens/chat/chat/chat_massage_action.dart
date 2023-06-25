@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:siraf3/helpers.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/my_alert_dialog.dart';
 import 'package:siraf3/widgets/my_content_dialog.dart';
+import 'package:siraf3/widgets/my_popup_menu_item.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:siraf3/widgets/title_dialog.dart';
-import 'package:siraf3/dialog.dart';
 
 void showMessageActionMenu(
   BuildContext context,
@@ -28,19 +28,18 @@ void showMessageActionMenu(
       0.0,
     ),
     items: [
-      popupMenuItemWithIcon(
-        title: "پاسخ",
-        iconDate: Icons.reply_rounded,
+      MyPopupMenuItem(
+        label: "پاسخ",
+        icon: Icons.reply_rounded,
         onTap: onClickAnswerItem,
       ),
-      popupMenuItemWithIcon(
-        title: "حذف پیام",
-        iconDate: CupertinoIcons.delete,
+      MyPopupMenuItem(
+        label: "حذف پیام",
+        icon: CupertinoIcons.delete,
         onTap: () {
           Future.delayed(
             const Duration(seconds: 0),
-            () => confirmDeleteMessageDialog(context,
-                isForMe: true, onClickDelete: onClickDeleteItem),
+            () => confirmDeleteMessageDialog(context, isForMe: true, onClickDelete: onClickDeleteItem),
           );
         },
       ),
@@ -89,8 +88,7 @@ void confirmDeleteMessageDialog(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MyContentDialog(
-                  content: "آیا واقعا می خواهید این پیام را حذف کنید?"),
+              MyContentDialog(content: "آیا واقعا می خواهید این پیام را حذف کنید?"),
               if (isForMe) SizedBox(height: 10),
               if (isForMe)
                 Row(
@@ -107,52 +105,13 @@ void confirmDeleteMessageDialog(
                     ),
                     Text(
                       "حذف برای $userName",
-                      style: TextStyle(
-                        fontSize: 12,
-                      ),
+                      style: TextStyle(fontSize: 12),
                     ),
                   ],
                 )
             ],
           ),
         ),
-      );
-    },
-  );
-}
-
-void confirmDeleteChatDialog(
-  BuildContext context, {
-  void Function()? onClickDelete,
-  void Function()? onClickCancel,
-}) {
-  showDialog2(
-    context: context,
-    builder: (context) {
-      return MyAlertDialog(
-        title: TitleDialog(title: " حذف گفتگو"),
-        content: MyContentDialog(
-          content: "آیا واقعا میخواهید این گفتگو را پاک کنید",
-        ),
-        actions: [
-          MyTextButton(
-            text: "حذف",
-            onPressed: () {
-              Navigator.pop(context);
-              onClickDelete?.call();
-            },
-            rippleColor: Colors.red,
-            textColor: Colors.red,
-          ),
-          MyTextButton(
-            text: "لغو",
-            onPressed: () {
-              Navigator.pop(context);
-              onClickCancel?.call();
-            },
-            textColor: Themes.primary,
-          ),
-        ],
       );
     },
   );

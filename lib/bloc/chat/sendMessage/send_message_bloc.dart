@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:siraf3/controller/message_upload_controller.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/http2.dart';
-import 'package:siraf3/models/ticket_details.dart';
+import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/models/user.dart';
 
 part 'send_message_event.dart';
@@ -27,7 +27,7 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
     var startFrom = _requestQueue.length;
     _requestQueue.add(
       SendMessageRequestModel(
-        ticketId: event.ticketId,
+        chatId: event.chatId,
         controller: event.controller,
         files: await event.getFiles(),
         files2: event.files,
@@ -45,10 +45,10 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
     dio.CancelToken cancelToken = dio.CancelToken();
     event.requestModel.controller.setOnCancelUpload(cancelToken.cancel);
 
-    var url = "https://ticket.siraf.app/api/ticket/addMessage/";
+    var url = "https://chat.siraf.app/api/message/addMessageUser/";
 
     dio.FormData formData = dio.FormData.fromMap({
-      "ticketId": event.requestModel.ticketId,
+      "chatId": event.requestModel.chatId,
       "message": event.requestModel.message,
     });
 

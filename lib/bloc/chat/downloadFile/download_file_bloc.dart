@@ -7,17 +7,17 @@ import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 import 'package:siraf3/bloc/request_bloc.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/models/ticket_details.dart';
+import 'package:siraf3/models/chat_message.dart';
 
-part 'ticket_download_file_event.dart';
+part 'download_file_event.dart';
 
-part 'ticket_download_file_state.dart';
+part 'download_file_state.dart';
 
-class TicketDownloadFileBloc extends RequestBloc<TicketDownloadFileEvent, TicketDownloadFileState> {
-  TicketDownloadFileBloc() : super(TicketDownloadFileInitial()) {
-    on<TicketDownloadFileRequest>(_download);
-    on<TicketDownloadFileIsExist>(_isExistFile);
-    on<TicketDownloadFileResume>(_downloadResume);
+class DownloadFileBloc extends RequestBloc<DownloadFileEvent, DownloadFileState> {
+  DownloadFileBloc() : super(DownloadFileInitial()) {
+    on<DownloadFileRequest>(_download);
+    on<DownloadFileIsExist>(_isExistFile);
+    on<DownloadFileResume>(_downloadResume);
   }
 
   Future<File> _downloadWithHandler({
@@ -52,7 +52,7 @@ class TicketDownloadFileBloc extends RequestBloc<TicketDownloadFileEvent, Ticket
     }
   }
 
-  FutureOr<void> _download(TicketDownloadFileRequest event, Emitter<TicketDownloadFileState> emit) async {
+  FutureOr<void> _download(DownloadFileRequest event, Emitter<DownloadFileState> emit) async {
     dio.Options options = dio.Options(
       responseType: dio.ResponseType.bytes,
       followRedirects: false,
@@ -68,7 +68,7 @@ class TicketDownloadFileBloc extends RequestBloc<TicketDownloadFileEvent, Ticket
     var onReceiveProgress = (int now, int count) {
       nowDownload = now;
       countDownload = count;
-      emit(TicketDownloadFileLoading(cancelToken, now, count));
+      emit(DownloadFileLoading(cancelToken, now, count));
     };
 
     try {
@@ -80,23 +80,23 @@ class TicketDownloadFileBloc extends RequestBloc<TicketDownloadFileEvent, Ticket
         onReceiveProgress: onReceiveProgress,
       );
 
-      emit(TicketDownloadFileSuccess(downloadedFile));
+      emit(DownloadFileSuccess(downloadedFile));
     } on FileSystemException catch (e) {
     } on Exception catch (e) {
-      emit(TicketDownloadFileError(nowDownload, countDownload));
+      emit(DownloadFileError(nowDownload, countDownload));
     }
   }
 
-  FutureOr<void> _isExistFile(TicketDownloadFileIsExist event, Emitter<TicketDownloadFileState> emit) async {
+  FutureOr<void> _isExistFile(DownloadFileIsExist event, Emitter<DownloadFileState> emit) async {
     var fileInDownload = File(await event.savingPath());
 
     if (await fileInDownload.exists()) {
-      return emit(TicketDownloadFileSuccess(fileInDownload));
+      return emit(DownloadFileSuccess(fileInDownload));
     }
   }
 
-  FutureOr<void> _downloadResume(TicketDownloadFileResume event, Emitter<TicketDownloadFileState> emit) async {
-    add(TicketDownloadFileRequest(event.fileMessage));
+  FutureOr<void> _downloadResume(DownloadFileResume event, Emitter<DownloadFileState> emit) async {
+    add(DownloadFileRequest(event.fileMessage));
     return;
 
     int downloaded;
@@ -107,7 +107,7 @@ class TicketDownloadFileBloc extends RequestBloc<TicketDownloadFileEvent, Ticket
 
       downloaded = await file.length();
     } on PathNotFoundException catch (e) {
-      add(TicketDownloadFileRequest(event.fileMessage));
+      add(DownloadFileRequest(event.fileMessage));
 
       return;
     }
@@ -115,7 +115,7 @@ class TicketDownloadFileBloc extends RequestBloc<TicketDownloadFileEvent, Ticket
     int? count = await getFileSizeFromUrl(event.fileMessage);
 
     if (count == null) {
-      return emit(TicketDownloadFileError(0, 0));
+      return emit(DownloadFileError(0, 0));
     }
 
     dio.Options options = dio.Options(
@@ -135,7 +135,7 @@ class TicketDownloadFileBloc extends RequestBloc<TicketDownloadFileEvent, Ticket
     var onReceiveProgress = (int now, int count) {
       nowDownload = now;
       countDownload = count;
-      emit(TicketDownloadFileLoading(cancelToken, now, count));
+      emit(DownloadFileLoading(cancelToken, now, count));
     };
 
     try {
@@ -150,13 +150,13 @@ class TicketDownloadFileBloc extends RequestBloc<TicketDownloadFileEvent, Ticket
       await ref.writeFrom(response.data);
       await ref.close();
 
-      emit(TicketDownloadFileSuccess(file));
+      emit(DownloadFileSuccess(file));
     } on Exception catch (e) {
-      emit(TicketDownloadFileError(nowDownload, countDownload));
+      emit(DownloadFileError(nowDownload, countDownload));
     }
   }
 
-  Future<int?> getFileSizeFromUrl(FileMessage fileMessage) async {
+  Future<int?> getFileSizeFromUrl(ChatFileMessage fileMessage) async {
     var res = await dio.Dio().head(fileMessage.path!);
 
     if (res.statusCode != 200) return null;

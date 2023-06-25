@@ -4,7 +4,7 @@ part of 'send_message_bloc.dart';
 abstract class SendMessageEvent {}
 
 class SendMessageRequestModel {
-  int ticketId;
+  int chatId;
   List<MapEntry<String, dio.MultipartFile>>? files;
   List<File>? files2;
   String? message;
@@ -12,7 +12,7 @@ class SendMessageRequestModel {
   Key widgetKey;
 
   SendMessageRequestModel({
-    required this.ticketId,
+    required this.chatId,
     required this.controller,
     required this.widgetKey,
     this.message,
@@ -28,14 +28,14 @@ class SendMessageRequestEvent extends SendMessageEvent {
 }
 
 class AddToSendQueueEvent extends SendMessageEvent {
-  int ticketId;
+  int chatId;
   List<File>? files;
   String? message;
   MessageUploadController controller;
   Key widgetKey;
 
   AddToSendQueueEvent({
-    required this.ticketId,
+    required this.chatId,
     required this.widgetKey,
     required this.controller,
     this.message,

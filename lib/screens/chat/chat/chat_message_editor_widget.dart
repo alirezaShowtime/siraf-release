@@ -1,6 +1,9 @@
 import 'dart:io';
 
-import 'package:siraf3/bloc/ticket/sendMessage/send_message_bloc.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:siraf3/bloc/chat/sendMessage/send_message_bloc.dart';
 import 'package:siraf3/extensions/file_extension.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
@@ -8,9 +11,6 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatMessageEditor extends StatefulWidget {
   @override
@@ -264,7 +264,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
                   maxLines: 2,
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 12,
+                    fontSize: 11,
                     fontFamily: "sans-serif",
                   ),
                 ),

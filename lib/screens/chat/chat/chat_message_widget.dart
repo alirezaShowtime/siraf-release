@@ -1,33 +1,29 @@
-import 'dart:io';
-
 import 'package:auto_direction/auto_direction.dart';
+import 'package:flutter/material.dart';
 import 'package:siraf3/enums/message_owner.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
-import 'package:siraf3/helpers.dart';
-import 'package:siraf3/models/ticket_details.dart';
-import 'package:siraf3/screens/ticket/ticket_chat/mesage_file_widget.dart';
-import 'package:siraf3/screens/ticket/ticket_chat/message_config.dart';
+import 'package:siraf3/models/chat_message.dart';
+import 'package:siraf3/screens/chat/chat/chat_mesage_file_widget.dart';
+import 'package:siraf3/screens/chat/chat/chat_message_config.dart';
 import 'package:siraf3/themes.dart';
-import 'package:flutter/material.dart';
 
-class MessageWidget extends StatefulWidget {
+class ChatMessageWidget extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => MessageWidgetState();
+  State<StatefulWidget> createState() => ChatMessageWidgetState();
 
-  Message message;
+  ChatMessage message;
   late MessageOwner messageOwner;
-  late List<FileMessage> fileMessages;
-  late List<File>? files;
+  late List<ChatFileMessage> fileMessages;
 
-  MessageWidget({required this.message,this.files}) {
-    this.fileMessages = message.fileMessage ?? [];
+  ChatMessageWidget({required this.message}) {
+    this.fileMessages = message.fileMessages ?? [];
     this.messageOwner = message.owner;
   }
 }
 
-class MessageWidgetState extends State<MessageWidget> {
-  late MessageConfig messageConfig;
+class ChatMessageWidgetState extends State<ChatMessageWidget> {
+  late ChatMessageConfig messageConfig;
   late bool hasFile;
 
   @override
@@ -59,8 +55,8 @@ class MessageWidgetState extends State<MessageWidget> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                for (FileMessage fileMessage in widget.fileMessages)
-                  MessageFileWidget(
+                for (ChatFileMessage fileMessage in widget.fileMessages)
+                  ChatMessageFileWidget(
                     fileMessage: fileMessage,
                     messageConfig: messageConfig,
                     textDirection: messageConfig.fileDirection,
@@ -99,12 +95,12 @@ class MessageWidgetState extends State<MessageWidget> {
     );
   }
 
-  MessageConfig _getConfig() {
+  ChatMessageConfig _getConfig() {
     return widget.messageOwner == MessageOwner.ForME ? _forMeConfig() : _forHerConfig();
   }
 
-  MessageConfig _forMeConfig() {
-    return MessageConfig(
+  ChatMessageConfig _forMeConfig() {
+    return ChatMessageConfig(
       tlRadius: 18,
       trRadius: 18,
       blRadius: 18,
@@ -118,8 +114,8 @@ class MessageWidgetState extends State<MessageWidget> {
     );
   }
 
-  MessageConfig _forHerConfig() {
-    return MessageConfig(
+  ChatMessageConfig _forHerConfig() {
+    return ChatMessageConfig(
       tlRadius: 18,
       trRadius: 18,
       blRadius: 0,

@@ -27,14 +27,14 @@ class SendMessageError extends SendMessageState {
 
 class SendMessageSuccess extends SendMessageState {
   Key widgetKey;
-  late Message message;
+  late ChatMessage message;
   List<File>? sentFiles;
 
   SendMessageSuccess(this.widgetKey, dio.Response response, {this.sentFiles}) {
-    message = Message.fromJson(response.data['data']["Message"]);
+    message = ChatMessage.fromJson(response.data['data']["Message"]);
 
-    if (message.fileMessage.isFill() && sentFiles.isFill()) {
-      message.fileMessage!.first.uploadedPath = sentFiles!.first.path;
+    if (message.fileMessages.isFill() && sentFiles.isFill()) {
+      message.fileMessages!.first.uploadedPath = sentFiles!.first.path;
     }
   }
 

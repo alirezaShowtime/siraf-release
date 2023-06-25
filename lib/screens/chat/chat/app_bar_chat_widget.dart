@@ -1,20 +1,20 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:siraf3/config.dart';
-import 'package:siraf3/models/ticket.dart';
+import 'package:siraf3/models/chat_item.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_item.dart';
-import 'package:flutter/material.dart';
 
 class AppBarChat extends AppBar {
   @override
   State<AppBar> createState() => _AppBarChat();
 
-  Ticket ticket;
-  void Function()? onclickCloseChat;
+  ChatItem chatItem;
 
-  AppBarChat({required this.ticket,this.onclickCloseChat});
+  AppBarChat({required this.chatItem});
 }
 
 class _AppBarChat extends State<AppBarChat> {
@@ -31,12 +31,11 @@ class _AppBarChat extends State<AppBarChat> {
           iconData: Icons.more_vert_rounded,
           itemBuilder: (_) => [
             MyPopupMenuItem(
-              label: "بستن تیکت",
-              icon: Icons.close_rounded,
-              onTap: () => widget.onclickCloseChat?.call(),
+              label: "حذف گفتوگو",
+              icon: CupertinoIcons.trash,
             ),
           ],
-        )
+        ),
       ],
     );
   }
@@ -48,7 +47,7 @@ class _AppBarChat extends State<AppBarChat> {
         Padding(
           padding: const EdgeInsets.only(left: 10),
           child: Avatar(
-            imagePath: widget.ticket.ticketSender?.avatar ?? "",
+            imagePath: widget.chatItem.consultantAvatar ?? "",
             size: 40,
             errorImage: AssetImage("assets/images/profile.jpg"),
             loadingImage: AssetImage("assets/images/profile.jpg"),
@@ -56,7 +55,7 @@ class _AppBarChat extends State<AppBarChat> {
         ),
         Expanded(
           child: Text(
-            widget.ticket.groupName ?? "پشتیبانی",
+            widget.chatItem.consultantName ?? "مشاور",
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 12,

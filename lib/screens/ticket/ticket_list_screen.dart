@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:siraf3/bloc/ticket/close/close_ticket_bloc.dart';
 import 'package:siraf3/bloc/ticket/list/ticket_list_bloc.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
@@ -10,12 +8,14 @@ import 'package:siraf3/screens/ticket/ticket_creation_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/avatar.dart';
+import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
-import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_item.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TicketListScreen extends StatefulWidget {
   @override
@@ -24,12 +24,42 @@ class TicketListScreen extends StatefulWidget {
 
 class _TicketListScreen extends State<TicketListScreen> {
   TicketListBloc ticketsBloc = TicketListBloc();
+  CloseTicketBloc closeTicketBloc = CloseTicketBloc();
 
   @override
   void initState() {
     super.initState();
 
     ticketsBloc.add(TicketListRequestEvent());
+
+    closeTicketBloc.stream.listen((state) {
+      if (state is CloseTicketLoading) {
+        dismissDialog(errorDialogContext);
+        loadingDialog(context: context);
+        return;
+      }
+
+      if (state is CloseTicketError) {
+        dismissDialog(loadingDialogContext);
+        errorDialog(context: context, message: state.message);
+        return;
+      }
+
+      if (state is CloseTicketSuccess) {
+        dismissDialog(loadingDialogContext);
+        notify("${selectedTickets.length} تیک با بسته شد.");
+        setState(() {
+          tickets = sortTickets(tickets.map((e) {
+            if (selectedTickets.contains(e)) {
+              e.status = false;
+            }
+            return e;
+          }).toList());
+        });
+        selectedTickets.clear();
+        isSelectable = false;
+      }
+    });
   }
 
   List<Ticket> tickets = [];
@@ -57,24 +87,56 @@ class _TicketListScreen extends State<TicketListScreen> {
             title: AppBarTitle("تیک های پشتیبانی"),
             actions: [
               if (selectedTickets.isNotEmpty)
-                MyIconButton(
-                  onTap: () {
-                    showDeleteDialog(selectedTickets.map((e) => e.id!).toList());
-                  },
-                  iconData: CupertinoIcons.delete,
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 13),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(20),
+                    onTap: () {
+                      showDeleteDialog(selectedTickets.map((e) => e.id!).toList());
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.close_rounded,
+                            size: 20,
+                            color: Colors.red,
+                          ),
+                          Text(
+                            "بستن تیکت",
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 10,
+                              fontFamily: "IranSansBold",
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               MyPopupMenuButton(
                 itemBuilder: (context) {
                   return [
-                    MyPopupMenuItem<int>(value: 0, label: "انتخاب همه", icon: Icons.check_circle_outline_rounded),
+                    MyPopupMenuItem<int>(enable: selectedTickets.length < tickets.length, value: 0, label: "انتخاب همه"),
+                    if (selectedTickets.isNotEmpty) MyPopupMenuItem<int>(value: 1, label: "لغو انتخاب همه"),
                   ];
                 },
                 onSelected: (value) {
-                  setState(() {
-                    selectedTickets.clear();
-                    selectedTickets.addAll(tickets);
-                    isSelectable = true;
-                  });
+                  if (value == 0) {
+                    setState(() {
+                      selectedTickets.clear();
+                      selectedTickets.addAll(tickets);
+                      isSelectable = true;
+                    });
+                  }
+                  if (value == 1) {
+                    setState(() {
+                      selectedTickets.clear();
+                      isSelectable = false;
+                    });
+                  }
                 },
                 iconData: Icons.more_vert,
               ),
@@ -94,16 +156,43 @@ class _TicketListScreen extends State<TicketListScreen> {
   }
 
   Widget item(Ticket ticket) {
-    return Material(
-      color: !ticket.status! ? Colors.white : Colors.grey.shade100,
-      child: InkWell(
-        onTap: () {
-          if (!ticket.status!) return;
+    bool isSelected = selectedTickets.contains(ticket);
 
+    return Material(
+      color: ticket.status ? Colors.white : Colors.grey.shade100,
+      child: InkWell(
+        onLongPress: () {
+          if (!isSelected) {
+            setState(() {
+              selectedTickets.add(ticket);
+              isSelectable = true;
+            });
+            return;
+          }
+        },
+        onTap: () {
+          if (!isSelected && isSelectable) {
+            setState(() {
+              selectedTickets.add(ticket);
+            });
+            return;
+          }
+          if (isSelected) {
+            setState(() {
+              selectedTickets.remove(ticket);
+            });
+            return;
+          }
+
+          if (!ticket.status) {
+            notify("این تیکت بسته شده است");
+            return;
+          }
           push(context, TicketChatScreen(ticket: ticket));
         },
         child: Container(
           height: 65,
+          foregroundDecoration: !isSelected ? null : BoxDecoration(color: Themes.primary.withOpacity(0.1)),
           decoration: BoxDecoration(
             border: Border(
               top: BorderSide(color: Colors.black12, width: 0.5),
@@ -116,10 +205,8 @@ class _TicketListScreen extends State<TicketListScreen> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(100),
                 child: Avatar(
-                  imagePath: ticket.ticketSender?.avatar ?? "",
+                  image: AssetImage("assets/images/profile.jpg"),
                   size: 50,
-                  errorImage: AssetImage("assets/images/profile.jpg"),
-                  loadingImage: AssetImage("assets/images/profile.jpg"),
                 ),
               ),
               SizedBox(width: 10),
@@ -136,7 +223,7 @@ class _TicketListScreen extends State<TicketListScreen> {
                           style: TextStyle(
                             fontSize: 12,
                             color: Themes.text,
-                            fontWeight: FontWeight.bold,
+                            fontFamily: "IranSansBold",
                           ),
                         ),
                         Expanded(
@@ -146,7 +233,6 @@ class _TicketListScreen extends State<TicketListScreen> {
                             style: TextStyle(
                               fontSize: 10,
                               color: Themes.textGrey,
-                              // fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -166,20 +252,16 @@ class _TicketListScreen extends State<TicketListScreen> {
                 ),
               ),
               Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "${ticket.lastMessageCreateTime} ${ticket.lastMessageCreateDate}",
+                    ticket.timeAgo ?? "${ticket.lastMessageCreateTime} ${ticket.lastMessageCreateDate}",
                     style: TextStyle(color: Colors.grey.shade600, fontSize: 9),
                   ),
-                  SizedBox(height: 10),
                   Text(
-                    ticket.statusMessage!,
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    !ticket.status ? "بسته شده" : (ticket.statusMessage ?? ""),
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 9, fontFamily: "IRANSansBold"),
                   ),
                 ],
               ),
@@ -208,6 +290,8 @@ class _TicketListScreen extends State<TicketListScreen> {
 
     tickets = (state as TicketListSuccess).tickets;
 
+    tickets = sortTickets(tickets);
+
     return ListView(
       children: tickets.map<Widget>((e) => item(e)).toList(),
     );
@@ -216,111 +300,18 @@ class _TicketListScreen extends State<TicketListScreen> {
   BuildContext? deleteDialogContext;
 
   showDeleteDialog(List<int> ids) {
-    showDialog2(
-      context: context,
-      barrierDismissible: true,
-      builder: (_) {
-        deleteDialogContext = _;
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          backgroundColor: Themes.themeData().dialogBackgroundColor,
-          content: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Wrap(
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 25,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                      ),
-                      child: Text(
-                        'آیا مایل به حذف فایل هستید؟',
-                        style: TextStyle(
-                          color: Themes.themeData().tooltipTheme.textStyle?.color,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Themes.primary,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(5),
-                          bottomRight: Radius.circular(5),
-                        ),
-                      ),
-                      height: 40,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: dismissDeleteDialog,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "خیر",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: () async {
-                                // todo delete tickets
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 40,
-                              child: Text(
-                                "بله",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+    animationDialog(
+        context: context,
+        builder: (dialogContext) {
+          return ConfirmDialog(
+            dialogContext: dialogContext,
+            content: "آیا واقعا قصد بستن ${selectedTickets.length} تیکت را دارید؟",
+            onApply: () {
+              closeTicketBloc.add(CloseTicketRequestEvent(selectedTickets.map((e) => e.id!).toList()));
+              dismissDialog(dialogContext);
+            },
+          );
+        });
   }
 
   dismissDeleteDialog() {
@@ -338,5 +329,30 @@ class _TicketListScreen extends State<TicketListScreen> {
       return false;
     }
     return true;
+  }
+
+  List<Ticket> sortTickets(List<Ticket> tickets) {
+    List<Ticket> list = [];
+    List<Ticket> disabled = [];
+    List<Ticket> pending = [];
+
+    for (Ticket ticket in tickets) {
+      if (!ticket.status) {
+        disabled.add(ticket);
+        continue;
+      }
+      if (ticket.statusMessage == "پاسخ کاربر") {
+        list.add(ticket);
+        continue;
+      }
+      if (ticket.statusMessage == "در انتظار پاسخ") {
+        pending.add(ticket);
+        continue;
+      }
+    }
+
+    list.addAll(pending);
+    list.addAll(disabled);
+    return list;
   }
 }

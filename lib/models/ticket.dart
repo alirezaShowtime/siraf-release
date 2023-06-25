@@ -1,15 +1,17 @@
 class Ticket {
   int? id;
   String? title;
-  bool? status;
+  bool status = true;
   String? lastMessage;
   String? lastMessageCreateDate;
   String? lastMessageCreateTime;
   String? groupName;
+  String? timeAgo;
   String? statusMessage;
   TicketSender? ticketSender;
 
-  Ticket({this.id, this.title, this.status, this.lastMessage, this.lastMessageCreateDate, this.groupName, this.statusMessage});
+  Ticket(
+      {this.id, this.title, this.status = true, this.lastMessage, this.lastMessageCreateDate, this.groupName, this.statusMessage, this.timeAgo});
 
   Ticket.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -17,6 +19,12 @@ class Ticket {
     }
     if (json["title"] is String) {
       title = json["title"];
+    }
+    if (json["timeAgo"] is String) {
+      timeAgo = json["timeAgo"];
+    }
+    if (json["status"] is int) {
+      status = json["status"] == 1 ? true : false;
     }
     if (json["status"] is bool) {
       status = json["status"];
@@ -46,6 +54,7 @@ class Ticket {
     _data["id"] = id;
     _data["title"] = title;
     _data["status"] = status;
+    _data["timeAgo"] = timeAgo;
     _data["lastMessage"] = lastMessage;
     _data["lastMessageCreateDate"] = lastMessageCreateDate;
     _data["lastMessageCreateTime"] = lastMessageCreateTime;

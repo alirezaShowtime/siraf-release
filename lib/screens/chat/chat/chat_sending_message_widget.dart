@@ -1,36 +1,35 @@
 import 'dart:io';
 
 import 'package:auto_direction/auto_direction.dart';
+import 'package:flutter/material.dart';
+import 'package:percent_indicator/percent_indicator.dart';
+import 'package:shamsi_date/shamsi_date.dart';
 import 'package:siraf3/controller/message_upload_controller.dart';
 import 'package:siraf3/enums/message_state.dart';
 import 'package:siraf3/extensions/double_extension.dart';
 import 'package:siraf3/extensions/file_extension.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
-
-import 'package:siraf3/screens/ticket/ticket_chat/message_config.dart';
+import 'package:siraf3/screens/chat/chat/chat_message_config.dart';
 import 'package:siraf3/themes.dart';
-import 'package:flutter/material.dart';
-import 'package:percent_indicator/percent_indicator.dart';
-import 'package:shamsi_date/shamsi_date.dart';
 
-class SendingMessageWidget extends StatefulWidget {
+class ChatSendingMessageWidget extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => SendingMessageWidgetState();
+  State<StatefulWidget> createState() => ChatSendingMessageWidgetState();
 
   String? message;
   late List<File> files;
   MessageUploadController controller;
 
-  SendingMessageWidget({super.key, required this.controller, this.message, List<File>? files}) {
+  ChatSendingMessageWidget({super.key, required this.controller, this.message, List<File>? files}) {
     this.files = files ?? [];
   }
 }
 
-class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleTickerProviderStateMixin {
+class ChatSendingMessageWidgetState extends State<ChatSendingMessageWidget> with SingleTickerProviderStateMixin {
   late final AnimationController loadingController = AnimationController(vsync: this, duration: Duration(seconds: 3))..repeat();
 
-  late MessageConfig messageConfig;
+  late ChatMessageConfig messageConfig;
   late String createdAt;
   late List<File> files;
   late bool hasFile;
@@ -55,12 +54,6 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
   }
 
   @override
-  void dispose() {
-    loadingController.dispose();
-    super.dispose();
-  }
-
-  @override
   void initState() {
     super.initState();
 
@@ -69,7 +62,7 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
     var formatter = Jalali.now();
     createdAt = "${formatter.hour}:${formatter.minute} ${formatter.year}/${formatter.month}/${formatter.day}";
 
-    widget.controller.setSendingMessageWidgetState(this);
+    widget.controller.setChatSendingMessageWidgetState(this);
 
     files = widget.files;
     hasFile = widget.files.isFill();
@@ -216,7 +209,8 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
         ],
       ),
       fileName: file.fileName,
-      fileInfo: "${nowUploadingProgress.toFileSize(unit: false)}/${countUploadingProgress.toFileSize()}  ${percentUploading.toInt()}%  ${file.extension}",
+      fileInfo:
+          "${nowUploadingProgress.toFileSize(unit: false)}/${countUploadingProgress.toFileSize()}  ${percentUploading.toInt()}%  ${file.extension}",
     );
   }
 
@@ -284,8 +278,8 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
     );
   }
 
-  MessageConfig _getConfig() {
-    return MessageConfig(
+  ChatMessageConfig _getConfig() {
+    return ChatMessageConfig(
       tlRadius: 18,
       trRadius: 18,
       blRadius: 18,
