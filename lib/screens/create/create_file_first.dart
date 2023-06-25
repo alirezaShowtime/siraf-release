@@ -713,11 +713,11 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
             TextEditingController(text: address);
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Wrap(
               children: [
@@ -769,8 +769,8 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(5),
+                                  bottomLeft: Radius.circular(16),
+                                  bottomRight: Radius.circular(16),
                                 ),
                               ),
                               color: Themes.primary,

@@ -9,6 +9,7 @@ import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/user.dart';
+import 'package:siraf3/screens/auth/edit_profile_screen.dart';
 import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/settings.dart';
 import 'package:siraf3/themes.dart';
@@ -117,37 +118,12 @@ class _SettingsScreen extends State<SettingsScreen> {
             item(
                 title: "نام و نام خانوادگی",
                 widget: GestureDetector(
-                    onTap: showEditNameDialog,
+                    onTap: editProfile,
                     child: RichText(
                       text: TextSpan(children: [
                         TextSpan(
                           text: widget.user!.name.isNotNullOrEmpty()
                               ? widget.user!.name!
-                              : "وارد نشده",
-                          style: TextStyle(
-                              fontSize: 11,
-                              fontFamily: "IranSansMedium",
-                              color: App.theme.textTheme.bodyLarge?.color),
-                        ),
-                        TextSpan(
-                          text: " (ویرایش)",
-                          style: TextStyle(
-                              fontSize: 11,
-                              color: App.theme.primaryColor,
-                              fontFamily: "IranSansMedium"),
-                        ),
-                      ]),
-                    ))),
-          if (widget.user!.id != null)
-            item(
-                title: "نام کاربری",
-                widget: GestureDetector(
-                    onTap: showEditUserNameDialog,
-                    child: RichText(
-                      text: TextSpan(children: [
-                        TextSpan(
-                          text: widget.user!.username.isNotNullOrEmpty()
-                              ? widget.user!.username!
                               : "وارد نشده",
                           style: TextStyle(
                               fontSize: 11,
@@ -366,8 +342,10 @@ class _SettingsScreen extends State<SettingsScreen> {
 
   CheckVersionBloc checkVersionBloc = CheckVersionBloc();
 
-  void showEditNameDialog() {
-    //todo: set event listener
+  void editProfile() async {
+    await Navigator.push(context, MaterialPageRoute(builder: (_) => EditProfileScreen()));
+
+    getUser();
   }
 
   void showEditUserNameDialog() {
@@ -402,5 +380,10 @@ class _SettingsScreen extends State<SettingsScreen> {
     } else if (await canLaunchUrl(Uri.parse(downloadUrl))) {
       launchUrl(Uri.parse(downloadUrl), mode: LaunchMode.externalApplication);
     }
+  }
+  
+  void getUser() async {
+    widget.user = await User.fromLocal();
+    setState(() {});
   }
 }
