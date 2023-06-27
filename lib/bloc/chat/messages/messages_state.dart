@@ -15,18 +15,21 @@ class MessagesSuccess extends MessagesState {
   MessagesSuccess({required this.response}) {
     var data = jDecode(response.body)["data"];
 
-    messages = _removeEmptyMessage(ChatMessage.fromList(data));
-  }
+    messages = ChatMessage.fromList(data);
 
-  List<ChatMessage> _removeEmptyMessage(List<ChatMessage> messages) {
-    List<ChatMessage> newList = [];
+    for (int i = 0; i < messages.length; i++) {
+      ChatMessage message = messages[i];
 
-    for (ChatMessage message in messages) {
-      if (!message.message.isFill() && !message.fileMessages.isFill()) continue;
-      newList.add(message);
+      if (!message.message.isFill() && !message.fileMessages.isFill()) {
+        messages.remove(message);
+      }
+      try {
+        var reply = messages.singleWhere((e) => e.id == message.replyId);
+
+        message.replyMessage = reply;
+        messages[i] = message;
+      } catch (e) {}
     }
-
-    return newList;
   }
 }
 

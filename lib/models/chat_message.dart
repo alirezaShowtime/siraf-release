@@ -8,11 +8,12 @@ class ChatMessage {
   int? type;
   List<ChatFileMessage>? fileMessages;
   int? userId;
-  dynamic replyId;
+  int? replyId;
   int? chatId;
   bool? isConsultant;
   int? consultantFileId;
   String? timeAgo;
+  ChatMessage? replyMessage;
 
   MessageOwner get owner => isConsultant != true ? MessageOwner.ForMe : MessageOwner.ForHer;
 
@@ -49,7 +50,9 @@ class ChatMessage {
     if (json["user_id"] is int) {
       userId = json["user_id"];
     }
-    replyId = json["reply_id"];
+    if (json["reply_id"] is int) {
+      replyId = json["reply_id"];
+    }
     if (json["chat_id"] is int) {
       chatId = json["chat_id"];
     }

@@ -55,37 +55,47 @@ class ChatMessageWidgetState extends State<ChatMessageWidget> {
         ),
         constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.60, minWidth: 100),
         margin: EdgeInsets.only(bottom: 3, left: 10, right: 10),
-        padding: EdgeInsets.only(top: 5, left: 9, right: 9, bottom: 3),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: widget.message.forMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
           children: [
-            for (ChatFileMessage fileMessage in widget.fileMessages)
-              ChatMessageFileWidget(
-                fileMessage: fileMessage,
-                messageConfig: messageConfig,
-                textDirection: messageConfig.fileDirection,
-              ),
-            if (hasFile && widget.message.message.isFill()) SizedBox(height: 10),
-            if (widget.message.message.isFill()) textWidget(),
+            // if (widget.message.replyMessage != null)
+            replyWidget(),
             Padding(
-              padding: const EdgeInsets.only(top: 2, bottom: 2),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
+              padding: EdgeInsets.only(top: widget.message.replyMessage != null ? 0 : 5, left: 9, right: 9, bottom: 3),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: widget.message.forMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
                 children: [
-                  if (widget.message.forMe)
-                    Icon(
-                      widget.isSeen ? Icons.done_all_rounded : Icons.check_rounded,
-                      color: Colors.white,
-                      size: 12,
+                  for (ChatFileMessage fileMessage in widget.fileMessages)
+                    ChatMessageFileWidget(
+                      fileMessage: fileMessage,
+                      messageConfig: messageConfig,
+                      textDirection: messageConfig.fileDirection,
                     ),
-                  if (widget.message.forMe) SizedBox(width: 4),
-                  Text(
-                    widget.message.createDate ?? "",
-                    style: TextStyle(
-                      color: widget.message.forMe ? Colors.white : Colors.grey,
-                      fontSize: 9,
-                      height: 1,
+                  if (hasFile && widget.message.message.isFill()) SizedBox(height: 10),
+                  if (widget.message.message.isFill()) textWidget(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2, bottom: 2),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (widget.message.forMe)
+                          Icon(
+                            widget.isSeen ? Icons.done_all_rounded : Icons.check_rounded,
+                            color: widget.isSeen ? Colors.white : Colors.white60,
+                            size: 12,
+                          ),
+                        if (widget.message.forMe) SizedBox(width: 4),
+                        Text(
+                          widget.message.createDate ?? "",
+                          style: TextStyle(
+                            color: widget.message.forMe ? Colors.white60 : Colors.grey,
+                            fontSize: 9,
+                            height: 1,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -145,6 +155,54 @@ class ChatMessageWidgetState extends State<ChatMessageWidget> {
       primaryColor: Themes.primary,
       secondTextColor: Colors.grey.shade400,
       textDirection: TextDirection.rtl,
+    );
+  }
+
+  Widget replyWidget() {
+    return Padding(
+      padding: const EdgeInsets.all(5),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {},
+          borderRadius: BorderRadius.circular(10),
+          child: Padding(
+            padding: const EdgeInsets.all(5),
+            child: Row(
+              children: [
+                Container(
+                  height: 30,
+                  width: 2.3,
+                  decoration: BoxDecoration(
+                    color: widget.message.forMe ? Colors.white60 : messageConfig.primaryColor,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+                SizedBox(width: 5),
+                Column(
+                  children: [
+                    Text(
+                      "فلیبی بی",
+                      style: TextStyle(
+                        color: widget.message.forMe ? Colors.white.withOpacity(0.85) : messageConfig.primaryColor,
+                        fontSize: 10,
+                        fontFamily: "IranSansBold",
+                      ),
+                    ),
+                    Text(
+                      "فلیبی بی",
+                      style: TextStyle(
+                        color: widget.message.forMe ? Colors.white60 : messageConfig.textColor,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
