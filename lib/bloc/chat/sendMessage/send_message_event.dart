@@ -48,7 +48,7 @@ class AddToSendQueueEvent extends SendMessageEvent {
     List<MapEntry<String, dio.MultipartFile>> list = [];
 
     for (File file in files!) {
-      list.add(MapEntry("files", await dio.MultipartFile.fromFile(file.path)));
+      list.add(MapEntry("file", await dio.MultipartFile.fromFile(file.path)));
     }
 
     return list;

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_direction/auto_direction.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/enums/message_owner.dart';
@@ -15,8 +17,9 @@ class ChatMessageWidget extends StatefulWidget {
   ChatMessage message;
   late MessageOwner messageOwner;
   late List<ChatFileMessage> fileMessages;
+  late List<File>? files;
 
-  ChatMessageWidget({required this.message}) {
+  ChatMessageWidget({required this.message,this.files}) {
     this.fileMessages = message.fileMessages ?? [];
     this.messageOwner = message.owner;
   }

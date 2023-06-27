@@ -65,7 +65,7 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
       formData.files.addAll(event.requestModel.files!);
     }
 
-    try {
+    // try {
       var res = await dio.Dio().post(
         url,
         options: options,
@@ -83,10 +83,10 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
       event.requestModel.controller.uploaded();
 
       emit(SendMessageSuccess(event.requestModel.widgetKey, res, sentFiles: event.requestModel.files2));
-    } catch (e) {
-      event.requestModel.controller.errorUpload();
-      emit(SendMessageError(event.requestModel.widgetKey));
-    }
+    // } catch (e) {
+    //   event.requestModel.controller.errorUpload();
+    //   emit(SendMessageError(event.requestModel.widgetKey));
+    // }
   }
 
   Future<void> _executeQueue(int startFrom) async {

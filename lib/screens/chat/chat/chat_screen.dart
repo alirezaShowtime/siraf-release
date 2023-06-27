@@ -60,16 +60,24 @@ class _ChatScreen extends State<ChatScreen> with SingleTickerProviderStateMixin 
     });
 
     sendMessageBloc.stream.listen((state) {
-      if (state is! SendMessageSuccess) return;
+      if (state is SendMessageCanceled) {
+        for (var i = 0; i < messageWidgets.length; i++) {
+          if (messageWidgets[i].key != state.widgetKey) continue;
 
+          setState(() => messageWidgets.removeAt(i));
+
+          break;
+        }
+      }
+
+      if (state is! SendMessageSuccess) return;
+      state.playSentSound();
       for (var i = 0; i < messageWidgets.length; i++) {
         if (messageWidgets[i].key != state.widgetKey) continue;
 
         setState(() {
           messageWidgets[i] = ChatMessageWidget(message: state.message);
         });
-
-        state.playSentSound();
 
         break;
       }

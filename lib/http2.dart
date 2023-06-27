@@ -196,8 +196,12 @@ void logRequestDio(dio.Response response) async {
   messages.add("\n\nHEADERS :  ${convertUtf8(getPrettyJSONString(response.requestOptions.headers..remove("Authorization")))}");
   messages.add("\n\nQUERIES :  ${convertUtf8(getPrettyJSONString(response.realUri.queryParameters))}");
 
-  messages.add("\n\n\nREQUEST BODY : ${getPrettyJSONString(response.requestOptions.data)}");
-  messages.add("\n\n\nRESPONSE HEADERS : ${getPrettyJSONString(response.headers)}");
+  try {
+    messages.add("\n\n\nREQUEST BODY : ${getPrettyJSONString(response.requestOptions.data)}");
+  } catch (e) {
+    messages.add("\n\n\nREQUEST BODY : Instance of FormData");
+  }
+  messages.add("\n\n\nRESPONSE HEADERS : ${getPrettyJSONString(response.headers.map)}");
   try {
     messages.add("\nRESPONSE BODY : ${getPrettyJSONString(response.data)}");
   } catch (e) {

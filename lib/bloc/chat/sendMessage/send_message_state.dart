@@ -31,7 +31,7 @@ class SendMessageSuccess extends SendMessageState {
   List<File>? sentFiles;
 
   SendMessageSuccess(this.widgetKey, dio.Response response, {this.sentFiles}) {
-    message = ChatMessage.fromJson(response.data['data']["Message"]);
+    message = ChatMessage.fromJson(response.data['data']);
 
     if (message.fileMessages.isFill() && sentFiles.isFill()) {
       message.fileMessages!.first.uploadedPath = sentFiles!.first.path;

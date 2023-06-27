@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +6,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:siraf3/bloc/chat/downloadFile/download_file_bloc.dart';
 import 'package:siraf3/extensions/int_extension.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/screens/chat/chat/chat_message_config.dart';
 
@@ -42,11 +41,11 @@ class _ChatMessageFileWidget extends State<ChatMessageFileWidget> with SingleTic
       bloc: downloadFileBloc,
       builder: (context, DownloadFileState state) {
         if (state is DownloadFileInitial) {
-          return _fileInitWidget();
+          return widget.fileMessage.uploadedPath.isFill() ? _fileDownloadedWidget(widget.fileMessage!.uploadedPath!) : _fileInitWidget();
         }
 
         if (state is DownloadFileSuccess) {
-          return _fileDownloadedWidget(state.file);
+          return _fileDownloadedWidget(state.file.path);
         }
 
         if (state is DownloadFileError) {
@@ -72,12 +71,12 @@ class _ChatMessageFileWidget extends State<ChatMessageFileWidget> with SingleTic
     );
   }
 
-  Widget _fileDownloadedWidget(File file) {
+  Widget _fileDownloadedWidget(String filePath) {
     return _baseFileWidget(
       icon: Icon(Icons.insert_drive_file_rounded, color: widget.messageConfig.background, size: 24),
       fileName: widget.fileMessage.name,
       fileInfo: "${widget.fileMessage.fileSize} ${widget.fileMessage.extension.toUpperCase()}",
-      onTap: () => onClickOpen(file),
+      onTap: () => onClickOpen(filePath),
     );
   }
 
@@ -192,8 +191,8 @@ class _ChatMessageFileWidget extends State<ChatMessageFileWidget> with SingleTic
     downloadFileBloc.add(DownloadFileRequest(widget.fileMessage));
   }
 
-  void onClickOpen(File file) {
-    OpenFile.open(file.path);
+  void onClickOpen(String filePath) {
+    OpenFile.open(filePath);
   }
 
   void onClickTryAgain() {
