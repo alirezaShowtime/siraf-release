@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:auto_direction/auto_direction.dart';
 import 'package:flutter/material.dart';
-import 'package:siraf3/enums/message_owner.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:siraf3/bloc/chat/seen/seen_message_bloc.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/models/chat_message.dart';
@@ -15,13 +17,13 @@ class ChatMessageWidget extends StatefulWidget {
   State<StatefulWidget> createState() => ChatMessageWidgetState();
 
   ChatMessage message;
-  late MessageOwner messageOwner;
   late List<ChatFileMessage> fileMessages;
   late List<File>? files;
+  bool isSeen;
+  StreamController? onSeenMessageStream;
 
-  ChatMessageWidget({required this.message,this.files}) {
+  ChatMessageWidget({required this.message, this.files, this.isSeen = false}) {
     this.fileMessages = message.fileMessages ?? [];
-    this.messageOwner = message.owner;
   }
 }
 
@@ -36,47 +38,61 @@ class ChatMessageWidgetState extends State<ChatMessageWidget> {
     messageConfig = _getConfig();
 
     hasFile = widget.fileMessages.isFill();
+
+    BlocProvider.of<SeenMessageBloc>(context).stream.listen((state) {
+      widget.isSeen = state is SeenMessageError;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: messageConfig.alignment,
-      child: Column(
-        textDirection: messageConfig.fileDirection,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: messageConfig.background,
-              borderRadius: messageConfig.borderRadius,
-            ),
-            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.60, minWidth: 100),
-            margin: EdgeInsets.only(bottom: 3, left: 10, right: 10),
-            padding: EdgeInsets.only(top: 5, left: 9, right: 9, bottom: 3),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (ChatFileMessage fileMessage in widget.fileMessages)
-                  ChatMessageFileWidget(
-                    fileMessage: fileMessage,
-                    messageConfig: messageConfig,
-                    textDirection: messageConfig.fileDirection,
+      child: Container(
+        decoration: BoxDecoration(
+          color: messageConfig.background,
+          borderRadius: messageConfig.borderRadius,
+        ),
+        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.60, minWidth: 100),
+        margin: EdgeInsets.only(bottom: 3, left: 10, right: 10),
+        padding: EdgeInsets.only(top: 5, left: 9, right: 9, bottom: 3),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: widget.message.forMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+          children: [
+            for (ChatFileMessage fileMessage in widget.fileMessages)
+              ChatMessageFileWidget(
+                fileMessage: fileMessage,
+                messageConfig: messageConfig,
+                textDirection: messageConfig.fileDirection,
+              ),
+            if (hasFile && widget.message.message.isFill()) SizedBox(height: 10),
+            if (widget.message.message.isFill()) textWidget(),
+            Padding(
+              padding: const EdgeInsets.only(top: 2, bottom: 2),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (widget.message.forMe)
+                    Icon(
+                      widget.isSeen ? Icons.done_all_rounded : Icons.check_rounded,
+                      color: Colors.white,
+                      size: 12,
+                    ),
+                  if (widget.message.forMe) SizedBox(width: 4),
+                  Text(
+                    widget.message.createDate ?? "",
+                    style: TextStyle(
+                      color: widget.message.forMe ? Colors.white : Colors.grey,
+                      fontSize: 9,
+                      height: 1,
+                    ),
                   ),
-                if (hasFile && widget.message.message.isFill()) SizedBox(height: 10),
-                if (widget.message.message.isFill()) textWidget(),
-              ],
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 10),
-            child: Text(
-              widget.message.createDate ?? "",
-              style: TextStyle(color: Colors.grey.shade500, fontSize: 9, height: 1),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -99,7 +115,7 @@ class ChatMessageWidgetState extends State<ChatMessageWidget> {
   }
 
   ChatMessageConfig _getConfig() {
-    return widget.messageOwner == MessageOwner.ForME ? _forMeConfig() : _forHerConfig();
+    return widget.message.forMe ? _forMeConfig() : _forHerConfig();
   }
 
   ChatMessageConfig _forMeConfig() {

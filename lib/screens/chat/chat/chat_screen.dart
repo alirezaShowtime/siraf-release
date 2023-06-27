@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/chat/messages/messages_bloc.dart';
+import 'package:siraf3/bloc/chat/seen/seen_message_bloc.dart';
 import 'package:siraf3/bloc/chat/sendMessage/send_message_bloc.dart';
 import 'package:siraf3/controller/message_upload_controller.dart';
 import 'package:siraf3/helpers.dart';
@@ -28,6 +29,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreen extends State<ChatScreen> with SingleTickerProviderStateMixin {
   MessagesBloc chatMessagesBloc = MessagesBloc();
   SendMessageBloc sendMessageBloc = SendMessageBloc();
+  SeenMessageBloc seenMessageBloc = SeenMessageBloc();
 
   TextEditingController messageController = TextEditingController();
   ScrollController _chatController = ScrollController();
@@ -96,8 +98,11 @@ class _ChatScreen extends State<ChatScreen> with SingleTickerProviderStateMixin 
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sendMessageBloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => sendMessageBloc),
+        BlocProvider(create: (_) => seenMessageBloc),
+      ],
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         backgroundColor: Color(0xfffbfbfb),
@@ -196,6 +201,10 @@ class _ChatScreen extends State<ChatScreen> with SingleTickerProviderStateMixin 
     if (nowMessagesState != state) {
       nowMessagesState = state;
       messageWidgets = messages.map<Widget>((e) => ChatMessageWidget(message: e)).toList();
+    }
+
+    if (!messages.last.forMe && nowMessagesState != state) {
+      seenMessageBloc.add(SeenMessageRequestEvent(widget.chatItem.id!));
     }
 
     return Expanded(

@@ -40,6 +40,20 @@ Future<http.Response> post(Uri url, {Object? body, Encoding? encoding, Map<Strin
   }
 }
 
+Future<http.Response> put(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {
+  try {
+    var req = http
+        .put(url, body: body, encoding: encoding, headers: headers)
+        .timeout(timeout ?? Duration(minutes: 30), onTimeout: timeoutErrorResponse)
+        .catchError((_) => timeoutErrorResponse());
+
+    return handleReq(req, requestBody: body);
+  } catch (_) {
+    print(_);
+    return timeoutErrorResponse();
+  }
+}
+
 Future<http.Response> getWithToken(Uri url, {Map<String, String>? headers, Duration? timeout}) async {
   if (!await User.hasToken()) {
     return authErrorResponse();
@@ -68,6 +82,21 @@ Future<http.Response> postWithToken(Uri url, {Object? body, Encoding? encoding, 
     );
 
   return post(url, body: body, encoding: encoding, headers: headers);
+}
+
+Future<http.Response> putWithToken(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {
+  if (!await User.hasToken()) {
+    return authErrorResponse();
+  }
+
+  headers = (headers ?? {})
+    ..addAll(
+      {
+        'Authorization': await User.getBearerToken(),
+      },
+    );
+
+  return put(url, body: body, encoding: encoding, headers: headers);
 }
 
 Future<http.Response> postJsonWithToken(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {

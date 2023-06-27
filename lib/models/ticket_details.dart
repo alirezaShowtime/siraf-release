@@ -109,7 +109,7 @@ class Message {
     return _data;
   }
 
-  MessageOwner get owner => expertId == null ? MessageOwner.ForME : MessageOwner.ForHer;
+  MessageOwner get owner => expertId == null ? MessageOwner.ForMe : MessageOwner.ForHer;
 }
 
 class SenderId {

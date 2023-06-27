@@ -100,7 +100,7 @@ class MessageWidgetState extends State<MessageWidget> {
   }
 
   MessageConfig _getConfig() {
-    return widget.messageOwner == MessageOwner.ForME ? _forMeConfig() : _forHerConfig();
+    return widget.messageOwner == MessageOwner.ForMe ? _forMeConfig() : _forHerConfig();
   }
 
   MessageConfig _forMeConfig() {

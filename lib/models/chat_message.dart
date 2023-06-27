@@ -14,7 +14,9 @@ class ChatMessage {
   int? consultantFileId;
   String? timeAgo;
 
-  MessageOwner get owner => isConsultant == true ? MessageOwner.ForHer : MessageOwner.ForME;
+  MessageOwner get owner => isConsultant != true ? MessageOwner.ForMe : MessageOwner.ForHer;
+
+  bool get forMe => isConsultant != true;
 
   static List<ChatMessage> fromList(List<dynamic> list) {
     List<ChatMessage> newList = [];
