@@ -333,36 +333,42 @@ class _HomeScreenState extends State<HomeScreen> {
           if (currentBlocState is HSLoadedState &&
               (currentBlocState as HSLoadedState).files.isNotEmpty)
             Expanded(
-              child: ListView(
-                controller: scrollController,
-                children: files
-                        .map<Widget>((file) => InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => FileScreen(id: file.id!),
-                                  ),
-                                );
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    top: files.first == file ? 0 : 5),
-                                child: viewType == ViewType.List
-                                    ? FileHorizontalItem(file: file)
-                                    : FileSlideItem(file: file),
-                              ),
-                            ))
-                        .toList() +
-                    [
-                      if (_isLoadingMore)
-                        Align(
-                          alignment: Alignment.center,
-                          child: Loading(
-                            backgroundColor: Colors.transparent,
-                          ),
-                        )
-                    ],
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  getFiles();
+                },
+                color: Themes.primary,
+                child: ListView(
+                  controller: scrollController,
+                  children: files
+                          .map<Widget>((file) => InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => FileScreen(id: file.id!),
+                                    ),
+                                  );
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      top: files.first == file ? 0 : 5),
+                                  child: viewType == ViewType.List
+                                      ? FileHorizontalItem(file: file)
+                                      : FileSlideItem(file: file),
+                                ),
+                              ))
+                          .toList() +
+                      [
+                        if (_isLoadingMore)
+                          Align(
+                            alignment: Alignment.center,
+                            child: Loading(
+                              backgroundColor: Colors.transparent,
+                            ),
+                          )
+                      ],
+                ),
               ),
             ),
         ],

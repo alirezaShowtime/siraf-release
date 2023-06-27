@@ -468,11 +468,17 @@ class _RequestListScreen extends State<RequestListScreen> {
       );
     }
 
-    return ListView.builder(
-      itemCount: requests.length,
-      itemBuilder: (context, i) {
-        return item(requests[i]);
+    return RefreshIndicator(
+      color: Themes.primary,
+      onRefresh: () async {
+        getRequests();
       },
+      child: ListView.builder(
+        itemCount: requests.length,
+        itemBuilder: (context, i) {
+          return item(requests[i]);
+        },
+      ),
     );
   }
 

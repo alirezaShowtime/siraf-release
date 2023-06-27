@@ -129,19 +129,20 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                   CupertinoIcons.add,
                 ),
               ),
-              if (selectedFiles.isNotEmpty) IconButton(
-                onPressed: selectedFiles.isNotEmpty
-                    ? () {
-                        showDeleteDialog(
-                            selectedFiles.map((e) => e.id!).toList());
-                      }
-                    : null,
-                icon: Icon(
-                  CupertinoIcons.delete,
-                  color: selectedFiles.isNotEmpty ? null : Themes.iconGrey,
+              if (selectedFiles.isNotEmpty)
+                IconButton(
+                  onPressed: selectedFiles.isNotEmpty
+                      ? () {
+                          showDeleteDialog(
+                              selectedFiles.map((e) => e.id!).toList());
+                        }
+                      : null,
+                  icon: Icon(
+                    CupertinoIcons.delete,
+                    color: selectedFiles.isNotEmpty ? null : Themes.iconGrey,
+                  ),
+                  disabledColor: Themes.iconGrey,
                 ),
-                disabledColor: Themes.iconGrey,
-              ),
               MyPopupMenuButton(
                 itemBuilder: (context) {
                   return [
@@ -371,21 +372,25 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
       );
     }
 
-    return ListView(
-      children: files
-          .map<Widget>(
-            (file) => GestureDetector(
-              onTap: isSelectable
-                  ? () => changeSelection(file)
-                  : () => onTapFile(file),
-              onLongPress: () => changeSelection(file),
-              child: MyFileHorizontalItem(
-                file: file,
-                isSelected: selectedFiles.contains(file),
+    return RefreshIndicator(
+      color: Themes.primary,
+      onRefresh: () async => _loadFiles(sort: currentSortType),
+      child: ListView(
+        children: files
+            .map<Widget>(
+              (file) => GestureDetector(
+                onTap: isSelectable
+                    ? () => changeSelection(file)
+                    : () => onTapFile(file),
+                onLongPress: () => changeSelection(file),
+                child: MyFileHorizontalItem(
+                  file: file,
+                  isSelected: selectedFiles.contains(file),
+                ),
               ),
-            ),
-          )
-          .toList(),
+            )
+            .toList(),
+      ),
     );
   }
 

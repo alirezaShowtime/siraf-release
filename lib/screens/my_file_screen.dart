@@ -965,11 +965,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                   SizedBox(
                     width: 160,
                     child: Text(
-                      (file.name ?? "") +
-                          (file.name ?? "") +
-                          (file.name ?? "") +
-                          (file.name ?? "") +
-                          (file.name ?? ""),
+                      (file.name ?? ""),
                       style: TextStyle(
                         fontFamily: "IranSansMedium",
                         color: Themes.text,

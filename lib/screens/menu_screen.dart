@@ -105,12 +105,14 @@ class _MenuScreenState extends State<MenuScreen> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           GestureDetector(
-                            onTap: () async {
-                              await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => EditProfileScreen()));
-                              getUser();
+                            onTap: () {
+                              doWithLogin(context, () async {
+                                await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => EditProfileScreen()));
+                                getUser();
+                              });
                             },
                             child: ClipRRect(
                               child: Avatar(
