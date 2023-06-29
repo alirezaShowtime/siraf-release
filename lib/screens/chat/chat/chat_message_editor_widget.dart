@@ -1,13 +1,16 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:siraf3/bloc/chat/reply/chat_reply_bloc.dart';
 import 'package:siraf3/bloc/chat/sendMessage/send_message_bloc.dart';
 import 'package:siraf3/extensions/file_extension.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
@@ -18,34 +21,36 @@ class ChatMessageEditor extends StatefulWidget {
 
   TextEditingController _messageController;
 
-  //todo: type of the replayingMessage variable is a test type, this variable is possible a model class
-  String? replyingMessage;
-
-  //todo: type of the onSendMessage variable is a test type, this variable is possible a model class
-  void Function(String? text, List<File>?)? onClickSendMessage;
+  void Function(String? text, List<File>?, ChatMessage? replyId)? onClickSendMessage;
   void Function()? onRecordVoice;
   void Function()? onAttachEmoji;
   void Function()? onAttachFile;
 
   ChatMessageEditor({
     required TextEditingController messageController,
-    this.replyingMessage,
     this.onClickSendMessage,
     this.onAttachEmoji,
     this.onAttachFile,
   }) : _messageController = messageController;
 }
 
-class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProviderStateMixin {
+class _ChatMessageEditor extends State<ChatMessageEditor> {
   bool showSendButton = false;
 
   List<File> selectedFiles = [];
   List<Widget> selectedFilesWidget = [];
+  bool showReplyMessage = false;
+  ChatMessage? replyMessage;
 
   @override
   void initState() {
     super.initState();
     widget._messageController.addListener(_messageControlListener);
+
+    BlocProvider.of<ChatReplyBloc>(context).stream.listen((ChatMessage? reply) {
+      replyMessage = reply;
+      FocusManager.instance.primaryFocus?.requestFocus();
+    });
   }
 
   @override
@@ -69,14 +74,17 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         fileList(),
+        BlocBuilder<ChatReplyBloc, ChatMessage?>(
+          bloc: BlocProvider.of<ChatReplyBloc>(context),
+          builder: (_, reply) => replyMessageWidget(reply),
+        ),
         Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            border: Border(
-              top: BorderSide(color: Colors.grey.shade300, width: 0.7),
-            ),
+            border: Border(top: BorderSide(color: Colors.grey.shade300, width: 0.7)),
             boxShadow: [
               BoxShadow(
                 offset: const Offset(1, -3),
@@ -145,6 +153,70 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
     );
   }
 
+  Widget replyMessageWidget(ChatMessage? reply) {
+    if (reply == null) return Container();
+    return Container(
+      height: 50,
+      padding: EdgeInsets.only(left: 5, right: 8, top: 5, bottom: 5),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          top: BorderSide(color: Colors.grey.shade300, width: 0.7),
+        ),
+        boxShadow: [
+          BoxShadow(
+            offset: const Offset(1, -3),
+            spreadRadius: -3,
+            blurRadius: 1,
+            color: Colors.black12,
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.reply_rounded,
+            color: Themes.primary,
+          ),
+          SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  reply.forMe == true ? "خودم" : "مشاور",
+                  style: TextStyle(
+                    fontFamily: "IranSansBold",
+                    color: Themes.primary,
+                    fontSize: 10,
+                  ),
+                ),
+                Text(
+                  reply.message ?? "فایل",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Themes.text,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 9,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          MyIconButton(
+            icon: Icon(Icons.close_rounded, color: Themes.text),
+            onTap: () {
+              BlocProvider.of<ChatReplyBloc>(context).add(ChatReplyEvent(null));
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget btn({required IconData iconData, required Function() onTap, Color? color}) {
     return Material(
       color: Colors.transparent,
@@ -185,16 +257,14 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
   }
 
   void sendMessage() {
-    // FocusManager.instance.primaryFocus?.unfocus();
-
     if (widget._messageController.value.text.isFill()) {
-      widget.onClickSendMessage?.call(widget._messageController.value.text, null);
+      widget.onClickSendMessage?.call(widget._messageController.value.text, null, replyMessage);
       widget._messageController.text = '';
       return;
     }
 
     if (selectedFiles.isFill()) {
-      widget.onClickSendMessage?.call(null, selectedFiles);
+      widget.onClickSendMessage?.call(null, selectedFiles, replyMessage);
     }
 
     BlocProvider.of<SendMessageBloc>(context).stream.listen((state) {

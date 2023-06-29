@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:auto_direction/auto_direction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:siraf3/bloc/chat/reply/chat_reply_bloc.dart';
 import 'package:siraf3/bloc/chat/seen/seen_message_bloc.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
+import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/screens/chat/chat/chat_mesage_file_widget.dart';
 import 'package:siraf3/screens/chat/chat/chat_message_config.dart';
@@ -16,13 +18,21 @@ class ChatMessageWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => ChatMessageWidgetState();
 
+  Key? key;
   ChatMessage message;
   late List<ChatFileMessage> fileMessages;
   late List<File>? files;
   bool isSeen;
   StreamController? onSeenMessageStream;
+  void Function(ChatMessage? replyMessage)? onClickReplyMessage;
 
-  ChatMessageWidget({required this.message, this.files, this.isSeen = false}) {
+  ChatMessageWidget({
+    this.key,
+    required this.message,
+    this.files,
+    this.isSeen = false,
+    this.onClickReplyMessage,
+  }) {
     this.fileMessages = message.fileMessages ?? [];
   }
 }
@@ -48,61 +58,85 @@ class ChatMessageWidgetState extends State<ChatMessageWidget> {
   Widget build(BuildContext context) {
     return Container(
       alignment: messageConfig.alignment,
-      child: Container(
-        decoration: BoxDecoration(
-          color: messageConfig.background,
-          borderRadius: messageConfig.borderRadius,
-        ),
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.60, minWidth: 100),
-        margin: EdgeInsets.only(bottom: 3, left: 10, right: 10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: widget.message.forMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
-          children: [
-            // if (widget.message.replyMessage != null)
-            replyWidget(),
-            Padding(
-              padding: EdgeInsets.only(top: widget.message.replyMessage != null ? 0 : 5, left: 9, right: 9, bottom: 3),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: widget.message.forMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
-                children: [
-                  for (ChatFileMessage fileMessage in widget.fileMessages)
-                    ChatMessageFileWidget(
-                      fileMessage: fileMessage,
-                      messageConfig: messageConfig,
-                      textDirection: messageConfig.fileDirection,
-                    ),
-                  if (hasFile && widget.message.message.isFill()) SizedBox(height: 10),
-                  if (widget.message.message.isFill()) textWidget(),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2, bottom: 2),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (widget.message.forMe)
-                          Icon(
-                            widget.isSeen ? Icons.done_all_rounded : Icons.check_rounded,
-                            color: widget.isSeen ? Colors.white : Colors.white60,
-                            size: 12,
-                          ),
-                        if (widget.message.forMe) SizedBox(width: 4),
-                        Text(
-                          widget.message.createDate ?? "",
-                          style: TextStyle(
-                            color: widget.message.forMe ? Colors.white60 : Colors.grey,
-                            fontSize: 9,
-                            height: 1,
-                          ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        textDirection: widget.message.forMe ? TextDirection.rtl : TextDirection.ltr,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: messageConfig.background,
+              borderRadius: messageConfig.borderRadius,
+            ),
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.60,
+              minWidth: 100,
+            ),
+            margin: EdgeInsets.only(bottom: 3, left: 10, right: 10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: widget.message.forMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+              children: [
+                if (widget.message.replyMessage != null) replyWidget(widget.message.replyMessage!),
+                Padding(
+                  padding: EdgeInsets.only(top: widget.message.replyMessage != null ? 0 : 5, left: 9, right: 9, bottom: 1),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: widget.message.forMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+                    children: [
+                      for (ChatFileMessage fileMessage in widget.fileMessages)
+                        ChatMessageFileWidget(
+                          fileMessage: fileMessage,
+                          messageConfig: messageConfig,
+                          textDirection: messageConfig.fileDirection,
                         ),
-                      ],
-                    ),
+                      if (hasFile && widget.message.message.isFill()) SizedBox(height: 10),
+                      if (widget.message.message.isFill()) textWidget(),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2, bottom: 0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (widget.message.forMe)
+                              Icon(
+                                widget.isSeen ? Icons.done_all_rounded : Icons.check_rounded,
+                                color: widget.isSeen ? Colors.white : Colors.white60,
+                                size: 12,
+                              ),
+                            if (widget.message.forMe) SizedBox(width: 2),
+                            Text(
+                              widget.message.createDate ?? "",
+                              style: TextStyle(
+                                color: widget.message.forMe ? Colors.white60 : Colors.grey,
+                                fontSize: 9,
+                                height: 1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 5),
+            child: InkWell(
+              onTap: () {
+                BlocProvider.of<ChatReplyBloc>(context).add(ChatReplyEvent(widget.message));
+              },
+              borderRadius: BorderRadius.circular(100),
+              child: Container(
+                width: 30,
+                height: 30,
+                alignment: Alignment.center,
+                child: icon(Icons.reply_rounded, size: 18, color: Themes.text),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -135,7 +169,7 @@ class ChatMessageWidgetState extends State<ChatMessageWidget> {
       blRadius: 18,
       brRadius: 0,
       fileNameColor: Colors.white,
-      background: Themes.primary,
+      background: Themes.primary.withOpacity(0.9),
       textColor: Colors.white,
       primaryColor: Colors.white,
       secondTextColor: Color(0x8bc0d0e0),
@@ -158,13 +192,13 @@ class ChatMessageWidgetState extends State<ChatMessageWidget> {
     );
   }
 
-  Widget replyWidget() {
+  Widget replyWidget(ChatMessage replyMessage) {
     return Padding(
-      padding: const EdgeInsets.all(5),
+      padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {},
+          onTap: () => widget.onClickReplyMessage?.call(widget.message.replyMessage),
           borderRadius: BorderRadius.circular(10),
           child: Padding(
             padding: const EdgeInsets.all(5),
@@ -174,7 +208,7 @@ class ChatMessageWidgetState extends State<ChatMessageWidget> {
                   height: 30,
                   width: 2.3,
                   decoration: BoxDecoration(
-                    color: widget.message.forMe ? Colors.white60 : messageConfig.primaryColor,
+                    color: widget.message.forMe ? Colors.white : messageConfig.primaryColor,
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),
@@ -182,7 +216,7 @@ class ChatMessageWidgetState extends State<ChatMessageWidget> {
                 Column(
                   children: [
                     Text(
-                      "فلیبی بی",
+                      replyMessage.forMe ? "خودم" : "مشاور",
                       style: TextStyle(
                         color: widget.message.forMe ? Colors.white.withOpacity(0.85) : messageConfig.primaryColor,
                         fontSize: 10,
@@ -190,7 +224,7 @@ class ChatMessageWidgetState extends State<ChatMessageWidget> {
                       ),
                     ),
                     Text(
-                      "فلیبی بی",
+                      replyMessage.message ?? "فایل",
                       style: TextStyle(
                         color: widget.message.forMe ? Colors.white60 : messageConfig.textColor,
                         fontSize: 10,

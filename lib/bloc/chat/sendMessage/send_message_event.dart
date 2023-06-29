@@ -8,6 +8,7 @@ class SendMessageRequestModel {
   List<MapEntry<String, dio.MultipartFile>>? files;
   List<File>? files2;
   String? message;
+  ChatMessage? replyMessage;
   MessageUploadController controller;
   Key widgetKey;
 
@@ -18,6 +19,7 @@ class SendMessageRequestModel {
     this.message,
     this.files,
     this.files2,
+    this.replyMessage,
   });
 }
 
@@ -31,6 +33,7 @@ class AddToSendQueueEvent extends SendMessageEvent {
   int chatId;
   List<File>? files;
   String? message;
+  ChatMessage? replyMessage;
   MessageUploadController controller;
   Key widgetKey;
 
@@ -40,6 +43,7 @@ class AddToSendQueueEvent extends SendMessageEvent {
     required this.controller,
     this.message,
     this.files,
+    this.replyMessage,
   });
 
   Future<List<MapEntry<String, dio.MultipartFile>>?> getFiles() async {

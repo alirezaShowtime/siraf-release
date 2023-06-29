@@ -32,6 +32,7 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
         files: await event.getFiles(),
         files2: event.files,
         message: event.message,
+        replyMessage: event.replyMessage,
         widgetKey: event.widgetKey,
       ),
     );
@@ -50,6 +51,7 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
     dio.FormData formData = dio.FormData.fromMap({
       "chatId": event.requestModel.chatId,
       "message": event.requestModel.message,
+      if (event.requestModel.replyMessage?.id != null) "replyId": event.requestModel.replyMessage!.id!,
     });
 
     dio.Options options = dio.Options(
@@ -59,13 +61,14 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
         "Authorization": await User.getBearerToken(),
       },
     );
+
     cancelToken.whenCancel.then((value) => emit(SendMessageCanceled(event.requestModel.widgetKey)));
 
     if (event.requestModel.files != null) {
       formData.files.addAll(event.requestModel.files!);
     }
 
-    // try {
+    try {
       var res = await dio.Dio().post(
         url,
         options: options,
@@ -82,11 +85,17 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
 
       event.requestModel.controller.uploaded();
 
-      emit(SendMessageSuccess(event.requestModel.widgetKey, res, sentFiles: event.requestModel.files2));
-    // } catch (e) {
-    //   event.requestModel.controller.errorUpload();
-    //   emit(SendMessageError(event.requestModel.widgetKey));
-    // }
+      emit(SendMessageSuccess(
+        event.requestModel.widgetKey,
+        res,
+        sentFiles: event.requestModel.files2,
+        replyMessage: event.requestModel.replyMessage,
+      ));
+
+    } catch (e) {
+      event.requestModel.controller.errorUpload();
+      emit(SendMessageError(event.requestModel.widgetKey));
+    }
   }
 
   Future<void> _executeQueue(int startFrom) async {

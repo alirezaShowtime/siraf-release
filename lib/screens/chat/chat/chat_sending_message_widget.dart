@@ -10,6 +10,7 @@ import 'package:siraf3/extensions/double_extension.dart';
 import 'package:siraf3/extensions/file_extension.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
+import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/screens/chat/chat/chat_message_config.dart';
 import 'package:siraf3/themes.dart';
 
@@ -19,9 +20,18 @@ class ChatSendingMessageWidget extends StatefulWidget {
 
   String? message;
   late List<File> files;
+  ChatMessage? replyMessage;
   MessageUploadController controller;
+  void Function(ChatMessage replyMessage)? onClickReplyMessage;
 
-  ChatSendingMessageWidget({super.key, required this.controller, this.message, List<File>? files}) {
+  ChatSendingMessageWidget({
+    super.key,
+    required this.controller,
+    this.message,
+    List<File>? files,
+    this.replyMessage,
+    this.onClickReplyMessage,
+  }) {
     this.files = files ?? [];
   }
 }
@@ -88,6 +98,7 @@ class ChatSendingMessageWidgetState extends State<ChatSendingMessageWidget> with
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (widget.replyMessage != null) replyWidget(widget.replyMessage!),
                 for (File file in files) _getFileWidget(file),
                 if (widget.message.isFill())
                   Padding(
@@ -209,8 +220,7 @@ class ChatSendingMessageWidgetState extends State<ChatSendingMessageWidget> with
         ],
       ),
       fileName: file.fileName,
-      fileInfo:
-          "${nowUploadingProgress.toFileSize(unit: false)}/${countUploadingProgress.toFileSize()}  ${percentUploading.toInt()}%  ${file.extension}",
+      fileInfo: "${nowUploadingProgress.toFileSize(unit: false)}/${countUploadingProgress.toFileSize()}  ${percentUploading.toInt()}%  ${file.extension}",
     );
   }
 
@@ -303,5 +313,53 @@ class ChatSendingMessageWidgetState extends State<ChatSendingMessageWidget> with
     widget.files.remove(file);
     widget.controller.cancelUpload();
     setState(() {});
+  }
+
+  Widget replyWidget(ChatMessage replyMessage) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => widget.onClickReplyMessage?.call(replyMessage),
+          borderRadius: BorderRadius.circular(10),
+          child: Padding(
+            padding: const EdgeInsets.all(5),
+            child: Row(
+              children: [
+                Container(
+                  height: 30,
+                  width: 2.3,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+                SizedBox(width: 5),
+                Column(
+                  children: [
+                    Text(
+                      replyMessage.forMe ? "خودم" : "مشاور",
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.85),
+                        fontSize: 10,
+                        fontFamily: "IranSansBold",
+                      ),
+                    ),
+                    Text(
+                      replyMessage.message!,
+                      style: TextStyle(
+                        color: Colors.white60,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
