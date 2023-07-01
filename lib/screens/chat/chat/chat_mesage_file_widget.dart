@@ -16,9 +16,8 @@ class ChatMessageFileWidget extends StatefulWidget {
 
   ChatFileMessage fileMessage;
   ChatMessageConfig messageConfig;
-  TextDirection textDirection;
 
-  ChatMessageFileWidget({required this.fileMessage, required this.messageConfig, this.textDirection = TextDirection.ltr});
+  ChatMessageFileWidget({required this.fileMessage, required this.messageConfig});
 }
 
 class _ChatMessageFileWidget extends State<ChatMessageFileWidget> with SingleTickerProviderStateMixin {
@@ -41,7 +40,7 @@ class _ChatMessageFileWidget extends State<ChatMessageFileWidget> with SingleTic
       bloc: downloadFileBloc,
       builder: (context, DownloadFileState state) {
         if (state is DownloadFileInitial) {
-          return widget.fileMessage.uploadedPath.isFill() ? _fileDownloadedWidget(widget.fileMessage!.uploadedPath!) : _fileInitWidget();
+          return widget.fileMessage.uploadedPath.isFill() ? _fileDownloadedWidget(widget.fileMessage.uploadedPath!) : _fileInitWidget();
         }
 
         if (state is DownloadFileSuccess) {
@@ -131,7 +130,7 @@ class _ChatMessageFileWidget extends State<ChatMessageFileWidget> with SingleTic
     required Function() onTap,
   }) {
     return Directionality(
-      textDirection: widget.textDirection,
+      textDirection: TextDirection.ltr,
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 2),
         child: Row(

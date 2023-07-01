@@ -1,5 +1,6 @@
 import 'package:siraf3/enums/message_state.dart';
 import 'package:siraf3/screens/chat/chat/chat_sending_message_widget.dart';
+import 'package:siraf3/screens/chat/chat/chat_sending_voice_message_widget.dart';
 import 'package:siraf3/screens/ticket/ticket_chat/sending_message_widget.dart';
 
 class MessageUploadController {
@@ -13,6 +14,10 @@ class MessageUploadController {
   }
 
   void setChatSendingMessageWidgetState(ChatSendingMessageWidgetState messageWidget) {
+    this._messageWidget = messageWidget;
+  }
+
+  void setChatSendingVoiceMessageWidgetState(ChatSendingVoiceMessageWidgetState messageWidget) {
     this._messageWidget = messageWidget;
   }
 

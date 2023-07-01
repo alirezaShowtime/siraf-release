@@ -15,7 +15,6 @@ import 'package:siraf3/config.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
-import 'package:siraf3/themes.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const image_extensions = <String>["png", "jpg", "jpeg", "tif", 'webp'];
@@ -257,7 +256,6 @@ PopupMenuItem<String> popupMenuItemWithIcon({
   );
 }
 
-
 extension List2<E> on List<E>? {
   List<List<E>> chunk(int chunkSize) {
     var chunks = <List<E>>[];
@@ -389,4 +387,26 @@ String generateUniquePath(String path) {
     return path.replaceAll(found, "_($repeat).$extension");
   }
   return path.replaceAll(".$extension", "_(1).$extension");
+}
+
+String timeFormatter(int seconds, {bool hasHour = false}) {
+  if (hasHour) {
+    var hours = (seconds ~/ 3600).toString();
+    var minutes = ((seconds % 3600) / 60).toString();
+    var second = ((seconds % 3600) % 60).toString();
+
+    hours = hours.length > 1 ? "$hours" : "0$hours";
+    minutes = minutes.length > 1 ? "$minutes" : "0$minutes";
+    second = second.length > 1 ? "$second" : "0$second";
+
+    return "${hours}:${minutes}:${second}";
+  } else {
+    var minutes = (seconds ~/ 60).toString();
+    var second = ((seconds % 3600) % 60).toString();
+
+    minutes = minutes.length > 1 ? "$minutes" : "0$minutes";
+    second = second.length > 1 ? "$second" : "0$second";
+
+    return "${minutes}:${second}";
+  }
 }

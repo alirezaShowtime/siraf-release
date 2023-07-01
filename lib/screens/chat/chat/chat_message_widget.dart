@@ -87,7 +87,6 @@ class ChatMessageWidgetState extends State<ChatMessageWidget> {
                         ChatMessageFileWidget(
                           fileMessage: fileMessage,
                           messageConfig: messageConfig,
-                          textDirection: messageConfig.fileDirection,
                         ),
                       if (hasFile && widget.message.message.isFill()) SizedBox(height: 10),
                       if (widget.message.message.isFill()) textWidget(),
@@ -184,10 +183,10 @@ class ChatMessageWidgetState extends State<ChatMessageWidget> {
       blRadius: 0,
       brRadius: 18,
       fileNameColor: Colors.black,
-      background: Colors.grey.shade200,
+      background: Color(0xfff0f0f0),
       textColor: Colors.black,
       primaryColor: Themes.primary,
-      secondTextColor: Colors.grey.shade400,
+      secondTextColor: Color(0xffb9c0c6),
       textDirection: TextDirection.rtl,
     );
   }
