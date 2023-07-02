@@ -29,6 +29,8 @@ import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
+import 'chat_video_message_widget.dart';
+
 part 'chat_message_editor_widget.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -100,10 +102,29 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin {
       if (state == RecordingVoiceState.Cancel) {}
       if (state == RecordingVoiceState.Recording) {}
       if (state == RecordingVoiceState.Done) {
-        messageWidgets.add(ChatSendingVoiceMessageWidget(
-          controller: MessageUploadController(),
-          voicePath: "",
-        ));
+
+        messageWidgets.add(
+          ChatVideoMessageWidget(
+            message: ChatMessage([
+              ChatFileMessage(
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8V-j5FFQozdzkIojXSu1IkjruUuXq3RIriePp-A6Xm7wOdGlhagfIi-5nqUHYxm_Df88&usqp=CAU"),
+              ChatFileMessage(
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8V-j5FFQozdzkIojXSu1IkjruUuXq3RIriePp-A6Xm7wOdGlhagfIi-5nqUHYxm_Df88&usqp=CAU"),
+              ChatFileMessage(
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8V-j5FFQozdzkIojXSu1IkjruUuXq3RIriePp-A6Xm7wOdGlhagfIi-5nqUHYxm_Df88&usqp=CAU"),
+              ChatFileMessage(
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8V-j5FFQozdzkIojXSu1IkjruUuXq3RIriePp-A6Xm7wOdGlhagfIi-5nqUHYxm_Df88&usqp=CAU"),
+              ChatFileMessage(
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8V-j5FFQozdzkIojXSu1IkjruUuXq3RIriePp-A6Xm7wOdGlhagfIi-5nqUHYxm_Df88&usqp=CAU"),
+              ChatFileMessage(
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8V-j5FFQozdzkIojXSu1IkjruUuXq3RIriePp-A6Xm7wOdGlhagfIi-5nqUHYxm_Df88&usqp=CAU"),
+            ]),
+          ),
+        );
+        // messageWidgets.add(ChatSendingVoiceMessageWidget(
+        //   controller: MessageUploadController(),
+        //   voicePath: "",
+        // ));
 
         listViewSetState?.call(() {});
       }

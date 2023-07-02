@@ -15,6 +15,9 @@ class ChatMessage {
   String? timeAgo;
   ChatMessage? replyMessage;
 
+
+  ChatMessage(this.fileMessages);
+
   MessageOwner get owner => isConsultant != true ? MessageOwner.ForMe : MessageOwner.ForHer;
 
   bool get forMe => isConsultant != true;
@@ -75,6 +78,8 @@ class ChatFileMessage {
   String? fileSize;
   String? originName;
   String? uploadedPath;
+
+  ChatFileMessage(this.path);
 
   String get name => Uri.decodeFull(this.path!).replaceAll("\\", "/").split("/").last;
 

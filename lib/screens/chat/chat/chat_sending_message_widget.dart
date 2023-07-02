@@ -220,7 +220,8 @@ class ChatSendingMessageWidgetState extends State<ChatSendingMessageWidget> with
         ],
       ),
       fileName: file.fileName,
-      fileInfo: "${nowUploadingProgress.toFileSize(unit: false)}/${countUploadingProgress.toFileSize()}  ${percentUploading.toInt()}%  ${file.extension}",
+      fileInfo:
+          "${nowUploadingProgress.toFileSize(unit: false)}/${countUploadingProgress.toFileSize()}  ${percentUploading.toInt()}%  ${file.extension}",
     );
   }
 

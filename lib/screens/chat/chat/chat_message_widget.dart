@@ -197,7 +197,7 @@ class ChatMessageWidgetState extends State<ChatMessageWidget> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => widget.onClickReplyMessage?.call(widget.message.replyMessage),
+          onTap: () => widget.onClickReplyMessage?.call(replyMessage),
           borderRadius: BorderRadius.circular(10),
           child: Padding(
             padding: const EdgeInsets.all(5),
