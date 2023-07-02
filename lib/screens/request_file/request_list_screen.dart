@@ -428,6 +428,7 @@ class _RequestListScreen extends State<RequestListScreen> {
           onPressed: () {
             getRequests();
           },
+          message: (jDecode(state.response.body) ?? {})['message'] as String?,
         ),
       );
     }

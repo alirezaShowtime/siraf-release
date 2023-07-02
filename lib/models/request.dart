@@ -1,9 +1,13 @@
+import 'package:siraf3/models/city.dart';
+import 'package:siraf3/models/estate.dart';
+
 class Request {
   int? id;
   String? createDate;
   String? statusString;
   CategoryId? categoryId;
   int? cityId;
+  City? city;
   int? minPrice;
   int? maxPrice;
   String? title;
@@ -14,23 +18,28 @@ class Request {
   String? commentOperator;
   bool? isDelete;
   int? userId;
+  String? customerNumber;
+  List<Estate>? estates;
 
-  Request(
-      {this.id,
-      this.createDate,
-      this.statusString,
-      this.categoryId,
-      this.cityId,
-      this.minPrice,
-      this.maxPrice,
-      this.title,
-      this.maxMeter,
-      this.minMeter,
-      this.status,
-      this.description,
-      this.commentOperator,
-      this.isDelete,
-      this.userId});
+  Request({
+    this.id,
+    this.createDate,
+    this.statusString,
+    this.categoryId,
+    this.cityId,
+    this.minPrice,
+    this.maxPrice,
+    this.title,
+    this.maxMeter,
+    this.minMeter,
+    this.status,
+    this.description,
+    this.commentOperator,
+    this.isDelete,
+    this.userId,
+    this.customerNumber,
+    this.estates,
+  });
 
   static List<Request> fromList(List<dynamic> list) {
     var list2 = <Request>[];
@@ -90,6 +99,15 @@ class Request {
     if (json["user_id"] is int) {
       userId = json["user_id"];
     }
+    if (json["customerNumber"] is String) {
+      customerNumber = json["customerNumber"];
+    }
+    if (json["city"] is Map) {
+      city = json["city"] == null ? null : City.fromJson(json["city"]);
+    }
+    if (json['estates'] is List) {
+      estates = Estate.fromList(json['estates']);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -111,6 +129,9 @@ class Request {
     _data["commentOperator"] = commentOperator;
     _data["isDelete"] = isDelete;
     _data["user_id"] = userId;
+    _data["customerNumber"] = customerNumber;
+    _data['city'] = city?.toJson();
+    _data['estates'] = estates?.map((e) => e.toJson()).toList();
     return _data;
   }
 }

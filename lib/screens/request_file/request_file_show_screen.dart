@@ -11,6 +11,7 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/request.dart';
 import 'package:siraf3/models/request_consultant.dart';
+import 'package:siraf3/screens/request_file/edit_request_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
@@ -84,7 +85,8 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                 icon: icon(CupertinoIcons.delete, size: 20)),
             MyPopupMenuButton(
               itemBuilder: (_) => [
-                PopupMenuItem(
+                PopupMenuItem<String>(
+                  value: "edit",
                   child: Text(
                     "ویرایش درخواست",
                     style: TextStyle(
@@ -92,9 +94,9 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                       fontSize: 12,
                     ),
                   ),
-                  onTap: onClickEditRequest,
                 ),
               ],
+              onSelected: (v) => onClickEditRequest(),
               iconData: Icons.more_vert,
             ),
           ],
@@ -298,7 +300,12 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
   }
 
   void onClickEditRequest() {
-    //todo: implement event listener
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => EditRequestScreen(request: widget.request),
+      ),
+    );
   }
 
   void call(ConsultantId consultantId) {
