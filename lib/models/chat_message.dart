@@ -16,7 +16,7 @@ class ChatMessage {
   ChatMessage? replyMessage;
 
 
-  ChatMessage(this.fileMessages);
+  ChatMessage(this.fileMessages, this.createDate, this.message);
 
   MessageOwner get owner => isConsultant != true ? MessageOwner.ForMe : MessageOwner.ForHer;
 

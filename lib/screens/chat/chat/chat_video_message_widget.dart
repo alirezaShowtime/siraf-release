@@ -1,134 +1,249 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:siraf3/models/chat_message.dart';
-import 'package:siraf3/widgets/my_image.dart';
+import 'dart:typed_data';
 
-import 'abstract_message_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:siraf3/bloc/chat/downloadFile/download_file_bloc.dart';
+import 'package:siraf3/helpers.dart';
+import 'package:siraf3/models/chat_message.dart';
+import 'package:siraf3/screens/chat/chat/abstract_message_widget.dart';
+import 'package:siraf3/screens/video_screen.dart';
+import 'package:siraf3/widgets/my_image.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class ChatVideoMessageWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ChatVideoMessageWidget();
 
   ChatMessage message;
+  void Function(ChatMessage)? onClickReplyMessage;
 
-  ChatVideoMessageWidget({
-    required this.message,
-  });
+  ChatVideoMessageWidget({required this.message, this.onClickReplyMessage});
 }
 
 class _ChatVideoMessageWidget extends AbstractMessageWidget<ChatVideoMessageWidget> with TickerProviderStateMixin {
-  late AnimationController loadingController;
-  bool isSeen = false;
+  DownloadFileBloc downloadFileBloc = DownloadFileBloc();
 
-  @override
-  ChatMessage? messageForReply() => widget.message;
+  late AnimationController loadingController;
+
+  void Function(void Function())? imageWidgetSetState;
+  Uint8List? thumbnailPath;
+  bool isSeen = false;
 
   @override
   bool isForMe() => widget.message.forMe;
 
   @override
-  Widget content() {
-    return onlyImage();
-    // return widget.message.message != null ? withMessage() : onlyImage();
-  }
+  ChatMessage? messageForReply() => widget.message.replyMessage;
 
   @override
   void initState() {
     super.initState();
 
-    loadingController = AnimationController(vsync: this, duration: Duration(milliseconds: 700));
+    loadingController = AnimationController(vsync: this, duration: Duration(milliseconds: 1700))..repeat(reverse: false);
+
+    getVideoThumbnail(widget.message.fileMessages![0].path!);
   }
 
-  // Widget withMessage() {}
+  void getVideoThumbnail(String videoUrl) async {
+    final fileName = await VideoThumbnail.thumbnailData(
+      video: videoUrl,
+      imageFormat: ImageFormat.WEBP,
+    );
 
-  Widget onlyImage() {
-    return Stack(
+    imageWidgetSetState?.call(() {
+      thumbnailPath = fileName;
+    });
+  }
+
+  @override
+  Widget content() {
+    return widget.message.message == null ? onlyVideo() : withText();
+  }
+
+  Widget onlyVideo() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        StaggeredGrid.count(
-          crossAxisCount: _getCount(),
-          crossAxisSpacing: 2,
+        replyWidget(widget.message, widget.onClickReplyMessage),
+        Stack(
           children: [
-            for (ChatFileMessage file in widget.message.fileMessages!)
-              MyImage(
-                borderRadius: BorderRadius.circular(16),
-                // image: NetworkImage(widget.message.fileMessages![0].path!),
-                image: NetworkImage("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8V-j5FFQozdzkIojXSu1IkjruUuXq3RIriePp-A6Xm7wOdGlhagfIi-5nqUHYxm_Df88&usqp=CAU"),
-                fit: BoxFit.cover,
-                // loadingBuilder: (_, widget, progress) {
-                //   if (progress == null) widget;
-                //   return Container(
-                //     color: isForMe() ? Colors.white24 : Colors.grey.shade100,
-                //     alignment: Alignment.center,
-                //     child: RotationTransition(
-                //       turns: Tween(begin: 0.0, end: 1.0).animate(loadingController),
-                //       child: CircularPercentIndicator(
-                //         radius: 15,
-                //         backgroundColor: Colors.transparent,
-                //         percent: 0.6,
-                //         animation: true,
-                //         lineWidth: 3.5,
-                //         circularStrokeCap: CircularStrokeCap.round,
-                //         progressColor: isForMe() ? Colors.black : Colors.black,
-                //       ),
-                //     ),
-                //   );
-                // },
+            videoWidget(),
+            Positioned(
+              bottom: 5,
+              right: 5,
+              child: Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.4),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Row(
+                  children: [
+                    if (isForMe())
+                      Icon(
+                        isSeen ? Icons.done_all_rounded : Icons.check_rounded,
+                        color: isForMe() ? Colors.white : Colors.red,
+                        size: 13,
+                      ),
+                    SizedBox(width: 4),
+                    Text(
+                      widget.message.createDate!,
+                      style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500, fontFamily: "sans-serif"),
+                    ),
+                  ],
+                ),
               ),
+            ),
           ],
-        ),
-        Positioned(
-          bottom: 5,
-          right: 5,
-          child: Container(
-            padding: EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.4),
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Row(
-              children: [
-                if (isForMe())
-                  Icon(
-                    isSeen ? Icons.done_all_rounded : Icons.check_rounded,
-                    color: isForMe() ? Colors.white : Colors.red,
-                    size: 13,
-                  ),
-                SizedBox(width: 4),
-                Text(
-                  "12:44",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: "sans-serif"
-                  ),
-                )
-              ],
-            ),
-          ),
         ),
       ],
     );
   }
 
-  int _getCount() {
+  Widget withText() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        replyWidget(widget.message, widget.onClickReplyMessage),
+        videoWidget(),
+        textWidget(widget.message.message),
+        footerWidget(false, widget.message.createDate!),
+      ],
+    );
+  }
 
-    switch(widget.message.fileMessages!.length){
+  Widget videoWidget() {
+    return StatefulBuilder(builder: (context, setState) {
+      imageWidgetSetState = setState;
+      if (thumbnailPath == null) return loadingWidget(0.1);
 
-      case 1 : return 1;
-      case 2 : return 1;
-      case 3 : return 1;
-      case 4 : return 1;
-      case 5 : return 2;
-      case 5 : return 2;
-      case 6 : return 2;
-      case 7 : return 2;
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(minHeight: 150),
+            child: MyImage(
+              borderRadius: BorderRadius.circular(7),
+              image: MemoryImage(thumbnailPath!),
+              fit: BoxFit.cover,
+              loadingBuilder: (_, child, loading) {
+                return loading == null ? child : loadingWidget(loading.expectedTotalBytes == null ? 0 : loading.cumulativeBytesLoaded / loading.expectedTotalBytes!);
+              },
+            ),
+          ),
+          if (thumbnailPath != null)
+            InkWell(
+              onTap: () => push(context, VideoScreen(videoUrl: widget.message.fileMessages![0].path!, attemptOffline: true)),
+              child: Container(
+                width: 35,
+                height: 35,
+                padding: EdgeInsets.all(2),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Icon(Icons.play_arrow_rounded, color: isForMe() ? Colors.white : Colors.white),
+              ),
+            ),
+          Positioned(
+            top: 4,
+            left: 4,
+            child: Container(
+              padding: EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(7),
+                color: Colors.black54,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "12/15MB",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "sans-serif",
+                          fontWeight: FontWeight.w500,
+                          fontSize: 8,
+                        ),
+                      ),
+                      Text(
+                        "01:45:00",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "sans-serif",
+                          fontWeight: FontWeight.w500,
+                          fontSize: 8,
+                        ),
+                      ),
+                    ],
+                  ),
+                  BlocBuilder(
+                    bloc: downloadFileBloc,
+                    builder: (context, state) {
+                      if (state is DownloadFileLoading) return loadingProgressWidget(radius: 7.5, progress: 0.7, width: 1.75);
+                      if (state is DownloadFileSuccess)
+                        return Icon(
+                          Icons.play_arrow_rounded,
+                          color: isForMe() ? Colors.white : Colors.white,
+                          size: 20,
+                        );
+                      return InkWell(
+                        onTap: onClickDownload,
+                        child: Icon(
+                          Icons.arrow_downward_rounded,
+                          color: isForMe() ? Colors.white : Colors.white,
+                          size: 18,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    });
+  }
 
+  Widget loadingWidget(double progress) {
+    return Container(
+      height: 150,
+      color: isForMe() ? Colors.white12 : Colors.grey.shade100,
+      alignment: Alignment.center,
+      child: loadingProgressWidget(radius: 15, progress: progress),
+    );
+  }
 
-    }
+  Widget loadingProgressWidget({required double radius, required double progress, double width = 3}) {
+    return RotationTransition(
+      turns: Tween(begin: 0.0, end: 1.0).animate(loadingController),
+      child: Container(
+        padding: EdgeInsets.all(2),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(100),
+          color: Colors.white24,
+        ),
+        child: CircularPercentIndicator(
+          radius: radius,
+          backgroundColor: Colors.transparent,
+          percent: progress,
+          animation: true,
+          lineWidth: width,
+          circularStrokeCap: CircularStrokeCap.round,
+          progressColor: isForMe() ? Colors.white : Colors.black,
+        ),
+      ),
+    );
+  }
 
-
-
+  void onClickDownload() {
+    downloadFileBloc.add(DownloadFileRequest(widget.message.fileMessages![0]));
   }
 }

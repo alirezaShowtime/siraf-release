@@ -312,7 +312,7 @@ Future<Directory> getOrCreatePath(dynamic directory) async {
   return newDir!;
 }
 
-Future<String?> getDownloadPath() async {
+Future<String?> getDownloadPath({String path = ""}) async {
   Directory? directory;
   try {
     if (Platform.isIOS) {
@@ -326,7 +326,7 @@ Future<String?> getDownloadPath() async {
   } catch (err) {
     print("Cannot get download folder path");
   }
-  return directory!.path;
+  return directory!.path + path;
 }
 
 Future<Directory> ticketDownloadPath() async {
@@ -375,6 +375,7 @@ animationDialog({required BuildContext context, required Widget Function(BuildCo
     pageBuilder: (_, __, ___) => Container(),
   );
 }
+
 String generateUniquePath(String path) {
   var regExp = RegExp(r"_\((\d+)\)\.(\w+)$");
   var extension = RegExp(r"\w+$").firstMatch(path)!.group(0)!;

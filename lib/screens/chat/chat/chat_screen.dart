@@ -22,14 +22,12 @@ import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/screens/chat/chat/app_bar_chat_widget.dart';
 import 'package:siraf3/screens/chat/chat/chat_message_widget.dart';
 import 'package:siraf3/screens/chat/chat/chat_sending_message_widget.dart';
-import 'package:siraf3/screens/chat/chat/chat_sending_voice_message_widget.dart';
+import 'package:siraf3/screens/chat/chat/chat_video_message_widget.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
-
-import 'chat_video_message_widget.dart';
 
 part 'chat_message_editor_widget.dart';
 
@@ -102,23 +100,12 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin {
       if (state == RecordingVoiceState.Cancel) {}
       if (state == RecordingVoiceState.Recording) {}
       if (state == RecordingVoiceState.Done) {
-
         messageWidgets.add(
           ChatVideoMessageWidget(
             message: ChatMessage([
               ChatFileMessage(
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8V-j5FFQozdzkIojXSu1IkjruUuXq3RIriePp-A6Xm7wOdGlhagfIi-5nqUHYxm_Df88&usqp=CAU"),
-              ChatFileMessage(
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8V-j5FFQozdzkIojXSu1IkjruUuXq3RIriePp-A6Xm7wOdGlhagfIi-5nqUHYxm_Df88&usqp=CAU"),
-              ChatFileMessage(
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8V-j5FFQozdzkIojXSu1IkjruUuXq3RIriePp-A6Xm7wOdGlhagfIi-5nqUHYxm_Df88&usqp=CAU"),
-              ChatFileMessage(
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8V-j5FFQozdzkIojXSu1IkjruUuXq3RIriePp-A6Xm7wOdGlhagfIi-5nqUHYxm_Df88&usqp=CAU"),
-              ChatFileMessage(
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8V-j5FFQozdzkIojXSu1IkjruUuXq3RIriePp-A6Xm7wOdGlhagfIi-5nqUHYxm_Df88&usqp=CAU"),
-              ChatFileMessage(
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8V-j5FFQozdzkIojXSu1IkjruUuXq3RIriePp-A6Xm7wOdGlhagfIi-5nqUHYxm_Df88&usqp=CAU"),
-            ]),
+                  "https://hajifirouz10.asset.aparat.com/aparat-video/a58b0cec6f15ceba1039c74dfa1c82f553084835-360p.mp4?wmsAuthSign=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImZkMTA4Y2MyZWNjMDkzNGM4NzljMzEzNmQyZjk3N2Q0IiwiZXhwIjoxNjg4MzI4OTIxLCJpc3MiOiJTYWJhIElkZWEgR1NJRyJ9.sT1D-nOV9CjsrOSsuZJacQPws7zBuNIu8pbdEhl1RXU"),
+            ], "23:30", "fdfidskfodpskf osdkfosdk ofdk ofkdspofk dposkf odkokoksd psf okspo fkds oksd dokd kskdsk dkfdsk dsk dk d kdp"),
           ),
         );
         // messageWidgets.add(ChatSendingVoiceMessageWidget(

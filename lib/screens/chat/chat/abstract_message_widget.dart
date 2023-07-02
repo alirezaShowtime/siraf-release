@@ -33,14 +33,18 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
             margin: EdgeInsets.only(bottom: 3, left: 10, right: 10),
             padding: EdgeInsets.all(2),
             decoration: BoxDecoration(
-              color: _getConfig().background,
               borderRadius: _getConfig().borderRadius,
+              color: _getConfig().background,
             ),
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.60,
+              maxWidth: MediaQuery.of(context).size.width * 0.65,
               minWidth: 100,
+              // maxHeight: 600,
             ),
-            child: content(),
+            child: ClipRRect(
+              borderRadius: _getConfig().borderRadius,
+              child: content(),
+            ),
           ),
           if (messageForReply() != null)
             Padding(
@@ -67,7 +71,7 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
     return isForMe() ? _forMeConfig() : _forHerConfig();
   }
 
-  Widget replyWidget(ChatMessage? replyMessage, void Function(ChatMessage)? onClickReplyMessage) {
+  Widget replyWidget(ChatMessage? replyMessage, void Function(ChatMessage chatMessage)? onClickReplyMessage) {
     if (replyMessage == null) return Container();
     return Padding(
       padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
@@ -89,24 +93,30 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
                   ),
                 ),
                 SizedBox(width: 5),
-                Column(
-                  children: [
-                    Text(
-                      replyMessage.forMe ? "خودم" : "مشاور",
-                      style: TextStyle(
-                        color: isForMe() ? Colors.white.withOpacity(0.85) : _getConfig().primaryColor,
-                        fontSize: 10,
-                        fontFamily: "IranSansBold",
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        replyMessage.forMe ? "خودم" : "مشاور",
+                        style: TextStyle(
+                          color: isForMe() ? Colors.white.withOpacity(0.85) : _getConfig().primaryColor,
+                          fontSize: 10,
+                          fontFamily: "IranSansBold",
+                        ),
                       ),
-                    ),
-                    Text(
-                      replyMessage.message ?? "فایل",
-                      style: TextStyle(
-                        color: isForMe() ? Colors.white60 : _getConfig().textColor,
-                        fontSize: 10,
+                      Text(
+                        replyMessage.message ?? "فایل",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(
+                          color: isForMe() ? Colors.white60 : _getConfig().textColor,
+                          fontSize: 10,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -119,7 +129,7 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
   Widget textWidget(String? message) {
     if (!message.isFill()) return Container();
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5),
+      padding: const EdgeInsets.only(left: 5, right: 5, top: 5),
       child: Wrap(
         children: [
           ConstrainedBox(
@@ -128,7 +138,7 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
               text: message!,
               child: Text(
                 message,
-                style: TextStyle(color: _getConfig().textColor, fontSize: 12),
+                style: TextStyle(color: _getConfig().textColor, fontSize: 12, height: 1.2),
               ),
             ),
           ),
@@ -153,11 +163,7 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
           if (isForMe()) SizedBox(width: 2),
           Text(
             createTime,
-            style: TextStyle(
-              color: isForMe() ? Colors.white60 : Colors.grey,
-              fontSize: 9,
-              height: 1,
-            ),
+            style: TextStyle(color: isForMe() ? Colors.white60 : Colors.grey, fontSize: 9, height: 1, fontFamily: "sans-serif"),
           ),
         ],
       ),
