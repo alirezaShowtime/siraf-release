@@ -12,7 +12,7 @@ import 'package:siraf3/bloc/chat/recordingVoice/recording_voice_bloc.dart';
 import 'package:siraf3/bloc/chat/reply/chat_reply_bloc.dart';
 import 'package:siraf3/bloc/chat/seen/seen_message_bloc.dart';
 import 'package:siraf3/bloc/chat/sendMessage/send_message_bloc.dart';
-import 'package:siraf3/controller/message_upload_controller.dart';
+import 'package:siraf3/controller/chat_message_upload_controller.dart';
 import 'package:siraf3/extensions/file_extension.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
@@ -20,14 +20,14 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/chat_item.dart';
 import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/screens/chat/chat/app_bar_chat_widget.dart';
-import 'package:siraf3/screens/chat/chat/chat_message_widget.dart';
-import 'package:siraf3/screens/chat/chat/chat_sending_message_widget.dart';
-import 'package:siraf3/screens/chat/chat/chat_video_message_widget.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
+
+import 'messageWidgets/chat_message_widget.dart';
+import 'sendingMessageWidgets/chat_sending_message_widget.dart';
 
 part 'chat_message_editor_widget.dart';
 
@@ -100,19 +100,6 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin {
       if (state == RecordingVoiceState.Cancel) {}
       if (state == RecordingVoiceState.Recording) {}
       if (state == RecordingVoiceState.Done) {
-        messageWidgets.add(
-          ChatVideoMessageWidget(
-            message: ChatMessage([
-              ChatFileMessage(
-                  "https://hajifirouz10.asset.aparat.com/aparat-video/a58b0cec6f15ceba1039c74dfa1c82f553084835-360p.mp4?wmsAuthSign=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImZkMTA4Y2MyZWNjMDkzNGM4NzljMzEzNmQyZjk3N2Q0IiwiZXhwIjoxNjg4MzI4OTIxLCJpc3MiOiJTYWJhIElkZWEgR1NJRyJ9.sT1D-nOV9CjsrOSsuZJacQPws7zBuNIu8pbdEhl1RXU"),
-            ], "23:30", "fdfidskfodpskf osdkfosdk ofdk ofkdspofk dposkf odkokoksd psf okspo fkds oksd dokd kskdsk dkfdsk dsk dk d kdp"),
-          ),
-        );
-        // messageWidgets.add(ChatSendingVoiceMessageWidget(
-        //   controller: MessageUploadController(),
-        //   voicePath: "",
-        // ));
-
         listViewSetState?.call(() {});
       }
     });
@@ -263,7 +250,6 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin {
             BlocBuilder(
                 bloc: recordingVoiceBloc,
                 builder: ((context, state) {
-                  print("state $state");
                   if (state != RecordingVoiceState.Recording) return Container();
                   return Positioned(
                     left: 0,
@@ -409,15 +395,13 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin {
 
     if (nowMessagesState != state) {
       nowMessagesState = state;
-      messageWidgets = messages
-          .map<Widget>(
-            (e) => ChatMessageWidget(
-              key: GlobalObjectKey(e.id!),
-              message: e,
-              onClickReplyMessage: scrollTo,
-            ),
-          )
-          .toList();
+      messageWidgets = messages.map<Widget>((e) {
+        return ChatMessageWidget(
+          key: GlobalObjectKey(e.id!),
+          message: e,
+          onClickReplyMessage: scrollTo,
+        );
+      }).toList();
     }
 
     if (!messages.last.forMe && nowMessagesState != state) {
@@ -441,7 +425,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin {
   }
 
   void sendMessage(String? text, List<File>? files, ChatMessage? reply) {
-    MessageUploadController messageUploadController = MessageUploadController();
+    ChatMessageUploadController messageUploadController = ChatMessageUploadController();
 
     ChatSendingMessageWidget sendingMessageWidget = ChatSendingMessageWidget(
       key: UniqueKey(),

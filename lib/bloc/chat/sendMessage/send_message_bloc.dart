@@ -5,7 +5,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
-import 'package:siraf3/controller/message_upload_controller.dart';
+import 'package:siraf3/controller/chat_message_upload_controller.dart';
+import 'package:siraf3/enums/message_state.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/http2.dart';
 import 'package:siraf3/models/chat_message.dart';
@@ -73,9 +74,11 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
         url,
         options: options,
         data: formData,
-        onSendProgress: event.requestModel.controller.uploading,
+        onSendProgress: (int now, int count) => event.requestModel.controller.uploading.add(UploadingDetail(now, count)),
         cancelToken: cancelToken,
       );
+
+      event.requestModel.controller.setCreateTime(DateTime.now());
 
       logRequestDio(res);
 
@@ -83,7 +86,7 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
         throw new Exception();
       }
 
-      event.requestModel.controller.uploaded();
+      event.requestModel.controller.messageSate.add(MessageState.Uploaded);
 
       emit(SendMessageSuccess(
         event.requestModel.widgetKey,
@@ -91,9 +94,8 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
         sentFiles: event.requestModel.files2,
         replyMessage: event.requestModel.replyMessage,
       ));
-
     } catch (e) {
-      event.requestModel.controller.errorUpload();
+      event.requestModel.controller.messageSate.add(MessageState.ErrorUpload);
       emit(SendMessageError(event.requestModel.widgetKey));
     }
   }

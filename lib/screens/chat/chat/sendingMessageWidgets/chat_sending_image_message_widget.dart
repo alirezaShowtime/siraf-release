@@ -1,39 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/screens/image_view_screen.dart';
 import 'package:siraf3/widgets/my_image.dart';
 
-import 'abstract_message_widget.dart';
+import 'chat_sending_message_widget.dart';
 
-class ChatImageMessageWidget extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _ChatImageMessageWidget();
-
-  ChatMessage message;
-  void Function(ChatMessage)? onClickReplyMessage;
-
-  ChatImageMessageWidget({
-    required this.message,
-    this.onClickReplyMessage,
-  });
-}
-
-class _ChatImageMessageWidget extends AbstractMessageWidget<ChatImageMessageWidget> with TickerProviderStateMixin {
+class ChatSendingImageMessageWidgetState extends ChatSendingMessageWidgetState {
   late AnimationController loadingController;
   bool isSeen = false;
 
   @override
-  ChatMessage? messageForReply() => widget.message;
-
-  @override
-  bool isForMe() => widget.message.forMe;
-
-  @override
   Widget content() {
-    return widget.message.message != null ? withMessage() : onlyImage();
+    return widget.message.isFill() ? withMessage() : onlyImage();
   }
 
   @override
@@ -43,14 +24,20 @@ class _ChatImageMessageWidget extends AbstractMessageWidget<ChatImageMessageWidg
     loadingController = AnimationController(vsync: this, duration: Duration(milliseconds: 1700))..repeat(reverse: false);
   }
 
+  @override
+  void dispose() {
+    loadingController.dispose();
+    super.dispose();
+  }
+
   Widget withMessage() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
+        replyWidget(widget.replyMessage, widget.onClickReplyMessage),
         _imageView(),
-        textWidget(widget.message.message),
-        footerWidget(false, widget.message.createDate!),
+        textWidget(widget.message),
+        footerWidget(false, widget.controller.getCreateTime() ?? ""),
       ],
     );
   }
@@ -58,7 +45,7 @@ class _ChatImageMessageWidget extends AbstractMessageWidget<ChatImageMessageWidg
   Widget onlyImage() {
     return Column(
       children: [
-        replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
+        replyWidget(widget.replyMessage, widget.onClickReplyMessage),
         Stack(
           children: [
             _imageView(),
@@ -81,7 +68,7 @@ class _ChatImageMessageWidget extends AbstractMessageWidget<ChatImageMessageWidg
                       ),
                     SizedBox(width: 4),
                     Text(
-                      widget.message.createDate!,
+                      widget.controller.getCreateTime() ?? "",
                       style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500, fontFamily: "sans-serif"),
                     ),
                   ],
@@ -100,15 +87,15 @@ class _ChatImageMessageWidget extends AbstractMessageWidget<ChatImageMessageWidg
       mainAxisSpacing: 2,
       crossAxisCount: 2,
       children: [
-        for (var i = 0; i < widget.message.fileMessages!.length; i++)
+        for (var i = 0; i < widget.files!.length; i++)
           StaggeredGridTile.count(
             mainAxisCellCount: 1,
-            crossAxisCellCount: i == widget.message.fileMessages!.length - 1 && i.isEven ? 2 : 1,
+            crossAxisCellCount: i == widget.files!.length - 1 && i.isEven ? 2 : 1,
             child: InkWell(
-              onTap: () => push(context, ImageViewScreen(imageUrl: widget.message.fileMessages![i].path!)),
+              onTap: () => push(context, ImageViewScreen(imageFile: widget.files![i])),
               child: MyImage(
                 borderRadius: BorderRadius.circular(3),
-                image: NetworkImage(widget.message.fileMessages![i].path!),
+                image: FileImage(widget.files![i]),
                 fit: BoxFit.cover,
                 errorWidget: Container(
                   color: isForMe() ? Colors.white12 : Colors.grey.shade100,

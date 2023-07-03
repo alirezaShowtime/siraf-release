@@ -9,43 +9,75 @@ import 'package:siraf3/themes.dart';
 
 import 'chat_message_config.dart';
 
-abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> {
+abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> with TickerProviderStateMixin {
+  late AnimationController _replyAnimationController;
+  late Animation<double> _replyAnimation;
+  void Function(void Function())? _containerSetState;
+
   bool isForMe();
 
   Widget content();
 
   ChatMessage? messageForReply();
 
+  double dx = 0;
+
   @override
   void initState() {
     super.initState();
+
+    _replyAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+
+    _replyAnimationController.addListener(() => _containerSetState?.call(() {}));
+
+    _replyAnimation = Tween<double>(end: -100, begin: 0).animate(_replyAnimationController);
+  }
+
+  @override
+  void dispose() {
+    _replyAnimationController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: _getConfig().alignment,
+      alignment: getConfig().alignment,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         textDirection: isForMe() ? TextDirection.rtl : TextDirection.ltr,
         children: [
-          Container(
-            margin: EdgeInsets.only(bottom: 3, left: 10, right: 10),
-            padding: EdgeInsets.all(2),
-            decoration: BoxDecoration(
-              borderRadius: _getConfig().borderRadius,
-              color: _getConfig().background,
-            ),
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.65,
-              minWidth: 100,
-              // maxHeight: 600,
-            ),
-            child: ClipRRect(
-              borderRadius: _getConfig().borderRadius,
-              child: content(),
-            ),
-          ),
+          StatefulBuilder(builder: (context, setState) {
+            _containerSetState = setState;
+            return GestureDetector(
+              onHorizontalDragEnd: (detail) {
+                _replyAnimationController.forward();
+              },
+              onHorizontalDragCancel: () {
+                _replyAnimationController.reverse();
+              },
+              child: Transform.translate(
+                offset: Offset(_replyAnimation.value, 0),
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 3, left: 10, right: 10),
+                  padding: EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    borderRadius: getConfig().borderRadius,
+                    color: getConfig().background,
+                  ),
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.65,
+                    minWidth: 100,
+                    // maxHeight: 600,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: getConfig().borderRadius,
+                    child: content(),
+                  ),
+                ),
+              ),
+            );
+          }),
           if (messageForReply() != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 5),
@@ -67,11 +99,12 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
     );
   }
 
-  ChatMessageConfig _getConfig() {
+  @protected
+  ChatMessageConfig getConfig() {
     return isForMe() ? _forMeConfig() : _forHerConfig();
   }
 
-  Widget replyWidget(ChatMessage? replyMessage, void Function(ChatMessage chatMessage)? onClickReplyMessage) {
+  Widget replyWidget(ChatMessage? replyMessage, void Function(ChatMessage? chatMessage)? onClickReplyMessage) {
     if (replyMessage == null) return Container();
     return Padding(
       padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
@@ -88,7 +121,7 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
                   height: 30,
                   width: 2.3,
                   decoration: BoxDecoration(
-                    color: isForMe() ? Colors.white : _getConfig().primaryColor,
+                    color: isForMe() ? Colors.white : getConfig().primaryColor,
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),
@@ -101,7 +134,7 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
                       Text(
                         replyMessage.forMe ? "خودم" : "مشاور",
                         style: TextStyle(
-                          color: isForMe() ? Colors.white.withOpacity(0.85) : _getConfig().primaryColor,
+                          color: isForMe() ? Colors.white.withOpacity(0.85) : getConfig().primaryColor,
                           fontSize: 10,
                           fontFamily: "IranSansBold",
                         ),
@@ -111,7 +144,7 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         style: TextStyle(
-                          color: isForMe() ? Colors.white60 : _getConfig().textColor,
+                          color: isForMe() ? Colors.white60 : getConfig().textColor,
                           fontSize: 10,
                         ),
                       ),
@@ -138,7 +171,7 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
               text: message!,
               child: Text(
                 message,
-                style: TextStyle(color: _getConfig().textColor, fontSize: 12, height: 1.2),
+                style: TextStyle(color: getConfig().textColor, fontSize: 12, height: 1.2),
               ),
             ),
           ),
@@ -163,7 +196,13 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
           if (isForMe()) SizedBox(width: 2),
           Text(
             createTime,
-            style: TextStyle(color: isForMe() ? Colors.white60 : Colors.grey, fontSize: 9, height: 1, fontFamily: "sans-serif"),
+            style: TextStyle(
+              color: isForMe() ? Colors.white60 : Colors.grey,
+              fontSize: 9,
+              height: 1,
+              fontFamily: "sans-serif",
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),

@@ -9,7 +9,7 @@ class SendMessageRequestModel {
   List<File>? files2;
   String? message;
   ChatMessage? replyMessage;
-  MessageUploadController controller;
+  ChatMessageUploadController controller;
   Key widgetKey;
 
   SendMessageRequestModel({
@@ -34,7 +34,7 @@ class AddToSendQueueEvent extends SendMessageEvent {
   List<File>? files;
   String? message;
   ChatMessage? replyMessage;
-  MessageUploadController controller;
+  ChatMessageUploadController controller;
   Key widgetKey;
 
   AddToSendQueueEvent({

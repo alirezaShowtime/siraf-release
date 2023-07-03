@@ -5,36 +5,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:siraf3/bloc/chat/downloadFile/download_file_bloc.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/models/chat_message.dart';
-import 'package:siraf3/screens/chat/chat/abstract_message_widget.dart';
 import 'package:siraf3/screens/video_screen.dart';
 import 'package:siraf3/widgets/my_image.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
-class ChatVideoMessageWidget extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _ChatVideoMessageWidget();
+import 'chat_message_widget.dart';
 
-  ChatMessage message;
-  void Function(ChatMessage)? onClickReplyMessage;
-
-  ChatVideoMessageWidget({required this.message, this.onClickReplyMessage});
-}
-
-class _ChatVideoMessageWidget extends AbstractMessageWidget<ChatVideoMessageWidget> with TickerProviderStateMixin {
+class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
   DownloadFileBloc downloadFileBloc = DownloadFileBloc();
 
   late AnimationController loadingController;
 
   void Function(void Function())? imageWidgetSetState;
   Uint8List? thumbnailPath;
-  bool isSeen = false;
-
-  @override
-  bool isForMe() => widget.message.forMe;
-
-  @override
-  ChatMessage? messageForReply() => widget.message.replyMessage;
 
   @override
   void initState() {
@@ -43,6 +26,12 @@ class _ChatVideoMessageWidget extends AbstractMessageWidget<ChatVideoMessageWidg
     loadingController = AnimationController(vsync: this, duration: Duration(milliseconds: 1700))..repeat(reverse: false);
 
     getVideoThumbnail(widget.message.fileMessages![0].path!);
+  }
+
+  @override
+  void dispose() {
+    loadingController.dispose();
+    super.dispose();
   }
 
   void getVideoThumbnail(String videoUrl) async {
@@ -82,13 +71,13 @@ class _ChatVideoMessageWidget extends AbstractMessageWidget<ChatVideoMessageWidg
                   children: [
                     if (isForMe())
                       Icon(
-                        isSeen ? Icons.done_all_rounded : Icons.check_rounded,
+                        widget.isSeen ? Icons.done_all_rounded : Icons.check_rounded,
                         color: isForMe() ? Colors.white : Colors.red,
                         size: 13,
                       ),
                     SizedBox(width: 4),
                     Text(
-                      widget.message.createDate!,
+                      widget.message.createTime!,
                       style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500, fontFamily: "sans-serif"),
                     ),
                   ],
@@ -108,7 +97,7 @@ class _ChatVideoMessageWidget extends AbstractMessageWidget<ChatVideoMessageWidg
         replyWidget(widget.message, widget.onClickReplyMessage),
         videoWidget(),
         textWidget(widget.message.message),
-        footerWidget(false, widget.message.createDate!),
+        footerWidget(false, widget.message.createTime!),
       ],
     );
   }

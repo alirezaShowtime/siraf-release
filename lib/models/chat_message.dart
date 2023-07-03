@@ -1,4 +1,7 @@
 import 'package:siraf3/enums/message_owner.dart';
+import 'package:siraf3/extensions/list_extension.dart';
+
+enum TypeFile { Image, Video, Doc, Voice }
 
 class ChatMessage {
   int? id;
@@ -6,6 +9,7 @@ class ChatMessage {
   String? createDate;
   String? modifyDate;
   int? type;
+  TypeFile? typeFile;
   List<ChatFileMessage>? fileMessages;
   int? userId;
   int? replyId;
@@ -14,7 +18,8 @@ class ChatMessage {
   int? consultantFileId;
   String? timeAgo;
   ChatMessage? replyMessage;
-
+  String? messageCreateDate;
+  String? createTime;
 
   ChatMessage(this.fileMessages, this.createDate, this.message);
 
@@ -37,9 +42,6 @@ class ChatMessage {
     }
     if (json["message"] is String) {
       message = json["message"];
-    }
-    if (json["createDate"] is String) {
-      createDate = json["createDate"];
     }
     if (json["modifyDate"] is String) {
       modifyDate = json["modifyDate"];
@@ -68,6 +70,47 @@ class ChatMessage {
     if (json["timeAgo"] is String) {
       timeAgo = json["timeAgo"];
     }
+    if (json["messageCreateTime"] is String) {
+      createTime = json["messageCreateTime"];
+    }
+    if (json["messageCreateDate"] is String) {
+      createDate = json["messageCreateDate"];
+    }
+    if (!fileMessages.isFill()) {
+      typeFile = null;
+    } else if (_isVideos()) {
+      typeFile = TypeFile.Video;
+    } else if (_isImage()) {
+      typeFile = TypeFile.Image;
+    } else if (_isVoice()) {
+      typeFile = TypeFile.Voice;
+    } else {
+      typeFile = TypeFile.Doc;
+    }
+  }
+
+  bool _isVideos() {
+    if (fileMessages!.length > 1) return false;
+
+    for (var file in fileMessages!) {
+      if (!["mp4", "mkv"].contains(file.extension)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool _isImage() {
+    for (var file in fileMessages!) {
+      if (!["png", "jpg"].contains(file.extension)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool _isVoice() {
+    return false;
   }
 }
 

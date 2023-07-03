@@ -13,11 +13,12 @@ import '../helpers.dart';
 import '../themes.dart';
 
 class VideoScreen extends StatefulWidget {
-  String videoUrl;
+  String? videoUrl;
+  File? videoFile;
   String? title;
   bool attemptOffline;
 
-  VideoScreen({required this.videoUrl, this.title, this.attemptOffline = false, Key? key}) : super(key: key);
+  VideoScreen({this.videoUrl, this.videoFile, this.title, this.attemptOffline = false, Key? key}) : super(key: key);
 
   @override
   State<VideoScreen> createState() => _VideoScreenState();
@@ -43,20 +44,20 @@ class _VideoScreenState extends State<VideoScreen> {
 
     _isLoading = true;
 
-    loadVideo(widget.videoUrl);
+    loadVideo(widget.videoUrl!);
   }
 
   Future<VideoPlayerController> attemptOfflineLoad(bool attempt) async {
-    if (!attempt) return VideoPlayerController.network(widget.videoUrl);
+    if (!attempt) return VideoPlayerController.network(widget.videoUrl!);
 
-    var fileName = Uri.parse(widget.videoUrl).getFileName();
+    var fileName = Uri.parse(widget.videoUrl!).getFileName();
 
-    if (!fileName.isFill()) return VideoPlayerController.network(widget.videoUrl);
+    if (!fileName.isFill()) return VideoPlayerController.network(widget.videoUrl!);
 
     var file = File("${await chatDownloadPath()}/$fileName");
 
     if (!await file.exists()) {
-      return VideoPlayerController.network(widget.videoUrl);
+      return VideoPlayerController.network(widget.videoUrl!);
     }
     return VideoPlayerController.file(file);
   }
@@ -64,19 +65,21 @@ class _VideoScreenState extends State<VideoScreen> {
   loadVideo(url) async {
     _controller?.dispose();
     setState(() {});
-    _controller = await attemptOfflineLoad(widget.attemptOffline)
-      ..initialize().then((_) {
-        setState(() {});
-        _controller?.play();
-      }).catchError((_) {
-        notify("خطایی پیش آمد مجدد تلاش کنید");
-        setState(() {
-          _isLoading = false;
-        });
-      });
-    _controller?.addListener(() {
+
+    if (widget.videoFile != null) {
+      _controller = await VideoPlayerController.file(widget.videoFile!);
+    } else {
+      _controller = await attemptOfflineLoad(widget.attemptOffline);
+    }
+
+    _controller!.initialize().then((_) {
       setState(() {});
+      _controller?.play();
+    }).catchError((_) {
+      notify("خطایی پیش آمد مجدد تلاش کنید");
+      setState(() => _isLoading = false);
     });
+    _controller?.addListener(() => setState(() {}));
   }
 
   bool _showControllers = false;
@@ -87,11 +90,13 @@ class _VideoScreenState extends State<VideoScreen> {
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text(widget.title ?? "",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.normal,
-            )),
+        title: Text(
+          widget.title ?? "",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.black,
           statusBarBrightness: Brightness.light,
