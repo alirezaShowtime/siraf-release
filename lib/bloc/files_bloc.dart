@@ -63,10 +63,14 @@ class FilesBloc extends Bloc<FilesEvent, FilesState> {
 
       if (isResponseOk(response)) {
         var json = jDecode(response.body);
-        var files = File.fromList(json['data']['files']).toList();
 
-        emit(
-            FilesLoadedState(files: files, lastId: json['data']["lastId"] as int));
+        if (json['data'] == null || json['data'] == "") {
+          emit(FilesLoadedState(files: [], lastId: null));
+        } else {
+          var files = File.fromList(json['data']['files']).toList();
+          var lastId = json['data']["lastId"] as int?;
+          emit(FilesLoadedState(files: files, lastId: lastId));
+        }
       } else {
         var json = jDecode(response.body);
 

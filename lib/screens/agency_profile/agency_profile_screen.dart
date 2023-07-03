@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_octicons/flutter_octicons.dart';
@@ -52,7 +53,8 @@ class AgencyProfileScreen extends StatefulWidget {
   AgencyProfileScreen({required this.estateId, this.estateName});
 }
 
-class _AgencyProfileScreen extends State<AgencyProfileScreen> with SingleTickerProviderStateMixin {
+class _AgencyProfileScreen extends State<AgencyProfileScreen>
+    with SingleTickerProviderStateMixin {
   bool showComment = false;
 
   bool moreDetail = false;
@@ -85,8 +87,10 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen> with SingleTickerP
   void initState() {
     super.initState();
 
-    collopsController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
-    collopsAnimation = CurvedAnimation(parent: collopsController, curve: Curves.fastOutSlowIn);
+    collopsController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+    collopsAnimation =
+        CurvedAnimation(parent: collopsController, curve: Curves.fastOutSlowIn);
 
     collopsController.addListener(_collopsControllerListener);
 
@@ -124,8 +128,10 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen> with SingleTickerP
           builder: (context, state) {
             scaffoldContext = context;
             if (state is AgencyProfileInitial) return Center(child: Loading());
-            if (state is AgencyProfileErrorState) return retryWidget(context, state.message);
-            if (state is AgencyProfileSuccessState) return profile(context, state.estateProfile);
+            if (state is AgencyProfileErrorState)
+              return retryWidget(context, state.message);
+            if (state is AgencyProfileSuccessState)
+              return profile(context, state.estateProfile);
             return Container();
           },
         ),
@@ -149,16 +155,18 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen> with SingleTickerP
       actions: [
         IconButton(onPressed: share, icon: icon(Icons.share_rounded)),
         MyPopupMenuButton(
-          itemBuilder: (_) =>
-          [
-            popupMenuItem(title: "گزارش تخلف", onTap: report),
+          onSelected: (v) => report(),
+          itemBuilder: (_) => [
+            popupMenuItem(title: "گزارش تخلف", value: "report"),
           ],
+          iconData: Icons.more_vert,
         ),
       ],
     );
   }
 
-  Widget card({required String title, required String value, void Function()? onTap}) {
+  Widget card(
+      {required String title, required String value, void Function()? onTap}) {
     return Expanded(
       child: MyTextButton(
         onPressed: () {},
@@ -248,10 +256,11 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen> with SingleTickerP
   void setFilterData() async {
     cities = await city.City.getList();
 
-    filterData = FilterData(cityIds: cities.map<int>((e) => e.id!).toList(), estateId: widget.estateId);
+    filterData = FilterData(
+        cityIds: cities.map<int>((e) => e.id!).toList(),
+        estateId: widget.estateId);
     getFiles();
   }
 
   List<File> files = [];
-
 }

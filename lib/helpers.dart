@@ -25,7 +25,9 @@ copy(String text) async {
   await Clipboard.setData(ClipboardData(text: text));
 }
 
-void notify(String? msg, {TextDirection textDirection = TextDirection.rtl, Duration? duration = null}) {
+void notify(String? msg,
+    {TextDirection textDirection = TextDirection.rtl,
+    Duration? duration = null}) {
   if (msg == null) return;
   showToast(
     msg,
@@ -116,7 +118,8 @@ callToSupport() async {
   if (await canLaunch(url)) {
     await launch(url);
   } else {
-    notify('نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_PHONE + 'تماس بگیرید');
+    notify(
+        'نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_PHONE + 'تماس بگیرید');
   }
 }
 
@@ -152,6 +155,10 @@ Uri getTicketUrl(String endpoint) {
   return Uri.parse("https://ticket.siraf.app/api/${endpoint}");
 }
 
+Uri getContentUrl(String endpoint) {
+  return Uri.parse("https://content.siraf.app/api/${endpoint}");
+}
+
 String getImageUrl(String file) {
   return "https://auth.siraf.app${file}";
 }
@@ -175,7 +182,8 @@ bool isResponseOk(http.Response response) {
 
 const API_HOST = 'auth.siraf.app';
 
-Uri createAuthUrlByEndPoint(String endPoint, {Map<String, dynamic>? queryParams = null}) {
+Uri createAuthUrlByEndPoint(String endPoint,
+    {Map<String, dynamic>? queryParams = null}) {
   return Uri.https(API_HOST, "api/user/${endPoint}", queryParams);
 }
 
@@ -186,12 +194,14 @@ String phoneFormat(String numberPhone) {
     numberPhone = "0$numberPhone";
   }
 
-  var formatted = "${numberPhone.substring(0, 4)}  ${numberPhone.substring(4, 7)}  ${numberPhone.substring(7, 11)}";
+  var formatted =
+      "${numberPhone.substring(0, 4)}  ${numberPhone.substring(4, 7)}  ${numberPhone.substring(7, 11)}";
 
   return zeroPrefix ? formatted : formatted.replaceFirst("09", "9");
 }
 
-doWithLogin(BuildContext context, void Function() onLoggedIn, {bool pop = true}) async {
+doWithLogin(BuildContext context, void Function() onLoggedIn,
+    {bool pop = true}) async {
   if (!await User.hasToken()) {
     await push(context, LoginScreen(pop: pop));
     return;
@@ -222,9 +232,11 @@ bool isValidNumberPhone(String numberPhone) {
 PopupMenuItem<String> popupMenuItem({
   required String title,
   Function()? onTap,
+  String? value,
 }) {
   return PopupMenuItem<String>(
       onTap: onTap,
+      value: value,
       child: Text(
         title,
         style: TextStyle(
@@ -238,9 +250,11 @@ PopupMenuItem<String> popupMenuItemWithIcon({
   required String title,
   required IconData iconDate,
   Function()? onTap,
+  String? value,
 }) {
   return PopupMenuItem<String>(
     onTap: onTap,
+    value: value,
     child: Row(
       children: [
         icon(iconDate, size: 20),
@@ -258,12 +272,17 @@ PopupMenuItem<String> popupMenuItemWithIcon({
 }
 
 
+String getUrlDelimiter(String url) {
+  return !url.contains("?") ? "?" : "&";
+}
+
 extension List2<E> on List<E>? {
   List<List<E>> chunk(int chunkSize) {
     var chunks = <List<E>>[];
     if (this.isNotNullOrEmpty()) {
       for (var i = 0; i < this!.length; i += chunkSize) {
-        chunks.add(this!.sublist(i, i + chunkSize > this!.length ? this!.length : i + chunkSize));
+        chunks.add(this!.sublist(
+            i, i + chunkSize > this!.length ? this!.length : i + chunkSize));
       }
     }
     return chunks;
@@ -274,7 +293,8 @@ extension List2<E> on List<E>? {
   }
 }
 
-Divider divider({double height = 1}) => Divider(color: Colors.grey.shade200, height: height);
+Divider divider({double height = 1}) =>
+    Divider(color: Colors.grey.shade200, height: height);
 
 bool resetCreateFileForm = false;
 bool resetEditFileForm = false;
@@ -323,7 +343,8 @@ Future<String?> getDownloadPath() async {
       directory = Directory('/storage/emulated/0/Download');
       // Put file in global download folder, if for an unknown reason it didn't exist, we fallback
       // ignore: avoid_slow_async_io
-      if (!await directory.exists()) directory = await getExternalStorageDirectory();
+      if (!await directory.exists())
+        directory = await getExternalStorageDirectory();
     }
   } catch (err) {
     print("Cannot get download folder path");
@@ -347,7 +368,8 @@ Future<T?> push<T>(BuildContext context, StatefulWidget widget) {
 }
 
 void pushAndRemoveUntil(BuildContext context, Widget screen) {
-  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => screen), (route) => false);
+  Navigator.pushAndRemoveUntil(
+      context, MaterialPageRoute(builder: (_) => screen), (route) => false);
 }
 
 void pushReplacement(BuildContext context, Widget screen) {
@@ -362,7 +384,9 @@ void exitApplication() {
   }
 }
 
-animationDialog({required BuildContext context, required Widget Function(BuildContext) builder}) {
+animationDialog(
+    {required BuildContext context,
+    required Widget Function(BuildContext) builder}) {
   showGeneralDialog(
     context: context,
     transitionBuilder: (ctx, a1, _, __) {

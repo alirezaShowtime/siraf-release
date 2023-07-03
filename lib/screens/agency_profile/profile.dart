@@ -17,7 +17,7 @@ extension Profile on _AgencyProfileScreen {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Avatar(size: 80, imagePath: estateProfile.logoFile),
+                    Avatar(size: 80, imagePath: estateProfile.logoFile, errorWidget: _profileWidget(),),
                     Container(
                       padding: const EdgeInsets.only(left: 2),
                       decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.grey.shade200, width: 1))),
@@ -64,6 +64,12 @@ extension Profile on _AgencyProfileScreen {
                               maxLines: 2,
                               style: TextStyle(color: App.theme.tooltipTheme.textStyle?.color, fontSize: 11),
                             ),
+                            Text(
+                              "آدرس : ${estateProfile.address}",
+                              maxLines: 2,
+                              style: TextStyle(color: App.theme.tooltipTheme.textStyle?.color, fontSize: 11),
+                            ),
+                            SizedBox(height: 10),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -111,11 +117,11 @@ extension Profile on _AgencyProfileScreen {
               ],
             ),
           ),
-          SizeTransition(
-            sizeFactor: collopsAnimation,
-            axis: Axis.vertical,
-            child: profileDetail(estateProfile),
-          ),
+          // SizeTransition(
+          //   sizeFactor: collopsAnimation,
+          //   axis: Axis.vertical,
+          //   child: profileDetail(estateProfile),
+          // ),
           if (!showComment) searchBar(estateProfile.name ?? ""),
           if (showComment)
             Expanded(
@@ -141,6 +147,17 @@ extension Profile on _AgencyProfileScreen {
             )),
         ],
       ),
+    );
+  }
+
+  
+  Widget _profileWidget() {
+    return Container(
+      color: Color(0xfffafbfd),
+      width: 80,
+      height: 80,
+      alignment: Alignment.center,
+      child: Icon(CupertinoIcons.home, color: Themes.primary, size: 34),
     );
   }
 

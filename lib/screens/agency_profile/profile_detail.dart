@@ -46,8 +46,8 @@ extension ProfileDetail on _AgencyProfileScreen {
               itemBuilder: (context, i) => agencyImageItem(estateProfile.images![i]),
             ),
           ),
-          if (estateProfile.consultants!.length > 0) divider(),
-          if (estateProfile.consultants!.length > 0)
+          if ((estateProfile.consultants?.length ?? 0) > 0) divider(),
+          if ((estateProfile.consultants?.length ?? 0) > 0)
             Container(
               margin: EdgeInsets.symmetric(vertical: 10),
               alignment: Alignment.center,
@@ -60,13 +60,13 @@ extension ProfileDetail on _AgencyProfileScreen {
                 ),
               ),
             ),
-          if (estateProfile.consultants!.length > 0)
+          if ((estateProfile.consultants?.length ?? 0) > 0)
             SizedBox(
               height: 100,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 physics: BouncingScrollPhysics(),
-                itemCount: estateProfile.consultants!.length,
+                itemCount: estateProfile.consultants?.length ?? 0,
                 itemBuilder: (context, i) => agentItem(estateProfile.consultants![i]),
               ),
             ),

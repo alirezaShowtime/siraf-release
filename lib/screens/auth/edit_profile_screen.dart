@@ -353,20 +353,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
         ),
       ),
-      child: Avatar(
-        image: (fileImage ?? NetworkImage(user?.avatar ?? ""))
-            as ImageProvider<Object>,
-        size: 120,
-        errorWidget: _profileDefaultWidget(),
-        loadingWidget: Container(
-          color: Themes.primary.withOpacity(0.7),
-          width: 120,
-          height: 120,
-          alignment: Alignment.center,
-          child: SpinKitRing(
-            size: 25,
-            lineWidth: 2,
-            color: Colors.white,
+      child: Hero(
+        tag: "profileImage",
+        child: Avatar(
+          image: (fileImage ?? NetworkImage(user?.avatar ?? ""))
+              as ImageProvider<Object>,
+          size: 120,
+          errorWidget: _profileDefaultWidget(),
+          loadingWidget: Container(
+            color: Themes.primary.withOpacity(0.7),
+            width: 120,
+            height: 120,
+            alignment: Alignment.center,
+            child: SpinKitRing(
+              size: 25,
+              lineWidth: 2,
+              color: Colors.white,
+            ),
           ),
         ),
       ),

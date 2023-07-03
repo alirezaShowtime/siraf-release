@@ -453,7 +453,7 @@ class FullCategory {
 
 class Property {
   String? name;
-  int? value;
+  String? value;
   int? section;
   int? weightSection;
 
@@ -464,6 +464,9 @@ class Property {
       name = json["name"];
     }
     if (json["value"] is int) {
+      value = json["value"].toString();
+    }
+    if (json["value"] is String) {
       value = json["value"];
     }
     if (json["section"] is int) {

@@ -46,7 +46,7 @@ class AgentProfileCommentRateBloc extends Bloc<AgentProfileCommentRateEvent, Age
       "Authorization": await User.getBearerToken(),
     };
 
-    var res = await http2.post(Uri.parse("https://rate.siraf.ap/api/rate/consultantRate/"), body: body, headers: headers);
+    var res = await http2.post(Uri.parse("https://rate.siraf.app/api/rate/consultantRate/"), body: body, headers: headers);
     print(jDecode(res.body));
 
     if (!isResponseOk(res)) {
@@ -73,7 +73,7 @@ class AgentProfileCommentRateBloc extends Bloc<AgentProfileCommentRateEvent, Age
     };
 
     var commentRes = await http2.post(Uri.parse("https://rate.siraf.app/api/comment/addCommentConsultant/"), body: commentBody, headers: commentHeaders);
-    var rateRes = await http2.post(Uri.parse("https://rate.siraf.ap/api/rate/consultantRate/"), body: rateBody, headers: rateHeaders);
+    var rateRes = await http2.post(Uri.parse("https://rate.siraf.app/api/rate/consultantRate/"), body: rateBody, headers: rateHeaders);
 
     if (!isResponseOk(rateRes) || !isResponseOk(commentRes)) {
       return emit(AgentProfileCommentRateErrorState());

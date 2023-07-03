@@ -9,33 +9,44 @@ part 'agency_profile_comment_rate_event.dart';
 
 part 'agency_profile_comment_rate_state.dart';
 
-class AgencyProfileCommentRateBloc extends Bloc<AgencyProfileCommentRateEvent, AgencyProfileCommentRateState> {
-  AgencyProfileCommentRateBloc() : super(AgencyProfileCommentRateInitialState()) {
+class AgencyProfileCommentRateBloc
+    extends Bloc<AgencyProfileCommentRateEvent, AgencyProfileCommentRateState> {
+  AgencyProfileCommentRateBloc()
+      : super(AgencyProfileCommentRateInitialState()) {
     on<AgencyProfileCommentRateSendCommentEvent>(_onSendComment);
     on<AgencyProfileCommentRateSendRateEvent>(_onSendRate);
     on<AgencyProfileCommentRateSendCommentAndRateEvent>(_onSendCommentAndRate);
   }
 
-  _onSendComment(AgencyProfileCommentRateSendCommentEvent event, Emitter<AgencyProfileCommentRateState> emit) async {
+  _onSendComment(AgencyProfileCommentRateSendCommentEvent event,
+      Emitter<AgencyProfileCommentRateState> emit) async {
     if (state is AgencyProfileCommentRateSendingState) return;
 
     emit(AgencyProfileCommentRateSendingState());
-    var body = {"comment": event.message, "estate_id": event.estateId.toString()};
+    var body = {
+      "comment": event.message,
+      "estate_id": event.estateId.toString()
+    };
 
     var headers = {
       "Authorization": await User.getBearerToken(),
     };
 
-    var res = await http2.post(Uri.parse("https://rate.siraf.app/api/comment/addCommentEstate/"), body: body, headers: headers);
+    var res = await http2.post(
+        Uri.parse("https://rate.siraf.app/api/comment/addCommentEstate/"),
+        body: body,
+        headers: headers);
     if (!isResponseOk(res)) {
       print(res.body);
       return emit(AgencyProfileCommentRateErrorState());
     }
 
-    emit(AgencyProfileCommentRateSuccessState(comment: Comment.fromJson(jDecode(res.body)["data"])));
+    emit(AgencyProfileCommentRateSuccessState(
+        comment: Comment.fromJson(jDecode(res.body)["data"])));
   }
 
-  _onSendRate(AgencyProfileCommentRateSendRateEvent event, Emitter<AgencyProfileCommentRateState> emit) async {
+  _onSendRate(AgencyProfileCommentRateSendRateEvent event,
+      Emitter<AgencyProfileCommentRateState> emit) async {
     if (state is AgencyProfileCommentRateSendingState) return;
 
     emit(AgencyProfileCommentRateSendingState());
@@ -46,7 +57,10 @@ class AgencyProfileCommentRateBloc extends Bloc<AgencyProfileCommentRateEvent, A
       "Authorization": await User.getBearerToken(),
     };
 
-    var res = await http2.post(Uri.parse("https://rate.siraf.ap/api/rate/addRateEstate/"), body: body, headers: headers);
+    var res = await http2.post(
+        Uri.parse("https://rate.siraf.app/api/rate/addRateEstate/"),
+        body: body,
+        headers: headers);
     print(jDecode(res.body));
 
     if (!isResponseOk(res)) {
@@ -56,29 +70,27 @@ class AgencyProfileCommentRateBloc extends Bloc<AgencyProfileCommentRateEvent, A
     emit(AgencyProfileCommentRateSuccessState());
   }
 
-  _onSendCommentAndRate(AgencyProfileCommentRateSendCommentAndRateEvent event, Emitter<AgencyProfileCommentRateState> emit) async {
+  _onSendCommentAndRate(AgencyProfileCommentRateSendCommentAndRateEvent event,
+      Emitter<AgencyProfileCommentRateState> emit) async {
     if (state is AgencyProfileCommentRateSendingState) return;
 
     emit(AgencyProfileCommentRateSendingState());
     var commentBody = {"comment": event.message, "estate_id": event.estateId};
 
-    var commentHeaders = {
-      "Authorization": await User.getBearerToken(),
-    };
-
     var rateBody = {"rate": event.rate, "estate_id": event.estateId};
 
-    var rateHeaders = {
-      "Authorization": await User.getBearerToken(),
-    };
-
-    var commentRes = await http2.post(Uri.parse("https://rate.siraf.app/api/comment/addCommentEstate/"), body: commentBody, headers: commentHeaders);
-    var rateRes = await http2.post(Uri.parse("https://rate.siraf.ap/api/rate/addRateEstate/"), body: rateBody, headers: rateHeaders);
+    var commentRes = await http2.postJsonWithToken(
+        Uri.parse("https://rate.siraf.app/api/comment/addCommentEstate/"),
+        body: commentBody);
+    var rateRes = await http2.postJsonWithToken(
+        Uri.parse("https://rate.siraf.app/api/rate/addRateEstate/"),
+        body: rateBody);
 
     if (!isResponseOk(rateRes) || !isResponseOk(commentRes)) {
       return emit(AgencyProfileCommentRateErrorState());
     }
 
-    emit(AgencyProfileCommentRateSuccessState(comment: Comment.fromJson(jDecode(commentRes.body)["data"])));
+    emit(AgencyProfileCommentRateSuccessState(
+        comment: Comment.fromJson(jDecode(commentRes.body)["data"])));
   }
 }

@@ -115,11 +115,14 @@ class _MenuScreenState extends State<MenuScreen> {
                               });
                             },
                             child: ClipRRect(
-                              child: Avatar(
-                                image: NetworkImage(user?.avatar ?? ""),
-                                errorWidget: _profileWidget(),
-                                loadingWidget: _profileWidget(),
-                                size: 80,
+                              child: Hero(
+                                tag: 'profileImage',
+                                child: Avatar(
+                                  image: NetworkImage(user?.avatar ?? ""),
+                                  errorWidget: _profileWidget(),
+                                  loadingWidget: _profileWidget(),
+                                  size: 80,
+                                ),
                               ),
                               borderRadius: BorderRadius.circular(100),
                             ),

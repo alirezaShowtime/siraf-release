@@ -83,5 +83,7 @@ extension EventListener on _AgencyProfileScreen {
     BlocProvider.of<AgencyProfileBloc>(context).add(AgencyProfileLoadingEvent(widget.estateId));
   }
 
-  void report() {}
+  void report() {
+    callToSupport();
+  }
 }

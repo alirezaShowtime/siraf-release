@@ -616,7 +616,7 @@ class _FileScreenState extends State<FileScreen> {
                         ),
                         Text(
                           file.getPrice()?.value != null
-                              ? number_format(file.getPrice()!.value)
+                              ? number_format(int.parse(file.getPrice()!.value!))
                               : "توافقی",
                           style: TextStyle(
                               fontSize: 14, fontWeight: FontWeight.bold),
@@ -638,7 +638,7 @@ class _FileScreenState extends State<FileScreen> {
                             ),
                             Text(
                               file.getVadie()?.value != null
-                                  ? number_format(file.getVadie()!.value)
+                                  ? number_format(int.parse(file.getVadie()!.value!))
                                   : "توافقی",
                               style: TextStyle(
                                   color: Themes.text,

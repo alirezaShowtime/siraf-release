@@ -30,7 +30,7 @@ class _Avatar extends State<Avatar> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(widget.size),
       child: MyImage(
-        image: widget.image ?? NetworkImage(widget.imagePath!),
+        image: widget.image ?? NetworkImage(widget.imagePath ?? ""),
         height: widget.size,
         width: widget.size,
         borderRadius: BorderRadius.circular(double.infinity),
