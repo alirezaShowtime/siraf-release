@@ -55,6 +55,13 @@ class _EditFileFinalState extends State<EditFileFinal> {
 
     setEstates();
 
+    setState(() {
+      _descriptionController.text = widget.formData.description;
+      _securitySescriptionController.text = widget.formData.secDescription;
+      description = widget.formData.description;
+      securityDescription = widget.formData.secDescription;
+    });
+
     editBloc.stream.listen(_listenEditBloc);
     ufmBloc.stream.listen(_listenUploadMediaBloc);
   }
@@ -480,7 +487,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
 
   _listenEditBloc(EditFileState event) {
     if (event is EditFileLoadingState) {
-      showLoadingDialog(message: 'در حال ویرایش فایل لطفا شکیبا باشید');
+      showLoadingDialog();
     } else if (event is EditFileErrorState) {
       String message = "";
 
@@ -532,13 +539,13 @@ class _EditFileFinalState extends State<EditFileFinal> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(
+                if (message != null) Padding(
                   padding: EdgeInsets.symmetric(horizontal: 5),
                   child: Text(
-                    message ?? 'در حال انجام عملیات هستیم لطفا شکیبا باشید.',
+                    message,
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: FontWeight.normal,
                     ),
                   ),
@@ -616,7 +623,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
   _listenUploadMediaBloc(UFMState event) {
     if (event is UFMLoadingState) {
       showLoadingDialog(
-          message: 'در حال آپلود رسانه های تصویری هستیم کمی صبر کنید');
+          message: 'در حال آپلود رسانه های تصویری فایل');
     } else if (event is UFMErrorState) {
       String message = "";
 

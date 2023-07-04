@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:siraf3/bloc/home_screen_bloc.dart';
+import 'package:siraf3/bloc/files_list_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
@@ -27,7 +27,7 @@ class SearchResultScreen extends StatefulWidget {
 }
 
 class _SearchResultScreenState extends State<SearchResultScreen> {
-  HSState currentBlocState = HSInitState();
+  FilesListState currentBlocState = FilesListInitState();
 
   @override
   void initState() {
@@ -42,7 +42,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
         currentBlocState = event;
       });
 
-      if (event is HSLoadedState) {
+      if (event is FilesListLoadedState) {
         setState(() {
           _hasNewFiles = event.files.isNotEmpty;
           lastId = event.lastId;
@@ -67,16 +67,16 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
   void pagination() async {
     if (_canLoadMore()) {
       _moreBloc
-          .add(HSLoadEvent(filterData: widget.filterData, lastId: lastId!));
+          .add(FilesListLoadEvent(filterData: widget.filterData, lastId: lastId!));
     }
   }
 
-  void _loadMoreEvent(HSState event) {
+  void _loadMoreEvent(FilesListState event) {
     setState(() {
-      _isLoadingMore = event is HSLoadingState;
+      _isLoadingMore = event is FilesListLoadingState;
     });
 
-    if (event is HSLoadedState) {
+    if (event is FilesListLoadedState) {
       setState(() {
         _hasNewFiles = event.files.isNotEmpty;
 
@@ -84,12 +84,12 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
 
         lastId = event.lastId;
       });
-    } else if (event is HSErrorState) {
+    } else if (event is FilesListErrorState) {
       notify("خطا در بارگزاری ادامه فایل ها رخ داد لطفا مجدد تلاش کنید");
     }
   }
 
-  HSBloc _moreBloc = HSBloc();
+  FilesListBloc _moreBloc = FilesListBloc();
 
   @override
   void dispose() {
@@ -110,7 +110,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
   ScrollController scrollController = ScrollController();
 
 
-  HSBloc homeScreenBloc = HSBloc();
+  FilesListBloc homeScreenBloc = FilesListBloc();
 
   ViewType viewType = ViewType.List;
 
@@ -175,24 +175,24 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (currentBlocState is HSInitState ||
-                currentBlocState is HSLoadingState)
+            if (currentBlocState is FilesListInitState ||
+                currentBlocState is FilesListLoadingState)
               Center(
                 child: Loading(),
               ),
-            if (currentBlocState is HSErrorState)
+            if (currentBlocState is FilesListErrorState)
               Center(
                 child: TryAgain(
                   onPressed: getFiles,
-                  message: (currentBlocState as HSErrorState).response != null
-                      ? jDecode((currentBlocState as HSErrorState)
+                  message: (currentBlocState as FilesListErrorState).response != null
+                      ? jDecode((currentBlocState as FilesListErrorState)
                           .response!
                           .body)['message']
                       : null,
                 ),
               ),
-            if (currentBlocState is HSLoadedState &&
-                (currentBlocState as HSLoadedState).files.isEmpty)
+            if (currentBlocState is FilesListLoadedState &&
+                (currentBlocState as FilesListLoadedState).files.isEmpty)
               Center(
                 child: Text(
                   "فایلی موجود نیست فیلتر را حدف کنید",
@@ -201,8 +201,8 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   ),
                 ),
               ),
-            if (currentBlocState is HSLoadedState &&
-                (currentBlocState as HSLoadedState).files.isNotEmpty)
+            if (currentBlocState is FilesListLoadedState &&
+                (currentBlocState as FilesListLoadedState).files.isNotEmpty)
               Expanded(
                 child: ListView(
                   controller: scrollController,
@@ -242,14 +242,14 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
     );
   }
 
-  // Widget _buildHSBloc(BuildContext _, HSState state) {
-  //   if (state is HSInitState || state is HSLoadingState) {
+  // Widget _buildFilesListBloc(BuildContext _, FilesListState state) {
+  //   if (state is FilesListInitState || state is FilesListLoadingState) {
   //     return Center(
   //       child: Loading(),
   //     );
   //   }
 
-  //   if (state is HSErrorState) {
+  //   if (state is FilesListErrorState) {
   //     return Center(
   //       child: TryAgain(
   //         onPressed: getFiles,
@@ -260,7 +260,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
   //     );
   //   }
 
-  //   state = state as HSLoadedState;
+  //   state = state as FilesListLoadedState;
 
   //   files = state.files;
 
@@ -290,7 +290,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
   //                   },
   //                   child: Padding(
   //                     padding: EdgeInsets.only(
-  //                         top: (state as HSLoadedState).files.first == file
+  //                         top: (state as FilesListLoadedState).files.first == file
   //                             ? 0
   //                             : 5),
   //                     child: viewType == ViewType.List
@@ -313,7 +313,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
 
   getFiles() {
     homeScreenBloc.add(
-      HSLoadEvent(
+      FilesListLoadEvent(
         filterData: widget.filterData,
       ),
     );

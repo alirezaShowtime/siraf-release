@@ -178,7 +178,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                                   .toList()
                                   .take(4)
                                   .map<Widget>((e) => Text(
-                                        "${e.name} ${e.value}",
+                                        "${e.name} ${nonIfZero(e.value)}",
                                         style: TextStyle(
                                           color: App
                                               .theme.textTheme.bodyLarge?.color,

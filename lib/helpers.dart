@@ -166,6 +166,7 @@ String getImageUrl(String file) {
 bool isResponseOk(http.Response response) {
   if (response.statusCode == 401) {
     User.remove();
+    return false;
   }
 
   if (response.statusCode >= 400) {
@@ -178,6 +179,19 @@ bool isResponseOk(http.Response response) {
   }
 
   return true;
+}
+
+bool is401(http.Response response) {
+  if (response.statusCode == 401) {
+    return true;
+  }
+
+  var json = jsonDecode(response.body);
+  if (json['code'] == 401 || json['code'] == "401") {
+    return true;
+  }
+
+  return false;
 }
 
 const API_HOST = 'auth.siraf.app';
@@ -271,6 +285,11 @@ PopupMenuItem<String> popupMenuItemWithIcon({
   );
 }
 
+String nonIfZero(number) {
+  if (number == 0 || number == .0 || number == "0") return "ندارد";
+
+  return number.toString();
+}
 
 String getUrlDelimiter(String url) {
   return !url.contains("?") ? "?" : "&";

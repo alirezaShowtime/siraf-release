@@ -55,12 +55,14 @@ class EditFileBloc extends Bloc<EditFileEvent, EditFileState> {
         'description': event.data.description,
         'visitPhoneNumber': event.data.visitPhone,
         'ownerPhoneNumber': event.data.ownerPhone,
+        'visitName': event.data.visitPhone,
+        'ownerName': event.data.ownerName,
         if (event.data.estates.isNotEmpty)
           'estateIds':
               jsonEncode(event.data.estates.map((e) => e.id!).toList()),
       });
 
-      var url = getFileUrl("file/editeFile/${event.data.id}/").toString();
+      var url = getFileUrl("file/editFile/${event.data.id}/").toString();
 
       print(url);
       print(headers);

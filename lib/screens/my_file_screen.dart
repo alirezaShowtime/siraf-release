@@ -373,7 +373,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 65),
+                  SizedBox(height: 10),
                 ] +
                 state.consulants
                     .map<Widget>((element) => _item(element))
@@ -510,7 +510,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
         .getMainProperties()
         .map<List<Widget>>(
           (e) => [
-            _buildPropItem(e.value.toString(), e.name!),
+            _buildPropItem(nonIfZero(e.value), e.name!),
             if (file.getMainProperties().last != e)
               VerticalDivider(
                 width: 0.7,

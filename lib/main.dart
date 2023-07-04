@@ -12,6 +12,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:siraf3/bloc/categories_bloc.dart';
 import 'package:siraf3/bloc/get_cities_bloc.dart';
+import 'package:siraf3/bloc/files_list_bloc.dart';
 import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/dark_theme_provider.dart';
 import 'package:siraf3/dark_themes.dart';
@@ -119,6 +120,9 @@ void main() async {
         providers: [
           BlocProvider<GetCitiesBloc>(
             create: (_) => GetCitiesBloc(),
+          ),
+          BlocProvider<FilesListBloc>(
+            create: (_) => FilesListBloc(),
           ),
           BlocProvider<HSBloc>(
             create: (_) => HSBloc(),

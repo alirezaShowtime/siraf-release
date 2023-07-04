@@ -17,11 +17,14 @@ import 'package:siraf3/main.dart';
 import 'package:siraf3/models/city.dart' as city;
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
+import 'package:siraf3/models/home_item.dart';
+import 'package:siraf3/models/post.dart';
 import 'package:siraf3/rabbit_mq_consum.dart';
 import 'package:siraf3/rabbit_mq_data.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
 import 'package:siraf3/screens/menu_screen.dart';
+import 'package:siraf3/screens/post_item.dart';
 import 'package:siraf3/screens/search_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
@@ -50,7 +53,9 @@ class _HomeScreenState extends State<HomeScreen> {
     listenLink();
 
     if (widget.nextScreen != null) {
-      Navigator.push(context, widget.nextScreen!);
+      Future.delayed(Duration.zero, () {
+        Navigator.push(context, widget.nextScreen!);
+      });
       return;
     }
 
@@ -68,10 +73,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
         if (event is HSLoadedState) {
           setState(() {
-            _hasNewFiles = event.files.isNotEmpty;
             lastId = event.lastId;
+            contentLastId = event.contentLastId;
             currentBlocState = event;
-            files = event.files;
+            items = event.homeItems;
+            print("ITEMS LENGTH : ${items.length}");
           });
         }
       } catch (e) {}
@@ -88,12 +94,11 @@ class _HomeScreenState extends State<HomeScreen> {
   HSBloc _moreBloc = HSBloc();
 
   int? lastId;
+  int? contentLastId;
 
   bool _isLoadingMore = false;
 
-  bool _hasNewFiles = true;
-
-  List<File> files = [];
+  List<HomeItem> items = [];
 
   bool _canLoadMore() {
     return (scrollController.position.pixels ==
@@ -107,7 +112,10 @@ class _HomeScreenState extends State<HomeScreen> {
       if (_moreBloc.isClosed) {
         _moreBloc = HSBloc();
       }
-      _moreBloc.add(HSLoadEvent(filterData: filterData, lastId: lastId!));
+      _moreBloc.add(HSLoadEvent(
+          filterData: filterData,
+          lastId: lastId!,
+          contentLastId: contentLastId));
     }
   }
 
@@ -118,11 +126,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (event is HSLoadedState) {
       setState(() {
-        _hasNewFiles = event.files.isNotEmpty;
-
-        files.addAll(event.files);
+        items.addAll(event.homeItems);
 
         lastId = event.lastId;
+        contentLastId = event.contentLastId;
       });
     } else if (event is HSErrorState) {
       notify("خطا در بارگزاری ادامه فایل ها رخ داد لطفا مجدد تلاش کنید");
@@ -185,7 +192,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   openMenu() async {
-    await Navigator.push(context, MaterialPageRoute(builder: (_) => MenuScreen()));
+    await Navigator.push(
+        context, MaterialPageRoute(builder: (_) => MenuScreen()));
 
     listenRabbitData();
     setState(() {});
@@ -321,17 +329,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           if (currentBlocState is HSLoadedState &&
-              (currentBlocState as HSLoadedState).files.isEmpty)
+              (currentBlocState as HSLoadedState).homeItems.isEmpty)
             Center(
               child: Text(
-                "فایلی یافت نشد",
+                "موردی یافت نشد",
                 style: TextStyle(
                   fontSize: 15,
                 ),
               ),
             ),
           if (currentBlocState is HSLoadedState &&
-              (currentBlocState as HSLoadedState).files.isNotEmpty)
+              (currentBlocState as HSLoadedState).homeItems.isNotEmpty)
             Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
@@ -340,24 +348,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Themes.primary,
                 child: ListView(
                   controller: scrollController,
-                  children: files
-                          .map<Widget>((file) => InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => FileScreen(id: file.id!),
-                                    ),
-                                  );
-                                },
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      top: files.first == file ? 0 : 5),
-                                  child: viewType == ViewType.List
-                                      ? FileHorizontalItem(file: file)
-                                      : FileSlideItem(file: file),
-                                ),
-                              ))
+                  children: items
+                          .map<Widget>(
+                            (item) => item.type == Type.File
+                                ? fileItem(item.file!)
+                                : postItem(item.post!),
+                          )
                           .toList() +
                       [
                         if (_isLoadingMore)
@@ -374,6 +370,29 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
+  }
+
+  Widget fileItem(File file) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => FileScreen(id: file.id!),
+          ),
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.only(top: items.first == file ? 0 : 5),
+        child: viewType == ViewType.List
+            ? FileHorizontalItem(file: file)
+            : FileSlideItem(file: file),
+      ),
+    );
+  }
+
+  Widget postItem(Post post) {
+    return PostItem(post: post);
   }
 
   void _scrollDown() {

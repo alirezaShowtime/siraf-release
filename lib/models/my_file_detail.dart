@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/models/estate.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
 import 'package:siraf3/models/file_detail.dart' as fd;
 import 'package:video_thumbnail/video_thumbnail.dart';
@@ -15,6 +16,9 @@ class MyFileDetail {
   int? progress;
   String? ownerPhoneNumber;
   String? visitPhoneNumber;
+  String? ownerName;
+  String? visitName;
+  String? secDescription;
   Media? media;
   String? publishedAgo;
   String? createDateTimeAgo;
@@ -25,24 +29,27 @@ class MyFileDetail {
   String? city;
   Category? category;
   CityFull? cityFull;
+  List<Estate>? estates;
 
-  MyFileDetail(
-      {this.id,
-      this.name,
-      this.description,
-      this.progressString,
-      this.progress,
-      this.ownerPhoneNumber,
-      this.visitPhoneNumber,
-      this.media,
-      this.publishedAgo,
-      this.createDateTimeAgo,
-      this.propertys,
-      this.lat,
-      this.address,
-      this.long,
-      this.fullCategory,
-      this.city});
+  MyFileDetail({
+    this.id,
+    this.name,
+    this.description,
+    this.progressString,
+    this.progress,
+    this.ownerPhoneNumber,
+    this.visitPhoneNumber,
+    this.media,
+    this.publishedAgo,
+    this.createDateTimeAgo,
+    this.propertys,
+    this.lat,
+    this.address,
+    this.long,
+    this.fullCategory,
+    this.city,
+    this.estates,
+  });
 
   MyFileDetail.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -65,6 +72,15 @@ class MyFileDetail {
     }
     if (json["visitPhoneNumber"] is String) {
       visitPhoneNumber = json["visitPhoneNumber"];
+    }
+    if (json["ownerName"] is String) {
+      ownerName = json["ownerName"];
+    }
+    if (json["visitName"] is String) {
+      visitName = json["visitName"];
+    }
+    if (json["securityDescription"] is String) {
+      secDescription = json["securityDescription"];
     }
     if (json["media"] is Map) {
       media = json["media"] == null ? null : Media.fromJson(json["media"]);
@@ -97,11 +113,16 @@ class MyFileDetail {
     if (json["address"] is String) {
       address = json["address"];
     }
-    if(json["category"] is Map) {
-      category = json["category"] == null ? null : Category.fromJson(json["category"]);
+    if (json["category"] is Map) {
+      category =
+          json["category"] == null ? null : Category.fromJson(json["category"]);
     }
-    if(json["cityFull"] is Map) {
-      cityFull = json["cityFull"] == null ? null : CityFull.fromJson(json["cityFull"]);
+    if (json["cityFull"] is Map) {
+      cityFull =
+          json["cityFull"] == null ? null : CityFull.fromJson(json["cityFull"]);
+    }
+    if(json['estates'] is List) {
+      estates = json['esates'] == null ? null : Estate.fromList(json['estates']);
     }
   }
 
@@ -114,6 +135,9 @@ class MyFileDetail {
     _data["progress"] = progress;
     _data["ownerPhoneNumber"] = ownerPhoneNumber;
     _data["visitPhoneNumber"] = visitPhoneNumber;
+    _data["ownerName"] = ownerName;
+    _data["visitName"] = visitName;
+    _data["securityDescription"] = secDescription;
     if (media != null) {
       _data["media"] = media?.toJson();
     }
@@ -125,11 +149,11 @@ class MyFileDetail {
     _data["lat"] = lat;
     _data["long"] = long;
     _data["fullCategory"] = fullCategory;
-    if(category != null) {
+    if (category != null) {
       _data["category"] = category?.toJson();
     }
     _data["city"] = city;
-    if(cityFull != null) {
+    if (cityFull != null) {
       _data["cityFull"] = cityFull?.toJson();
     }
     return _data;
@@ -202,7 +226,7 @@ class MyFileDetail {
 
     return images + videos + virtualTours;
   }
-  
+
   bool isRental() {
     var prices = getPrices();
 
@@ -327,7 +351,6 @@ class Media {
   }
 }
 
-
 class CityFull {
   int? id;
   int? countFile;
@@ -338,19 +361,19 @@ class CityFull {
   CityFull({this.id, this.countFile, this.name, this.weight, this.parentId});
 
   CityFull.fromJson(Map<String, dynamic> json) {
-    if(json["id"] is int) {
+    if (json["id"] is int) {
       id = json["id"];
     }
-    if(json["countFile"] is int) {
+    if (json["countFile"] is int) {
       countFile = json["countFile"];
     }
-    if(json["name"] is String) {
+    if (json["name"] is String) {
       name = json["name"];
     }
-    if(json["weight"] is int) {
+    if (json["weight"] is int) {
       weight = json["weight"];
     }
-    if(json["parent_id"] is int) {
+    if (json["parent_id"] is int) {
       parentId = json["parent_id"];
     }
   }
@@ -374,23 +397,29 @@ class Category {
   bool? isAll;
   int? parentId;
 
-  Category({this.id, this.name, this.image, this.fullCategory, this.isAll, this.parentId});
+  Category(
+      {this.id,
+      this.name,
+      this.image,
+      this.fullCategory,
+      this.isAll,
+      this.parentId});
 
   Category.fromJson(Map<String, dynamic> json) {
-    if(json["id"] is int) {
+    if (json["id"] is int) {
       id = json["id"];
     }
-    if(json["name"] is String) {
+    if (json["name"] is String) {
       name = json["name"];
     }
     image = json["image"];
-    if(json["fullCategory"] is String) {
+    if (json["fullCategory"] is String) {
       fullCategory = json["fullCategory"];
     }
-    if(json["isAll"] is bool) {
+    if (json["isAll"] is bool) {
       isAll = json["isAll"];
     }
-    if(json["parent_id"] is int) {
+    if (json["parent_id"] is int) {
       parentId = json["parent_id"];
     }
   }

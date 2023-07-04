@@ -48,6 +48,9 @@ class File {
           ? null
           : (json["propertys"] as List)
               .map((e) => Property.fromJson(e))
+              .where(
+                (element) => element.name != null,
+              )
               .toList();
     }
     if (json["category"] is Map) {

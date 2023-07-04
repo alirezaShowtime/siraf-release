@@ -389,7 +389,7 @@ class _FileScreenState extends State<FileScreen> {
         .getMainProperties()
         .map<List<Widget>>(
           (e) => [
-            _buildPropItem(e.value.toString(), e.name!),
+            _buildPropItem(nonIfZero(e.value), e.name!),
             if (file.getMainProperties().last != e)
               VerticalDivider(
                 width: 0.7,

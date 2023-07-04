@@ -46,6 +46,9 @@ class LocationFile {
           ? null
           : (json["propertys"] as List)
               .map((e) => Propertys.fromJson(e))
+              .where(
+                (element) => element.name != null,
+              )
               .toList();
     }
     if (json["favorite"] is bool) {

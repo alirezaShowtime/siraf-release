@@ -8,6 +8,9 @@ class ConsultantInfo {
   int? countConstruction;
   int? countRent;
   int? countOnSale;
+  int? cityId;
+  String? shareLink;
+  String? bio;
 
   ConsultantInfo({this.id, this.name, this.avatar, this.rate, this.comment, this.countConstruction, this.countRent, this.countOnSale});
 
@@ -34,6 +37,15 @@ class ConsultantInfo {
     if(json["countOnSale"] is int) {
       countOnSale = json["countOnSale"];
     }
+    if(json["city_id"] is int) {
+      cityId = json["city_id"];
+    }
+    if(json["shareLink"] is String) {
+      shareLink = json["shareLink"];
+    }
+    if(json["bio"] is String) {
+      bio = json["bio"];
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -48,6 +60,8 @@ class ConsultantInfo {
     _data["countConstruction"] = countConstruction;
     _data["countRent"] = countRent;
     _data["countOnSale"] = countOnSale;
+    _data["shareLink"] = shareLink;
+    _data["bio"] = bio;
     return _data;
   }
 }

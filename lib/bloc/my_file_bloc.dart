@@ -58,16 +58,14 @@ class MyFileBloc extends Bloc<MyFileEvent, MyFileState> {
 
         print(event.progress);
 
-        if (event.progress == 7) {
-          var response2 = await http2.get(
-              getEstateUrl("consultant/consultantsFile?fileId=${event.id}"));
+        var response2 = await http2
+            .get(getEstateUrl("consultant/consultantsFile?fileId=${event.id}"));
 
-          if (isResponseOk(response2)) {
-            var json2 = jDecode(response2.body);
-            consulants = !(json2['data'] is String)
-                ? FileConsulant.fromList(json2['data'])
-                : [];
-          }
+        if (isResponseOk(response2)) {
+          var json2 = jDecode(response2.body);
+          consulants = !(json2['data'] is String)
+              ? FileConsulant.fromList(json2['data'])
+              : [];
         }
 
         print(consulants.length);

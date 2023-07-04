@@ -10,7 +10,6 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/category.dart' as cat;
 import 'package:siraf3/models/edit_file_form_data.dart';
-import 'package:siraf3/models/my_file.dart';
 import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/models/property_insert.dart';
 import 'package:siraf3/money_input_formatter.dart';
@@ -99,12 +98,12 @@ class _EditFileFirstState extends State<EditFileFirst> {
         properties: {},
         description: widget.file.description ?? "",
         title: widget.file.name ?? "",
-        ownerPhone: "",
-        visitPhone: "",
-        visitName: "",
-        ownerName: "",
-        secDescription: "", // todo dynamic
-        estates: [],
+        ownerPhone: widget.file.ownerPhoneNumber ?? "",
+        visitPhone: widget.file.visitPhoneNumber ?? "",
+        visitName: widget.file.visitName ?? "",
+        ownerName: widget.file.ownerName ?? "",
+        secDescription: widget.file.secDescription ?? "",
+        estates: widget.file.estates ?? [],
         mediaData: MediaData(),
       );
     });

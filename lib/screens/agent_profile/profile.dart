@@ -17,10 +17,16 @@ extension Profile on _AgentProfileScreen {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Avatar(size: 80, imagePath: consultantInfo.avatar),
+                    Avatar(
+                        size: 80,
+                        imagePath: consultantInfo.avatar,
+                        errorWidget: _profileWidget()),
                     Container(
                       padding: const EdgeInsets.only(left: 2),
-                      decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.grey.shade200, width: 1))),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              left: BorderSide(
+                                  color: Colors.grey.shade200, width: 1))),
                       child: Column(
                         children: [
                           Text(
@@ -47,18 +53,29 @@ extension Profile on _AgentProfileScreen {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              card(title: "فروشی", value: consultantInfo.countOnSale.toString(), onTap: () {}),
-                              card(title: "اجاره ای", value: consultantInfo.countRent.toString(), onTap: () {}),
-                              card(title: "ساخت و ساز", value: consultantInfo.countConstruction.toString(), onTap: () {}),
+                              card(
+                                  title: "فروشی",
+                                  value: consultantInfo.countOnSale.toString(),
+                                  onTap: () {}),
+                              card(
+                                  title: "اجاره ای",
+                                  value: consultantInfo.countRent.toString(),
+                                  onTap: () {}),
+                              card(
+                                  title: "ساخت و ساز",
+                                  value: consultantInfo.countConstruction
+                                      .toString(),
+                                  onTap: () {}),
                             ],
                           ),
                         ),
                         Column(
                           children: [
                             Text(
-                              "ds;ofdskj dolspfk dkdofdks oidmnsfk dnf dosmjfoidns d[sk fldpofdspofmks dpolfkdms dms,fp[doskjf ods,fkdpsnf dpsfdms fdskmofds",
+                              consultantInfo.bio ?? "",
                               maxLines: 2,
-                              style: TextStyle(color: Themes.textGrey, fontSize: 11),
+                              style: TextStyle(
+                                  color: Themes.textGrey, fontSize: 11),
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -76,21 +93,26 @@ extension Profile on _AgentProfileScreen {
                                 ),
                                 GestureDetector(
                                   onTap: () => setState(() {
-                                    final bool previousValueOfMoreDetail = moreDetail;
+                                    final bool previousValueOfMoreDetail =
+                                        moreDetail;
                                     showComment = !showComment;
 
                                     viewMoreDetail(force: false);
 
-                                    if (!previousValueOfMoreDetail && !showComment) {
+                                    if (!previousValueOfMoreDetail &&
+                                        !showComment) {
                                       showSearchBarWidget = true;
                                     }
 
-                                    if (!previousValueOfMoreDetail && showComment) {
+                                    if (!previousValueOfMoreDetail &&
+                                        showComment) {
                                       showSearchBarWidget = false;
                                     }
                                   }),
                                   child: Text(
-                                    !showComment ? "نمایش نظرات (${consultantInfo.comment?.length ?? 0})" : "فایل های مشاور",
+                                    !showComment
+                                        ? "نمایش نظرات (${consultantInfo.comment?.length ?? 0})"
+                                        : "فایل های مشاور",
                                     style: TextStyle(
                                       color: Themes.text,
                                       fontWeight: FontWeight.bold,
@@ -109,11 +131,11 @@ extension Profile on _AgentProfileScreen {
               ],
             ),
           ),
-          SizeTransition(
-            sizeFactor: collopsAnimation,
-            axis: Axis.vertical,
-            child: profileDetail(),
-          ),
+          // SizeTransition(
+          //   sizeFactor: collopsAnimation,
+          //   axis: Axis.vertical,
+          //   child: profileDetail(),
+          // ),
           if (showSearchBarWidget) searchBar(),
           if (showComment)
             //todo: show list-is-empty image, if don`s exists comments
@@ -121,7 +143,8 @@ extension Profile on _AgentProfileScreen {
               child: ListView.builder(
                 itemCount: (consultantInfo.comment?.length ?? 0) + 1,
                 itemBuilder: (context, i) {
-                  if (i == 0) return addCommentWidget(consultantId: consultantInfo.id!);
+                  if (i == 0)
+                    return addCommentWidget(consultantId: consultantInfo.id!);
                   return commentItem(consultantInfo.comment![i - 1]);
                 },
               ),
@@ -129,13 +152,74 @@ extension Profile on _AgentProfileScreen {
           if (!showComment)
             //todo: show list-is-empty image, if don`s exists comments
             //todo: the endpoint to get file list of consultant is isolate
+            // Expanded(
+            //   child: ListView.builder(
+            //     itemCount: list.length,
+            //     itemBuilder: (context, i) => fileItem(list[i]),
+            //   ),
+            // ),
+
             Expanded(
-              child: ListView.builder(
-                itemCount: list.length,
-                itemBuilder: (context, i) => fileItem(list[i]),
+                child: BlocBuilder<FilesBloc, FilesState>(
+              builder: _buildFilesBloc,
+            )),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilesBloc(BuildContext context, FilesState state) {
+    if (state is FilesInitState) return Container();
+
+    if (state is FilesLoadingState)
+      return Center(
+        child: Loading(),
+      );
+
+    if (state is FilesErrorState) {
+      return Center(
+        child: TryAgain(
+          onPressed: getFiles,
+          message: state.response != null
+              ? jDecode(state.response!.body)['message']
+              : null,
+        ),
+      );
+    }
+
+    state = FilesLoadedState(files: (state as FilesLoadedState).files);
+
+    files = state.files;
+
+    return ListView(
+      children: files
+          .map<Widget>(
+            (e) => GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => FileScreen(id: e.id!),
+                  ),
+                );
+              },
+              child: Padding(
+                padding: EdgeInsets.only(top: files.first == e ? 0 : 5),
+                child: FileHorizontalItem(file: e),
               ),
             ),
-        ],
+          )
+          .toList(),
+    );
+  }
+
+  getFiles() {
+    if (filesBloc.isClosed) {
+      filesBloc = FilesBloc();
+    }
+    filesBloc.add(
+      FilesLoadEvent(
+        filterData: filterData,
       ),
     );
   }

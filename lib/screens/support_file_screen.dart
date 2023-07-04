@@ -14,6 +14,7 @@ import 'package:siraf3/models/user.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:siraf3/screens/agent_profile/agent_profile_screen.dart';
 
 import '../helpers.dart';
 
@@ -128,104 +129,109 @@ class _SupportFileScreen extends State<SupportFileScreen> {
   }
 
   Widget _item(FileConsulant item) {
-    return Container(
-      height: 80,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: App.theme.dialogBackgroundColor,
-        border: Border(
-          bottom: BorderSide(color: Themes.textGrey.withOpacity(0.2), width: 1),
+    return GestureDetector(
+      onTap: () {
+        push(context, AgentProfileScreen(consultantId: item.consultantId!.id!, name: item.consultantId!.name,));
+      },
+      child: Container(
+        height: 80,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: App.theme.dialogBackgroundColor,
+          border: Border(
+            bottom: BorderSide(color: Themes.textGrey.withOpacity(0.2), width: 1),
+          ),
         ),
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: Image.network(
-                  item.consultantId?.avatar ?? '',
-                  height: 50,
-                  width: 50,
-                  errorBuilder: (_, _1, _2) => Image.asset(
-                    "assets/images/profile.png",
+        padding: EdgeInsets.symmetric(horizontal: 15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Image.network(
+                    item.consultantId?.avatar ?? '',
                     height: 50,
                     width: 50,
+                    errorBuilder: (_, _1, _2) => Image.asset(
+                      "assets/images/profile.png",
+                      height: 50,
+                      width: 50,
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(right: 10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      item.consultantId?.name ?? "؟؟؟",
-                      style: TextStyle(
-                        fontSize: 14,
+                Padding(
+                  padding: EdgeInsets.only(right: 10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        item.consultantId?.name ?? "؟؟؟",
+                        style: TextStyle(
+                          fontSize: 14,
+                        ),
                       ),
-                    ),
-                    Text(
-                      "(${item.estateName.toString()})",
-                      style: TextStyle(
-                        color: App.theme.tooltipTheme.textStyle?.color,
-                        fontSize: 10,
+                      Text(
+                        "(${item.estateName.toString()})",
+                        style: TextStyle(
+                          color: App.theme.tooltipTheme.textStyle?.color,
+                          fontSize: 10,
+                        ),
                       ),
-                    ),
-                    RatingBarIndicator(
-                      direction: Axis.horizontal,
-                      itemCount: 5,
-                      itemSize: 14,
-                      unratedColor: Colors.grey,
-                      itemPadding: EdgeInsets.symmetric(horizontal: .2),
-                      itemBuilder: (context, _) {
-                        return Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                          size: 10,
-                        );
-                      },
-                      rating: item.consultantId?.rate ?? 5.0,
-                    ),
-                  ],
+                      RatingBarIndicator(
+                        direction: Axis.horizontal,
+                        itemCount: 5,
+                        itemSize: 14,
+                        unratedColor: Colors.grey,
+                        itemPadding: EdgeInsets.symmetric(horizontal: .2),
+                        itemBuilder: (context, _) {
+                          return Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                            size: 10,
+                          );
+                        },
+                        rating: item.consultantId?.rate ?? 5.0,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () async {
-                  doWithLogin(context, () {
-                    createChat();
-                  });
-                },
-                child: Icon(
-                  CupertinoIcons.chat_bubble_2,
-                  size: 35,
-                  color: Themes.primary,
+              ],
+            ),
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    doWithLogin(context, () {
+                      createChat();
+                    });
+                  },
+                  child: Icon(
+                    CupertinoIcons.chat_bubble_2,
+                    size: 35,
+                    color: Themes.primary,
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              GestureDetector(
-                onTap: () {
-                  callTo(item.consultantId!.phone!);
-                },
-                child: Icon(
-                  CupertinoIcons.phone_circle,
-                  size: 35,
-                  color: Themes.primary,
+                SizedBox(
+                  width: 20,
                 ),
-              ),
-            ],
-          ),
-        ],
+                GestureDetector(
+                  onTap: () {
+                    callTo(item.consultantId!.phone!);
+                  },
+                  child: Icon(
+                    CupertinoIcons.phone_circle,
+                    size: 35,
+                    color: Themes.primary,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

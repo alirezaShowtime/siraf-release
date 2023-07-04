@@ -10,14 +10,16 @@ extension AppBarWidget on _AgentProfileScreen {
       titleSpacing: 0,
       title: AppBarTitle(title),
       actions: [
-        IconButton(onPressed: share, icon: icon(Icons.share_rounded)),
+        IconButton(onPressed: share, icon: icon(Icons.share_rounded, size: 22)),
         MyPopupMenuButton(
           itemBuilder: (_) => [
             popupMenuItem(
               title: "گزارش تخلف",
-              onTap: report,
+              value: "report",
             ),
           ],
+          onSelected: (v) => report(),
+          iconData: Icons.more_vert,
         ),
       ],
     );

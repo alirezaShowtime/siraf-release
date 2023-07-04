@@ -85,10 +85,10 @@ class _EditFileSecondState extends State<EditFileSecond> {
 
     setState(() {
       _titleController.text = widget.file.name ?? "";
-      // _ownerPhoneController.text = widget.file.ownerPhoneNumber ?? "";
-      // _visitPhoneController.text = widget.file.visitPhoneNumber ?? "";
-      // _ownerNameController.text = widget.file.ownerName ?? "";
-      // _visitNameController.text = widget.file.visitName ?? "";
+      _ownerPhoneController.text = widget.file.ownerPhoneNumber ?? "";
+      _visitPhoneController.text = widget.file.visitPhoneNumber ?? "";
+      _ownerNameController.text = widget.file.ownerName ?? "";
+      _visitNameController.text = widget.file.visitName ?? "";
 
       files = sliders.map<Map<String, dynamic>>((e) {
         FileType2 type;

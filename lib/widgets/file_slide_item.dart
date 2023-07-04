@@ -263,7 +263,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                       .toList()
                       .map<Widget>((e) {
                     return Text(
-                      "${e.name} ${e.value}",
+                      "${e.name} ${nonIfZero(e.value)}",
                       style: TextStyle(
                         color: App.theme.textTheme.bodyLarge?.color,
                         fontSize: 10.5,

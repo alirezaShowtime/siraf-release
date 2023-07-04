@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/bookmark.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/favorite_file.dart';
 import 'package:siraf3/themes.dart';
@@ -166,7 +167,7 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
                                   .take(4)
                                   .toList()
                                   .map<Widget>((e) => Text(
-                                        "${e.name} ${e.value}",
+                                        "${e.name} ${nonIfZero(e.value)}",
                                         style: TextStyle(
                                           fontSize: 10.5,
                                           fontWeight: FontWeight.w400,

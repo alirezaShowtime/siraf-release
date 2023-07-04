@@ -174,7 +174,7 @@ class _LocationFileItemState extends State<LocationFileItem> {
                                   .take(4)
                                   .toList()
                                   .map<Widget>((e) => Text(
-                                        "${e.name} ${e.value}",
+                                        "${e.name} ${nonIfZero(e.value)}",
                                         style: TextStyle(
                                           color: App
                                               .theme.textTheme.bodyLarge?.color,
