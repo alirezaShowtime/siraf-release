@@ -12,7 +12,7 @@ import 'package:siraf3/screens/chat/chat/sendingMessageWidgets/chat_sending_voic
 
 import 'chat_sending_video_message_widget.dart';
 
-class ChatSendingMessageWidget extends StatefulWidget {
+class ChatSendingMessageWidget extends MessageWidget {
   String? message;
   List<File>? files;
   ChatMessageUploadController controller;

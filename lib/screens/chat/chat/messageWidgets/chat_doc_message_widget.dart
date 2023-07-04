@@ -40,8 +40,14 @@ class ChatDocMessageWidgetState extends ChatMessageWidgetState {
             messageConfig: messageConfig,
           ),
         if (hasFile && widget.message.message.isFill()) SizedBox(height: 10),
-        if (widget.message.message.isFill()) textWidget(widget.message.message),
-        footerWidget(widget.isSeen, widget.message.createTime!)
+        Wrap(
+          verticalDirection: VerticalDirection.up,
+          crossAxisAlignment: WrapCrossAlignment.start,
+          children: [
+            footerWidget(widget.isSeen, widget.message.createTime!),
+            if (widget.message.message.isFill()) textWidget(widget.message.message),
+          ],
+        ),
       ],
     );
   }

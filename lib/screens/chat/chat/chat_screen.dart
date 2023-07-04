@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:record/record.dart';
+import 'package:shamsi_date/shamsi_date.dart';
 import 'package:siraf3/bloc/chat/messages/messages_bloc.dart';
 import 'package:siraf3/bloc/chat/play/voice_message_play_bloc.dart';
 import 'package:siraf3/bloc/chat/recordingVoice/recording_voice_bloc.dart';
@@ -27,6 +28,7 @@ import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 import 'messageWidgets/chat_message_widget.dart';
+import 'message_widget_list.dart';
 import 'sendingMessageWidgets/chat_sending_message_widget.dart';
 
 part 'chat_message_editor_widget.dart';
@@ -40,7 +42,10 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreen();
 }
 
-class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin {
+class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin<ChatScreen> {
+  @override
+  bool get wantKeepAlive => true;
+
   MessagesBloc chatMessagesBloc = MessagesBloc();
   SendMessageBloc sendMessageBloc = SendMessageBloc();
   SeenMessageBloc seenMessageBloc = SeenMessageBloc();
@@ -58,7 +63,6 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin {
   late Animation<double> _scrollDownAnimation;
 
   List<ChatMessage> messages = [];
-  List<Widget> messageWidgets = [];
 
   MessagesState? nowMessagesState;
 
@@ -74,6 +78,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin {
   late Animation<double> recordIconAnim;
 
   String? recorderVoicePath;
+  MessageWidgetList messageWidgets = MessageWidgetList();
 
   late Record record;
   bool isRecording = false;
@@ -112,8 +117,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin {
 
     sendMessageBloc.stream.listen((state) {
       if (state is SendMessageCanceled) {
-        for (var i = 0; i < messageWidgets.length; i++) {
-          if (messageWidgets[i].key != state.widgetKey) continue;
+        for (var i = 0; i < messageWidgets.length(); i++) {
+          if (messageWidgets.get(i).key != state.widgetKey) continue;
 
           listViewSetState?.call(() => messageWidgets.removeAt(i));
 
@@ -123,17 +128,16 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin {
 
       if (state is! SendMessageSuccess) return;
       state.playSentSound();
-      for (var i = 0; i < messageWidgets.length; i++) {
-        if (messageWidgets[i].key != state.widgetKey) continue;
+      for (var i = 0; i < messageWidgets.length(); i++) {
+        if (messageWidgets.get(i).key != state.widgetKey) continue;
 
-        listViewSetState?.call(() {
-          messageWidgets[i] = ChatMessageWidget(
-            key: GlobalObjectKey(state.message.id!),
-            message: state.message,
-            onClickReplyMessage: scrollTo,
-          );
-        });
-
+        listViewSetState?.call(() => messageWidgets.replace(
+            i,
+            ChatMessageWidget(
+              key: GlobalObjectKey(state.message.id!),
+              message: state.message,
+              onClickReplyMessage: scrollTo,
+            )));
         break;
       }
     });
@@ -221,10 +225,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin {
                 Expanded(
                   child: Stack(
                     children: [
-                      BlocBuilder(
-                        bloc: chatMessagesBloc,
-                        builder: _blocBuilder,
-                      ),
+                      BlocBuilder(bloc: chatMessagesBloc, builder: _blocBuilder),
                       AnimatedBuilder(
                         animation: _scrollDownAnimation,
                         builder: (_, __) {
@@ -395,13 +396,17 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin {
 
     if (nowMessagesState != state) {
       nowMessagesState = state;
-      messageWidgets = messages.map<Widget>((e) {
-        return ChatMessageWidget(
-          key: GlobalObjectKey(e.id!),
-          message: e,
-          onClickReplyMessage: scrollTo,
+
+      for (ChatMessage message in messages) {
+        messageWidgets.add(
+          createDate: message.createDate!,
+          widget: ChatMessageWidget(
+            key: GlobalObjectKey(message.id!),
+            message: message,
+            onClickReplyMessage: scrollTo,
+          ),
         );
-      }).toList();
+      }
     }
 
     if (!messages.last.forMe && nowMessagesState != state) {
@@ -412,10 +417,11 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin {
       listViewSetState = setState;
 
       return ListView(
-        shrinkWrap: true,
-        reverse: true,
+        // shrinkWrap: true,
+        // reverse: true,
         controller: _chatController,
-        children: generateList(),
+        children: messageWidgets.getList(),
+        // children: generateList() ?? [],
       );
     });
   }
@@ -436,7 +442,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin {
       onClickReplyMessage: scrollTo,
     );
 
-    messageWidgets.add(sendingMessageWidget);
+    var now = Jalali.now();
+    messageWidgets.add(createDate: "${now.year}/${now.month}/${now.day}", widget: sendingMessageWidget);
 
     scrollDown();
     listViewSetState?.call(() {});
@@ -462,9 +469,9 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin {
 
     final contentSize = _chatController.position.viewportDimension + _chatController.position.maxScrollExtent;
 
-    final index = messageWidgets.indexWhere((e) => e.key == GlobalObjectKey(replyMessage.id!)) + 2;
+    final index = messageWidgets.indexByKey(GlobalObjectKey(replyMessage.id!)) + 2;
 
-    final target = contentSize * index / messageWidgets.length;
+    final target = contentSize * index / messageWidgets.length();
 
     _chatController.position.animateTo(
       target,
@@ -475,8 +482,9 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin {
 
   List<Widget> generateList() {
     List<Widget> newList = [];
-    for (int i = messageWidgets.length; i >= 0; i--) {
-      newList.add(i == messageWidgets.length || i == 0 ? SizedBox(height: 10) : messageWidgets[i]);
+    var len = messageWidgets.length();
+    for (int i = len; i >= 0; i--) {
+      newList.add(i == len || i == 0 ? SizedBox(height: 10) : messageWidgets.get(i));
     }
     return newList;
   }

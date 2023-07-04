@@ -1,6 +1,7 @@
 import 'package:auto_direction/auto_direction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:siraf3/bloc/chat/reply/chat_reply_bloc.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
@@ -9,92 +10,100 @@ import 'package:siraf3/themes.dart';
 
 import 'chat_message_config.dart';
 
-abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> with TickerProviderStateMixin {
-  late AnimationController _replyAnimationController;
-  late Animation<double> _replyAnimation;
-  void Function(void Function())? _containerSetState;
+abstract class MessageWidget extends StatefulWidget {
+  // StreamController<bool> isLast = StreamController();
+  // StreamController<bool> isFirst = StreamController();
 
+  MessageWidget({super.key}) {
+    // isLast.add(false);
+    // isFirst.add(false);
+  }
+}
+
+abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> with TickerProviderStateMixin {
   bool isForMe();
 
   Widget content();
 
   ChatMessage? messageForReply();
 
-  double dx = 0;
+  bool isFirst = false;
+  bool isLast = false;
 
   @override
   void initState() {
     super.initState();
+/*
+    widget.isFirst.stream.listen((v) {
+      isFirst = v;
 
-    _replyAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+      try {
+        setState(() {});
+      } catch (e) {}
+    });
+    widget.isLast.stream.listen((v) {
+      isLast = v;
 
-    _replyAnimationController.addListener(() => _containerSetState?.call(() {}));
-
-    _replyAnimation = Tween<double>(end: -100, begin: 0).animate(_replyAnimationController);
-  }
-
-  @override
-  void dispose() {
-    _replyAnimationController.dispose();
-    super.dispose();
+      try {
+        setState(() {});
+      } catch (e) {}
+    });
+ */
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: getConfig().alignment,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        textDirection: isForMe() ? TextDirection.rtl : TextDirection.ltr,
-        children: [
-          StatefulBuilder(builder: (context, setState) {
-            _containerSetState = setState;
-            return GestureDetector(
-              onHorizontalDragEnd: (detail) {
-                _replyAnimationController.forward();
-              },
-              onHorizontalDragCancel: () {
-                _replyAnimationController.reverse();
-              },
-              child: Transform.translate(
-                offset: Offset(_replyAnimation.value, 0),
-                child: Container(
-                  margin: EdgeInsets.only(bottom: 3, left: 10, right: 10),
-                  padding: EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    borderRadius: getConfig().borderRadius,
-                    color: getConfig().background,
-                  ),
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * 0.65,
-                    minWidth: 100,
-                    // maxHeight: 600,
-                  ),
-                  child: ClipRRect(
-                    borderRadius: getConfig().borderRadius,
-                    child: content(),
-                  ),
-                ),
-              ),
-            );
-          }),
-          if (messageForReply() != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 5),
-              child: InkWell(
-                onTap: () {
-                  BlocProvider.of<ChatReplyBloc>(context).add(ChatReplyEvent(messageForReply()));
-                },
-                borderRadius: BorderRadius.circular(100),
-                child: Container(
-                  width: 30,
-                  height: 30,
-                  alignment: Alignment.center,
-                  child: icon(Icons.reply_rounded, size: 18, color: Themes.text),
-                ),
+      margin: EdgeInsets.only(bottom: /*isLast ? 10 :*/ 2, left: 5, right: 5, top: /*isLast ? 10 :*/ 2),
+      child: Slidable(
+        key: UniqueKey(),
+        startActionPane: ActionPane(
+          motion: ScrollMotion(),
+          extentRatio: 0.25,
+          children: [
+            Expanded(
+              child: Container(
+                alignment: Alignment.center,
+                child: Builder(builder: (context) {
+                  return InkWell(
+                    borderRadius: BorderRadius.circular(100),
+                    onTap: () {
+                      Slidable.of(context)?.close();
+                      BlocProvider.of<ChatReplyBloc>(context).add(ChatReplyEvent(messageForReply()));
+                    },
+                    child: Container(
+                      width: 30,
+                      height: 30,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: Colors.grey.shade100,
+                      ),
+                      child: icon(Icons.reply_rounded, size: 18, color: Themes.text),
+                    ),
+                  );
+                }),
               ),
             ),
-        ],
+          ],
+        ),
+        child: Container(
+          padding: EdgeInsets.all(1),
+          decoration: BoxDecoration(
+            borderRadius: getConfig().borderRadius,
+            color: getConfig().background,
+          ),
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.65,
+            minWidth: 100,
+            // maxHeight: 600,
+          ),
+          child: ClipRRect(
+            borderRadius: getConfig().borderRadius,
+            child: content(),
+          ),
+        ),
       ),
     );
   }
@@ -162,7 +171,7 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
   Widget textWidget(String? message) {
     if (!message.isFill()) return Container();
     return Padding(
-      padding: const EdgeInsets.only(left: 5, right: 5, top: 5),
+      padding: const EdgeInsets.only(left: 7, right: 7, top: 7),
       child: Wrap(
         children: [
           ConstrainedBox(
@@ -171,7 +180,7 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
               text: message!,
               child: Text(
                 message,
-                style: TextStyle(color: getConfig().textColor, fontSize: 12, height: 1.2),
+                style: TextStyle(color: getConfig().textColor, fontSize: 11),
               ),
             ),
           ),
@@ -182,7 +191,7 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
 
   Widget footerWidget(bool isSeen, String createTime) {
     return Padding(
-      padding: const EdgeInsets.only(top: 2, bottom: 0),
+      padding: const EdgeInsets.only(top: 0, bottom: 0, right: 7),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -199,7 +208,7 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
             style: TextStyle(
               color: isForMe() ? Colors.white60 : Colors.grey,
               fontSize: 9,
-              height: 1,
+              height: 0.9,
               fontFamily: "sans-serif",
               fontWeight: FontWeight.w500,
             ),
@@ -211,10 +220,14 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
 
   ChatMessageConfig _forMeConfig() {
     return ChatMessageConfig(
+      // tlRadius: 18,
+      // trRadius: isFirst ? 18 : 5,
+      // blRadius: 18,
+      // brRadius: isLast ? 0 : 5,
       tlRadius: 18,
       trRadius: 18,
+      brRadius: 18,
       blRadius: 18,
-      brRadius: 0,
       fileNameColor: Colors.white,
       background: Themes.primary.withOpacity(0.9),
       textColor: Colors.white,
@@ -226,9 +239,13 @@ abstract class AbstractMessageWidget<T extends StatefulWidget> extends State<T> 
 
   ChatMessageConfig _forHerConfig() {
     return ChatMessageConfig(
+      // tlRadius: isFirst ? 18 : 5,
+      // trRadius: 18,
+      // blRadius: isLast ? 0 : 5,
+      // brRadius: 18,
       tlRadius: 18,
       trRadius: 18,
-      blRadius: 0,
+      blRadius: 18,
       brRadius: 18,
       fileNameColor: Colors.black,
       background: Color(0xfff0f0f0),

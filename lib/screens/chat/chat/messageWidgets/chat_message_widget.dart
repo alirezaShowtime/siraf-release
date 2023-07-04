@@ -9,8 +9,7 @@ import 'package:siraf3/screens/chat/chat/messageWidgets/chat_image_message_widge
 import 'package:siraf3/screens/chat/chat/messageWidgets/chat_video_message_widget.dart';
 import 'package:siraf3/screens/chat/chat/messageWidgets/chat_voice_message_widget.dart';
 
-class ChatMessageWidget extends StatefulWidget {
-  Key? key;
+class ChatMessageWidget extends MessageWidget {
   ChatMessage message;
   late List<ChatFileMessage> fileMessages;
   late List<File>? files;
@@ -19,7 +18,7 @@ class ChatMessageWidget extends StatefulWidget {
   void Function(ChatMessage? replyMessage)? onClickReplyMessage;
 
   ChatMessageWidget({
-    this.key,
+    super.key,
     required this.message,
     this.files,
     this.isSeen = false,
