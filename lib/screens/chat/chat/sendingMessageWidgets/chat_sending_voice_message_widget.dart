@@ -24,7 +24,9 @@ class ChatSendingVoiceMessageWidgetState extends ChatSendingMessageWidgetState {
 
     messageConfig = getConfig();
 
-    player.setSource(UrlSource(widget.files!.first.path));
+    try {
+      player.setSource(UrlSource(widget.files!.first.path));
+    } catch (e) {}
 
     BlocProvider.of<VoiceMessagePlayBloc>(context).add(VoiceMessagePlayRegisterPlayerEvent(player));
 

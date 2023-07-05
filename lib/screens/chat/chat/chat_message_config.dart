@@ -6,9 +6,10 @@ class ChatMessageConfig {
   Color textColor;
   Color primaryColor;
   Color secondTextColor;
-  late TextDirection fileDirection;
+  late TextDirection direction;
   late Alignment alignment;
   Color fileNameColor;
+  bool forMe;
 
   ChatMessageConfig({
     required double tlRadius,
@@ -16,6 +17,7 @@ class ChatMessageConfig {
     required double blRadius,
     required double brRadius,
     required this.background,
+    required this.forMe,
     required this.fileNameColor,
     required this.textColor,
     required this.primaryColor,
@@ -28,7 +30,7 @@ class ChatMessageConfig {
       bottomLeft: Radius.circular(blRadius),
       bottomRight: Radius.circular(brRadius),
     );
-    fileDirection = textDirection;
-    alignment = textDirection == TextDirection.rtl ? Alignment.centerLeft : Alignment.centerRight;
+    direction = textDirection;
+    alignment = textDirection == TextDirection.rtl ? Alignment.centerRight : Alignment.centerLeft;
   }
 }

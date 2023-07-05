@@ -26,12 +26,12 @@ class _MyAudioWave extends State<MyAudioWave> {
   void initState() {
     super.initState();
 
-    heightBars = [for (int i = 0; i < 58; i++) i > 3 && i < 55 ? rad.nextInt(20) : 2];
+    heightBars = [for (int i = 0; i < 45; i++) i > 2 && i < 43 ? rad.nextInt(20) : 2];
   }
 
   @override
   Widget build(BuildContext context) {
-    var activeBar = (widget.progress * 42).toInt();
+    var activeBar = (widget.progress * heightBars.length).toInt();
 
     return GestureDetector(
       onHorizontalDragStart: (details) {},

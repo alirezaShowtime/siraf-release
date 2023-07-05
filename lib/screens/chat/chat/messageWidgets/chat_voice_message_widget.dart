@@ -40,10 +40,11 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
 
   Widget voiceWidget() {
     return Container(
-      padding: EdgeInsets.only(top: widget.message.replyMessage != null ? 0 : 9, left: 9, right: 9, bottom: 0),
+      padding: EdgeInsets.only(top: widget.message.replyMessage != null ? 0 : 9, left: 9, right: 9, bottom: 9),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -106,14 +107,14 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
-                color: widget.message.forMe ? Colors.white : Themes.primary.withOpacity(.85),
+                color: isForMe() ? Colors.white : Themes.primary,
               ),
               child: StreamBuilder<PlayerState>(
                 stream: player.onPlayerStateChanged,
                 builder: (context, snapshot) {
                   return Icon(
                     snapshot.data == PlayerState.playing ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                    color: widget.message.forMe ? Themes.primary : Colors.white,
+                    color: isForMe() ? Themes.primary : Colors.white,
                   );
                 },
               ),
@@ -143,7 +144,7 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
             voiceWidget(),
           ],
         ),
-        footerWidget(widget.isSeen, widget.message.createTime!),
+        Positioned(bottom: 0, right: 0, child: footerWidget(widget.isSeen, widget.message.createTime!)),
       ],
     );
   }

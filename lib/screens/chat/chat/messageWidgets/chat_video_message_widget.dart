@@ -19,13 +19,17 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
   void Function(void Function())? imageWidgetSetState;
   Uint8List? thumbnailPath;
 
+  late String videoUrl;
+
   @override
   void initState() {
     super.initState();
 
+    videoUrl = widget.message.fileMessages![0].path!;
+
     loadingController = AnimationController(vsync: this, duration: Duration(milliseconds: 1700))..repeat(reverse: false);
 
-    getVideoThumbnail(widget.message.fileMessages![0].path!);
+    getVideoThumbnail(videoUrl);
   }
 
   @override
@@ -123,7 +127,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
           ),
           if (thumbnailPath != null)
             InkWell(
-              onTap: () => push(context, VideoScreen(videoUrl: widget.message.fileMessages![0].path!, attemptOffline: true)),
+              onTap: () => push(context, VideoScreen(videoUrl: videoUrl, attemptOffline: true)),
               child: Container(
                 width: 35,
                 height: 35,
@@ -153,6 +157,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
+                        //todo
                         "12/15MB",
                         style: TextStyle(
                           color: Colors.white,
@@ -162,6 +167,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
                         ),
                       ),
                       Text(
+                        //todo
                         "01:45:00",
                         style: TextStyle(
                           color: Colors.white,
@@ -204,7 +210,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
   Widget loadingWidget(double progress) {
     return Container(
       height: 150,
-      color: isForMe() ? Colors.white12 : Colors.grey.shade100,
+      decoration: BoxDecoration(color: isForMe() ? Colors.white12 : Colors.grey.shade50, borderRadius: BorderRadius.circular(5)),
       alignment: Alignment.center,
       child: loadingProgressWidget(radius: 15, progress: progress),
     );
@@ -217,7 +223,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
         padding: EdgeInsets.all(2),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(100),
-          color: Colors.white24,
+          color: isForMe() ? Colors.white24 : Colors.grey.shade200,
         ),
         child: CircularPercentIndicator(
           radius: radius,

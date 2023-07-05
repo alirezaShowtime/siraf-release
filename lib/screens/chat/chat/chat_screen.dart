@@ -128,6 +128,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
       if (state is! SendMessageSuccess) return;
       state.playSentSound();
+      return;
       for (var i = 0; i < messageWidgets.length(); i++) {
         if (messageWidgets.get(i).key != state.widgetKey) continue;
 
@@ -232,12 +233,28 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                           return Positioned(
                             right: 10,
                             bottom: _scrollDownAnimation.value,
-                            child: FloatingActionButton(
-                              onPressed: scrollDown,
-                              child: icon(Icons.expand_more_rounded),
-                              elevation: 10,
-                              mini: true,
-                              backgroundColor: Colors.grey.shade50,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(100),
+                              onTap: scrollDown,
+                              child: Container(
+                                width: 45,
+                                height: 45,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(100),
+                                  border: Border.all(color: Colors.grey.shade300, width: 0.7),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      offset: const Offset(0, 0),
+                                      spreadRadius: -1.25,
+                                      blurRadius: 1.5,
+                                      color: Colors.black54,
+                                    ),
+                                  ],
+                                ),
+                                child: icon(Icons.expand_more_rounded),
+                              ),
                             ),
                           );
                         },
@@ -417,11 +434,10 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
       listViewSetState = setState;
 
       return ListView(
-        // shrinkWrap: true,
-        // reverse: true,
+        shrinkWrap: true,
+        reverse: true,
         controller: _chatController,
-        children: messageWidgets.getList(),
-        // children: generateList() ?? [],
+        children: generateList(),
       );
     });
   }
@@ -434,7 +450,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     ChatMessageUploadController messageUploadController = ChatMessageUploadController();
 
     ChatSendingMessageWidget sendingMessageWidget = ChatSendingMessageWidget(
-      key: UniqueKey(),
+      key: Key("$text ${DateTime.now().microsecondsSinceEpoch}"),
       controller: messageUploadController,
       message: text,
       files: files,
@@ -443,7 +459,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     );
 
     var now = Jalali.now();
-    messageWidgets.add(createDate: "${now.year}/${now.month}/${now.day}", widget: sendingMessageWidget);
+    var date = "${now.year}/" + (now.month > 9 ? "${now.month}" : "0${now.month}") + "/" + (now.day > 9 ? "${now.day}" : "0${now.day}");
+    messageWidgets.add(createDate: date, widget: sendingMessageWidget);
 
     scrollDown();
     listViewSetState?.call(() {});
@@ -482,10 +499,12 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
   List<Widget> generateList() {
     List<Widget> newList = [];
-    var len = messageWidgets.length();
-    for (int i = len; i >= 0; i--) {
-      newList.add(i == len || i == 0 ? SizedBox(height: 10) : messageWidgets.get(i));
-    }
+    newList.add(SizedBox(height: 10));
+    newList.addAll(messageWidgets.getList());
+    // var len = messageWidgets.length();
+    // for (int i = len; i >= 0; i--) {
+    //   newList.add(i == len || i == 0 ? SizedBox(height: 10) : messageWidgets.get(i));
+    // }
     return newList;
   }
 }

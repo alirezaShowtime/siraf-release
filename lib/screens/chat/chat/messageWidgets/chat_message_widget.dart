@@ -43,7 +43,7 @@ class ChatMessageWidget extends MessageWidget {
 
 abstract class ChatMessageWidgetState extends AbstractMessageWidget<ChatMessageWidget> {
   @override
-  bool isForMe() => widget.message.forMe;
+  bool isForMe() => widget.message.forMe && false;
 
   @override
   ChatMessage? messageForReply() => widget.message;

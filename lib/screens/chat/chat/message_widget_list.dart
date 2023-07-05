@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/helpers.dart';
 
 import 'abstract_message_widget.dart';
 import 'date_badge.dart';
@@ -14,10 +15,9 @@ class MessageWidgetList {
         MapEntry(
           createDate,
           DateBadge(
-            title: createDate,
+            createDate: dateFormatter(createDate),
             color: Colors.grey.shade100,
             margin: EdgeInsets.symmetric(vertical: 10),
-            onTap: () {},
           ),
         ),
       );
@@ -38,7 +38,7 @@ class MessageWidgetList {
     for (MapEntry mapEntry in _list) {
       newList.add(mapEntry.value);
     }
-    return newList;
+    return newList.reversed.toList();
   }
 
   void removeAt(int index) {
@@ -59,5 +59,9 @@ class MessageWidgetList {
 
   int indexByKey(Key key) {
     return _list.indexWhere((e) => e.value.key == key);
+  }
+
+  int indexOfCreateDate(createDate) {
+    return _list.indexOf(createDate);
   }
 }

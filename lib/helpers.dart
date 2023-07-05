@@ -411,3 +411,26 @@ String timeFormatter(int seconds, {bool hasHour = false}) {
     return "${minutes}:${second}";
   }
 }
+
+String dateFormatter(String dateStr) {
+  var list = dateStr.split("/");
+  var month = int.parse(list[1]);
+  var day = int.parse(list[2]);
+
+  var monthNames = {
+    1: "فروردین",
+    2: "اردیبهشت",
+    3: "خرداد",
+    4: "تیر",
+    5: "مرداد",
+    6: "شهریور",
+    7: "مهر",
+    8: "آبان",
+    9: "آذر",
+    10: "دی",
+    11: "بهمن",
+    12: "اسفند",
+  };
+
+  return "$day ${monthNames[month]}";
+}

@@ -138,8 +138,8 @@ class ChatFileMessage {
     if (json["type"] is String) {
       type = json["type"];
     }
-    if (json["fileSize"] is String) {
-      fileSize = json["fileSize"];
+    if (json["size"] is String) {
+      fileSize = json["size"];
     }
     if (json["fileName"] is int) {
       originName = json["fileName"] + "." + extension;

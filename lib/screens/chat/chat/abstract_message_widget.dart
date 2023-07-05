@@ -11,13 +11,7 @@ import 'package:siraf3/themes.dart';
 import 'chat_message_config.dart';
 
 abstract class MessageWidget extends StatefulWidget {
-  // StreamController<bool> isLast = StreamController();
-  // StreamController<bool> isFirst = StreamController();
-
-  MessageWidget({super.key}) {
-    // isLast.add(false);
-    // isFirst.add(false);
-  }
+  MessageWidget({super.key});
 }
 
 abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> with TickerProviderStateMixin {
@@ -27,82 +21,66 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
 
   ChatMessage? messageForReply();
 
-  bool isFirst = false;
-  bool isLast = false;
-
-  @override
-  void initState() {
-    super.initState();
-/*
-    widget.isFirst.stream.listen((v) {
-      isFirst = v;
-
-      try {
-        setState(() {});
-      } catch (e) {}
-    });
-    widget.isLast.stream.listen((v) {
-      isLast = v;
-
-      try {
-        setState(() {});
-      } catch (e) {}
-    });
- */
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: getConfig().alignment,
-      margin: EdgeInsets.only(bottom: /*isLast ? 10 :*/ 2, left: 5, right: 5, top: /*isLast ? 10 :*/ 2),
+      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
       child: Slidable(
-        key: UniqueKey(),
+        useTextDirection: true,
         startActionPane: ActionPane(
           motion: ScrollMotion(),
-          extentRatio: 0.25,
+          extentRatio: 0.1,
           children: [
-            Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                child: Builder(builder: (context) {
-                  return InkWell(
-                    borderRadius: BorderRadius.circular(100),
-                    onTap: () {
-                      Slidable.of(context)?.close();
-                      BlocProvider.of<ChatReplyBloc>(context).add(ChatReplyEvent(messageForReply()));
-                    },
-                    child: Container(
-                      width: 30,
-                      height: 30,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color: Colors.grey.shade100,
-                      ),
-                      child: icon(Icons.reply_rounded, size: 18, color: Themes.text),
-                    ),
-                  );
-                }),
+            CustomSlidableAction(
+              autoClose: true,
+              flex: 1,
+              borderRadius: BorderRadius.circular(10),
+              onPressed: (context) {
+                BlocProvider.of<ChatReplyBloc>(context).add(ChatReplyEvent(messageForReply()));
+              },
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Container(
+                  width: 25,
+                  height: 25,
+                  alignment: Alignment.center,
+                  child: icon(Icons.reply_rounded, size: 14, color: Themes.text),
+                ),
               ),
             ),
           ],
         ),
-        child: Container(
-          padding: EdgeInsets.all(1),
-          decoration: BoxDecoration(
-            borderRadius: getConfig().borderRadius,
-            color: getConfig().background,
-          ),
-          constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width * 0.65,
-            minWidth: 100,
-            // maxHeight: 600,
-          ),
-          child: ClipRRect(
-            borderRadius: getConfig().borderRadius,
-            child: content(),
-          ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.start,
+          textDirection: getConfig().direction,
+          children: [
+            Image.asset(
+              isForMe() ? "assets/images/chat-curve.png" : "assets/images/chat-curve-light.png",
+              width: 8,
+              height: 8,
+              alignment: Alignment.bottomCenter,
+              fit: BoxFit.fitWidth,
+            ),
+            Transform.translate(
+              offset: Offset(isForMe() ? 1 : -1, -0.1),
+              child: Container(
+                padding: EdgeInsets.all(1),
+                decoration: BoxDecoration(
+                  borderRadius: getConfig().borderRadius,
+                  color: getConfig().background,
+                ),
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.65,
+                  minWidth: 100,
+                ),
+                child: ClipRRect(
+                  borderRadius: getConfig().borderRadius,
+                  child: content(),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -114,7 +92,7 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
   }
 
   Widget replyWidget(ChatMessage? replyMessage, void Function(ChatMessage? chatMessage)? onClickReplyMessage) {
-    if (replyMessage == null) return Container();
+    if (replyMessage == null) return SizedBox();
     return Padding(
       padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
       child: Material(
@@ -124,7 +102,9 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
           borderRadius: BorderRadius.circular(10),
           child: Padding(
             padding: const EdgeInsets.all(5),
-            child: Row(
+            child: Flex(
+              direction: Axis.horizontal,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                   height: 30,
@@ -135,7 +115,7 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
                   ),
                 ),
                 SizedBox(width: 5),
-                Expanded(
+                Flexible(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,7 +123,7 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
                       Text(
                         replyMessage.forMe ? "خودم" : "مشاور",
                         style: TextStyle(
-                          color: isForMe() ? Colors.white.withOpacity(0.85) : getConfig().primaryColor,
+                          color: isForMe() ? Colors.white : getConfig().primaryColor,
                           fontSize: 10,
                           fontFamily: "IranSansBold",
                         ),
@@ -153,7 +133,7 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         style: TextStyle(
-                          color: isForMe() ? Colors.white60 : getConfig().textColor,
+                          color: getConfig().secondTextColor,
                           fontSize: 10,
                         ),
                       ),
@@ -171,7 +151,7 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
   Widget textWidget(String? message) {
     if (!message.isFill()) return Container();
     return Padding(
-      padding: const EdgeInsets.only(left: 7, right: 7, top: 7),
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       child: Wrap(
         children: [
           ConstrainedBox(
@@ -180,7 +160,7 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
               text: message!,
               child: Text(
                 message,
-                style: TextStyle(color: getConfig().textColor, fontSize: 11),
+                style: TextStyle(color: getConfig().textColor, fontSize: 12),
               ),
             ),
           ),
@@ -191,26 +171,29 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
 
   Widget footerWidget(bool isSeen, String createTime) {
     return Padding(
-      padding: const EdgeInsets.only(top: 0, bottom: 0, right: 7),
+      padding: const EdgeInsets.only(top: 0, bottom: 2, right: 10),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: [
           if (isForMe())
             Icon(
               isSeen ? Icons.done_all_rounded : Icons.check_rounded,
               color: isSeen ? Colors.white : Colors.white60,
-              size: 12,
+              size: 13,
             ),
           if (isForMe()) SizedBox(width: 2),
-          Text(
-            createTime,
-            style: TextStyle(
-              color: isForMe() ? Colors.white60 : Colors.grey,
-              fontSize: 9,
-              height: 0.9,
-              fontFamily: "sans-serif",
-              fontWeight: FontWeight.w500,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 1),
+            child: Text(
+              createTime,
+              style: TextStyle(
+                color: isForMe() ? Colors.white60 : Colors.grey,
+                fontSize: 9,
+                height: 0.9,
+                fontFamily: "sans-serif",
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ],
@@ -220,39 +203,33 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
 
   ChatMessageConfig _forMeConfig() {
     return ChatMessageConfig(
-      // tlRadius: 18,
-      // trRadius: isFirst ? 18 : 5,
-      // blRadius: 18,
-      // brRadius: isLast ? 0 : 5,
+      forMe: isForMe(),
       tlRadius: 18,
       trRadius: 18,
-      brRadius: 18,
+      brRadius: 0,
       blRadius: 18,
       fileNameColor: Colors.white,
-      background: Themes.primary.withOpacity(0.9),
+      background: Themes.primary.withOpacity(1),
       textColor: Colors.white,
       primaryColor: Colors.white,
       secondTextColor: Color(0x8bc0d0e0),
-      textDirection: TextDirection.ltr,
+      textDirection: TextDirection.rtl,
     );
   }
 
   ChatMessageConfig _forHerConfig() {
     return ChatMessageConfig(
-      // tlRadius: isFirst ? 18 : 5,
-      // trRadius: 18,
-      // blRadius: isLast ? 0 : 5,
-      // brRadius: 18,
+      forMe: isForMe(),
       tlRadius: 18,
       trRadius: 18,
-      blRadius: 18,
+      blRadius: 0,
       brRadius: 18,
       fileNameColor: Colors.black,
       background: Color(0xfff0f0f0),
       textColor: Colors.black,
       primaryColor: Themes.primary,
       secondTextColor: Color(0xffb9c0c6),
-      textDirection: TextDirection.rtl,
+      textDirection: TextDirection.ltr,
     );
   }
 }

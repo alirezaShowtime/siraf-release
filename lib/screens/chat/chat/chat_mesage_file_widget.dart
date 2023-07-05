@@ -63,7 +63,7 @@ class _ChatMessageFileWidget extends State<ChatMessageFileWidget> with SingleTic
 
   Widget _fileInitWidget() {
     return _baseFileWidget(
-      icon: Icon(Icons.arrow_downward_rounded, color: widget.messageConfig.background, size: 30),
+      icon: Icon(Icons.arrow_downward_rounded, color: widget.messageConfig.forMe ? widget.messageConfig.background : Colors.white, size: 30),
       fileName: widget.fileMessage.name,
       fileInfo: "${widget.fileMessage.fileSize}  ${widget.fileMessage.extension.toUpperCase()}",
       onTap: onClickDownload,
@@ -72,7 +72,7 @@ class _ChatMessageFileWidget extends State<ChatMessageFileWidget> with SingleTic
 
   Widget _fileDownloadedWidget(String filePath) {
     return _baseFileWidget(
-      icon: Icon(Icons.insert_drive_file_rounded, color: widget.messageConfig.background, size: 24),
+      icon: Icon(Icons.insert_drive_file_rounded, color: widget.messageConfig.forMe ? widget.messageConfig.background : Colors.white, size: 24),
       fileName: widget.fileMessage.name,
       fileInfo: "${widget.fileMessage.fileSize} ${widget.fileMessage.extension.toUpperCase()}",
       onTap: () => onClickOpen(filePath),
@@ -97,28 +97,26 @@ class _ChatMessageFileWidget extends State<ChatMessageFileWidget> with SingleTic
                 animation: false,
                 lineWidth: 3.5,
                 circularStrokeCap: CircularStrokeCap.round,
-                progressColor: widget.messageConfig.background,
+                progressColor: widget.messageConfig.forMe ? widget.messageConfig.background : Colors.white,
               ),
             ),
           ),
           Align(
             alignment: Alignment.center,
-            child: Icon(Icons.close_rounded, color: widget.messageConfig.background, size: 24),
+            child: Icon(Icons.close_rounded, color: widget.messageConfig.forMe ? widget.messageConfig.background : Colors.white, size: 24),
           ),
         ],
       ),
       fileName: widget.fileMessage.name,
-      fileInfo:
-          "${now.toFileSize(unit: false)}/${count.toFileSize()} ${_percentDownloaded(now, count)} ${widget.fileMessage.extension.toUpperCase()}",
+      fileInfo: "${now.toFileSize(unit: false)}/${count.toFileSize()} ${_percentDownloaded(now, count)} ${widget.fileMessage.extension.toUpperCase()}",
     );
   }
 
   Widget _fileErrorDownload(int now, int count) {
     return _baseFileWidget(
-      icon: Icon(Icons.refresh_rounded, color: widget.messageConfig.background, size: 34),
+      icon: Icon(Icons.refresh_rounded, color: widget.messageConfig.forMe ? widget.messageConfig.background : Colors.white, size: 34),
       fileName: widget.fileMessage.name,
-      fileInfo:
-          "${now.toFileSize(unit: false)}/${count.toFileSize()} ${_percentDownloaded(now, count)}  ${widget.fileMessage.extension.toUpperCase()}",
+      fileInfo: "${now.toFileSize(unit: false)}/${count.toFileSize()} ${_percentDownloaded(now, count)}  ${widget.fileMessage.extension.toUpperCase()}",
       onTap: onClickTryAgain,
     );
   }
@@ -132,7 +130,7 @@ class _ChatMessageFileWidget extends State<ChatMessageFileWidget> with SingleTic
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 2),
+        padding: EdgeInsets.all(2),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -168,7 +166,12 @@ class _ChatMessageFileWidget extends State<ChatMessageFileWidget> with SingleTic
                   ),
                   Text(
                     fileInfo,
-                    style: TextStyle(color: widget.messageConfig.secondTextColor, fontSize: 8),
+                    style: TextStyle(
+                      color: widget.messageConfig.secondTextColor,
+                      fontSize: 8,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: "sans-serif",
+                    ),
                   ),
                 ],
               ),

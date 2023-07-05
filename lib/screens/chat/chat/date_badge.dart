@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:siraf3/themes.dart';
 
 class DateBadge extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _DateBadge();
 
-  String title;
+  String createDate;
   void Function()? onTap;
   Color color;
   EdgeInsetsGeometry? margin;
 
-  DateBadge({required this.title, this.onTap, this.color = Colors.white, this.margin});
+  DateBadge({required this.createDate, this.onTap, this.color = Colors.white, this.margin});
 }
 
 class _DateBadge extends State<DateBadge> {
@@ -20,7 +19,7 @@ class _DateBadge extends State<DateBadge> {
       margin: widget.margin,
       alignment: Alignment.topCenter,
       child: Material(
-        color: widget.color,
+        color: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
@@ -33,9 +32,10 @@ class _DateBadge extends State<DateBadge> {
               minWidth: 50,
             ),
             child: Text(
-              widget.title,
+              widget.createDate,
+              textAlign: TextAlign.center,
               style: TextStyle(
-                color: Themes.text,
+                color: Colors.black,
                 fontWeight: FontWeight.w500,
                 fontSize: 10,
                 fontFamily: "IranSansBold",
