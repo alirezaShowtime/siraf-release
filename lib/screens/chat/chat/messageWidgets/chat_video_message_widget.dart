@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:siraf3/bloc/chat/downloadFile/download_file_bloc.dart';
+import 'package:siraf3/extensions/int_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/screens/video_screen.dart';
 import 'package:siraf3/widgets/my_image.dart';
+import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 import 'chat_message_widget.dart';
@@ -21,6 +23,8 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
 
   late String videoUrl;
 
+  late Future<VideoPlayerValue> infoVideo;
+
   @override
   void initState() {
     super.initState();
@@ -30,6 +34,8 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
     loadingController = AnimationController(vsync: this, duration: Duration(milliseconds: 1700))..repeat(reverse: false);
 
     getVideoThumbnail(videoUrl);
+
+    infoVideo = getVideoInfo(videoUrl);
   }
 
   @override
@@ -156,25 +162,39 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        //todo
-                        "12/15MB",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: "sans-serif",
-                          fontWeight: FontWeight.w500,
-                          fontSize: 8,
-                        ),
+                      BlocBuilder(
+                        bloc: downloadFileBloc,
+                        builder: (context, state) {
+                          var len = "${widget.message.fileMessages![0].fileSize ?? '??'}";
+
+                          if (state is DownloadFileLoading) {
+                            len = "${state.now.toFileSize(unit: false)}/" + len;
+                          }
+
+                          return Text(
+                            len,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "sans-serif",
+                              fontWeight: FontWeight.w500,
+                              fontSize: 8,
+                            ),
+                          );
+                        },
                       ),
-                      Text(
-                        //todo
-                        "01:45:00",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: "sans-serif",
-                          fontWeight: FontWeight.w500,
-                          fontSize: 8,
-                        ),
+                      FutureBuilder<VideoPlayerValue>(
+                        future: infoVideo,
+                        builder: (context, snapshot) {
+                          return Text(
+                            timeFormatter(snapshot.data?.duration.inSeconds ?? 0, hasHour: true),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "sans-serif",
+                              fontWeight: FontWeight.w500,
+                              fontSize: 8,
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -240,5 +260,10 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
 
   void onClickDownload() {
     downloadFileBloc.add(DownloadFileRequest(widget.message.fileMessages![0]));
+  }
+
+  Future<VideoPlayerValue> getVideoInfo(String videoUrl) async {
+    var con = VideoPlayerController.network(videoUrl);
+    return await con.value;
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -18,17 +19,21 @@ class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
   void Function(void Function())? imageWidgetSetState;
   Uint8List? thumbnailPath;
   bool isSeen = false;
-  late VideoPlayerController videoPlayerController;
+  late Future<VideoPlayerValue> infoVideo;
+
+  late File videoFile;
 
   @override
   void initState() {
     super.initState();
 
+    videoFile = widget.files!.first;
+
     loadingController = AnimationController(vsync: this, duration: Duration(milliseconds: 1700))..repeat(reverse: false);
 
-    getVideoThumbnail(widget.files!.first.path);
+    getVideoThumbnail(videoFile.path);
 
-    videoPlayerController = VideoPlayerController.file(widget.files!.first);
+    infoVideo = getVideoInfo(videoFile);
   }
 
   @override
@@ -135,7 +140,7 @@ class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
                 }
 
                 return InkWell(
-                  onTap: () => push(context, VideoScreen(videoFile: widget.files!.first)),
+                  onTap: () => push(context, VideoScreen(videoFile: videoFile)),
                   child: Container(
                     width: 35,
                     height: 35,
@@ -180,15 +185,19 @@ class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
                               ),
                             );
                           }),
-                      Text(
-                        timeFormatter(videoPlayerController.value.duration.inSeconds, hasHour: true),
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: "sans-serif",
-                          fontWeight: FontWeight.w500,
-                          fontSize: 8,
-                        ),
-                      ),
+                      FutureBuilder<VideoPlayerValue>(
+                          future: infoVideo,
+                          builder: (context, snapshot) {
+                            return Text(
+                              timeFormatter(snapshot.data?.duration.inSeconds ?? 0, hasHour: true),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: "sans-serif",
+                                fontWeight: FontWeight.w500,
+                                fontSize: 8,
+                              ),
+                            );
+                          }),
                     ],
                   ),
                   StreamBuilder(
@@ -257,5 +266,10 @@ class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
         ),
       ),
     );
+  }
+
+  Future<VideoPlayerValue> getVideoInfo(File videoFile) async {
+    var con = VideoPlayerController.file(videoFile);
+    return await con.value;
   }
 }
