@@ -84,6 +84,9 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   bool isRecording = false;
   void Function(void Function())? listViewSetState = null;
   void Function(void Function())? fileListSetState = null;
+  int recordTime = 0;
+  StreamController<int> recordTimeStream = StreamController();
+  late Timer timer;
 
   @override
   void initState() {
@@ -102,9 +105,14 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     _request();
 
     recordingVoiceBloc.stream.listen((state) async {
-      if (state == RecordingVoiceState.Cancel) {}
-      if (state == RecordingVoiceState.Recording) {}
+      if (state == RecordingVoiceState.Cancel) {
+        endTimer();
+      }
+      if (state == RecordingVoiceState.Recording) {
+        startTimer();
+      }
       if (state == RecordingVoiceState.Done) {
+        endTimer();
         listViewSetState?.call(() {});
       }
     });
@@ -128,7 +136,6 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
       if (state is! SendMessageSuccess) return;
       state.playSentSound();
-      return;
       for (var i = 0; i < messageWidgets.length(); i++) {
         if (messageWidgets.get(i).key != state.widgetKey) continue;
 
@@ -148,6 +155,18 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     chatReplyBloc.stream.listen((ChatMessage? reply) {
       replyMessage = reply;
       FocusManager.instance.primaryFocus?.requestFocus();
+    });
+  }
+
+  void endTimer() {
+    recordTime = 0;
+    recordTimeStream.add(0);
+  }
+
+  void startTimer() {
+    recordTimeStream.add(0);
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      recordTimeStream.add(recordTime++);
     });
   }
 
@@ -310,14 +329,18 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                               ],
                             ),
                           ),
-                          Text(
-                            "00:01:10",
-                            style: TextStyle(
-                              color: Themes.text,
-                              fontFamily: "IranSansBold",
-                              fontSize: 11,
-                            ),
-                          ),
+                          StreamBuilder<int>(
+                              stream: recordTimeStream.stream,
+                              builder: (context, snapshot) {
+                                return Text(
+                                  timeFormatter(snapshot.data ?? 0),
+                                  style: TextStyle(
+                                    color: Themes.text,
+                                    fontFamily: "IranSansBold",
+                                    fontSize: 11,
+                                  ),
+                                );
+                              }),
                           SizedBox(width: 5),
                           AnimatedBuilder(
                             animation: recordIconAnim,
