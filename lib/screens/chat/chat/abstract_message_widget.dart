@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:linkwell/linkwell.dart';
 import 'package:siraf3/bloc/chat/reply/chat_reply_bloc.dart';
+import 'package:siraf3/bloc/chat/select_message/select_message_bloc.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/chat_message.dart';
@@ -12,7 +13,9 @@ import 'package:siraf3/themes.dart';
 import 'chat_message_config.dart';
 
 abstract class MessageWidget extends StatefulWidget {
-  MessageWidget({super.key});
+  Key key;
+
+  MessageWidget({required this.key}) : super(key: key);
 }
 
 abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> with TickerProviderStateMixin {
@@ -20,68 +23,76 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
 
   Widget content();
 
-  ChatMessage? messageForReply();
+  ChatMessage? message();
+
+  bool isSelected = false;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-      child: Slidable(
-        useTextDirection: true,
-        startActionPane: ActionPane(
-          motion: ScrollMotion(),
-          extentRatio: 0.1,
-          children: [
-            CustomSlidableAction(
-              autoClose: true,
-              flex: 1,
-              borderRadius: BorderRadius.circular(10),
-              onPressed: (context) {
-                BlocProvider.of<ChatReplyBloc>(context).add(ChatReplyEvent(messageForReply()));
-              },
-              child: Align(
-                alignment: Alignment.bottomLeft,
+    return GestureDetector(
+      onTap: deselectMessage,
+      onLongPress: selectMessage,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+        foregroundDecoration: !isSelected ? null : BoxDecoration(color: Themes.primary.withOpacity(0.08)),
+        child: Slidable(
+          useTextDirection: true,
+          startActionPane: ActionPane(
+            motion: ScrollMotion(),
+            extentRatio: 0.1,
+            children: [
+              CustomSlidableAction(
+                autoClose: true,
+                flex: 1,
+                backgroundColor: Colors.transparent,
+                borderRadius: BorderRadius.circular(10),
+                onPressed: (context) {
+                  BlocProvider.of<ChatReplyBloc>(context).add(ChatReplyEvent(message()));
+                },
+                child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Container(
+                    width: 25,
+                    height: 25,
+                    alignment: Alignment.center,
+                    child: icon(Icons.reply_rounded, size: 14, color: Themes.text),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.start,
+            textDirection: getConfig().direction,
+            children: [
+              Image.asset(
+                isForMe() ? "assets/images/chat-curve.png" : "assets/images/chat-curve-light.png",
+                width: 8,
+                height: 8,
+                alignment: Alignment.bottomCenter,
+                fit: BoxFit.fitWidth,
+              ),
+              Transform.translate(
+                offset: Offset(isForMe() ? 0.3 : -0.3, 0),
                 child: Container(
-                  width: 25,
-                  height: 25,
-                  alignment: Alignment.center,
-                  child: icon(Icons.reply_rounded, size: 14, color: Themes.text),
+                  padding: EdgeInsets.all(1),
+                  decoration: BoxDecoration(
+                    borderRadius: getConfig().borderRadius,
+                    color: getConfig().background,
+                  ),
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.65,
+                    minWidth: 100,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: getConfig().borderRadius,
+                    child: content(),
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.start,
-          textDirection: getConfig().direction,
-          children: [
-            Image.asset(
-              isForMe() ? "assets/images/chat-curve.png" : "assets/images/chat-curve-light.png",
-              width: 8,
-              height: 8,
-              alignment: Alignment.bottomCenter,
-              fit: BoxFit.fitWidth,
-            ),
-            Transform.translate(
-              offset: Offset(isForMe() ? 0.3 : -0.3, 0),
-              child: Container(
-                padding: EdgeInsets.all(1),
-                decoration: BoxDecoration(
-                  borderRadius: getConfig().borderRadius,
-                  color: getConfig().background,
-                ),
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.65,
-                  minWidth: 100,
-                ),
-                child: ClipRRect(
-                  borderRadius: getConfig().borderRadius,
-                  child: content(),
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -251,5 +262,23 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
       secondTextColor: Color(0xffb9c0c6),
       textDirection: TextDirection.ltr,
     );
+  }
+
+  void deselectMessage() {
+    if (isSelected) {
+      setState(() {
+        isSelected = false;
+      });
+      BlocProvider.of<SelectMessageBloc>(context).add(SelectMessageDeselectEvent(widget.key));
+    }
+  }
+
+  void selectMessage() {
+    if (!isSelected) {
+      setState(() {
+        isSelected = true;
+      });
+      BlocProvider.of<SelectMessageBloc>(context).add(SelectMessageSelectEvent(widget.key, message()?.chatId));
+    }
   }
 }

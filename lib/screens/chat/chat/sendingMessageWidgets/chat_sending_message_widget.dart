@@ -19,7 +19,7 @@ class ChatSendingMessageWidget extends MessageWidget {
   void Function(ChatMessage? replyMessage)? onClickReplyMessage;
 
   ChatSendingMessageWidget({
-    super.key,
+    required super.key,
     required this.controller,
     this.files,
     this.message,
@@ -72,5 +72,5 @@ abstract class ChatSendingMessageWidgetState extends AbstractMessageWidget<ChatS
   bool isForMe() => true;
 
   @override
-  ChatMessage? messageForReply() => null;
+  ChatMessage? message() => null;
 }

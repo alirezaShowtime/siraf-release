@@ -12,6 +12,7 @@ import 'package:siraf3/bloc/chat/play/voice_message_play_bloc.dart';
 import 'package:siraf3/bloc/chat/recordingVoice/recording_voice_bloc.dart';
 import 'package:siraf3/bloc/chat/reply/chat_reply_bloc.dart';
 import 'package:siraf3/bloc/chat/seen/seen_message_bloc.dart';
+import 'package:siraf3/bloc/chat/select_message/select_message_bloc.dart';
 import 'package:siraf3/bloc/chat/sendMessage/send_message_bloc.dart';
 import 'package:siraf3/controller/chat_message_upload_controller.dart';
 import 'package:siraf3/extensions/file_extension.dart';
@@ -52,6 +53,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   ChatReplyBloc chatReplyBloc = ChatReplyBloc();
   RecordingVoiceBloc recordingVoiceBloc = RecordingVoiceBloc();
   VoiceMessagePlayBloc voiceMessagePlayBloc = VoiceMessagePlayBloc();
+  SelectMessageBloc selectMessageBloc = SelectMessageBloc();
 
   TextEditingController messageController = TextEditingController();
   ScrollController _chatController = ScrollController();
@@ -89,6 +91,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   int recordTime = 0;
 
   StreamController<int> recordTimeStream = StreamController();
+
+  List<MapEntry<Key, int?>> selectedMessages = [];
 
   @override
   void initState() {
@@ -196,6 +200,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
         BlocProvider(create: (_) => seenMessageBloc),
         BlocProvider(create: (_) => chatReplyBloc),
         BlocProvider(create: (_) => voiceMessagePlayBloc),
+        BlocProvider(create: (_) => selectMessageBloc),
       ],
       child: Scaffold(
         resizeToAvoidBottomInset: true,
