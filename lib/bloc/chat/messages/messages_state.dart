@@ -22,13 +22,20 @@ class MessagesSuccess extends MessagesState {
 
       if (!message.message.isFill() && !message.fileMessages.isFill()) {
         messages.remove(message);
+        continue;
       }
+
+      if (i + 1 < messages.length) {
+        message.isSeen = message.forMe && !messages[i + 1].forMe;
+      }
+
       try {
         var reply = messages.singleWhere((e) => e.id == message.replyId);
 
         message.replyMessage = reply;
-        messages[i] = message;
       } catch (e) {}
+
+      messages[i] = message;
     }
   }
 }

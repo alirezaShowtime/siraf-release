@@ -84,9 +84,11 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   bool isRecording = false;
   void Function(void Function())? listViewSetState = null;
   void Function(void Function())? fileListSetState = null;
-  int recordTime = 0;
-  StreamController<int> recordTimeStream = StreamController();
+
   late Timer timer;
+  int recordTime = 0;
+
+  StreamController<int> recordTimeStream = StreamController();
 
   @override
   void initState() {
@@ -415,12 +417,14 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   }
 
   void scrollDown({int milliseconds = 2000}) {
-    _chatController.animateTo(
-      _chatController.position.minScrollExtent,
-      duration: Duration(milliseconds: milliseconds),
-      curve: Curves.fastOutSlowIn,
-    );
-    _scrollDownAnimationController.reverse();
+    try {
+      _chatController.animateTo(
+        _chatController.position.minScrollExtent,
+        duration: Duration(milliseconds: milliseconds),
+        curve: Curves.fastOutSlowIn,
+      );
+      _scrollDownAnimationController.reverse();
+    } catch (e) {}
   }
 
   Widget _blocBuilder(BuildContext context, MessagesState state) {
@@ -449,7 +453,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
       }
     }
 
-    if (!messages.last.forMe && nowMessagesState != state) {
+    if (messages.isFill() && !messages.last.forMe && nowMessagesState != state) {
       seenMessageBloc.add(SeenMessageRequestEvent(widget.chatItem.id!));
     }
 
@@ -503,21 +507,25 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   }
 
   void scrollTo(ChatMessage? replyMessage) {
-    if (replyMessage == null || !messages.contains(replyMessage)) {
+    if (replyMessage == null) {
       return notify("پیام پاک شده است");
     }
 
-    final contentSize = _chatController.position.viewportDimension + _chatController.position.maxScrollExtent;
+    try {
+      final index = messageWidgets.indexByKey(GlobalObjectKey(replyMessage.id!)) + 2;
 
-    final index = messageWidgets.indexByKey(GlobalObjectKey(replyMessage.id!)) + 2;
+      final contentSize = _chatController.position.viewportDimension + _chatController.position.maxScrollExtent;
 
-    final target = contentSize * index / messageWidgets.length();
+      final target = contentSize * index / messageWidgets.length();
 
-    _chatController.position.animateTo(
-      target,
-      duration: Duration(milliseconds: index < 10 ? 500 : 2000),
-      curve: Curves.easeInOut,
-    );
+      _chatController.position.animateTo(
+        target,
+        duration: Duration(milliseconds: index < 10 ? 500 : 2000),
+        curve: Curves.easeInOut,
+      );
+    } catch (e) {
+      return notify("پیام پاک شده است");
+    }
   }
 
   List<Widget> generateList() {

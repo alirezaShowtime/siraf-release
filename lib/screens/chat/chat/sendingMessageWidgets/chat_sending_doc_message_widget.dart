@@ -15,8 +15,6 @@ class ChatSendingDocMessageWidgetState extends ChatSendingMessageWidgetState {
   late final AnimationController loadingController = AnimationController(vsync: this, duration: Duration(seconds: 3))..repeat();
 
   late ChatMessageConfig messageConfig;
-  late List<File> files;
-  late bool hasFile;
 
   void Function(void Function())? fileUploadingWidgetSetState;
 
@@ -180,13 +178,26 @@ class ChatSendingDocMessageWidgetState extends ChatSendingMessageWidgetState {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        replyWidget(widget.replyMessage!, widget.onClickReplyMessage),
-        for (File file in files) _getFileWidget(file),
+        replyWidget(widget.replyMessage, widget.onClickReplyMessage),
+        if (widget.files.isFill())
+          for (File file in widget.files!) _getFileWidget(file),
         if (widget.message.isFill())
           Padding(
             padding: EdgeInsets.only(bottom: 5, right: 5, top: widget.files.isFill() ? 10 : 0),
             child: textWidget(widget.message),
           ),
+        StreamBuilder<MessageState>(
+          initialData: MessageState.Uploading,
+          stream: widget.controller.messageSate.stream,
+          builder: (context, snapshot) {
+            return footerWidget(
+              false,
+              widget.controller.getCreateTime() ?? "",
+              sending: snapshot.data == MessageState.Uploading,
+              error: snapshot.data == MessageState.ErrorUpload,
+            );
+          },
+        ),
       ],
     );
   }

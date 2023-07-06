@@ -8,7 +8,6 @@ import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/screens/chat/chat/abstract_message_widget.dart';
 import 'package:siraf3/screens/chat/chat/sendingMessageWidgets/chat_sending_doc_message_widget.dart';
 import 'package:siraf3/screens/chat/chat/sendingMessageWidgets/chat_sending_image_message_widget.dart';
-import 'package:siraf3/screens/chat/chat/sendingMessageWidgets/chat_sending_voice_message_widget.dart';
 
 import 'chat_sending_video_message_widget.dart';
 
@@ -55,7 +54,9 @@ class ChatSendingMessageWidget extends MessageWidget {
   @override
   State<ChatSendingMessageWidget> createState() {
     if (_isVoice()) {
-      return ChatSendingVoiceMessageWidgetState();
+      //todo
+      // return ChatSendingVoiceMessageWidgetState();
+      return ChatSendingDocMessageWidgetState();
     } else if (_isImage()) {
       return ChatSendingImageMessageWidgetState();
     } else if (_isVideos()) {

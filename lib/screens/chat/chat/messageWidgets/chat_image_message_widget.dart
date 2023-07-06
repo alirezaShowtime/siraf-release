@@ -60,7 +60,7 @@ class ChatImageMessageWidgetState extends ChatMessageWidgetState {
                   children: [
                     if (isForMe())
                       Icon(
-                        widget.isSeen ? Icons.done_all_rounded : Icons.check_rounded,
+                        widget.message.isSeen ? Icons.done_all_rounded : Icons.check_rounded,
                         color: isForMe() ? Colors.white : Colors.red,
                         size: 13,
                       ),
@@ -85,15 +85,15 @@ class ChatImageMessageWidgetState extends ChatMessageWidgetState {
       mainAxisSpacing: 2,
       crossAxisCount: 2,
       children: [
-        for (var i = 0; i < widget.message.fileMessages!.length; i++)
+        for (var i = 0; i < widget.fileMessages.length; i++)
           StaggeredGridTile.count(
             mainAxisCellCount: 1,
-            crossAxisCellCount: i == widget.message.fileMessages!.length - 1 && i.isEven ? 2 : 1,
+            crossAxisCellCount: i == widget.fileMessages.length - 1 && i.isEven ? 2 : 1,
             child: InkWell(
-              onTap: () => push(context, ImageViewScreen(imageUrl: widget.message.fileMessages![i].path!)),
+              onTap: () => push(context, ImageViewScreen(imageUrl: widget.fileMessages[i].path!)),
               child: MyImage(
                 borderRadius: BorderRadius.circular(3),
-                image: CachedNetworkImageProvider(widget.message.fileMessages![i].path!),
+                image: CachedNetworkImageProvider(widget.fileMessages[i].path!),
                 fit: BoxFit.cover,
                 errorWidget: Container(
                   color: isForMe() ? Colors.white12 : Colors.grey.shade100,

@@ -26,7 +26,7 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
     if (widget.files.isFill()) {
       player.setSource(DeviceFileSource(widget.files!.first.path));
     } else {
-      player.setSource(UrlSource(widget.message.fileMessages![0].path!));
+      player.setSource(UrlSource(widget.fileMessages[0].path!));
     }
 
     BlocProvider.of<VoiceMessagePlayBloc>(context).add(VoiceMessagePlayRegisterPlayerEvent(player));
@@ -144,7 +144,7 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
             voiceWidget(),
           ],
         ),
-        Positioned(bottom: 0, right: 0, child: footerWidget(widget.isSeen, widget.message.createTime!)),
+        Positioned(bottom: 0, right: 0, child: footerWidget(widget.message.isSeen, widget.message.createTime!)),
       ],
     );
   }

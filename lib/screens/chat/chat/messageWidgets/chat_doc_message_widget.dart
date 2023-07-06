@@ -22,7 +22,7 @@ class ChatDocMessageWidgetState extends ChatMessageWidgetState {
     hasFile = widget.fileMessages.isFill();
 
     BlocProvider.of<SeenMessageBloc>(context).stream.listen((state) {
-      widget.isSeen = state is SeenMessageError;
+      widget.message.isSeen = state is SeenMessageError;
     });
   }
 
@@ -44,7 +44,7 @@ class ChatDocMessageWidgetState extends ChatMessageWidgetState {
           verticalDirection: VerticalDirection.up,
           crossAxisAlignment: WrapCrossAlignment.start,
           children: [
-            footerWidget(widget.isSeen, widget.message.createTime!),
+            footerWidget(widget.message.isSeen, widget.message.createTime!),
             if (widget.message.message.isFill()) textWidget(widget.message.message),
           ],
         ),

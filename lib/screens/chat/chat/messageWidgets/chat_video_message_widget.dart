@@ -29,7 +29,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
   void initState() {
     super.initState();
 
-    videoUrl = widget.message.fileMessages![0].path!;
+    videoUrl = widget.fileMessages[0].path!;
 
     loadingController = AnimationController(vsync: this, duration: Duration(milliseconds: 1700))..repeat(reverse: false);
 
@@ -81,7 +81,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
                   children: [
                     if (isForMe())
                       Icon(
-                        widget.isSeen ? Icons.done_all_rounded : Icons.check_rounded,
+                        widget.message.isSeen ? Icons.done_all_rounded : Icons.check_rounded,
                         color: isForMe() ? Colors.white : Colors.red,
                         size: 13,
                       ),
@@ -165,7 +165,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
                       BlocBuilder(
                         bloc: downloadFileBloc,
                         builder: (context, state) {
-                          var len = "${widget.message.fileMessages![0].fileSize ?? '??'}";
+                          var len = "${widget.fileMessages[0].fileSize ?? '??'}";
 
                           if (state is DownloadFileLoading) {
                             len = "${state.now.toFileSize(unit: false)}/" + len;
@@ -259,7 +259,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
   }
 
   void onClickDownload() {
-    downloadFileBloc.add(DownloadFileRequest(widget.message.fileMessages![0]));
+    downloadFileBloc.add(DownloadFileRequest(widget.fileMessages[0]));
   }
 
   Future<VideoPlayerValue> getVideoInfo(String videoUrl) async {

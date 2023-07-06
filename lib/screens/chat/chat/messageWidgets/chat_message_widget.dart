@@ -13,7 +13,6 @@ class ChatMessageWidget extends MessageWidget {
   ChatMessage message;
   late List<ChatFileMessage> fileMessages;
   late List<File>? files;
-  bool isSeen;
   StreamController? onSeenMessageStream;
   void Function(ChatMessage? replyMessage)? onClickReplyMessage;
 
@@ -21,7 +20,6 @@ class ChatMessageWidget extends MessageWidget {
     super.key,
     required this.message,
     this.files,
-    this.isSeen = false,
     this.onClickReplyMessage,
   }) {
     this.fileMessages = message.fileMessages ?? [];
@@ -43,7 +41,7 @@ class ChatMessageWidget extends MessageWidget {
 
 abstract class ChatMessageWidgetState extends AbstractMessageWidget<ChatMessageWidget> {
   @override
-  bool isForMe() => widget.message.forMe && false;
+  bool isForMe() => widget.message.forMe;
 
   @override
   ChatMessage? messageForReply() => widget.message;

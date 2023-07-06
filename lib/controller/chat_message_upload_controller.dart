@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:intl/intl.dart';
 import 'package:siraf3/enums/message_state.dart';
 
 class UploadingDetail {
@@ -29,7 +30,7 @@ class ChatMessageUploadController {
   }
 
   String setCreateTime(DateTime time) {
-    return "${time.hour}:${time.minute}";
+    return DateFormat.Hm().format(time);
   }
 
   void cancelUpload() {

@@ -20,6 +20,7 @@ class ChatMessage {
   ChatMessage? replyMessage;
   String? messageCreateDate;
   String? createTime;
+  bool isSeen = false;
 
   ChatMessage(this.fileMessages, this.createDate, this.message);
 

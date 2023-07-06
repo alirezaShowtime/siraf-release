@@ -2,6 +2,7 @@ import 'package:auto_direction/auto_direction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:linkwell/linkwell.dart';
 import 'package:siraf3/bloc/chat/reply/chat_reply_bloc.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
@@ -63,7 +64,7 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
               fit: BoxFit.fitWidth,
             ),
             Transform.translate(
-              offset: Offset(isForMe() ? 1 : -1, -0.1),
+              offset: Offset(isForMe() ? 0.3 : -0.3, 0),
               child: Container(
                 padding: EdgeInsets.all(1),
                 decoration: BoxDecoration(
@@ -158,9 +159,16 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
             constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.60),
             child: AutoDirection(
               text: message!,
-              child: Text(
+              child: LinkWell(
                 message,
-                style: TextStyle(color: getConfig().textColor, fontSize: 12),
+                style: TextStyle(color: getConfig().textColor, fontSize: 12, fontFamily: "IranSans"),
+                linkStyle: TextStyle(
+                  color: !isForMe() ? getConfig().primaryColor : getConfig().textColor,
+                  fontSize: 12,
+                  decoration: TextDecoration.underline,
+                  decorationColor: !isForMe() ? getConfig().primaryColor : getConfig().textColor,
+                  decorationThickness: !isForMe() ? 1 : 1.3,
+                ),
               ),
             ),
           ),
@@ -169,20 +177,32 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
     );
   }
 
-  Widget footerWidget(bool isSeen, String createTime) {
+  Widget footerWidget(bool isSeen, String createTime, {bool sending = false, bool error = false}) {
     return Padding(
       padding: const EdgeInsets.only(top: 0, bottom: 2, right: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (isForMe())
+          if (isForMe() && !sending && !error)
             Icon(
               isSeen ? Icons.done_all_rounded : Icons.check_rounded,
-              color: isSeen ? Colors.white : Colors.white60,
+              color: isSeen ? Colors.white : getConfig().secondTextColor,
               size: 13,
             ),
-          if (isForMe()) SizedBox(width: 2),
+          if (error)
+            Icon(
+              Icons.error_outlined,
+              color: Colors.red,
+              size: 13,
+            ),
+          if (sending)
+            Icon(
+              Icons.schedule_rounded,
+              color: isForMe() ? Colors.white : getConfig().secondTextColor,
+              size: 13,
+            ),
+          if (isForMe() || sending || error) SizedBox(width: 2),
           Padding(
             padding: const EdgeInsets.only(bottom: 1),
             child: Text(
