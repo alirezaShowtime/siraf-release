@@ -16,10 +16,11 @@ import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/dark_theme_provider.dart';
 import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/firebase_options.dart';
-import 'package:siraf3/screens/chat/chat_list_screen.dart';
 import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/settings.dart';
 import 'package:siraf3/themes.dart';
+
+import 'screens/chat/chat_list_screen.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -33,7 +34,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
 
   firebaseMessageListener(message);
 }
@@ -96,7 +99,9 @@ void main() async {
 
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
 
     await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true,
@@ -227,6 +232,7 @@ class App extends State<AppStf> {
               );
             },
             routes: {
+              //todo
               '/': (_) => ChatListScreen(),
               '/home': (_) => HomeScreen(),
             },

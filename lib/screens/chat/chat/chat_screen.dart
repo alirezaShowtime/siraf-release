@@ -70,8 +70,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
   StreamController<bool> showSendButton = StreamController();
 
-  List<File> selectedFiles = [];
-  List<Widget> selectedFilesWidget = [];
+  List<File> selectedFilesForUpload = [];
+  List<Widget> selectedFilesWidgetForUpload = [];
   bool showReplyMessage = false;
   ChatMessage? replyMessage;
 
@@ -109,6 +109,18 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     _chatController.addListener(_scrollListener);
 
     _request();
+
+    selectMessageBloc.stream.listen((state) {
+      if (state is SelectMessageSelectState) {
+        selectedMessages.add(MapEntry(state.widgetKey, state.messageId));
+        selectMessageBloc.add(SelectMessageCountEvent(selectedMessages.length));
+      }
+
+      if (state is SelectMessageDeselectState) {
+        selectedMessages.removeWhere((e) => e.key == state.widgetKey);
+        selectMessageBloc.add(SelectMessageCountEvent(selectedMessages.length));
+      }
+    });
 
     recordingVoiceBloc.stream.listen((state) async {
       if (state == RecordingVoiceState.Cancel) {
@@ -164,25 +176,14 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     });
   }
 
-  void endTimer() {
-    recordTime = 0;
-    recordTimeStream.add(0);
-  }
-
-  void startTimer() {
-    recordTimeStream.add(0);
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      recordTimeStream.add(recordTime++);
-    });
-  }
-
   @override
   void dispose() {
     record.dispose();
     recordingVoiceBloc.close();
     voiceMessagePlayBloc.close();
-    _chatController.dispose();
+    selectMessageBloc.close();
     chatMessagesBloc.close();
+    _chatController.dispose();
     voiceAnimController.dispose();
     messageController.dispose();
     super.dispose();
@@ -505,7 +506,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
         message: text,
         files: files,
         controller: messageUploadController,
-        widgetKey: sendingMessageWidget.key!,
+        widgetKey: sendingMessageWidget.key,
         replyMessage: reply,
       ),
     );
@@ -537,10 +538,18 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     List<Widget> newList = [];
     newList.add(SizedBox(height: 10));
     newList.addAll(messageWidgets.getList());
-    // var len = messageWidgets.length();
-    // for (int i = len; i >= 0; i--) {
-    //   newList.add(i == len || i == 0 ? SizedBox(height: 10) : messageWidgets.get(i));
-    // }
     return newList;
+  }
+
+  void startTimer() {
+    recordTimeStream.add(0);
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      recordTimeStream.add(recordTime++);
+    });
+  }
+
+  void endTimer() {
+    recordTime = 0;
+    recordTimeStream.add(0);
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,20 +23,16 @@ class AppBarChat extends AppBar {
 class _AppBarChat extends State<AppBarChat> {
   int selectedCount = 0;
 
-  StreamController<int> selectedCountStream = StreamController();
-
   @override
   void initState() {
     super.initState();
 
     BlocProvider.of<SelectMessageBloc>(context).stream.listen((state) {
-      if (state is SelectMessageSelectState) {
-        selectedCountStream.add(selectedCount++);
-      }
-
-      if (state is SelectMessageDeselectState) {
-        selectedCountStream.add(selectedCount--);
-      }
+      try {
+        if (state is SelectMessageCountSate) {
+          setState(() => selectedCount = state.count);
+        }
+      } catch (e) {}
     });
   }
 
@@ -51,26 +45,24 @@ class _AppBarChat extends State<AppBarChat> {
       leading: MyBackButton(),
       title: title(),
       actions: [
-        StreamBuilder<int>(
-          stream: selectedCountStream.stream,
-          builder: (context, snapshot) {
-            if ((snapshot.data ?? 0) > 0) {
-              return MyIconButton(
-                onTap: deleteMessages,
-                iconData: CupertinoIcons.delete,
-              );
-            }
-            return MyPopupMenuButton(
-              iconData: Icons.more_vert_rounded,
-              itemBuilder: (_) => [
-                MyPopupMenuItem(
-                  label: "حذف گفتوگو",
-                  icon: CupertinoIcons.trash,
-                ),
-              ],
-            );
-          },
-        ),
+        if (selectedCount > 0)
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: MyIconButton(
+              onTap: deleteMessages,
+              iconData: CupertinoIcons.delete,
+            ),
+          ),
+        if (selectedCount <= 0)
+          MyPopupMenuButton(
+            iconData: Icons.more_vert_rounded,
+            itemBuilder: (_) => [
+              MyPopupMenuItem(
+                label: "حذف گفتوگو",
+                icon: CupertinoIcons.trash,
+              ),
+            ],
+          ),
       ],
     );
   }
@@ -99,21 +91,19 @@ class _AppBarChat extends State<AppBarChat> {
             ),
           ),
         ),
-        StreamBuilder(
-          stream: selectedCountStream.stream,
-          builder: (context, snapshot) {
-            if (snapshot.data == null) return SizedBox();
-            return Text(
-              (snapshot.data).toString(),
+        if (selectedCount > 0)
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Text(
+              selectedCount.toString(),
               style: TextStyle(
                 color: Themes.text,
                 fontFamily: "IranSansBold",
-                fontSize: 14,
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
-            );
-          },
-        ),
+            ),
+          ),
       ],
     );
   }

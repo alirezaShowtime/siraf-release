@@ -183,24 +183,24 @@ extension ChatMessageEditor on _ChatScreen {
     if (result == null) return;
 
     for (PlatformFile platformFile in result.files) {
-      selectedFiles.add(File(platformFile.path!));
-      selectedFilesWidget.add(attachedFileItem(File(platformFile.path!)));
+      selectedFilesForUpload.add(File(platformFile.path!));
+      selectedFilesWidgetForUpload.add(attachedFileItem(File(platformFile.path!)));
     }
     fileListSetState?.call(() {});
   }
 
   void onClickSendMessage() {
-    if (messageController.value.text.isFill() || selectedFiles.isFill()) {
-      sendMessage(messageController.value.text, selectedFiles, replyMessage);
+    if (messageController.value.text.isFill() || selectedFilesForUpload.isFill()) {
+      sendMessage(messageController.value.text, selectedFilesForUpload, replyMessage);
       return;
     }
 
     BlocProvider.of<SendMessageBloc>(context).stream.listen((state) {
       if (state is SendMessageAddedToQueue) {
-        fileListSetState?.call(selectedFilesWidget.clear);
+        fileListSetState?.call(selectedFilesWidgetForUpload.clear);
       }
       if (state is SendMessageSuccess) {
-        fileListSetState?.call(selectedFiles.clear);
+        fileListSetState?.call(selectedFilesForUpload.clear);
       }
     });
   }
@@ -226,7 +226,7 @@ extension ChatMessageEditor on _ChatScreen {
               )
             ]),
         child: SingleChildScrollView(
-          child: Column(children: selectedFilesWidget),
+          child: Column(children: selectedFilesWidgetForUpload),
         ),
       );
     });
@@ -276,7 +276,7 @@ extension ChatMessageEditor on _ChatScreen {
           ),
           MyIconButton(
             onTap: () {
-              fileListSetState?.call(() => selectedFiles.remove(file));
+              fileListSetState?.call(() => selectedFilesForUpload.remove(file));
             },
             iconData: Icons.close_rounded,
           ),

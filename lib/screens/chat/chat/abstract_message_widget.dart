@@ -26,16 +26,29 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
   ChatMessage? message();
 
   bool isSelected = false;
+  bool canSelectWithClick = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    BlocProvider.of<SelectMessageBloc>(context).stream.listen((state) {
+      if (state is SelectMessageCountSate) {
+        canSelectWithClick = state.count > 0;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: deselectMessage,
-      onLongPress: selectMessage,
+      onTap: onClickMessage,
+      onLongPress: onLongClickMessage,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
         foregroundDecoration: !isSelected ? null : BoxDecoration(color: Themes.primary.withOpacity(0.08)),
         child: Slidable(
+          enabled: !isSelected,
           useTextDirection: true,
           startActionPane: ActionPane(
             motion: ScrollMotion(),
@@ -74,7 +87,7 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
                 fit: BoxFit.fitWidth,
               ),
               Transform.translate(
-                offset: Offset(isForMe() ? 0.3 : -0.3, 0),
+                offset: Offset(isForMe() ? 0.3 : -0.3, -.3),
                 child: Container(
                   padding: EdgeInsets.all(1),
                   decoration: BoxDecoration(
@@ -264,21 +277,20 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
     );
   }
 
-  void deselectMessage() {
+  void onClickMessage() {
     if (isSelected) {
-      setState(() {
-        isSelected = false;
-      });
+      setState(() => isSelected = false);
       BlocProvider.of<SelectMessageBloc>(context).add(SelectMessageDeselectEvent(widget.key));
+    } else if (!isSelected && canSelectWithClick) {
+      setState(() => isSelected = true);
+      BlocProvider.of<SelectMessageBloc>(context).add(SelectMessageSelectEvent(widget.key, message()?.chatId));
     }
   }
 
-  void selectMessage() {
+  void onLongClickMessage() {
     if (!isSelected) {
-      setState(() {
-        isSelected = true;
-      });
       BlocProvider.of<SelectMessageBloc>(context).add(SelectMessageSelectEvent(widget.key, message()?.chatId));
+      setState(() => isSelected = true);
     }
   }
 }
