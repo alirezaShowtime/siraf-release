@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart';
+import 'package:siraf3/bloc/chat/create/create_chat_bloc.dart';
 import 'package:siraf3/bloc/file_consulants_bloc.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/main.dart';
@@ -24,14 +25,14 @@ class SupportFileScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _SupportFileScreen();
 
-  SupportFileScreen(
-      {required this.file, required this.isFavorite, required this.id});
+  SupportFileScreen({required this.file, required this.isFavorite, required this.id});
 
   file_detail.FileDetail file;
 }
 
 class _SupportFileScreen extends State<SupportFileScreen> {
   FileConsulantsBloc bloc = FileConsulantsBloc();
+  CreateChatBloc createChatBloc = CreateChatBloc();
 
   @override
   void dispose() {
@@ -45,6 +46,23 @@ class _SupportFileScreen extends State<SupportFileScreen> {
     super.initState();
 
     bloc.add(FileConsulantsLoadEvent(id: widget.id));
+
+    createChatBloc.stream.listen((state) {
+      if (state is CreateChatLoading) {
+        dismissDialog(errorDialogContext);
+        loadingDialog(context: context);
+      }
+
+      if (state is CreateChatError) {
+        dismissDialog(loadingDialogContext);
+        errorDialog(context: context);
+      }
+
+      if (state is CreateChatSuccess) {
+        dismissDialog(loadingDialogContext);
+        notify("چت ایجاد شد");
+      }
+    });
   }
 
   @override
@@ -100,8 +118,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
   }
 
   Widget _buildMainBloc(context, FileConsulantsState state) {
-    if (state is FileConsulantsInitState ||
-        state is FileConsulantsLoadingState) {
+    if (state is FileConsulantsInitState || state is FileConsulantsLoadingState) {
       return Center(
         child: Loading(),
       );
@@ -200,9 +217,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
             children: [
               GestureDetector(
                 onTap: () async {
-                  doWithLogin(context, () {
-                    createChat();
-                  });
+                  doWithLogin(context, () => createChat(item.id!));
                 },
                 child: Icon(
                   CupertinoIcons.chat_bubble_2,
@@ -230,62 +245,8 @@ class _SupportFileScreen extends State<SupportFileScreen> {
     );
   }
 
-  showLoadingDialog({String? message}) {
-    showDialog2(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) {
-        loadingDContext = _;
-        return AlertDialog(
-          contentPadding: EdgeInsets.all(0),
-          content: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            height: 170,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5),
-                  child: Text(
-                    message ?? 'در حال ارسال درخواست صبور باشید',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Loading(),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  dissmisLoadingDialog() {
-    if (loadingDContext != null) {
-      Navigator.pop(loadingDContext!);
-    }
-  }
-
-  BuildContext? loadingDContext;
-
-  createChat() async {
-    showLoadingDialog(message: "درحال ایجاد گفتگو هستیم شکیبا باشید");
-
-    //todo: implement
-
-    await Future.delayed(Duration(seconds: 2));
-
-    dissmisLoadingDialog();
+  createChat(int fileConsultantId) async {
+    createChatBloc.add(CreateChatRequestEvent(fileConsultantId));
   }
 
   Future<bool> addOrRemoveFavorite(int id) async {
@@ -297,23 +258,20 @@ class _SupportFileScreen extends State<SupportFileScreen> {
   }
 
   Future<bool> addFavorite(int id) async {
-    showLoadingDialog();
+    loadingDialog(context: context);
 
     var result = false;
 
     try {
-      var response = await get(
-          getFileUrl('file/addFileFavorite/' + id.toString() + '/'),
-          headers: {
-            "Authorization": await User.getBearerToken(),
-          });
+      var response = await get(getFileUrl('file/addFileFavorite/' + id.toString() + '/'), headers: {
+        "Authorization": await User.getBearerToken(),
+      });
 
       if (isResponseOk(response)) {
         result = true;
       } else {
         var json = jDecode(response.body);
-        notify(json['message'] ??
-            "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
+        notify(json['message'] ?? "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
         result = false;
       }
     } on HttpException {
@@ -322,29 +280,26 @@ class _SupportFileScreen extends State<SupportFileScreen> {
       notify("خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
     }
 
-    dissmisLoadingDialog();
+    dismissDialog(loadingDialogContext);
 
     return result;
   }
 
   Future<bool> removeFavorite(int id) async {
-    showLoadingDialog();
+    loadingDialog(context: context);
 
     var result = false;
 
     try {
-      var response = await get(
-          getFileUrl('file/deleteFileFavorite/' + id.toString() + '/'),
-          headers: {
-            "Authorization": await User.getBearerToken(),
-          });
+      var response = await get(getFileUrl('file/deleteFileFavorite/' + id.toString() + '/'), headers: {
+        "Authorization": await User.getBearerToken(),
+      });
 
       if (isResponseOk(response)) {
         result = true;
       } else {
         var json = jDecode(response.body);
-        notify(json['message'] ??
-            "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
+        notify(json['message'] ?? "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
         result = false;
       }
     } on HttpException {
@@ -353,7 +308,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
       notify("خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
     }
 
-    dissmisLoadingDialog();
+    dismissDialog(loadingDialogContext);
 
     return result;
   }

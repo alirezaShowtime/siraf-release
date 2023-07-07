@@ -125,7 +125,21 @@ class _FileScreenState extends State<FileScreen> {
         toolbarOpacity = _scrollController.position.pixels <= imgHeight ? 0 : 1;
       });
     });
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels > imgHeight + 50 && titleShow)
+        return;
+
+      if (_scrollController.position.pixels <= imgHeight + 50 && !titleShow)
+        return;
+
+      setState(() {
+        titleShow = _scrollController.position.pixels > imgHeight + 50;
+      });
+    });
   }
+
+  bool titleShow = false;
 
   var imgHeight = 200;
 
@@ -356,14 +370,7 @@ class _FileScreenState extends State<FileScreen> {
           ),
         ),
         IconButton(
-          onPressed: () async {
-            await FlutterShare.share(
-              title: 'اشتراک گذاری فایل',
-              text: file.name ?? '',
-              linkUrl: FILE_URL + widget.id.toString(),
-              chooserTitle: 'اشتراک گذاری در',
-            );
-          },
+          onPressed: () => share(file),
           icon: m.Image(
             image: AssetImage("assets/images/ic_share.png"),
             width: 16,
@@ -465,7 +472,8 @@ class _FileScreenState extends State<FileScreen> {
         alignment: Alignment.center,
         child: Text(
           "موقعیت مکانی صحیح نیست ${lat} , ${long}",
-          style: TextStyle(fontSize: 13, fontFamily: "IranSansMedium", color: Colors.red),
+          style: TextStyle(
+              fontSize: 13, fontFamily: "IranSansMedium", color: Colors.red),
         ),
       );
     }
@@ -649,7 +657,9 @@ class _FileScreenState extends State<FileScreen> {
                               style: TextStyle(color: greyColor, fontSize: 13),
                             ),
                             Text(
-                              file.rent != null ? number_format(file.rent) : "توافقی",
+                              file.rent != null
+                                  ? number_format(file.rent)
+                                  : "توافقی",
                               style: TextStyle(
                                   color: Colors.grey.shade500, fontSize: 11),
                             ),
@@ -875,70 +885,121 @@ class _FileScreenState extends State<FileScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Stack(
-                children: <Widget>[
-                  if (toolbarOpacity == 0)
-                    Positioned(
-                      left: 1.0,
-                      top: 2.0,
-                      child: Icon(CupertinoIcons.back, color: Colors.black26),
-                    ),
-                  if (toolbarOpacity == 0)
-                    Positioned(
-                      right: 1.0,
-                      top: 2.0,
-                      child: Icon(CupertinoIcons.back, color: Colors.black26),
-                    ),
-                  Icon(
-                    CupertinoIcons.back,
-                    color: iconColor,
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Stack(
+                    children: <Widget>[
+                      if (toolbarOpacity == 0)
+                        Positioned(
+                          left: 1.0,
+                          top: 2.0,
+                          child:
+                              Icon(CupertinoIcons.back, color: Colors.black26),
+                        ),
+                      if (toolbarOpacity == 0)
+                        Positioned(
+                          right: 1.0,
+                          top: 2.0,
+                          child:
+                              Icon(CupertinoIcons.back, color: Colors.black26),
+                        ),
+                      Icon(
+                        CupertinoIcons.back,
+                        color: iconColor,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                if (titleShow)
+                  SizedBox(
+                    width: 210,
+                    child: Text(
+                      (file.name ?? "") +
+                          (file.name ?? "") +
+                          (file.name ?? "") +
+                          (file.name ?? "") +
+                          (file.name ?? ""),
+                      style: TextStyle(
+                        fontFamily: "IranSansMedium",
+                        color: Themes.text,
+                        fontSize: 12.5,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+              ],
             ),
-            IconButton(
-              onPressed: () async {
-                doWithLogin(context, () async {
-                  bookmark.addOrRemoveFavorite();
-                });
-              },
-              icon: Stack(
-                children: [
-                  if (toolbarOpacity == 0)
-                    Positioned(
-                      top: 0.5,
-                      right: 0.5,
-                      child: Icon(
-                        Icons.bookmark_border,
-                        size: 22,
-                        color: Colors.black26,
-                      ),
+            Row(
+              children: [
+                if (titleShow)
+                  IconButton(
+                    onPressed: () => share(file),
+                    icon: Stack(
+                      children: <Widget>[
+                        m.Image(
+                          image: AssetImage("assets/images/ic_share.png"),
+                          width: 16,
+                          height: 16,
+                          color: App.theme.iconTheme.color,
+                        ),
+                      ],
                     ),
-                  if (toolbarOpacity == 0)
-                    Positioned(
-                      top: 0.5,
-                      left: 0.5,
-                      child: Icon(
-                        Icons.bookmark_border,
-                        size: 22,
-                        color: Colors.black26,
-                      ),
-                    ),
-                  Icon(
-                    isFavorite ? Icons.bookmark : Icons.bookmark_border,
-                    size: 22,
-                    color: iconColor,
                   ),
-                ],
-              ),
+                IconButton(
+                  onPressed: () async {
+                    doWithLogin(context, () async {
+                      bookmark.addOrRemoveFavorite();
+                    });
+                  },
+                  icon: Stack(
+                    children: [
+                      if (toolbarOpacity == 0)
+                        Positioned(
+                          top: 0.5,
+                          right: 0.5,
+                          child: Icon(
+                            Icons.bookmark_border,
+                            size: 22,
+                            color: Colors.black26,
+                          ),
+                        ),
+                      if (toolbarOpacity == 0)
+                        Positioned(
+                          top: 0.5,
+                          left: 0.5,
+                          child: Icon(
+                            Icons.bookmark_border,
+                            size: 22,
+                            color: Colors.black26,
+                          ),
+                        ),
+                      Icon(
+                        isFavorite ? Icons.bookmark : Icons.bookmark_border,
+                        size: 22,
+                        color: iconColor,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void share(FileDetail file) async {
+    await FlutterShare.share(
+      title: 'اشتراک گذاری فایل',
+      text: file.name ?? '',
+      linkUrl: FILE_URL + widget.id.toString(),
+      chooserTitle: 'اشتراک گذاری در',
     );
   }
 }

@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:http/http.dart';
-import 'package:meta/meta.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/group.dart';
+import 'package:http/http.dart';
+import 'package:meta/meta.dart';
 
 part 'get_groups_event.dart';
 

@@ -1,12 +1,15 @@
+import 'dart:io';
+
 import 'package:auto_direction/auto_direction.dart';
-import 'package:flutter/material.dart';
 import 'package:siraf3/enums/message_owner.dart';
 import 'package:siraf3/extensions/list_extension.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/ticket_details.dart';
 import 'package:siraf3/screens/ticket/ticket_chat/mesage_file_widget.dart';
 import 'package:siraf3/screens/ticket/ticket_chat/message_config.dart';
 import 'package:siraf3/themes.dart';
+import 'package:flutter/material.dart';
 
 class MessageWidget extends StatefulWidget {
   @override
@@ -15,8 +18,9 @@ class MessageWidget extends StatefulWidget {
   Message message;
   late MessageOwner messageOwner;
   late List<FileMessage> fileMessages;
+  late List<File>? files;
 
-  MessageWidget({required this.message}) {
+  MessageWidget({required this.message,this.files}) {
     this.fileMessages = message.fileMessage ?? [];
     this.messageOwner = message.owner;
   }
@@ -61,8 +65,8 @@ class MessageWidgetState extends State<MessageWidget> {
                     messageConfig: messageConfig,
                     textDirection: messageConfig.fileDirection,
                   ),
-                if (hasFile && widget.message.message.isNotNullOrEmpty()) SizedBox(height: 10),
-                if (widget.message.message.isNotNullOrEmpty()) textWidget(),
+                if (hasFile && widget.message.message.isFill()) SizedBox(height: 10),
+                if (widget.message.message.isFill()) textWidget(),
               ],
             ),
           ),
@@ -96,7 +100,7 @@ class MessageWidgetState extends State<MessageWidget> {
   }
 
   MessageConfig _getConfig() {
-    return widget.messageOwner == MessageOwner.ForME ? _forMeConfig() : _forHerConfig();
+    return widget.messageOwner == MessageOwner.ForMe ? _forMeConfig() : _forHerConfig();
   }
 
   MessageConfig _forMeConfig() {

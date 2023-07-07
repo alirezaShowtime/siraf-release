@@ -6,6 +6,7 @@ abstract class SendMessageEvent {}
 class SendMessageRequestModel {
   int ticketId;
   List<MapEntry<String, dio.MultipartFile>>? files;
+  List<File>? files2;
   String? message;
   MessageUploadController controller;
   Key widgetKey;
@@ -16,6 +17,7 @@ class SendMessageRequestModel {
     required this.widgetKey,
     this.message,
     this.files,
+    this.files2,
   });
 }
 

@@ -75,24 +75,20 @@ class _EditFileFirstState extends State<EditFileFirst> {
 
   setData() {
     setState(() {
-      var c = widget.file.fullCategory;
-      category = cat.Category(
-        id: c?.id,
-        name: c?.name,
-        image: c?.image,
-        fullCategory: c?.fullCategory,
-        isAll: c?.isAll,
-        parentId: c?.parentId,
-      );
+      category = cat.Category.fromJson(widget.file.category?.toJson() ?? {});
 
       propertyBloc.add(PropertyInsertEvent(category_id: category!.id!));
 
-      city = widget.file.city;
+      city = City.fromJson(widget.file.cityFull?.toJson() ?? {});
       address = widget.file.address;
       location = LatLng(
         double.parse(widget.file.lat!),
         double.parse(widget.file.long!),
       );
+
+      widget.file.propertys = widget.file.propertys == null ? [] : widget.file.propertys;
+
+      widget.file.propertys = widget.file.propertys!.where((element) => element.key != null).toList();
 
       formData = EditFileFormData(
         id: widget.file.id!,
@@ -270,6 +266,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
 
     state = state as PropertyLoadedState;
 
+
     var props = state.iproperties
       ..sort((a, b) => a.weightInsert!.compareTo(b.weightInsert!));
 
@@ -284,7 +281,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
     if (!propertiesSetes) {
       var selectedProps = props
           .where((e) =>
-              widget.file.property?.any((element) {
+              widget.file.propertys?.any((element) {
                 return element.key == e.value;
               }) ??
               false)
@@ -297,8 +294,8 @@ class _EditFileFirstState extends State<EditFileFirst> {
           .map(
             (key, value) => MapEntry(
               value.value ?? "",
-              widget.file.property!
-                  .firstWhere((element) => element.key! == value.value!)
+              widget.file.propertys!
+                  .firstWhere((element) => element.key! == (value.value??""))
                   .value
                   .toString(),
             ),
@@ -311,8 +308,8 @@ class _EditFileFirstState extends State<EditFileFirst> {
           .map(
             (key, value) => MapEntry(
               value.value ?? "",
-              widget.file.property!
-                  .firstWhere((element) => element.key! == value.value!)
+              widget.file.propertys!
+                  .firstWhere((element) => element.key! == (value.value??""))
                   .value
                   .toString(),
             ),
@@ -325,8 +322,8 @@ class _EditFileFirstState extends State<EditFileFirst> {
           .map(
             (key, value) => MapEntry(
               value.value ?? "",
-              widget.file.property!
-                  .firstWhere((element) => element.key! == value.value!)
+              widget.file.propertys!
+                  .firstWhere((element) => element.key! == (value.value??""))
                   .value
                   .toString(),
             ),
@@ -339,8 +336,8 @@ class _EditFileFirstState extends State<EditFileFirst> {
           .map(
             (key, value) => MapEntry(
               value.value ?? "",
-              widget.file.property!
-                  .firstWhere((element) => element.key! == value.value!)
+              widget.file.propertys!
+                  .firstWhere((element) => element.key! == (value.value??""))
                   .value
                   .toString(),
             ),
@@ -601,7 +598,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
         ),
       ),
     );
-    if (result != null || result is List<Category>) {
+    if (result != null || result is List<cat.Category>) {
       setState(() {
         if (category?.id != result.last.id) {
           selectedMainProps.clear();

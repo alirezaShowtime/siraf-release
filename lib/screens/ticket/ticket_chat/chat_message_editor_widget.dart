@@ -1,12 +1,16 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:siraf3/bloc/ticket/sendMessage/send_message_bloc.dart';
 import 'package:siraf3/extensions/file_extension.dart';
+import 'package:siraf3/extensions/list_extension.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatMessageEditor extends StatefulWidget {
   @override
@@ -18,7 +22,7 @@ class ChatMessageEditor extends StatefulWidget {
   String? replyingMessage;
 
   //todo: type of the onSendMessage variable is a test type, this variable is possible a model class
-  void Function(String text, List<File>)? onClickSendMessage;
+  void Function(String? text, List<File>?)? onClickSendMessage;
   void Function()? onRecordVoice;
   void Function()? onAttachEmoji;
   void Function()? onAttachFile;
@@ -36,6 +40,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
   bool showSendButton = false;
 
   List<File> selectedFiles = [];
+  List<Widget> selectedFilesWidget = [];
 
   @override
   void initState() {
@@ -99,7 +104,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
                           onTap: sendMessage,
                         ),
                       ),
-                    if (!showSendButton)
+                    if (!showSendButton && selectedFiles.length <= 0)
                       Transform.rotate(
                         angle: 180,
                         child: btn(
@@ -112,19 +117,20 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
                     //     iconData: Icons.keyboard_voice_outlined,
                     //     onTap: recordVoice,
                     //   ),
-                    Expanded(
-                      child: TextField2(
-                        controller: widget._messageController,
-                        maxLines: 7,
-                        minLines: 1,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "پیام...",
-                          hintStyle: TextStyle(color: Colors.grey.shade400),
+                    if (!selectedFiles.isFill())
+                      Expanded(
+                        child: TextField2(
+                          controller: widget._messageController,
+                          maxLines: 7,
+                          minLines: 1,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "پیام...",
+                            hintStyle: TextStyle(color: Colors.grey.shade400),
+                          ),
+                          style: TextStyle(fontSize: 13),
                         ),
-                        style: TextStyle(fontSize: 13),
                       ),
-                    ),
                     // btn(
                     //   iconData: Icons.sentiment_satisfied_rounded,
                     //   onTap: attachEmoji,
@@ -141,7 +147,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
 
   Widget btn({required IconData iconData, required Function() onTap, Color? color}) {
     return Material(
-      color: Themes.background2,
+      color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
         onTap: onTap,
@@ -162,12 +168,13 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
   Future<void> attachFile() async {
     widget.onAttachFile?.call();
 
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false);
 
     if (result == null) return;
 
     for (PlatformFile platformFile in result.files) {
       selectedFiles.add(File(platformFile.path!));
+      selectedFilesWidget.add(attachedFileItem(File(platformFile.path!)));
     }
     setState(() {});
   }
@@ -179,22 +186,29 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
 
   void sendMessage() {
     // FocusManager.instance.primaryFocus?.unfocus();
-    widget.onClickSendMessage?.call(widget._messageController.value.text, selectedFiles);
-    widget._messageController.text = '';
 
-    Future.delayed(Duration(seconds: 1), () {
-      setState(() {
-        selectedFiles.clear();
-      });
+    if (widget._messageController.value.text.isFill()) {
+      widget.onClickSendMessage?.call(widget._messageController.value.text, null);
+      widget._messageController.text = '';
+      return;
+    }
+
+    if (selectedFiles.isFill()) {
+      widget.onClickSendMessage?.call(null, selectedFiles);
+    }
+
+    BlocProvider.of<SendMessageBloc>(context).stream.listen((state) {
+      if (state is SendMessageAddedToQueue) {
+        setState(() {
+          selectedFilesWidget.clear();
+        });
+      }
+      if (state is SendMessageSuccess) {
+        setState(() {
+          selectedFiles.clear();
+        });
+      }
     });
-
-    // BlocProvider.of<SendMessageBloc>(context).stream.listen((state) {
-    //   if (state is SendMessageAddedToQueue) {
-    //    setState(() {
-    //      selectedFiles.clear();
-    //    });
-    //   }
-    // });
   }
 
   Widget fileList() {
@@ -215,9 +229,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
             )
           ]),
       child: SingleChildScrollView(
-        child: Column(
-          children: selectedFiles.map((file) => attachedFileItem(file)).toList(),
-        ),
+        child: Column(children: selectedFilesWidget),
       ),
     );
   }
@@ -252,18 +264,14 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
                   maxLines: 2,
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 14,
+                    fontSize: 12,
                     fontFamily: "sans-serif",
-                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 SizedBox(height: 3),
                 Text(
                   "${file.lengthStr()} ${file.extension}",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 9,
-                  ),
+                  style: TextStyle(color: Colors.grey, fontSize: 9),
                 ),
               ],
             ),

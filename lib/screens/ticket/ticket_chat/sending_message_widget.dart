@@ -1,26 +1,28 @@
 import 'dart:io';
 
 import 'package:auto_direction/auto_direction.dart';
-import 'package:flutter/material.dart';
-import 'package:percent_indicator/percent_indicator.dart';
-import 'package:shamsi_date/shamsi_date.dart';
 import 'package:siraf3/controller/message_upload_controller.dart';
 import 'package:siraf3/enums/message_state.dart';
 import 'package:siraf3/extensions/double_extension.dart';
 import 'package:siraf3/extensions/file_extension.dart';
 import 'package:siraf3/extensions/list_extension.dart';
+import 'package:siraf3/extensions/string_extension.dart';
+
 import 'package:siraf3/screens/ticket/ticket_chat/message_config.dart';
 import 'package:siraf3/themes.dart';
+import 'package:flutter/material.dart';
+import 'package:percent_indicator/percent_indicator.dart';
+import 'package:shamsi_date/shamsi_date.dart';
 
 class SendingMessageWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => SendingMessageWidgetState();
 
-  String message;
+  String? message;
   late List<File> files;
   MessageUploadController controller;
 
-  SendingMessageWidget({super.key, required this.controller, required this.message, List<File>? files}) {
+  SendingMessageWidget({super.key, required this.controller, this.message, List<File>? files}) {
     this.files = files ?? [];
   }
 }
@@ -53,6 +55,12 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
   }
 
   @override
+  void dispose() {
+    loadingController.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
 
@@ -69,8 +77,6 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
 
   @override
   Widget build(BuildContext context) {
-    if (files.isNotEmpty) return uploadingMessageWidget();
-
     return Container(
       alignment: messageConfig.alignment,
       child: Column(
@@ -84,13 +90,26 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
             constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.60, minWidth: 100),
             margin: EdgeInsets.only(bottom: 3, left: 10, right: 10),
             padding: EdgeInsets.only(top: 5, left: 9, right: 9, bottom: 3),
-            child: textWidget(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (File file in files) _getFileWidget(file),
+                if (widget.message.isFill())
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 5, right: 5, top: hasFile ? 10 : 0),
+                    child: textWidget(),
+                  ),
+              ],
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 10),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 if (messageState == MessageState.Uploading)
                   Icon(
@@ -117,131 +136,15 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
     );
   }
 
-  Widget uploadingMessageWidget() {
-    return Container(
-      alignment: messageConfig.alignment,
-      margin: EdgeInsets.only(bottom: 3, left: 5, right: 5),
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: messageConfig.background,
-              borderRadius: messageConfig.borderRadius,
-            ),
-            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
-            margin: EdgeInsets.only(bottom: 3, left: 10, right: 10),
-            padding: EdgeInsets.only(top: 5, left: 9, right: 9, bottom: 3),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (File file in files)
-                  Container(
-                    width: double.infinity,
-                    alignment: Alignment.centerLeft,
-                    margin: EdgeInsets.symmetric(vertical: 5),
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: Colors.white10,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          file.fileName,
-                          textDirection: TextDirection.ltr,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                          style: TextStyle(
-                            color: messageConfig.fileNameColor,
-                            fontSize: 10,
-                            fontFamily: "sans-serif",
-                          ),
-                        ),
-                        Text(
-                          "${file.lengthStr()} ${file.extension}",
-                          style: TextStyle(color: messageConfig.secondTextColor, fontSize: 9),
-                        ),
-                      ],
-                    ),
-                  ),
-                if (widget.message.isNotEmpty)
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 5, right: 5, top: hasFile ? 10 : 0),
-                    child: textWidget(),
-                  ),
-                if (messageState == MessageState.Uploading)
-                  Icon(
-                    Icons.access_time_rounded,
-                    color: Colors.white,
-                    size: 14,
-                  ),
-                if (messageState == MessageState.ErrorUpload)
-                  Icon(
-                    Icons.error_outline_rounded,
-                    color: Colors.white,
-                    size: 14,
-                  ),
-              ],
-            ),
-          ),
-          Container(
-            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
-            margin: EdgeInsets.only(top: 4),
-            padding: EdgeInsets.only(left: 5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: LinearPercentIndicator(
-                    isRTL: true,
-                    backgroundColor: Colors.black12,
-                    animation: true,
-                    barRadius: Radius.circular(10),
-                    progressColor: Colors.black.withOpacity(1),
-                    lineHeight: 7,
-                    padding: EdgeInsets.only(left: 3),
-                    percent: percentUploading < 0.01 ? 0.01 : percentUploading,
-                  ),
-                ),
-                Text(
-                  "${nowUploadingProgress.toFileSize(unit: false)}/${countUploadingProgress.toFileSize()}  ${(percentUploading * 100).toInt()}%",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 8,
-                    fontFamily: "sans-serif",
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 10),
-            child: Text(
-              createdAt,
-              style: TextStyle(color: Colors.grey.shade500, fontSize: 9, height: 1),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget textWidget() {
     return Wrap(
       children: [
         ConstrainedBox(
           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
           child: AutoDirection(
-            text: widget.message,
+            text: widget.message!,
             child: Text(
-              widget.message,
+              widget.message!,
               style: TextStyle(color: messageConfig.textColor, fontSize: 12),
             ),
           ),
@@ -250,7 +153,7 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
     );
   }
 
-  Widget? _getFileWidget(File file) {
+  Widget _getFileWidget(File file) {
     switch (messageState) {
       case MessageState.Init:
         return _fileInitWidget(file);
@@ -261,7 +164,7 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
       case MessageState.ErrorUpload:
         return _fileErrorUpload(file);
       default:
-        return null;
+        return Container();
     }
   }
 
@@ -305,7 +208,10 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
           ),
           Align(
             alignment: Alignment.center,
-            child: Icon(Icons.close_rounded, color: messageConfig.background, size: 24),
+            child: GestureDetector(
+              onTap: () => onClickCancel(file),
+              child: Icon(Icons.close_rounded, color: messageConfig.background, size: 24),
+            ),
           ),
         ],
       ),
@@ -361,9 +267,8 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
                     maxLines: 2,
                     style: TextStyle(
                       color: messageConfig.fileNameColor,
-                      fontSize: 14,
+                      fontSize: 11,
                       fontFamily: "sans-serif",
-                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   Text(
@@ -402,6 +307,7 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
 
   void onClickCancel(File file) {
     widget.files.remove(file);
+    widget.controller.cancelUpload();
     setState(() {});
   }
 }

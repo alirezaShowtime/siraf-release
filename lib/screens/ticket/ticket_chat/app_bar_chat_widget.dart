@@ -1,17 +1,20 @@
-import 'package:flutter/material.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/models/ticket.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
+import 'package:siraf3/widgets/my_popup_menu_button.dart';
+import 'package:siraf3/widgets/my_popup_menu_item.dart';
+import 'package:flutter/material.dart';
 
 class AppBarChat extends AppBar {
   @override
   State<AppBar> createState() => _AppBarChat();
 
   Ticket ticket;
+  void Function()? onclickCloseChat;
 
-  AppBarChat({required this.ticket});
+  AppBarChat({required this.ticket,this.onclickCloseChat});
 }
 
 class _AppBarChat extends State<AppBarChat> {
@@ -23,6 +26,18 @@ class _AppBarChat extends State<AppBarChat> {
       titleSpacing: 0,
       leading: MyBackButton(),
       title: title(),
+      actions: [
+        MyPopupMenuButton(
+          iconData: Icons.more_vert_rounded,
+          itemBuilder: (_) => [
+            MyPopupMenuItem(
+              label: "بستن تیکت",
+              icon: Icons.close_rounded,
+              onTap: () => widget.onclickCloseChat?.call(),
+            ),
+          ],
+        )
+      ],
     );
   }
 
