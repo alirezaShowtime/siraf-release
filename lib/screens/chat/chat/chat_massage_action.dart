@@ -10,7 +10,7 @@ import 'package:siraf3/widgets/title_dialog.dart';
 
 void showMessageActionMenu(
   BuildContext context,
-  TapDownDetails details, {
+  TapUpDetails details, {
   required void Function() onClickDeleteItem,
   required void Function() onClickAnswerItem,
 }) {
@@ -19,7 +19,7 @@ void showMessageActionMenu(
     constraints: BoxConstraints(minWidth: 180),
     elevation: 3,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(15),
+      borderRadius: BorderRadius.circular(7),
     ),
     position: RelativeRect.fromLTRB(
       details.globalPosition.dx,

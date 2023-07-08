@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:siraf3/bloc/chat/downloadFile/download_file_bloc.dart';
 import 'package:siraf3/extensions/int_extension.dart';
+import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/screens/video_screen.dart';
 import 'package:siraf3/widgets/my_image.dart';
@@ -64,7 +65,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        replyWidget(widget.message, widget.onClickReplyMessage),
+        replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
         Stack(
           children: [
             videoWidget(),
@@ -104,7 +105,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        replyWidget(widget.message, widget.onClickReplyMessage),
+        replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
         videoWidget(),
         textWidget(widget.message.message),
         footerWidget(false, widget.message.createTime!),
@@ -202,7 +203,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
                     bloc: downloadFileBloc,
                     builder: (context, state) {
                       if (state is DownloadFileLoading) return loadingProgressWidget(radius: 7.5, progress: 0.7, width: 1.75);
-                      if (state is DownloadFileSuccess)
+                      if (state is DownloadFileSuccess || widget.files.isFill())
                         return Icon(
                           Icons.play_arrow_rounded,
                           color: isForMe() ? Colors.white : Colors.white,

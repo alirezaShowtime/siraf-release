@@ -27,11 +27,11 @@ class ChatMessageWidget extends MessageWidget {
 
   @override
   State<StatefulWidget> createState() {
-    if (message.typeFile == TypeFile.Voice) {
+    if (message.getTypeFile() == TypeFile.Voice) {
       return ChatVoiceMessageWidgetState();
-    } else if (message.typeFile == TypeFile.Video) {
+    } else if (message.getTypeFile() == TypeFile.Video) {
       return ChatVideoMessageWidgetState();
-    } else if (message.typeFile == TypeFile.Image) {
+    } else if (message.getTypeFile() == TypeFile.Image) {
       return ChatImageMessageWidgetState();
     } else {
       return ChatDocMessageWidgetState();

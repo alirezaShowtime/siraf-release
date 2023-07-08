@@ -193,7 +193,7 @@ class ChatSendingVoiceMessageWidgetState extends ChatSendingMessageWidgetState {
                 ),
               SizedBox(width: 2),
               Text(
-                widget.controller.getCreateTime() ?? "",
+                createTime ?? "",
                 style: TextStyle(
                   color: messageConfig.secondTextColor,
                   fontSize: 9,

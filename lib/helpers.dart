@@ -393,7 +393,7 @@ String generateUniquePath(String path) {
 String timeFormatter(int seconds, {bool hasHour = false}) {
   if (hasHour) {
     var hours = (seconds ~/ 3600).toString();
-    var minutes = ((seconds % 3600) / 60).toString();
+    var minutes = ((seconds % 3600) ~/ 60).toString();
     var second = ((seconds % 3600) % 60).toString();
 
     hours = hours.length > 1 ? "$hours" : "0$hours";

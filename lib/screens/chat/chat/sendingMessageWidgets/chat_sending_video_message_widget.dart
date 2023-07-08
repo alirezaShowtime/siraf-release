@@ -16,8 +16,7 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
   late AnimationController loadingController;
 
-  void Function(void Function())? imageWidgetSetState;
-  Uint8List? thumbnailPath;
+  late Future<Uint8List?> videoThumbnail;
   bool isSeen = false;
   late Future<VideoPlayerValue> infoVideo;
 
@@ -31,7 +30,7 @@ class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
 
     loadingController = AnimationController(vsync: this, duration: Duration(milliseconds: 1700))..repeat(reverse: false);
 
-    getVideoThumbnail(videoFile.path);
+    videoThumbnail = getVideoThumbnail(videoFile.path);
 
     infoVideo = getVideoInfo(videoFile);
   }
@@ -42,15 +41,11 @@ class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
     super.dispose();
   }
 
-  void getVideoThumbnail(String videoUrl) async {
-    final fileName = await VideoThumbnail.thumbnailData(
+  Future<Uint8List?> getVideoThumbnail(String videoUrl) {
+    return VideoThumbnail.thumbnailData(
       video: videoUrl,
       imageFormat: ImageFormat.WEBP,
     );
-
-    imageWidgetSetState?.call(() {
-      thumbnailPath = fileName;
-    });
   }
 
   @override
@@ -75,20 +70,37 @@ class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
                   color: Colors.black.withOpacity(0.4),
                   borderRadius: BorderRadius.circular(30),
                 ),
-                child: Row(
-                  children: [
-                    if (isForMe())
-                      Icon(
-                        isSeen ? Icons.done_all_rounded : Icons.check_rounded,
-                        color: isForMe() ? Colors.white : Colors.red,
-                        size: 13,
-                      ),
-                    SizedBox(width: 4),
-                    Text(
-                      widget.controller.getCreateTime() ?? "",
-                      style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500, fontFamily: "sans-serif"),
-                    ),
-                  ],
+                child: StreamBuilder<MessageState>(
+                  initialData: MessageState.Uploading,
+                  stream: widget.controller.messageSate.stream,
+                  builder: (context, snapshot) {
+                    return Row(
+                      children: [
+                        if (snapshot.data == MessageState.Uploading)
+                          Icon(
+                            Icons.schedule_rounded,
+                            color: Colors.white,
+                            size: 13,
+                          ),
+                        if (snapshot.data == MessageState.ErrorUpload)
+                          Icon(
+                            Icons.error_rounded,
+                            color: Colors.red,
+                            size: 13,
+                          ),
+                        SizedBox(width: 4),
+                        Text(
+                          createTime ?? "",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "sans-serif",
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),
@@ -105,141 +117,143 @@ class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
         replyWidget(widget.replyMessage, widget.onClickReplyMessage),
         videoWidget(),
         textWidget(widget.message),
-        footerWidget(false, widget.controller.getCreateTime() ?? ""),
+        StreamBuilder<MessageState>(
+          initialData: MessageState.Uploading,
+          stream: widget.controller.messageSate.stream,
+          builder: (context, snapshot) {
+            return footerWidget(
+              false,
+              createTime ?? "",
+              error: snapshot.data == MessageState.ErrorUpload,
+              sending: snapshot.data == MessageState.Uploading,
+            );
+          },
+        ),
       ],
     );
   }
 
   Widget videoWidget() {
-    return StatefulBuilder(builder: (context, setState) {
-      imageWidgetSetState = setState;
-      if (thumbnailPath == null) return loadingWidget(0.1);
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        ConstrainedBox(
+          constraints: BoxConstraints(minHeight: 150),
+          child: FutureBuilder<Uint8List?>(
+            future: videoThumbnail,
+            builder: (context, snapshot) {
+              if (snapshot.data == null) return loadingWidget(0.1);
 
-      return Stack(
-        alignment: Alignment.center,
-        children: [
-          ConstrainedBox(
-            constraints: BoxConstraints(minHeight: 150),
-            child: MyImage(
-              borderRadius: BorderRadius.circular(7),
-              image: MemoryImage(thumbnailPath!),
-              fit: BoxFit.cover,
-              loadingBuilder: (_, child, loading) {
-                return loading == null ? child : loadingWidget(loading.expectedTotalBytes == null ? 0 : loading.cumulativeBytesLoaded / loading.expectedTotalBytes!);
-              },
-            ),
+              return MyImage(
+                borderRadius: BorderRadius.circular(7),
+                image: MemoryImage(snapshot.data!),
+                fit: BoxFit.cover,
+                loadingBuilder: (_, child, loading) {
+                  return loading == null ? child : loadingWidget(loading.expectedTotalBytes == null ? 0 : loading.cumulativeBytesLoaded / loading.expectedTotalBytes!);
+                },
+              );
+            },
           ),
-          StreamBuilder<UploadingDetail>(
+        ),
+        StreamBuilder<MessageState>(
+          initialData: MessageState.Uploading,
+          stream: widget.controller.messageSate.stream,
+          builder: (context, snapshot) {
+            if (snapshot.data != MessageState.Uploading) return playBtn();
+            return StreamBuilder<UploadingDetail>(
               initialData: UploadingDetail(0, 0),
               stream: widget.controller.uploading.stream,
               builder: (context, snapshot) {
-                var detail = snapshot.data!;
-
-                if (detail.percent < 99) {
-                  return loadingProgressWidget(radius: 15, progress: detail.percent.toDouble());
-                }
-
-                return InkWell(
-                  onTap: () => push(context, VideoScreen(videoFile: videoFile)),
-                  child: Container(
-                    width: 35,
-                    height: 35,
-                    padding: EdgeInsets.all(2),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: Icon(Icons.play_arrow_rounded, color: isForMe() ? Colors.white : Colors.white),
-                  ),
-                );
-              }),
-          Positioned(
-            top: 4,
-            left: 4,
-            child: Container(
-              padding: EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(7),
-                color: Colors.black54,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      StreamBuilder<UploadingDetail>(
-                          initialData: UploadingDetail(0, 0),
-                          stream: widget.controller.uploading.stream,
-                          builder: (context, snapshot) {
-                            var detail = snapshot.data!;
-                            return Text(
-                              "${detail.count.toFileSize(unit: false)}/${detail.count.toFileSize()}",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: "sans-serif",
-                                fontWeight: FontWeight.w500,
-                                fontSize: 8,
-                              ),
-                            );
-                          }),
-                      FutureBuilder<VideoPlayerValue>(
-                          future: infoVideo,
-                          builder: (context, snapshot) {
-                            return Text(
-                              timeFormatter(snapshot.data?.duration.inSeconds ?? 0, hasHour: true),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: "sans-serif",
-                                fontWeight: FontWeight.w500,
-                                fontSize: 8,
-                              ),
-                            );
-                          }),
-                    ],
-                  ),
-                  StreamBuilder(
-                    stream: widget.controller.messageSate.stream,
-                    builder: (context, snapshot) {
-                      if (snapshot.data == MessageState.Uploading)
-                        return Icon(
-                          Icons.arrow_upward_rounded,
-                          color: isForMe() ? Colors.white : Colors.white,
-                          size: 18,
+                return loadingProgressWidget(radius: 15, progress: snapshot.data!.percent.toDouble());
+              },
+            );
+          },
+        ),
+        Positioned(
+          top: 4,
+          left: 4,
+          child: Container(
+            padding: EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(7),
+              color: Colors.black54,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    StreamBuilder<UploadingDetail>(
+                      initialData: UploadingDetail(0, 0),
+                      stream: widget.controller.uploading.stream,
+                      builder: (context, snapshot) {
+                        var detail = snapshot.data!;
+                        return Text(
+                          "${detail.uploaded.toFileSize(unit: false)}/${detail.count.toFileSize()}",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "sans-serif",
+                            fontWeight: FontWeight.w500,
+                            fontSize: 8,
+                          ),
                         );
-                      if (snapshot.data == MessageState.Uploaded)
+                      },
+                    ),
+                    FutureBuilder<VideoPlayerValue>(
+                      future: infoVideo,
+                      builder: (context, snapshot) {
+                        return Text(
+                          timeFormatter(snapshot.data?.duration.inSeconds ?? 0, hasHour: true),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "sans-serif",
+                            fontWeight: FontWeight.w500,
+                            fontSize: 8,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                StreamBuilder(
+                  stream: widget.controller.messageSate.stream,
+                  builder: (context, snapshot) {
+                    switch (snapshot.data) {
+                      case MessageState.Uploaded:
                         return Icon(
                           Icons.play_arrow_rounded,
                           color: isForMe() ? Colors.white : Colors.white,
                           size: 20,
                         );
-                      if (snapshot.data == MessageState.ErrorUpload)
+                      case MessageState.ErrorUpload:
                         return Icon(
                           Icons.warning_amber_rounded,
                           color: isForMe() ? Colors.white : Colors.white,
                           size: 20,
                         );
-                      return Icon(
-                        Icons.arrow_upward_rounded,
-                        color: isForMe() ? Colors.white : Colors.white,
-                        size: 18,
-                      );
-                    },
-                  ),
-                ],
-              ),
+                      default:
+                        return Icon(
+                          Icons.arrow_upward_rounded,
+                          color: isForMe() ? Colors.white : Colors.white,
+                          size: 18,
+                        );
+                    }
+                  },
+                ),
+              ],
             ),
           ),
-        ],
-      );
-    });
+        ),
+      ],
+    );
   }
 
   Widget loadingWidget(double progress) {
     return Container(
       height: 150,
+      width: double.infinity,
       color: isForMe() ? Colors.white12 : Colors.grey.shade100,
       alignment: Alignment.center,
       child: loadingProgressWidget(radius: 15, progress: progress),
@@ -269,7 +283,23 @@ class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
   }
 
   Future<VideoPlayerValue> getVideoInfo(File videoFile) async {
-    var con = VideoPlayerController.file(videoFile);
-    return await con.value;
+    return await VideoPlayerController.file(videoFile).value;
+  }
+
+  Widget playBtn() {
+    return InkWell(
+      onTap: () => push(context, VideoScreen(videoFile: videoFile)),
+      child: Container(
+        width: 35,
+        height: 35,
+        padding: EdgeInsets.all(2),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Colors.black54,
+          borderRadius: BorderRadius.circular(100),
+        ),
+        child: Icon(Icons.play_arrow_rounded, color: isForMe() ? Colors.white : Colors.white),
+      ),
+    );
   }
 }

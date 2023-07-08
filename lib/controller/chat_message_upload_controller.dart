@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:intl/intl.dart';
 import 'package:siraf3/enums/message_state.dart';
 
 class UploadingDetail {
@@ -17,20 +16,11 @@ class UploadingDetail {
 
 class ChatMessageUploadController {
   void Function()? onCancelUpload;
-  StreamController<MessageState> messageSate = StreamController();
-  StreamController<UploadingDetail> uploading = StreamController();
-  String? _createTime;
+  StreamController<MessageState> messageSate = StreamController.broadcast();
+  StreamController<UploadingDetail> uploading = StreamController.broadcast();
 
   void setOnCancelUpload(Function()? onCancelUpload) {
     this.onCancelUpload = onCancelUpload;
-  }
-
-  String? getCreateTime() {
-    return _createTime;
-  }
-
-  String setCreateTime(DateTime time) {
-    return DateFormat.Hm().format(time);
   }
 
   void cancelUpload() {

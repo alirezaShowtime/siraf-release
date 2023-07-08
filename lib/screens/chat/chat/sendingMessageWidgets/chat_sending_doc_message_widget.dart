@@ -192,7 +192,7 @@ class ChatSendingDocMessageWidgetState extends ChatSendingMessageWidgetState {
           builder: (context, snapshot) {
             return footerWidget(
               false,
-              widget.controller.getCreateTime() ?? "",
+              createTime ?? "",
               sending: snapshot.data == MessageState.Uploading,
               error: snapshot.data == MessageState.ErrorUpload,
             );

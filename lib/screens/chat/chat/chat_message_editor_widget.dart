@@ -1,14 +1,55 @@
-part of 'chat_screen.dart';
+import 'dart:io';
 
-extension ChatMessageEditor on _ChatScreen {
-  Widget chatMessageEditor() {
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:siraf3/bloc/chat/recordingVoice/recording_voice_bloc.dart';
+import 'package:siraf3/bloc/chat/reply/chat_reply_bloc.dart';
+import 'package:siraf3/extensions/file_extension.dart';
+import 'package:siraf3/extensions/list_extension.dart';
+import 'package:siraf3/extensions/string_extension.dart';
+import 'package:siraf3/helpers.dart';
+import 'package:siraf3/models/chat_message.dart';
+import 'package:siraf3/themes.dart';
+import 'package:siraf3/widgets/my_icon_button.dart';
+import 'package:siraf3/widgets/text_field_2.dart';
+
+class ChatMessageEditor extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _ChatMessageEditor();
+
+  void Function(String? text, List<File>? files, ChatMessage? replyMessage)? onClickSendMessage;
+
+  ChatMessageEditor({this.onClickSendMessage});
+}
+
+class _ChatMessageEditor extends State<ChatMessageEditor> {
+  List<File> selectedFiles = [];
+  List<Widget> selectedFileWidgets = [];
+  bool showReplyMessage = false;
+  bool showSendButton = false;
+  TextEditingController messageController = TextEditingController();
+
+  ChatMessage? replyMessage;
+
+  @override
+  void initState() {
+    super.initState();
+
+    BlocProvider.of<ChatReplyBloc>(context).stream.listen((ChatMessage? reply) {
+      replyMessage = reply;
+      FocusManager.instance.primaryFocus?.requestFocus();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         fileList(),
-        BlocBuilder(
-          bloc: chatReplyBloc,
-          builder: (_, reply) => replyMessageWidget(reply as ChatMessage?),
+        BlocBuilder<ChatReplyBloc, ChatMessage?>(
+          builder: (_, reply) => replyMessageWidget(reply),
         ),
         Container(
           decoration: BoxDecoration(
@@ -23,69 +64,63 @@ extension ChatMessageEditor on _ChatScreen {
               ),
             ],
           ),
-          child: StreamBuilder<bool>(
-              initialData: false,
-              stream: showSendButton.stream,
-              builder: (context, snapshot) {
-                return Column(
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                decoration: BoxDecoration(color: Colors.white),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                      decoration: BoxDecoration(color: Colors.white),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          if (snapshot.data == true)
-                            Directionality(
-                              textDirection: TextDirection.ltr,
-                              child: btn(
-                                iconData: Icons.send,
-                                color: Themes.primary,
-                                onTap: onClickSendMessage,
-                              ),
-                            ),
-                          if (snapshot.data != true)
-                            GestureDetector(
-                              onHorizontalDragStart: (_) => recordingVoiceBloc.add(RecordingVoiceEvent(RecordingVoiceState.Cancel)),
-                              onVerticalDragStart: (_) => recordingVoiceBloc.add(RecordingVoiceEvent(RecordingVoiceState.Cancel)),
-                              child: btn(
-                                iconData: Icons.keyboard_voice_outlined,
-                                onTapDown: (_) => recordingVoiceBloc.add(RecordingVoiceEvent(RecordingVoiceState.Recording)),
-                                onTapUp: (_) => recordingVoiceBloc.add(RecordingVoiceEvent(RecordingVoiceState.Done)),
-                              ),
-                            ),
-                          if (snapshot.data != true)
-                            Transform.rotate(
-                              angle: 180,
-                              child: btn(
-                                iconData: Icons.attach_file_rounded,
-                                onTap: attachFile,
-                              ),
-                            ),
-                          Expanded(
-                            child: TextField2(
-                              controller: messageController,
-                              maxLines: 7,
-                              minLines: 1,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "پیام...",
-                                hintStyle: TextStyle(color: Colors.grey.shade400),
-                              ),
-                              style: TextStyle(fontSize: 13),
-                            ),
-                          ),
-                          // btn(
-                          //   iconData: Icons.sentiment_satisfied_rounded,
-                          //   onTap: attachEmoji,
-                          // ),
-                        ],
+                    if (showSendButton)
+                      Directionality(
+                        textDirection: TextDirection.ltr,
+                        child: btn(
+                          iconData: Icons.send,
+                          color: Themes.primary,
+                          onTap: onClickSendMessage,
+                        ),
+                      ),
+                    if (!showSendButton)
+                      GestureDetector(
+                        onHorizontalDragStart: (_) => BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Cancel)),
+                        onVerticalDragStart: (_) => BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Cancel)),
+                        child: btn(
+                          iconData: Icons.keyboard_voice_outlined,
+                          onTapDown: (_) => BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Recording)),
+                          onTapUp: (_) => BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Done)),
+                        ),
+                      ),
+                    if (!showSendButton)
+                      Transform.rotate(
+                        angle: 180,
+                        child: btn(
+                          iconData: Icons.attach_file_rounded,
+                          onTap: attachFile,
+                        ),
+                      ),
+                    Expanded(
+                      child: TextField2(
+                        controller: messageController,
+                        maxLines: 7,
+                        minLines: 1,
+                        onChanged: (text) {
+                          setState(() => showSendButton = text.length > 0 || selectedFiles.isNotEmpty);
+                        },
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "پیام...",
+                          hintStyle: TextStyle(color: Colors.grey.shade400),
+                        ),
+                        style: TextStyle(fontSize: 13),
                       ),
                     ),
                   ],
-                );
-              }),
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -132,7 +167,7 @@ extension ChatMessageEditor on _ChatScreen {
                   ),
                 ),
                 Text(
-                  reply.message ?? "فایل",
+                  _replyMessage(reply),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -147,7 +182,7 @@ extension ChatMessageEditor on _ChatScreen {
           MyIconButton(
             icon: Icon(Icons.close_rounded, color: Themes.text),
             onTap: () {
-              chatReplyBloc.add(ChatReplyEvent(null));
+              BlocProvider.of<ChatReplyBloc>(context).add(ChatReplyEvent(null));
             },
           ),
         ],
@@ -178,61 +213,61 @@ extension ChatMessageEditor on _ChatScreen {
   }
 
   Future<void> attachFile() async {
+    selectedFiles.clear();
     FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false);
 
     if (result == null) return;
 
     for (PlatformFile platformFile in result.files) {
-      selectedFilesForUpload.add(File(platformFile.path!));
-      selectedFilesWidgetForUpload.add(attachedFileItem(File(platformFile.path!)));
+      selectedFiles.add(File(platformFile.path!));
+      selectedFileWidgets.add(attachedFileItem(File(platformFile.path!)));
     }
-    fileListSetState?.call(() {});
+    showSendButton = true;
+    setState(() {});
   }
 
   void onClickSendMessage() {
-    if (messageController.value.text.isFill() || selectedFilesForUpload.isFill()) {
-      sendMessage(messageController.value.text, selectedFilesForUpload, replyMessage);
-      return;
-    }
+    var text = messageController.value.text;
+    if (!text.isFill() && !selectedFiles.isFill()) return;
 
-    BlocProvider.of<SendMessageBloc>(context).stream.listen((state) {
-      if (state is SendMessageAddedToQueue) {
-        fileListSetState?.call(selectedFilesWidgetForUpload.clear);
-      }
-      if (state is SendMessageSuccess) {
-        fileListSetState?.call(selectedFilesForUpload.clear);
-      }
-    });
+    widget.onClickSendMessage?.call(text.isEmpty ? null : text, selectedFiles, replyMessage);
+    showSendButton = false;
+    setState(selectedFileWidgets.clear);
   }
 
   Widget fileList() {
-    return StatefulBuilder(builder: (context, setState) {
-      fileListSetState = setState;
-
-      return Container(
-        constraints: BoxConstraints(maxHeight: 300),
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(15),
-              topLeft: Radius.circular(15),
-            ),
-            boxShadow: [
-              BoxShadow(
-                offset: const Offset(0, -1),
-                color: Colors.black12,
-                blurRadius: 5,
-              )
-            ]),
-        child: SingleChildScrollView(
-          child: Column(children: selectedFilesWidgetForUpload),
+    return Container(
+      constraints: BoxConstraints(maxHeight: 300),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(15),
+          topLeft: Radius.circular(15),
         ),
-      );
-    });
+        boxShadow: [
+          BoxShadow(
+            offset: const Offset(0, -1),
+            color: Colors.black12,
+            blurRadius: 5,
+          )
+        ],
+      ),
+      child: SingleChildScrollView(
+        child: Column(children: selectedFileWidgets),
+      ),
+    );
   }
 
   Widget attachedFileItem(File file) {
+    var icon = Icons.insert_drive_file_rounded;
+    if (file.isImage) {
+      icon = Icons.image_rounded;
+    } else if (file.isVoice) {
+      icon = Icons.music_note_rounded;
+    } else if (file.isVideo) {
+      icon = Icons.videocam_rounded;
+    }
+
     return Container(
       padding: EdgeInsets.only(top: 5, bottom: 5, left: 7),
       child: Row(
@@ -247,7 +282,7 @@ extension ChatMessageEditor on _ChatScreen {
               color: Themes.primary.withOpacity(0.2),
             ),
             child: Icon(
-              Icons.insert_drive_file_rounded,
+              icon,
               color: Themes.primary.withOpacity(0.6),
               size: 30,
             ),
@@ -269,19 +304,42 @@ extension ChatMessageEditor on _ChatScreen {
                 SizedBox(height: 3),
                 Text(
                   "${file.lengthStr()} ${file.extension}",
-                  style: TextStyle(color: Colors.grey, fontSize: 9),
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 9,
+                    fontFamily: "sans-serif",
+                  ),
                 ),
               ],
             ),
           ),
           MyIconButton(
             onTap: () {
-              fileListSetState?.call(() => selectedFilesForUpload.remove(file));
+              selectedFileWidgets.remove(file);
+              if (selectedFileWidgets.isEmpty) {
+                showSendButton = false;
+              }
+              setState(() {});
             },
             iconData: Icons.close_rounded,
           ),
         ],
       ),
     );
+  }
+
+  String _replyMessage(ChatMessage replyMessage) {
+    switch (replyMessage.getTypeFile()) {
+      case TypeFile.Image:
+        return "عکس";
+      case TypeFile.Video:
+        return "ویدیو";
+      case TypeFile.Voice:
+        return "صدا";
+      case TypeFile.Doc:
+        return replyMessage.message ?? "";
+      default:
+        return replyMessage.message ?? "";
+    }
   }
 }

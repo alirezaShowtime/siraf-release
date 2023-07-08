@@ -9,7 +9,6 @@ class ChatMessage {
   String? createDate;
   String? modifyDate;
   int? type;
-  TypeFile? typeFile;
   List<ChatFileMessage>? fileMessages;
   int? userId;
   int? replyId;
@@ -77,17 +76,6 @@ class ChatMessage {
     if (json["messageCreateDate"] is String) {
       createDate = json["messageCreateDate"];
     }
-    if (!fileMessages.isFill()) {
-      typeFile = null;
-    } else if (_isVideos()) {
-      typeFile = TypeFile.Video;
-    } else if (_isImage()) {
-      typeFile = TypeFile.Image;
-    } else if (_isVoice()) {
-      typeFile = TypeFile.Voice;
-    } else {
-      typeFile = TypeFile.Doc;
-    }
   }
 
   bool _isVideos() {
@@ -112,6 +100,20 @@ class ChatMessage {
 
   bool _isVoice() {
     return false;
+  }
+
+  TypeFile? getTypeFile() {
+    if (!fileMessages.isFill()) {
+      return null;
+    } else if (_isVideos()) {
+      return TypeFile.Video;
+    } else if (_isImage()) {
+      return TypeFile.Image;
+    } else if (_isVoice()) {
+      return TypeFile.Voice;
+    } else {
+      return TypeFile.Doc;
+    }
   }
 }
 

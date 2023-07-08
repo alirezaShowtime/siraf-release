@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,24 +14,19 @@ import 'package:siraf3/bloc/chat/seen/seen_message_bloc.dart';
 import 'package:siraf3/bloc/chat/select_message/select_message_bloc.dart';
 import 'package:siraf3/bloc/chat/sendMessage/send_message_bloc.dart';
 import 'package:siraf3/controller/chat_message_upload_controller.dart';
-import 'package:siraf3/extensions/file_extension.dart';
 import 'package:siraf3/extensions/list_extension.dart';
-import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/chat_item.dart';
 import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/screens/chat/chat/app_bar_chat_widget.dart';
+import 'package:siraf3/screens/chat/chat/chat_message_editor_widget.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
-import 'package:siraf3/widgets/my_icon_button.dart';
-import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 import 'messageWidgets/chat_message_widget.dart';
 import 'message_widget_list.dart';
 import 'sendingMessageWidgets/chat_sending_message_widget.dart';
-
-part 'chat_message_editor_widget.dart';
 
 class ChatScreen extends StatefulWidget {
   ChatItem chatItem;
@@ -55,7 +49,6 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   VoiceMessagePlayBloc voiceMessagePlayBloc = VoiceMessagePlayBloc();
   SelectMessageBloc selectMessageBloc = SelectMessageBloc();
 
-  TextEditingController messageController = TextEditingController();
   ScrollController _chatController = ScrollController();
 
   static const double begin_floatingActionButtonOffset = -100;
@@ -67,13 +60,6 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   List<ChatMessage> messages = [];
 
   MessagesState? nowMessagesState;
-
-  StreamController<bool> showSendButton = StreamController();
-
-  List<File> selectedFilesForUpload = [];
-  List<Widget> selectedFilesWidgetForUpload = [];
-  bool showReplyMessage = false;
-  ChatMessage? replyMessage;
 
   late AnimationController voiceAnimController;
   late Animation<double> voiceAnim;
@@ -157,22 +143,19 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
       for (var i = 0; i < messageWidgets.length(); i++) {
         if (messageWidgets.get(i).key != state.widgetKey) continue;
 
-        listViewSetState?.call(() => messageWidgets.replace(
+        listViewSetState?.call(
+          () => messageWidgets.replace(
             i,
             ChatMessageWidget(
-              key: GlobalObjectKey(state.message.id!),
+              key: Key(state.message.replyMessage!.id!.toString()),
               message: state.message,
+              files: state.sentFiles,
               onClickReplyMessage: scrollTo,
-            )));
+            ),
+          ),
+        );
         break;
       }
-    });
-
-    messageController.addListener(_messageControlListener);
-
-    chatReplyBloc.stream.listen((ChatMessage? reply) {
-      replyMessage = reply;
-      FocusManager.instance.primaryFocus?.requestFocus();
     });
   }
 
@@ -185,12 +168,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     chatMessagesBloc.close();
     _chatController.dispose();
     voiceAnimController.dispose();
-    messageController.dispose();
     super.dispose();
-  }
-
-  void _messageControlListener() {
-    showSendButton.add(messageController.value.text.length > 1);
   }
 
   @override
@@ -289,7 +267,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                     ],
                   ),
                 ),
-                chatMessageEditor(),
+                ChatMessageEditor(onClickSendMessage: sendMessage),
               ],
             ),
             BlocBuilder(
@@ -518,7 +496,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     }
 
     try {
-      final index = messageWidgets.indexByKey(GlobalObjectKey(replyMessage.id!)) + 2;
+      final index = messageWidgets.indexByKey(Key(replyMessage.id!.toString())) + 2;
 
       final contentSize = _chatController.position.viewportDimension + _chatController.position.maxScrollExtent;
 

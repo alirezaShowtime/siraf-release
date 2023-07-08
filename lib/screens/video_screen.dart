@@ -35,16 +35,18 @@ class _VideoScreenState extends State<VideoScreen> {
   void initState() {
     super.initState();
 
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
+    SystemChrome.setPreferredOrientations(
+      [
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ],
+    );
 
     _isLoading = true;
 
-    loadVideo(widget.videoUrl!);
+    loadVideo(widget.videoUrl ?? widget.videoFile);
   }
 
   Future<VideoPlayerController> attemptOfflineLoad(bool attempt) async {
@@ -125,13 +127,7 @@ class _VideoScreenState extends State<VideoScreen> {
                       child: VideoPlayer(_controller!),
                     ),
                   )
-                : (_isLoading
-                    ? SpinKitRing(
-                        color: Themes.iconLight,
-                        size: 40,
-                        lineWidth: 5,
-                      )
-                    : Container()),
+                : (_isLoading ? SpinKitRing(color: Themes.iconLight, size: 40, lineWidth: 2) : Container()),
           ),
           if (_showControllers)
             GestureDetector(

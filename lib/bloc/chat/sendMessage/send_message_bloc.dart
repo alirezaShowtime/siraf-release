@@ -13,7 +13,6 @@ import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/models/user.dart';
 
 part 'send_message_event.dart';
-
 part 'send_message_state.dart';
 
 class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
@@ -77,8 +76,6 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
         onSendProgress: (int now, int count) => event.requestModel.controller.uploading.add(UploadingDetail(now, count)),
         cancelToken: cancelToken,
       );
-
-      event.requestModel.controller.setCreateTime(DateTime.now());
 
       logRequestDio(res);
 
