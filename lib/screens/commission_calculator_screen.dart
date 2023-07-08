@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
+import 'package:siraf3/bloc/commission_bloc.dart';
 import 'package:siraf3/dialog.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/city.dart';
@@ -9,7 +12,9 @@ import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/field_dialog.dart';
 import 'package:siraf3/widgets/list_dialog.dart';
+import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/simple_app_bar.dart';
+import 'package:siraf3/widgets/try_again.dart';
 import 'package:siraf3/widgets/usefull/button/button_primary.dart';
 
 import '../widgets/section.dart';
@@ -36,6 +41,8 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
   TextEditingController rentController = TextEditingController();
   TextEditingController depositController = TextEditingController();
 
+  CommissionBloc bloc = CommissionBloc();
+
   var tradTypeLabel = {
     TradeType.rentAndMortgage: "رهن و اجاره",
     TradeType.buyAndSell: "خرید و فروش",
@@ -54,48 +61,52 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: SimpleAppBar(titleText: "محاسبه کمیسیون"),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 10, right: 12, left: 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Section(
-              title: "شهر",
-              hint: "تعیین",
-              value: selectedCity?.name,
-              onTap: determineCity,
-            ),
-            Section(
-              title: "نوع معامله",
-              hint: "تعیین",
-              value: tradTypeLabel[selectedTradeType],
-              onTap: determineTradeType,
-            ),
-            if (selectedTradeType == TradeType.buyAndSell)
-              getBuyAndSellWidget(),
-            if (selectedTradeType == TradeType.rentAndMortgage)
-              getRentAndMortgageWidget(),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              "کمیسیون قرارداد های جعاله بصورت توافقی میباشد.",
-              style: TextStyle(
-                fontSize: 11,
-                color: App.theme.tooltipTheme.textStyle?.color,
+    return BlocProvider(
+      create: (_) => bloc,
+      child: Scaffold(
+        appBar: SimpleAppBar(titleText: "محاسبه کمیسیون"),
+        body: Padding(
+          padding: const EdgeInsets.only(top: 10, right: 12, left: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Section(
+                title: "شهر",
+                hint: "تعیین",
+                value: selectedCity?.name,
+                onTap: determineCity,
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: ButtonPrimary(
-                text: "محاسبه",
-                onPressed: calculateCommission,
-                fullWidth: true,
+              Section(
+                title: "نوع معامله",
+                hint: "تعیین",
+                value: tradTypeLabel[selectedTradeType],
+                onTap: determineTradeType,
               ),
-            ),
-          ],
+              if (selectedTradeType == TradeType.buyAndSell)
+                getBuyAndSellWidget(),
+              if (selectedTradeType == TradeType.rentAndMortgage)
+                getRentAndMortgageWidget(),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                "کمیسیون قرارداد های جعاله بصورت توافقی میباشد.",
+                style: TextStyle(
+                  fontSize: 11,
+                  color: App.theme.tooltipTheme.textStyle?.color,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: ButtonPrimary(
+                  text: "محاسبه",
+                  onPressed: calculateCommission,
+                  fullWidth: true,
+                ),
+              ),
+              BlocBuilder<CommissionBloc, CommissionState>(builder: _buildBloc),
+            ],
+          ),
         ),
       ),
     );
@@ -153,9 +164,12 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
             print(totalPriceHelpText);
           },
           onPressed: () {
-            totalPrice = double.parse(totalPriceController.value.text);
-            deposit = 0;
-            rent = 0;
+            if (!totalPriceController.text.isFill()) {
+              totalPrice = null;
+            } else {
+              totalPrice = double.parse(
+                  totalPriceController.value.text.replaceAll(',', ''));
+            }
             setState(() {});
           },
         );
@@ -175,8 +189,12 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
             MoneyInputFormatter(mantissaLength: 0),
           ],
           onPressed: () {
-            deposit = double.parse(depositController.value.text);
-            totalPrice = 0;
+            if (!depositController.text.isFill()) {
+              deposit = null;
+            } else {
+              deposit = double.parse(
+                  depositController.value.text.replaceAll(',', ''));
+            }
             setState(() {});
           },
         );
@@ -197,8 +215,12 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
             MoneyInputFormatter(mantissaLength: 0),
           ],
           onPressed: () {
-            rent = double.parse(rentController.value.text);
-            totalPrice = 0;
+            if (!rentController.text.isFill()) {
+              rent = null;
+            } else {
+              rent =
+                  double.parse(rentController.value.text.replaceAll(',', ''));
+            }
             setState(() {});
           },
         );
@@ -236,6 +258,12 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
               return;
 
             selectedTradeType = item["value"];
+            if (selectedTradeType == TradeType.buyAndSell) {
+              rent = null;
+              deposit = null;
+            } else {
+              totalPrice = null;
+            }
             Navigator.pop(context);
             setState(() {});
           },
@@ -245,22 +273,222 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
   }
 
   void calculateCommission() {
-    //todo: implement event listener
-
-    if (!isValidCityAndTradeType() ||
-        !isValidTotalPrice() ||
-        !isValidRendAndDeposit()) {
-      notify("فیلد های خالی هستند");
+    if (selectedCity == null || isInvalidType()) {
+      notify("لطفا همه فیلد ها را پر کنید");
       return;
     }
+
+    bloc.add(
+      CommissionCalculateEvent(
+        city: selectedCity!,
+        tradeType: selectedTradeType!,
+        totalPrice: totalPrice,
+        deposit: deposit,
+        rent: rent,
+      ),
+    );
   }
 
-  bool isValidCityAndTradeType() => selectedCity == null || tradeType == null;
+  bool isInvalidType() =>
+      (selectedTradeType == TradeType.buyAndSell && totalPrice == null) ||
+      (selectedTradeType == TradeType.rentAndMortgage &&
+          (rent == null || deposit == null));
 
-  bool isValidTotalPrice() =>
-      tradeType == TradeType.buyAndSell && totalPrice == null;
+  Widget _buildBloc(BuildContext context, CommissionState state) {
+    if (state is CommissionLoadingState) {
+      return Expanded(
+          child: Center(
+        child: Loading(),
+      ));
+    }
 
-  bool isValidRendAndDeposit() =>
-      tradeType == TradeType.rentAndMortgage &&
-      (rent == null || deposit == null);
+    if (state is CommissionInitState) {
+      return Container();
+    }
+
+    if (state is CommissionErrorState) {
+      var message = jDecode(state.response.body)['message'] as String?;
+
+      return Expanded(
+          child: Center(
+        child: TryAgain(
+          message: message,
+        ),
+      ));
+    }
+
+    var data = state as CommissionLoadedState;
+
+    if (data.tradeType == TradeType.buyAndSell) {
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 13,
+            ),
+            Text(
+              "نتیجه",
+              style: TextStyle(
+                fontSize: 14,
+                fontFamily: "IranSansBold",
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "مبلغ پرداختی",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: "IranSansMedium",
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      "برای هر طرف به صورت مساوی",
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontFamily: "IranSans",
+                      ),
+                    ),
+                  ],
+                ),
+                Text(
+                  price_text(state.total),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontFamily: "IranSansMedium",
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Divider(
+              height: 0.3,
+              color: Themes.textGrey.withOpacity(0.5),
+            )
+          ],
+        ),
+      );
+    }
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 5),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 13,
+          ),
+          Text(
+            "نتیجه",
+            style: TextStyle(
+              fontSize: 14,
+              fontFamily: "IranSansBold",
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "مبلغ موجر",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: "IranSansMedium",
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "60 درصد با موجر می باشد",
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontFamily: "IranSans",
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                price_text(state.mojer),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontFamily: "IranSansMedium",
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Divider(
+            height: 0.3,
+            color: Themes.textGrey.withOpacity(0.5),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "مبلغ مستاجر",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: "IranSansMedium",
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "40 درصد با مستاجر می باشد",
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontFamily: "IranSans",
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                price_text(state.mostajer),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontFamily: "IranSansMedium",
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Divider(
+            height: 0.3,
+            color: Themes.textGrey.withOpacity(0.5),
+          )
+        ],
+      ),
+    );
+  }
 }

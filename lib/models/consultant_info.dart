@@ -1,4 +1,3 @@
-
 class ConsultantInfo {
   int? id;
   String? name;
@@ -12,38 +11,48 @@ class ConsultantInfo {
   String? shareLink;
   String? bio;
 
-  ConsultantInfo({this.id, this.name, this.avatar, this.rate, this.comment, this.countConstruction, this.countRent, this.countOnSale});
+  ConsultantInfo(
+      {this.id,
+      this.name,
+      this.avatar,
+      this.rate,
+      this.comment,
+      this.countConstruction,
+      this.countRent,
+      this.countOnSale});
 
   ConsultantInfo.fromJson(Map<String, dynamic> json) {
-    if(json["id"] is int) {
+    if (json["id"] is int) {
       id = json["id"];
     }
-    if(json["name"] is String) {
+    if (json["name"] is String) {
       name = json["name"];
     }
-    if(json["avatar"] is String) {
+    if (json["avatar"] is String) {
       avatar = json["avatar"];
     }
     rate = json["rate"];
-    if(json["comment"] is List) {
-      comment = json["comment"] == null ? null : (json["comment"] as List).map((e) => Comment.fromJson(e)).toList();
+    if (json["comment"] is List) {
+      comment = json["comment"] == null
+          ? null
+          : (json["comment"] as List).map((e) => Comment.fromJson(e)).toList();
     }
-    if(json["countConstruction"] is int) {
+    if (json["countConstruction"] is int) {
       countConstruction = json["countConstruction"];
     }
-    if(json["countRent"] is int) {
+    if (json["countRent"] is int) {
       countRent = json["countRent"];
     }
-    if(json["countOnSale"] is int) {
+    if (json["countOnSale"] is int) {
       countOnSale = json["countOnSale"];
     }
-    if(json["city_id"] is int) {
+    if (json["city_id"] is int) {
       cityId = json["city_id"];
     }
-    if(json["shareLink"] is String) {
+    if (json["shareLink"] is String) {
       shareLink = json["shareLink"];
     }
-    if(json["bio"] is String) {
+    if (json["bio"] is String) {
       bio = json["bio"];
     }
   }
@@ -54,7 +63,7 @@ class ConsultantInfo {
     _data["name"] = name;
     _data["avatar"] = avatar;
     _data["rate"] = rate;
-    if(comment != null) {
+    if (comment != null) {
       _data["comment"] = comment?.map((e) => e.toJson()).toList();
     }
     _data["countConstruction"] = countConstruction;
@@ -74,33 +83,44 @@ class Comment {
   int? consultantId;
   UserId? userId;
   String? createDate;
-  dynamic rate;
+  double? rate;
 
-  Comment({this.id, this.likeCount, this.countDisLike, this.comment, this.consultantId, this.userId, this.createDate, this.rate});
+  Comment(
+      {this.id,
+      this.likeCount,
+      this.countDisLike,
+      this.comment,
+      this.consultantId,
+      this.userId,
+      this.createDate,
+      this.rate});
 
   Comment.fromJson(Map<String, dynamic> json) {
-    if(json["id"] is int) {
+    if (json["id"] is int) {
       id = json["id"];
     }
-    if(json["likeCount"] is int) {
+    if (json["likeCount"] is int) {
       likeCount = json["likeCount"];
     }
-    if(json["countDisLike"] is int) {
+    if (json["countDisLike"] is int) {
       countDisLike = json["countDisLike"];
     }
-    if(json["comment"] is String) {
+    if (json["comment"] is String) {
       comment = json["comment"];
     }
-    if(json["consultant_id"] is int) {
+    if (json["consultant_id"] is int) {
       consultantId = json["consultant_id"];
     }
-    if(json["user_id"] is Map) {
-      userId = json["user_id"] == null ? null : UserId.fromJson(json["user_id"]);
+    if (json["user_id"] is Map) {
+      userId =
+          json["user_id"] == null ? null : UserId.fromJson(json["user_id"]);
     }
-    if(json["createDate"] is String) {
+    if (json["createDate"] is String) {
       createDate = json["createDate"];
     }
-    rate = json["rate"];
+    if (json['rate'] is int || json['rate'] is double) {
+      rate = double.parse(json["rate"].toString());
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -110,7 +130,7 @@ class Comment {
     _data["countDisLike"] = countDisLike;
     _data["comment"] = comment;
     _data["consultant_id"] = consultantId;
-    if(userId != null) {
+    if (userId != null) {
       _data["user_id"] = userId?.toJson();
     }
     _data["createDate"] = createDate;
@@ -127,13 +147,13 @@ class UserId {
   UserId({this.id, this.name, this.avatar});
 
   UserId.fromJson(Map<String, dynamic> json) {
-    if(json["id"] is int) {
+    if (json["id"] is int) {
       id = json["id"];
     }
-    if(json["name"] is String) {
+    if (json["name"] is String) {
       name = json["name"];
     }
-    if(json["avatar"] is String) {
+    if (json["avatar"] is String) {
       avatar = json["avatar"];
     }
   }

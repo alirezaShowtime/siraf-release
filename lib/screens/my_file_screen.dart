@@ -261,27 +261,28 @@ class _MyFileScreenState extends State<MyFileScreen> {
                                 ],
                               ),
                               SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "قیمت هر متر",
-                                    style: TextStyle(
-                                      color: greyColor,
-                                      fontSize: 10.5,
+                              if (state.file.getPricePermater() != "non")
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "قیمت هر متر",
+                                      style: TextStyle(
+                                        color: greyColor,
+                                        fontSize: 10.5,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    state.file.getPricePermater(),
-                                    style: TextStyle(
-                                      color: Colors.grey.shade500,
-                                      fontSize: 11.5,
+                                    Text(
+                                      state.file.getPricePermater(),
+                                      style: TextStyle(
+                                        color: Colors.grey.shade500,
+                                        fontSize: 11.5,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
+                                  ],
+                                ),
                             ],
                           )
                         : Column(
@@ -339,41 +340,41 @@ class _MyFileScreenState extends State<MyFileScreen> {
                             ],
                           ),
                   ),
-                  SizedBox(height: 10),
-                  Divider(
-                    height: 0.5,
-                    color: Themes.textGrey.withOpacity(0.5),
-                  ),
-                  SizedBox(height: 10),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 15),
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: "وضعیت : ",
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontFamily: "IranSansMedium",
-                                color: App.theme.textTheme.bodyLarge?.color,
-                              ),
-                            ),
-                            TextSpan(
-                              text: (progress_fa[widget.progress] ?? "نامشخص"),
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontFamily: "IranSansMedium",
-                                color: progress_color[widget.progress],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10),
+                  // SizedBox(height: 10),
+                  // Divider(
+                  //   height: 0.5,
+                  //   color: Themes.textGrey.withOpacity(0.5),
+                  // ),
+                  // SizedBox(height: 10),
+                  // Align(
+                  //   alignment: Alignment.centerRight,
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.only(right: 15),
+                  //     child: RichText(
+                  //       text: TextSpan(
+                  //         children: [
+                  //           TextSpan(
+                  //             text: "وضعیت : ",
+                  //             style: TextStyle(
+                  //               fontSize: 13,
+                  //               fontFamily: "IranSansMedium",
+                  //               color: App.theme.textTheme.bodyLarge?.color,
+                  //             ),
+                  //           ),
+                  //           TextSpan(
+                  //             text: (progress_fa[widget.progress] ?? "نامشخص"),
+                  //             style: TextStyle(
+                  //               fontSize: 13,
+                  //               fontFamily: "IranSansMedium",
+                  //               color: progress_color[widget.progress],
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // SizedBox(height: 10),
                 ] +
                 state.consulants
                     .map<Widget>((element) => _item(element))

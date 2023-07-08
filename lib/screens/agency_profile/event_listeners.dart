@@ -2,7 +2,16 @@ part of 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
 
 extension EventListener on _AgencyProfileScreen {
   void share() {
-    //todo: implement event listener
+    if (estateProfile == null) return;
+
+    
+
+      FlutterShare.share(
+        title: 'اشتراک گذاری فایل',
+        text: '',
+        linkUrl: estateProfile!.shareLink,
+        chooserTitle: 'اشتراک گذاری در',
+      );
   }
 
   void viewComments() {
@@ -14,8 +23,8 @@ extension EventListener on _AgencyProfileScreen {
       context,
       MaterialPageRoute(
         builder: (_) => FilterScreen(
-          originalFilterData: FilterData(
-              cityIds: cities.map<int>((e) => e.id!).toList()),
+          originalFilterData:
+              FilterData(cityIds: cities.map<int>((e) => e.id!).toList()),
           filterData: filterData,
         ),
       ),
@@ -65,22 +74,26 @@ extension EventListener on _AgencyProfileScreen {
 
     //if true, the comment and the rate will be sent
     if (commentIsValid && rateIsValid) {
-      commentRateBloc.add(AgencyProfileCommentRateSendCommentAndRateEvent(estateId, rate!, comment));
+      commentRateBloc.add(AgencyProfileCommentRateSendCommentAndRateEvent(
+          estateId, rate!, comment));
     }
 
     //if true, only the comment will be sent
     if (commentIsValid && !rateIsValid) {
-      commentRateBloc.add(AgencyProfileCommentRateSendCommentEvent(estateId, comment));
+      commentRateBloc
+          .add(AgencyProfileCommentRateSendCommentEvent(estateId, comment));
     }
 
     //if true, ony the rate will be sent
     if (!commentIsValid && rateIsValid) {
-      commentRateBloc.add(AgencyProfileCommentRateSendRateEvent(estateId, rate!));
+      commentRateBloc
+          .add(AgencyProfileCommentRateSendRateEvent(estateId, rate!));
     }
   }
 
   void retry(BuildContext context) {
-    BlocProvider.of<AgencyProfileBloc>(context).add(AgencyProfileLoadingEvent(widget.estateId));
+    BlocProvider.of<AgencyProfileBloc>(context)
+        .add(AgencyProfileLoadingEvent(widget.estateId));
   }
 
   void report() {

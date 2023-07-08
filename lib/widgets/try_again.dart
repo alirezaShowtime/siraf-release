@@ -27,7 +27,7 @@ class _TryAgainState extends State<TryAgain> {
         SizedBox(
           height: 10,
         ),
-        RawMaterialButton(
+        if (widget.onPressed != null) RawMaterialButton(
           onPressed: widget.onPressed,
           child: Text(
             "تلاش مجدد",

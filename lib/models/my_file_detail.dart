@@ -121,8 +121,9 @@ class MyFileDetail {
       cityFull =
           json["cityFull"] == null ? null : CityFull.fromJson(json["cityFull"]);
     }
-    if(json['estates'] is List) {
-      estates = json['esates'] == null ? null : Estate.fromList(json['estates']);
+    if (json['estates'] is List) {
+      estates =
+          json['esates'] == null ? null : Estate.fromList(json['estates']);
     }
   }
 
@@ -251,8 +252,16 @@ class MyFileDetail {
 
   String getPricePermater() {
     var mater =
-        propertys?.firstWhere((element) => element.weightSection == 1).value ??
-            -1;
+        (propertys?.where((element) => element.weightSection == 1).length ??
+                    0) >
+                0
+            ? (propertys
+                    ?.firstWhere((element) => element.weightSection == 1)
+                    .value ??
+                -1)
+            : -2;
+
+    if (mater == -2) return "non";
 
     if (getPrice()?.value == null) {
       return "توافقی";

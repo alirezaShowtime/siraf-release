@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:siraf3/helpers.dart';
@@ -30,6 +32,7 @@ class AgencyProfileCommentRateBloc
 
     var headers = {
       "Authorization": await User.getBearerToken(),
+      "Content-Type": "application/json",
     };
 
     var res = await http2.post(
@@ -55,13 +58,13 @@ class AgencyProfileCommentRateBloc
 
     var headers = {
       "Authorization": await User.getBearerToken(),
+      "Content-Type": "application/json",
     };
 
     var res = await http2.post(
         Uri.parse("https://rate.siraf.app/api/rate/addRateEstate/"),
-        body: body,
+        body: jsonEncode(body),
         headers: headers);
-    print(jDecode(res.body));
 
     if (!isResponseOk(res)) {
       return emit(AgencyProfileCommentRateErrorState());

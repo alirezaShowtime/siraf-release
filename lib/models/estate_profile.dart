@@ -10,6 +10,7 @@ class EstateProfile {
   String? name;
   String? bio;
   String? logoFile;
+  String? shareLink;
   String? address;
   String? video;
   List<Image>? images;
@@ -18,7 +19,7 @@ class EstateProfile {
   List<Comment>? comment;
   List<Consultants>? consultants;
 
-  EstateProfile({this.id, this.countConstruction, this.countRent, this.countOnSale, this.status, this.guildCode, this.name, this.bio, this.logoFile, this.address, this.video, this.images, this.rate, this.description, this.comment, this.consultants});
+  EstateProfile({this.id, this.countConstruction, this.countRent, this.countOnSale, this.status, this.guildCode, this.shareLink, this.name, this.bio, this.logoFile, this.address, this.video, this.images, this.rate, this.description, this.comment, this.consultants});
 
   EstateProfile.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -54,6 +55,9 @@ class EstateProfile {
     if (json["video"] is String) {
       video = json["video"];
     }
+    if (json["shareLink"] is String) {
+      shareLink = json["shareLink"];
+    }
     if (json["images"] is String) {
       images = json["images"];
     }
@@ -86,6 +90,7 @@ class EstateProfile {
     _data["video"] = video;
     _data["images"] = images;
     _data["rate"] = rate;
+    _data["shareLink"] = shareLink;
     _data["description"] = description;
     if (comment != null) {
       _data["comment"] = comment?.map((e) => e.toJson()).toList();

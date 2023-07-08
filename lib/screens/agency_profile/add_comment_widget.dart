@@ -23,7 +23,8 @@ extension AddCommentWidget on _AgencyProfileScreen {
               direction: Axis.horizontal,
               itemCount: 5,
               itemPadding: EdgeInsets.symmetric(horizontal: 10),
-              itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
+              itemBuilder: (context, _) =>
+                  icon(Icons.star, color: Colors.amber),
               itemSize: 35,
               onRatingUpdate: (double value) => rate = value,
               glow: false,
@@ -38,8 +39,8 @@ extension AddCommentWidget on _AgencyProfileScreen {
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(10),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: App.theme.primaryColor, width: 1.5)
-              ),
+                  borderSide:
+                      BorderSide(color: App.theme.primaryColor, width: 1.5)),
               labelText: "توضیحات",
               labelStyle: TextStyle(color: App.theme.primaryColor),
             ),
@@ -53,13 +54,16 @@ extension AddCommentWidget on _AgencyProfileScreen {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: BlocConsumer<AgencyProfileCommentRateBloc, AgencyProfileCommentRateState>(
+              child: BlocConsumer<AgencyProfileCommentRateBloc,
+                  AgencyProfileCommentRateState>(
                 bloc: commentRateBloc,
                 listener: (context, state) {
-                  if (state is AgencyProfileCommentRateSuccessState && state.comment != null) {
+                  if (state is AgencyProfileCommentRateSuccessState) {
                     setState(() {
-                      estateProfile!.comment!.add(state.comment!);
+                      rate = null;
+                      comment = null;
                     });
+                    bloc.add(AgencyProfileLoadEvent(widget.estateId));
                     notify("امتیاز/نظر شما ثبت شد.");
                   }
 
@@ -72,7 +76,8 @@ extension AddCommentWidget on _AgencyProfileScreen {
                     return SizedBox(
                       width: 15,
                       height: 15,
-                      child: SpinKitRing(color: Colors.white, size: 12, lineWidth: 2),
+                      child: SpinKitRing(
+                          color: Colors.white, size: 12, lineWidth: 2),
                     );
                   }
                   return Text(

@@ -586,7 +586,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                                     size: 10,
                                   );
                                 },
-                                rating: 4.2,
+                                rating: estate.rate ?? 0.0,
                               ),
                             ],
                           ),
@@ -602,7 +602,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                                 ),
                               ),
                               Text(
-                                "امتیار 4/4 از 5",
+                                "امتیار ${estate.rate ?? 0.0} از 5",
                                 style: TextStyle(
                                   color: Themes.textGrey,
                                   fontSize: 12,
@@ -789,7 +789,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                                     size: 6,
                                   );
                                 },
-                                rating: e.rate ?? 5.0,
+                                rating: e.rate ?? 0.0,
                               ),
                             ],
                           ),

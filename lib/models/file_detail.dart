@@ -76,10 +76,10 @@ class FileDetail {
     if (json["address"] is String) {
       address = json["address"];
     }
-    if (json["property"] is List) {
-      property = json["property"] == null
+    if (json["propertys"] is List) {
+      property = json["propertys"] == null
           ? null
-          : (json["property"] as List)
+          : (json["propertys"] as List)
               .map((e) => Property.fromJson(e))
               .toList();
     }
