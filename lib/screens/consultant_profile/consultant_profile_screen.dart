@@ -22,20 +22,28 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
-import 'package:siraf3/widgets/my_text_icon_button.dart';
 import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
+import 'comment_item_widget.dart';
+
 part 'add_comment_widget.dart';
+
 part 'answer_item.dart';
+
 part 'appbar.dart';
-part 'comment_item.dart';
+
 part 'event_listeners.dart';
+
 part 'my_card.dart';
+
 part 'profile.dart';
+
 part 'profile_detail.dart';
+
 part 'search_bar.dart';
+
 part 'widgets.dart';
 
 class ConsultantProfileScreen extends StatefulWidget {

@@ -17,16 +17,10 @@ extension Profile on _ConsultantProfileScreen {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Avatar(
-                        size: 80,
-                        imagePath: consultantInfo.avatar,
-                        errorWidget: _profileWidget()),
+                    Avatar(size: 80, imagePath: consultantInfo.avatar, errorWidget: _profileWidget()),
                     Container(
                       padding: const EdgeInsets.only(left: 2),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              left: BorderSide(
-                                  color: Colors.grey.shade200, width: 1))),
+                      decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.grey.shade200, width: 1))),
                       child: Column(
                         children: [
                           Text(
@@ -53,19 +47,9 @@ extension Profile on _ConsultantProfileScreen {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              card(
-                                  title: "فروشی",
-                                  value: consultantInfo.countOnSale.toString(),
-                                  onTap: () {}),
-                              card(
-                                  title: "اجاره ای",
-                                  value: consultantInfo.countRent.toString(),
-                                  onTap: () {}),
-                              card(
-                                  title: "ساخت و ساز",
-                                  value: consultantInfo.countConstruction
-                                      .toString(),
-                                  onTap: () {}),
+                              card(title: "فروشی", value: consultantInfo.countOnSale.toString(), onTap: () {}),
+                              card(title: "اجاره ای", value: consultantInfo.countRent.toString(), onTap: () {}),
+                              card(title: "ساخت و ساز", value: consultantInfo.countConstruction.toString(), onTap: () {}),
                             ],
                           ),
                         ),
@@ -74,8 +58,7 @@ extension Profile on _ConsultantProfileScreen {
                             Text(
                               consultantInfo.bio ?? "",
                               maxLines: 2,
-                              style: TextStyle(
-                                  color: Themes.textGrey, fontSize: 11),
+                              style: TextStyle(color: Themes.textGrey, fontSize: 11),
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,26 +76,21 @@ extension Profile on _ConsultantProfileScreen {
                                 ),
                                 GestureDetector(
                                   onTap: () => setState(() {
-                                    final bool previousValueOfMoreDetail =
-                                        moreDetail;
+                                    final bool previousValueOfMoreDetail = moreDetail;
                                     showComment = !showComment;
 
                                     viewMoreDetail(force: false);
 
-                                    if (!previousValueOfMoreDetail &&
-                                        !showComment) {
+                                    if (!previousValueOfMoreDetail && !showComment) {
                                       showSearchBarWidget = true;
                                     }
 
-                                    if (!previousValueOfMoreDetail &&
-                                        showComment) {
+                                    if (!previousValueOfMoreDetail && showComment) {
                                       showSearchBarWidget = false;
                                     }
                                   }),
                                   child: Text(
-                                    !showComment
-                                        ? "نمایش نظرات (${consultantInfo.comment?.length ?? 0})"
-                                        : "فایل های مشاور",
+                                    !showComment ? "نمایش نظرات (${consultantInfo.comment?.length ?? 0})" : "فایل های مشاور",
                                     style: TextStyle(
                                       color: Themes.text,
                                       fontWeight: FontWeight.bold,
@@ -143,9 +121,8 @@ extension Profile on _ConsultantProfileScreen {
               child: ListView.builder(
                 itemCount: (consultantInfo.comment?.length ?? 0) + 1,
                 itemBuilder: (context, i) {
-                  if (i == 0)
-                    return addCommentWidget(consultantId: consultantInfo.id!);
-                  return commentItem(consultantInfo.comment![i - 1]);
+                  if (i == 0) return addCommentWidget(consultantId: consultantInfo.id!);
+                  return CommentItemWidget(comment: consultantInfo.comment![i - 1]);
                 },
               ),
             ),
@@ -180,9 +157,7 @@ extension Profile on _ConsultantProfileScreen {
       return Center(
         child: TryAgain(
           onPressed: getFiles,
-          message: state.response != null
-              ? jDecode(state.response!.body)['message']
-              : null,
+          message: state.response != null ? jDecode(state.response!.body)['message'] : null,
         ),
       );
     }

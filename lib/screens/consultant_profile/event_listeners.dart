@@ -10,21 +10,6 @@ extension EventListener on _ConsultantProfileScreen {
     );
   }
 
-  void like(Comment comment) {
-    //todo: the endpoint to like comment is`t implement
-    //todo: implement event listener
-  }
-
-  void answer(Comment comment) {
-    //todo: the endpoint to like comment is`t implement
-    //todo: implement event listener
-  }
-
-  void dislike(Comment comment) {
-    //todo: the endpoint to like comment is`t implement
-    //todo: implement event listener
-  }
-
   void viewMoreDetail({bool? force}) {
     setState(() {
       moreDetail = force ?? !moreDetail;
