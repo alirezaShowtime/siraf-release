@@ -565,7 +565,7 @@ class _FileScreenState extends State<FileScreen> {
                             bottom:
                                 (file.getOtherProperties().last != e ? 5 : 0)),
                         child: Text(
-                          e.name.toString() + " : " + e.value.toString(),
+                          e.name.toString() + " : " + nonIfZero(e.value),
                           style: TextStyle(
                             fontSize: 12,
                             fontFamily: "IranSans",

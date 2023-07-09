@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/categories_bloc.dart';
 import 'package:siraf3/bloc/property_bloc.dart';
+import 'package:siraf3/bloc/total_file_bloc.dart';
 import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
@@ -18,6 +19,7 @@ import 'package:siraf3/widgets/text_form_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:siraf3/widgets/usefull/text/light/text_normal_light.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class FilterScreen extends StatefulWidget {
   FilterData originalFilterData;
@@ -35,6 +37,8 @@ class _FilterScreenState extends State<FilterScreen> {
   PropertyBloc propertyBloc = PropertyBloc();
 
   StreamController<List<Category>> subCategories = StreamController();
+
+  TotalFileBloc totalFileBloc = TotalFileBloc();
 
   bool _hasImage = false;
   bool _hasVideo = false;
@@ -72,10 +76,14 @@ class _FilterScreenState extends State<FilterScreen> {
           _hasTour = widget.filterData.hasTour ?? false;
 
           filters = widget.filterData.filters ?? Filters();
+
+          onChangeFilter();
         } else {
           setMainCat(event.categories
               .where((element) => element.parentId == null)
               .first);
+
+          onChangeFilter();
         }
       }
     });
@@ -87,8 +95,11 @@ class _FilterScreenState extends State<FilterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => categoriesBloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => categoriesBloc),
+        BlocProvider(create: (_) => totalFileBloc),
+      ],
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
@@ -400,6 +411,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                           setState(() {
                                             _hasImage = !_hasImage;
                                           });
+                                          onChangeFilter();
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -440,6 +452,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                           setState(() {
                                             _hasVideo = !_hasVideo;
                                           });
+                                          onChangeFilter();
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -480,6 +493,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                           setState(() {
                                             _hasTour = !_hasTour;
                                           });
+                                          onChangeFilter();
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -522,7 +536,14 @@ class _FilterScreenState extends State<FilterScreen> {
                               offset: Offset(0, 5),
                               child: RawMaterialButton(
                                 onPressed: _onTapSubmit,
-                                child: TextNormalLight("اعمال فیلتر"),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    TextNormalLight("اعمال فیلتر"),
+                                    BlocBuilder<TotalFileBloc, TotalFileState>(
+                                        builder: _buildTotalFileBloc),
+                                  ],
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.only(
                                       bottomLeft: Radius.circular(20),
@@ -565,6 +586,8 @@ class _FilterScreenState extends State<FilterScreen> {
             setState(() {
               setMainCat(e);
             });
+
+            onChangeFilter();
           },
           child: Container(
             decoration: BoxDecoration(
@@ -601,11 +624,13 @@ class _FilterScreenState extends State<FilterScreen> {
     return GestureDetector(
       onTap: () {
         if (_subCategory?.id == e.id!) return;
+
         setState(() {
           _subCategory = e;
 
           filters = Filters();
         });
+        onChangeFilter();
 
         propertyBloc.add(PropertyInsertEvent(
             category_id: _subCategory!.id!, type: "filter"));
@@ -805,6 +830,8 @@ class _FilterScreenState extends State<FilterScreen> {
                           break;
                         default:
                       }
+
+                      onChangeFilter();
                     },
                     style: TextStyle(
                       fontSize: 13,
@@ -886,6 +913,8 @@ class _FilterScreenState extends State<FilterScreen> {
                           break;
                         default:
                       }
+                      
+                      onChangeFilter();
                     },
                     style: TextStyle(
                       fontSize: 13,
@@ -998,5 +1027,42 @@ class _FilterScreenState extends State<FilterScreen> {
       context,
       widget.filterData,
     );
+  }
+
+  Widget _buildTotalFileBloc(BuildContext context, TotalFileState state) {
+    if (state is TotalFileInitState) return Container();
+
+    if (state is TotalFileLoadingState)
+      return Padding(
+        padding: EdgeInsets.only(right: 5),
+        child: SpinKitWave(
+          size: 14,
+          color: Themes.iconLight,
+        ),
+      );
+
+    if (state is TotalFileErrorState) return Container();
+
+    if (state is TotalFileLoadedState)
+      return Padding(
+        padding: EdgeInsets.only(right: 5),
+        child: TextNormalLight(
+          "(${state.totalCount})",
+        ),
+      );
+
+    return Container();
+  }
+
+  onChangeFilter() {
+    var filterData = widget.filterData;
+    filterData.filters = filters;
+    filterData.mainCategory = _mainCategory;
+    filterData.category = _subCategory;
+    filterData.hasImage = _hasImage;
+    filterData.hasVideo = _hasVideo;
+    filterData.hasTour = _hasTour;
+
+    totalFileBloc.add(TotalFileGetEvent(filterData: filterData));
   }
 }

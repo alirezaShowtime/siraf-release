@@ -31,7 +31,11 @@ class FilterData {
     var str = "";
 
     if (category != null) {
-      str += getDelimiter(str) + "categoryId=${category!.id.toString()}";
+      if (category!.isAll ?? false) {
+        str += getDelimiter(str) + "categoryId=${mainCategory!.id.toString()}";
+      } else {
+        str += getDelimiter(str) + "categoryId=${category!.id.toString()}";
+      }
     }
 
     if (cityIds != null) {
@@ -130,10 +134,11 @@ class FilterData {
 
     if (filters?.mater.isNotNullOrEmpty() ?? false) count++;
 
-    if ((filters?.price.isNotNullOrEmpty() ?? false) || (filters?.prices.isNotNullOrEmpty() ?? false) || (filters?.rent.isNotNullOrEmpty() ?? false)) count++;
+    if ((filters?.price.isNotNullOrEmpty() ?? false) ||
+        (filters?.prices.isNotNullOrEmpty() ?? false) ||
+        (filters?.rent.isNotNullOrEmpty() ?? false)) count++;
 
     if (category != null || mainCategory != null) count++;
-
 
     return count;
   }

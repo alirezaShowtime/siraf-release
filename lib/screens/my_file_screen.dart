@@ -18,6 +18,7 @@ import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file_consulant.dart';
 import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/models/user.dart';
+import 'package:siraf3/screens/agent_profile/agent_profile_screen.dart';
 import 'package:siraf3/screens/edit/edit_file_first.dart';
 import 'package:siraf3/screens/file_view_chart_screen.dart';
 import 'package:siraf3/screens/webview_screen.dart';
@@ -245,7 +246,8 @@ class _MyFileScreenState extends State<MyFileScreen> {
                                   Text(
                                     "قیمت",
                                     style: TextStyle(
-                                        color: Colors.grey.shade500,
+                                        color: Themes.text,
+                                        fontFamily: "IranSansBold",
                                         fontSize: 12),
                                   ),
                                   Text(
@@ -270,7 +272,8 @@ class _MyFileScreenState extends State<MyFileScreen> {
                                     Text(
                                       "قیمت هر متر",
                                       style: TextStyle(
-                                        color: greyColor,
+                                        color: Themes.text,
+                                        fontFamily: "IranSansBold",
                                         fontSize: 10.5,
                                       ),
                                     ),
@@ -297,7 +300,8 @@ class _MyFileScreenState extends State<MyFileScreen> {
                                   Text(
                                     "ودیعه",
                                     style: TextStyle(
-                                      color: greyColor,
+                                      color: Themes.text,
+                                      fontFamily: "IranSansBold",
                                       fontSize: 12,
                                       height: 1,
                                     ),
@@ -768,105 +772,116 @@ class _MyFileScreenState extends State<MyFileScreen> {
   BuildContext? loadingDContext;
 
   Widget _item(FileConsulant item) {
-    return Container(
-      height: 80,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        border: Border(
-          bottom: BorderSide(color: Themes.textGrey.withOpacity(0.2), width: 1),
+    return GestureDetector(
+      onTap: () {
+        push(
+            context,
+            AgentProfileScreen(
+              consultantId: item.consultantId!.id!,
+              name: item.consultantId!.name,
+            ));
+      },
+      child: Container(
+        height: 80,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          border: Border(
+            bottom:
+                BorderSide(color: Themes.textGrey.withOpacity(0.2), width: 1),
+          ),
         ),
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: m.Image.network(
-                  item.consultantId?.avatar ?? '',
-                  height: 50,
-                  width: 50,
-                  errorBuilder: (_, _1, _2) => m.Image.asset(
-                    "assets/images/profile.png",
+        padding: EdgeInsets.symmetric(horizontal: 15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: m.Image.network(
+                    item.consultantId?.avatar ?? '',
                     height: 50,
                     width: 50,
+                    errorBuilder: (_, _1, _2) => m.Image.asset(
+                      "assets/images/profile.png",
+                      height: 50,
+                      width: 50,
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(right: 10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      item.consultantId?.name ?? "؟؟؟",
-                      style: TextStyle(
-                        color: Themes.text,
-                        fontSize: 14,
+                Padding(
+                  padding: EdgeInsets.only(right: 10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        item.consultantId?.name ?? "؟؟؟",
+                        style: TextStyle(
+                          color: Themes.text,
+                          fontSize: 14,
+                        ),
                       ),
-                    ),
-                    Text(
-                      "(${item.estateName.toString()})",
-                      style: TextStyle(
-                        color: Themes.textGrey,
-                        fontSize: 10,
+                      Text(
+                        "(${item.estateName.toString()})",
+                        style: TextStyle(
+                          color: Themes.textGrey,
+                          fontSize: 10,
+                        ),
                       ),
-                    ),
-                    RatingBarIndicator(
-                      direction: Axis.horizontal,
-                      itemCount: 5,
-                      itemSize: 14,
-                      unratedColor: Colors.grey,
-                      itemPadding: EdgeInsets.symmetric(horizontal: .2),
-                      itemBuilder: (context, _) {
-                        return Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                          size: 10,
-                        );
-                      },
-                      rating: item.consultantId?.rate ?? 5.0,
-                    ),
-                  ],
+                      RatingBarIndicator(
+                        direction: Axis.horizontal,
+                        itemCount: 5,
+                        itemSize: 14,
+                        unratedColor: Colors.grey,
+                        itemPadding: EdgeInsets.symmetric(horizontal: .2),
+                        itemBuilder: (context, _) {
+                          return Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                            size: 10,
+                          );
+                        },
+                        rating: item.consultantId?.rate ?? 5.0,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () async {
-                  doWithLogin(context, () {
-                    createChat();
-                  });
-                },
-                child: Icon(
-                  CupertinoIcons.chat_bubble_2,
-                  size: 35,
-                  color: Themes.primary,
+              ],
+            ),
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    doWithLogin(context, () {
+                      createChat();
+                    });
+                  },
+                  child: Icon(
+                    CupertinoIcons.chat_bubble_2,
+                    size: 35,
+                    color: Themes.primary,
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              GestureDetector(
-                onTap: () {
-                  callTo(item.consultantId!.phone!);
-                },
-                child: Icon(
-                  CupertinoIcons.phone_circle,
-                  size: 35,
-                  color: Themes.primary,
+                SizedBox(
+                  width: 20,
                 ),
-              ),
-            ],
-          ),
-        ],
+                GestureDetector(
+                  onTap: () {
+                    callTo(item.consultantId!.phone!);
+                  },
+                  child: Icon(
+                    CupertinoIcons.phone_circle,
+                    size: 35,
+                    color: Themes.primary,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

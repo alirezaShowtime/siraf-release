@@ -167,7 +167,7 @@ class FullCategory {
   }
 
   String? getMainCategoryName() {
-    return fullCategory != null ? fullCategory!.split("-")[0] : null;
+    return fullCategory != null ? fullCategory!.split("-")[0].trim() : null;
   }
 }
 

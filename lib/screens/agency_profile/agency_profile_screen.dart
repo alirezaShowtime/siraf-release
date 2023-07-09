@@ -8,6 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/bloc/agency_profile/agency_profile_bloc.dart';
 import 'package:siraf3/bloc/agency_profile_comment/agency_profile_comment_rate_bloc.dart';
 import 'package:siraf3/bloc/files_bloc.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/city.dart' as city;
@@ -29,6 +30,7 @@ import 'package:siraf3/widgets/my_text_icon_button.dart';
 import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:badges/badges.dart' as badges;
 
 part 'add_comment_widget.dart';
 
@@ -154,7 +156,10 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen>
       titleSpacing: 0,
       title: AppBarTitle(title),
       actions: [
-        IconButton(onPressed: share, icon: icon(Icons.share_rounded)),
+        IconButton(
+          onPressed: share,
+          icon: icon(Icons.share_rounded, size: 22),
+        ),
         MyPopupMenuButton(
           onSelected: (v) => report(),
           itemBuilder: (_) => [

@@ -49,7 +49,7 @@ class LocationFilesBloc extends Bloc<LocationFilesEvent, LocationFilesState> {
                 : "") +
             (event.search != null ? "&q=${event.search!}" : ""),
       ),
-      timeout: Duration(seconds: 60),
+      timeout: Duration(seconds: 500),
     );
 
     print(response.statusCode);

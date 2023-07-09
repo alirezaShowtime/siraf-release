@@ -4,11 +4,9 @@ extension EventListener on _AgencyProfileScreen {
   void share() {
     if (estateProfile == null) return;
 
-    
-
       FlutterShare.share(
-        title: 'اشتراک گذاری فایل',
-        text: '',
+        title: 'اشتراک گذاری',
+        text: estateProfile!.name!,
         linkUrl: estateProfile!.shareLink,
         chooserTitle: 'اشتراک گذاری در',
       );
