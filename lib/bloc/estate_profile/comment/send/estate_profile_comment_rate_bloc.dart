@@ -7,9 +7,9 @@ import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/consultant_info.dart';
 import 'package:siraf3/models/user.dart';
 
-part 'estate_profile_comment_rate_state.dart';
-
 part 'estate_profile_comment_rate_event.dart';
+
+part 'estate_profile_comment_rate_state.dart';
 
 class EstateProfileCommentRateBloc extends Bloc<EstateProfileCommentRateEvent, EstateProfileCommentRateState> {
   EstateProfileCommentRateBloc() : super(EstateProfileCommentRateInitialState()) {

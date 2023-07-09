@@ -17,7 +17,11 @@ extension Profile on _EstateProfileScreen {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Avatar(size: 80, imagePath: estateProfile.logoFile, errorWidget: _profileWidget(),),
+                    Avatar(
+                      size: 80,
+                      imagePath: estateProfile.logoFile,
+                      errorWidget: _profileWidget(),
+                    ),
                     Container(
                       padding: const EdgeInsets.only(left: 2),
                       decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.grey.shade200, width: 1))),
@@ -130,7 +134,7 @@ extension Profile on _EstateProfileScreen {
                 itemBuilder: (context, i) {
                   if (i == 0) return addCommentWidget(estateProfile.id!);
 
-                  return commentItem(estateProfile.comment![i - 1]);
+                  return CommentItemWidget(comment: estateProfile.comment![i - 1]);
                 },
               ),
             ),
@@ -150,7 +154,6 @@ extension Profile on _EstateProfileScreen {
     );
   }
 
-  
   Widget _profileWidget() {
     return Container(
       color: Color(0xfffafbfd),

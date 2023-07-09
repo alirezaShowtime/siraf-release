@@ -12,3 +12,10 @@ extension Int2 on int {
     return unit ? result : result.replaceAll(RegExp("[a-zA-Z]"), "");
   }
 }
+
+extension Int3 on int? {
+  String emptable() {
+    if (this == null || this == 0) return "";
+    return this.toString();
+  }
+}

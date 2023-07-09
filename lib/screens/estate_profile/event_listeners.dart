@@ -21,8 +21,7 @@ extension EventListener on _EstateProfileScreen {
       context,
       MaterialPageRoute(
         builder: (_) => FilterScreen(
-          originalFilterData:
-              FilterData(cityIds: cities.map<int>((e) => e.id!).toList()),
+          originalFilterData: FilterData(cityIds: cities.map<int>((e) => e.id!).toList()),
           filterData: filterData,
         ),
       ),
@@ -39,16 +38,6 @@ extension EventListener on _EstateProfileScreen {
       getFiles();
     }
   }
-
-  void like(Comment comment) {
-    //todo: implement event listener
-  }
-
-  void answer(Comment comment) {
-    //todo: implement event listener
-  }
-
-  void dislike(Comment comment) {}
 
   void viewMoreDetail({bool? force}) {
     setState(() {

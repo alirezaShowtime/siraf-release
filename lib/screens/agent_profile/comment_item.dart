@@ -74,7 +74,7 @@ extension CommentItem on _AgentProfileScreen {
                   MyTextIconButton(
                     onPressed: () => dislike(comment),
                     icon: icon(Icons.thumb_down_alt_outlined, size: 15),
-                    text: (comment.countDisLike ?? 0).toString(),
+                    text: (comment.dislikeCount ?? 0).toString(),
                     rippleColor: Themes.text,
                   ),
                 ],

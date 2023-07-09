@@ -5,13 +5,12 @@ import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:siraf3/bloc/estate_profile/comment/estate_profile_comment_rate_bloc.dart';
+import 'package:siraf3/bloc/estate_profile/comment/send/estate_profile_comment_rate_bloc.dart';
 import 'package:siraf3/bloc/estate_profile/profile/agency_profile_bloc.dart';
 import 'package:siraf3/bloc/files_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/city.dart' as city;
-import 'package:siraf3/models/consultant_info.dart';
 import 'package:siraf3/models/estate_profile.dart' as estateProfileModel;
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
@@ -25,17 +24,22 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
-import 'package:siraf3/widgets/my_text_icon_button.dart';
 import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
+import 'comment_item_widget.dart';
+
 part 'add_comment_widget.dart';
+
 part 'answer_item.dart';
-part 'comment_item.dart';
+
 part 'event_listeners.dart';
+
 part 'profile.dart';
+
 part 'profile_detail.dart';
+
 part 'search_bar.dart';
 
 class EstateProfileScreen extends StatefulWidget {
@@ -95,9 +99,11 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
 
   @override
   void dispose() {
-    super.dispose();
+    commentRateBloc.close();
     filesBloc.close();
+    bloc.close();
     collapseController.removeListener(_collapseControllerListener);
+    super.dispose();
   }
 
   @override
@@ -155,8 +161,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
     );
   }
 
-  Widget card(
-      {required String title, required String value, void Function()? onTap}) {
+  Widget card({required String title, required String value, void Function()? onTap}) {
     return Expanded(
       child: MyTextButton(
         onPressed: () {},
@@ -246,8 +251,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
   void setFilterData() async {
     cities = await city.City.getList();
 
-    filterData = FilterData(cityIds: cities.map<int>((e) => e.id!).toList(),
-        estateId: widget.estateId);
+    filterData = FilterData(cityIds: cities.map<int>((e) => e.id!).toList(), estateId: widget.estateId);
     getFiles();
   }
 
