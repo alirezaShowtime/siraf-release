@@ -42,6 +42,9 @@ class _CommentItemWidget extends State<CommentItemWidget> {
       if (state is EstateProfileLikeCommentLoading) {
         notify("در حال ثبت...");
       }
+    });
+
+    BlocProvider.of<EstateProfileCommentRateBloc>(context).stream.listen((state) {
       if (state is EstateProfileCommentRateSuccess) {
         showReplyField = false;
         try {
@@ -182,7 +185,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
       notify("متن پاسخ وارد نشده است");
       return;
     }
-    BlocProvider.of<EstateProfileCommentRateBloc>(context).add(EstateProfileCommentRateSendCommentEvent(widget.estateId, text));
+    BlocProvider.of<EstateProfileCommentRateBloc>(context).add(EstateProfileCommentRateSendCommentEvent(widget.estateId, text, replyId: widget.comment.id!));
   }
 
   Widget replyFieldWidget() {

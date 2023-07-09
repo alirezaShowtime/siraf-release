@@ -55,19 +55,19 @@ extension AddCommentWidget on _ConsultantProfileScreen {
               child: BlocConsumer<ConsultantProfileCommentRateBloc, ConsultantProfileCommentRateState>(
                 bloc: commentRateBloc,
                 listener: (context, state) {
-                  if (state is ConsultantProfileCommentRateSuccessState && state.comment != null) {
+                  if (state is ConsultantProfileCommentRateSuccess && state.comment != null) {
                     setState(() {
                       consultantInfo!.comment!.add(state.comment!);
                     });
                     notify("امتیاز/نظر شما ثبت شد.");
                   }
 
-                  if (state is ConsultantProfileCommentRateErrorState) {
+                  if (state is ConsultantProfileCommentRateError) {
                     notify("خطایی در ثبت امتیاز/نظر پیش آمد.");
                   }
                 },
                 builder: (context, state) {
-                  if (state is ConsultantProfileCommentRateSendingState) {
+                  if (state is ConsultantProfileCommentRateSending) {
                     return SizedBox(
                       width: 15,
                       height: 15,

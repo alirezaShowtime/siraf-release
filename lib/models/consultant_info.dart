@@ -74,8 +74,7 @@ class Comment {
   UserId? userId;
   String? createDate;
   double? rate;
-  int? replyId;
-  List<Comment>? replies;
+  List<ReplyComment>? replies;
 
   Comment({this.id, this.likeCount, this.dislikeCount, this.comment, this.consultantId, this.userId, this.createDate, this.rate});
 
@@ -96,8 +95,8 @@ class Comment {
       consultantId = json["consultant_id"];
     }
 
-    if (json["reply_id"] is int) {
-      replyId = json["reply_id"];
+    if (json["reply_id"] is List) {
+      replies = (json["reply_id"] as List).map((e) => ReplyComment.fromJson(e)).toList();
     }
 
     if (json["user_id"] is Map) {
@@ -124,6 +123,32 @@ class Comment {
     _data["createDate"] = createDate;
     _data["rate"] = rate;
     return _data;
+  }
+}
+
+class ReplyComment {
+  int? id;
+  String? comment;
+  String? createDate;
+  String? name;
+  String? avatar;
+
+  ReplyComment.fromJson(dynamic json) {
+    if (json['id'] is int) {
+      id = json['id'];
+    }
+    if (json['comment'] is String) {
+      comment = json['comment'];
+    }
+    if (json['createDate'] is String) {
+      createDate = json['createDate'];
+    }
+    if (json['name'] is String) {
+      name = json['name'];
+    }
+    if (json['avatar'] is String) {
+      avatar = json['avatar'];
+    }
   }
 }
 

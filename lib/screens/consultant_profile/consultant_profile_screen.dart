@@ -8,6 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/bloc/consultant/comment/send/consultant_profile_comment_rate_bloc.dart';
 import 'package:siraf3/bloc/consultant/profile/consultant_profile_bloc.dart';
 import 'package:siraf3/bloc/files_bloc.dart';
+import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/consultant_info.dart';
 import 'package:siraf3/models/file.dart';
@@ -20,6 +21,7 @@ import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
+import 'package:siraf3/widgets/my_list_view.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:siraf3/widgets/static_star.dart';
@@ -29,21 +31,13 @@ import 'package:siraf3/widgets/try_again.dart';
 import 'comment_item_widget.dart';
 
 part 'add_comment_widget.dart';
-
 part 'answer_item.dart';
-
 part 'appbar.dart';
-
 part 'event_listeners.dart';
-
 part 'my_card.dart';
-
 part 'profile.dart';
-
 part 'profile_detail.dart';
-
 part 'search_bar.dart';
-
 part 'widgets.dart';
 
 class ConsultantProfileScreen extends StatefulWidget {

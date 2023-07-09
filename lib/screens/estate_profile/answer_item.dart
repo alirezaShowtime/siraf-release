@@ -4,7 +4,7 @@ class AnswerItemWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _AnswerItemWidget();
 
-  Comment comment;
+  ReplyComment comment;
 
   AnswerItemWidget(this.comment);
 }
@@ -30,11 +30,11 @@ class _AnswerItemWidget extends State<AnswerItemWidget> {
                 children: [
                   Avatar(
                     size: 25,
-                    imagePath: widget.comment.userId?.avatar ?? "",
+                    imagePath: widget.comment.avatar ?? "",
                   ),
                   SizedBox(width: 5),
                   Text(
-                    widget.comment.userId?.name ?? "ناشناس",
+                    widget.comment.name ?? "ناشناس",
                     style: TextStyle(
                       color: Themes.textGrey,
                       fontSize: 11,

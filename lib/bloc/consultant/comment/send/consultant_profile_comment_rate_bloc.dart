@@ -3,82 +3,81 @@ import 'package:meta/meta.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/consultant_info.dart';
-import 'package:siraf3/models/user.dart';
 
 part 'consultant_profile_comment_rate_event.dart';
-
 part 'consultant_profile_comment_rate_state.dart';
 
 class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRateEvent, ConsultantProfileCommentRateState> {
-  ConsultantProfileCommentRateBloc() : super(ConsultantProfileCommentRateInitialState()) {
+  ConsultantProfileCommentRateBloc() : super(ConsultantProfileCommentRateInitial()) {
     on<ConsultantProfileCommentRateSendCommentEvent>(_onSendComment);
     on<ConsultantProfileCommentRateSendRateEvent>(_onSendRate);
     on<ConsultantProfileCommentRateSendCommentAndRateEvent>(_onSendCommentAndRate);
   }
 
   _onSendComment(ConsultantProfileCommentRateSendCommentEvent event, Emitter<ConsultantProfileCommentRateState> emit) async {
-    if (state is ConsultantProfileCommentRateSendingState) return;
+    if (state is ConsultantProfileCommentRateSending) return;
 
-    emit(ConsultantProfileCommentRateSendingState());
-    var body = {"comment": event.message, "estate_id": event.consultantId.toString()};
+    emit(ConsultantProfileCommentRateSending());
 
-    var headers = {
-      "Authorization": await User.getBearerToken(),
-    };
-
-    var res = await http2.post(Uri.parse("https://rate.siraf.app/api/comment/addCommentConsultant/"), body: body, headers: headers);
+    var res = await http2.postJsonWithToken(
+      Uri.parse("https://rate.siraf.app/api/comment/addCommentConsultant/"),
+      body: {
+        "comment": event.message,
+        "estate_id": event.consultantId,
+        if (event.replyId != null) "reply_id": event.replyId,
+      },
+    );
     if (!isResponseOk(res)) {
-      print(res.body);
-      return emit(ConsultantProfileCommentRateErrorState());
+      return emit(ConsultantProfileCommentRateError());
     }
 
-    emit(ConsultantProfileCommentRateSuccessState(comment: Comment.fromJson(jDecode(res.body)["data"])));
+    emit(ConsultantProfileCommentRateSuccess(comment: Comment.fromJson(jDecode(res.body)["data"])));
   }
 
   _onSendRate(ConsultantProfileCommentRateSendRateEvent event, Emitter<ConsultantProfileCommentRateState> emit) async {
-    if (state is ConsultantProfileCommentRateSendingState) return;
+    if (state is ConsultantProfileCommentRateSending) return;
 
-    emit(ConsultantProfileCommentRateSendingState());
+    emit(ConsultantProfileCommentRateSending());
 
-    var body = {"rate": event.rate, "estate_id": event.consultantId};
-
-    var headers = {
-      "Authorization": await User.getBearerToken(),
-    };
-
-    var res = await http2.post(Uri.parse("https://rate.siraf.app/api/rate/consultantRate/"), body: body, headers: headers);
-    print(jDecode(res.body));
+    var res = await http2.post(
+      Uri.parse("https://rate.siraf.app/api/rate/consultantRate/"),
+      body: {
+        "rate": event.rate,
+        "estate_id": event.consultantId,
+      },
+    );
 
     if (!isResponseOk(res)) {
-      return emit(ConsultantProfileCommentRateErrorState());
+      return emit(ConsultantProfileCommentRateError());
     }
 
-    emit(ConsultantProfileCommentRateSuccessState());
+    emit(ConsultantProfileCommentRateSuccess());
   }
 
   _onSendCommentAndRate(ConsultantProfileCommentRateSendCommentAndRateEvent event, Emitter<ConsultantProfileCommentRateState> emit) async {
-    if (state is ConsultantProfileCommentRateSendingState) return;
+    if (state is ConsultantProfileCommentRateSending) return;
 
-    emit(ConsultantProfileCommentRateSendingState());
-    var commentBody = {"comment": event.message, "estate_id": event.consultantId};
+    emit(ConsultantProfileCommentRateSending());
 
-    var commentHeaders = {
-      "Authorization": await User.getBearerToken(),
-    };
-
-    var rateBody = {"rate": event.rate, "estate_id": event.consultantId};
-
-    var rateHeaders = {
-      "Authorization": await User.getBearerToken(),
-    };
-
-    var commentRes = await http2.post(Uri.parse("https://rate.siraf.app/api/comment/addCommentConsultant/"), body: commentBody, headers: commentHeaders);
-    var rateRes = await http2.post(Uri.parse("https://rate.siraf.app/api/rate/consultantRate/"), body: rateBody, headers: rateHeaders);
+    var commentRes = await http2.post(
+      Uri.parse("https://rate.siraf.app/api/comment/addCommentConsultant/"),
+      body: {
+        "comment": event.message,
+        "estate_id": event.consultantId,
+      },
+    );
+    var rateRes = await http2.post(
+      Uri.parse("https://rate.siraf.app/api/rate/consultantRate/"),
+      body: {
+        "rate": event.rate,
+        "estate_id": event.consultantId,
+      },
+    );
 
     if (!isResponseOk(rateRes) || !isResponseOk(commentRes)) {
-      return emit(ConsultantProfileCommentRateErrorState());
+      return emit(ConsultantProfileCommentRateError());
     }
 
-    emit(ConsultantProfileCommentRateSuccessState(comment: Comment.fromJson(jDecode(commentRes.body)["data"])));
+    emit(ConsultantProfileCommentRateSuccess(comment: Comment.fromJson(jDecode(commentRes.body)["data"])));
   }
 }

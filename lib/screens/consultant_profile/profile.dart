@@ -116,14 +116,19 @@ extension Profile on _ConsultantProfileScreen {
           // ),
           if (showSearchBarWidget) searchBar(),
           if (showComment)
-            //todo: show list-is-empty image, if don`s exists comments
             Expanded(
-              child: ListView.builder(
-                itemCount: (consultantInfo.comment?.length ?? 0) + 1,
-                itemBuilder: (context, i) {
-                  if (i == 0) return addCommentWidget(consultantId: consultantInfo.id!);
-                  return CommentItemWidget(comment: consultantInfo.comment![i - 1]);
-                },
+              child: MyListView(
+                isEmpty: !consultantInfo.comment.isFill(),
+                listView: ListView.builder(
+                  itemCount: (consultantInfo.comment?.length ?? 0) + 1,
+                  itemBuilder: (context, i) {
+                    if (i == 0) return addCommentWidget(consultantId: consultantInfo.id!);
+                    return CommentItemWidget(
+                      comment: consultantInfo.comment![i - 1],
+                      consultantId: widget.consultantId,
+                    );
+                  },
+                ),
               ),
             ),
           if (!showComment)
@@ -137,9 +142,8 @@ extension Profile on _ConsultantProfileScreen {
             // ),
 
             Expanded(
-                child: BlocBuilder<FilesBloc, FilesState>(
-              builder: _buildFilesBloc,
-            )),
+              child: BlocBuilder<FilesBloc, FilesState>(builder: _buildFilesBloc),
+            ),
         ],
       ),
     );
@@ -193,9 +197,7 @@ extension Profile on _ConsultantProfileScreen {
       filesBloc = FilesBloc();
     }
     filesBloc.add(
-      FilesLoadEvent(
-        filterData: filterData,
-      ),
+      FilesLoadEvent(filterData: filterData),
     );
   }
 }

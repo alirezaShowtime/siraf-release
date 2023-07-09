@@ -129,16 +129,18 @@ extension Profile on _EstateProfileScreen {
           if (!showComment) searchBar(estateProfile.name ?? ""),
           if (showComment)
             Expanded(
-              child: ListView.builder(
-                itemCount: (estateProfile.comment?.length ?? 0) + 1,
-                itemBuilder: (context, i) {
-                  if (i == 0) return addCommentWidget(estateProfile.id!);
-
-                  return CommentItemWidget(
-                    estateId: widget.estateId,
-                    comment: estateProfile.comment![i - 1],
-                  );
-                },
+              child: MyListView(
+                isEmpty: !estateProfile.comment.isFill(),
+                listView: ListView.builder(
+                  itemCount: (estateProfile.comment?.length ?? 0) + 1,
+                  itemBuilder: (context, i) {
+                    if (i == 0) return addCommentWidget(estateProfile.id!);
+                    return CommentItemWidget(
+                      estateId: widget.estateId,
+                      comment: estateProfile.comment![i - 1],
+                    );
+                  },
+                ),
               ),
             ),
           if (!showComment)
@@ -149,9 +151,10 @@ extension Profile on _EstateProfileScreen {
             //   ),
             // ),
             Expanded(
-                child: BlocBuilder<FilesBloc, FilesState>(
-              builder: _buildEstateFilesBloc,
-            )),
+              child: BlocBuilder<FilesBloc, FilesState>(
+                builder: _buildEstateFilesBloc,
+              ),
+            ),
         ],
       ),
     );
@@ -188,25 +191,23 @@ extension Profile on _EstateProfileScreen {
 
     files = state.files;
 
-    return ListView(
-      children: files
-          .map<Widget>(
-            (e) => GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => FileScreen(id: e.id!),
-                  ),
-                );
-              },
-              child: Padding(
-                padding: EdgeInsets.only(top: files.first == e ? 0 : 5),
-                child: FileHorizontalItem(file: e),
+    return MyListView(
+      isEmpty: files.isEmpty,
+      listView: ListView(
+        children: files
+            .map<Widget>(
+              (e) => GestureDetector(
+                onTap: () {
+                  push(context, FileScreen(id: e.id!));
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(top: files.first == e ? 0 : 5),
+                  child: FileHorizontalItem(file: e),
+                ),
               ),
-            ),
-          )
-          .toList(),
+            )
+            .toList(),
+      ),
     );
   }
 

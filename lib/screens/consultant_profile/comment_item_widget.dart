@@ -2,25 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:siraf3/bloc/consultant/comment/like_and_dislike/consultant_like_comment_bloc.dart';
+import 'package:siraf3/bloc/consultant/comment/send/consultant_profile_comment_rate_bloc.dart';
 import 'package:siraf3/enums/comment_action.dart';
+import 'package:siraf3/extensions/list_extension.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/consultant_info.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
+import 'package:siraf3/widgets/my_text_field.dart';
 import 'package:siraf3/widgets/my_text_icon_button.dart';
+
+import 'consultant_profile_screen.dart';
 
 class CommentItemWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _CommentItemWidget();
 
   Comment comment;
+  int consultantId;
 
-  CommentItemWidget({required this.comment});
+  CommentItemWidget({required this.comment, required this.consultantId});
 }
 
 class _CommentItemWidget extends State<CommentItemWidget> {
   ConsultantLikeCommentBloc likeCommentBloc = ConsultantLikeCommentBloc();
+
+  TextEditingController replyFieldController = TextEditingController();
+  bool showReplyField = false;
 
   @override
   void initState() {
@@ -29,6 +39,16 @@ class _CommentItemWidget extends State<CommentItemWidget> {
     likeCommentBloc.stream.listen((state) {
       if (state is ConsultantLikeCommentLoading) {
         notify("در حال ثبت...");
+      }
+    });
+
+    BlocProvider.of<ConsultantProfileCommentRateBloc>(context).stream.listen((state) {
+      if (state is ConsultantProfileCommentRateSuccess) {
+        replyFieldController.clear();
+        showReplyField = false;
+        try {
+          setState(() {});
+        } catch (e) {}
       }
     });
   }
@@ -125,23 +145,26 @@ class _CommentItemWidget extends State<CommentItemWidget> {
                   );
                 },
               ),
-              MyTextButton(
-                rippleColor: Themes.text,
-                padding: EdgeInsets.zero,
-                onPressed: () => answer(widget.comment),
-                child: Text(
-                  "پاسخ",
-                  style: TextStyle(
-                    color: Themes.text,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
+              if (!showReplyField)
+                MyTextButton(
+                  rippleColor: Themes.text,
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    setState(() => showReplyField = !showReplyField);
+                  },
+                  child: Text(
+                    "پاسخ",
+                    style: TextStyle(
+                      color: Themes.text,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
-          //todo: the endpoint get answers of comment is`t implemented yet, so blow code is commented
-          // if (comment["answers"] != null && (comment["answers"] as List).isNotEmpty) Column(children: (comment["answers"] as List).map((answer) => answerItem(answer)).toList())
+          if (showReplyField) replyFieldWidget(),
+          if (widget.comment.replies.isFill()) Column(children: widget.comment.replies!.map<Widget>((answer) => AnswerItemWidget(answer)).toList()),
         ],
       ),
     );
@@ -155,5 +178,59 @@ class _CommentItemWidget extends State<CommentItemWidget> {
     likeCommentBloc.add(ConsultantLikeCommentRequestEvent(widget.comment.id!, CommentAction.Dislike));
   }
 
-  void answer(Comment comment) {}
+  void answer() {
+    var text = replyFieldController.value.text;
+
+    if (!text.isFill()) {
+      notify("متن پاسخ وارد نشده است");
+      return;
+    }
+    BlocProvider.of<ConsultantProfileCommentRateBloc>(context).add(ConsultantProfileCommentRateSendCommentEvent(
+      widget.consultantId,
+      text,
+    ));
+  }
+
+  Widget replyFieldWidget() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        MyTextField(
+          controller: replyFieldController,
+          maxLines: 1,
+          maxLength: 500,
+          decoration: InputDecoration(hintText: "پاسخ..."),
+        ),
+        Row(
+          children: [
+            BlocBuilder(
+              bloc: BlocProvider.of<ConsultantProfileCommentRateBloc>(context),
+              builder: (context, state) {
+                return MyTextButton(
+                  text: "ارسال",
+                  color: Themes.primary,
+                  textColor: Colors.white,
+                  fontSize: 10,
+                  minimumSize: Size(50, 15),
+                  disable: state is ConsultantProfileCommentRateSending,
+                  onPressed: answer,
+                );
+              },
+            ),
+            SizedBox(width: 5),
+            MyTextButton(
+              fontSize: 10,
+              text: "صرف نظر",
+              border: false,
+              rippleColor: Themes.text,
+              minimumSize: Size(50, 15),
+              onPressed: () {
+                setState(() => showReplyField = !showReplyField);
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 }
