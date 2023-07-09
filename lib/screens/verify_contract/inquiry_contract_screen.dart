@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:siraf3/main.dart';
+import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/block_btn.dart';
 import 'package:siraf3/widgets/my_card.dart';
 import 'package:siraf3/widgets/simple_app_bar.dart';
-import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 
 class InquiryContractScreen extends StatefulWidget {
@@ -15,7 +14,7 @@ class InquiryContractScreen extends StatefulWidget {
 class _InquiryContractScreen extends State<InquiryContractScreen> {
   TextEditingController contractNumberController = TextEditingController();
   TextEditingController contractDateController = TextEditingController();
-  TextEditingController officeAgentIdController = TextEditingController();
+  TextEditingController officeConsultantIdController = TextEditingController();
   TextEditingController numberPhoneController = TextEditingController();
 
   @override
@@ -71,10 +70,8 @@ class _InquiryContractScreen extends State<InquiryContractScreen> {
                   title: "شناسه صنفی دفتر املاک",
                   padding: EdgeInsets.symmetric(vertical: 15, horizontal: 12),
                   child: TextField2(
-                    controller: officeAgentIdController,
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: App.theme.textTheme.bodyLarge?.color),
+                    controller: officeConsultantIdController,
+                    style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color),
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration.collapsed(

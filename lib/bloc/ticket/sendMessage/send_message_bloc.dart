@@ -6,6 +6,8 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:siraf3/controller/message_upload_controller.dart';
+import 'package:siraf3/extensions/list_extension.dart';
+import 'package:siraf3/http2.dart';
 import 'package:siraf3/models/ticket_details.dart';
 import 'package:siraf3/models/user.dart';
 
@@ -28,6 +30,7 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
         ticketId: event.ticketId,
         controller: event.controller,
         files: await event.getFiles(),
+        files2: event.files,
         message: event.message,
         widgetKey: event.widgetKey,
       ),
@@ -56,6 +59,7 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
         "Authorization": await User.getBearerToken(),
       },
     );
+    cancelToken.whenCancel.then((value) => emit(SendMessageCanceled(event.requestModel.widgetKey)));
 
     if (event.requestModel.files != null) {
       formData.files.addAll(event.requestModel.files!);
@@ -70,13 +74,15 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
         cancelToken: cancelToken,
       );
 
+      logRequestDio(res);
+
       if (res.statusCode != 200 || res.data["status"] != 1) {
         throw new Exception();
       }
 
       event.requestModel.controller.uploaded();
 
-      emit(SendMessageSuccess(event.requestModel.widgetKey, res));
+      emit(SendMessageSuccess(event.requestModel.widgetKey, res, sentFiles: event.requestModel.files2));
     } catch (e) {
       event.requestModel.controller.errorUpload();
       emit(SendMessageError(event.requestModel.widgetKey));

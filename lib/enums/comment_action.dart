@@ -1,0 +1,1 @@
+enum CommentAction { Like, Dislike }

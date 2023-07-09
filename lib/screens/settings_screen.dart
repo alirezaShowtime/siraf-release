@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/check_version_bloc.dart';
 import 'package:siraf3/dark_theme_provider.dart';
 import 'package:siraf3/dark_themes.dart';
@@ -18,7 +19,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/app_bar_title.dart';
 import '../widgets/my_back_button.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -30,7 +30,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreen extends State<SettingsScreen> {
-  bool showNumberPhoneForAgent = false;
+  bool showNumberPhoneForConsultant = false;
   bool showNotification = false;
   bool darkMode = false;
 
@@ -82,7 +82,7 @@ class _SettingsScreen extends State<SettingsScreen> {
   }
 
   setData() async {
-    showNumberPhoneForAgent = await settings.showNumberPhoneForAgent();
+    showNumberPhoneForConsultant = await settings.showNumberPhoneForConsultant();
     showNotification = await settings.showNotification();
     darkMode = await settings.darkMode();
 
@@ -151,14 +151,14 @@ class _SettingsScreen extends State<SettingsScreen> {
           //     borderRadius: 10.0,
           //     activeColor: Themes.blue,
           //     inactiveColor: Colors.grey.shade300,
-          //     value: showNumberPhoneForAgent,
+          //     value: showNumberPhoneForConsultant,
           //     activeToggleColor: Colors.white,
           //     inactiveToggleColor: Themes.blue,
           //     onToggle: (value) {
           //       setState(() {
-          //         showNumberPhoneForAgent = value;
+          //         showNumberPhoneForConsultant = value;
           //       });
-          //       settings.setShowNumberPhoneForAgent(value);
+          //       settings.setShowNumberPhoneForConsultant(value);
           //     },
           //   ),
           // ),

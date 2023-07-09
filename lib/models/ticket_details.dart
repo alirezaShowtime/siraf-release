@@ -109,7 +109,7 @@ class Message {
     return _data;
   }
 
-  MessageOwner get owner => expertId == null ? MessageOwner.ForME : MessageOwner.ForHer;
+  MessageOwner get owner => expertId == null ? MessageOwner.ForMe : MessageOwner.ForHer;
 }
 
 class SenderId {
@@ -164,23 +164,20 @@ class GroupId {
 }
 
 class FileMessage {
-  int? id;
   String? path;
   String? createDate;
   int? messageId;
   String? fileSize;
   String? originName;
+  String? uploadedPath;
 
   String get name => Uri.decodeFull(this.path!).replaceAll("\\", "/").split("/").last;
 
   String get extension => this.path!.split(".").last;
 
-  FileMessage({this.id, this.path, this.createDate, this.messageId, this.originName});
+  FileMessage({this.path, this.createDate, this.messageId, this.originName});
 
   FileMessage.fromJson(Map<String, dynamic> json) {
-    if (json["id"] is int) {
-      id = json["id"];
-    }
     if (json["path"] is String) {
       path = json["path"];
     }
@@ -191,19 +188,20 @@ class FileMessage {
       messageId = json["message_id"];
     }
     if (json["fileSize"] is String) {
-      fileSize = json["fileSize"];
+      fileSize = (json["fileSize"] as String).toUpperCase();
     }
-    if (json["fileName"] is int) {
+    if (json["fileName"] is String) {
       originName = json["fileName"] + "." + extension;
     }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["id"] = id;
     _data["path"] = path;
     _data["createDate"] = createDate;
     _data["message_id"] = messageId;
+    _data["originName"] = originName;
+    _data["uploadedPath"] = uploadedPath;
     return _data;
   }
 

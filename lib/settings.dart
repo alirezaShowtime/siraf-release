@@ -1,10 +1,10 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Settings {
-  Future<bool> showNumberPhoneForAgent() async {
+  Future<bool> showNumberPhoneForConsultant() async {
     var pref = await SharedPreferences.getInstance();
 
-    return pref.getBool("settings_showNumberPhoneForAgent") ?? true;
+    return pref.getBool("settings_showNumberPhoneForConsultant") ?? true;
   }
 
   Future<bool> showNotification() async {
@@ -19,10 +19,10 @@ class Settings {
     return pref.getBool("settings_darkMode") ?? false;
   }
 
-  void setShowNumberPhoneForAgent(bool value) async {
+  void setShowNumberPhoneForConsultant(bool value) async {
     var pref = await SharedPreferences.getInstance();
 
-    await pref.setBool("settings_showNumberPhoneForAgent", value);
+    await pref.setBool("settings_showNumberPhoneForConsultant", value);
   }
 
   void setShowNotification(bool value) async {

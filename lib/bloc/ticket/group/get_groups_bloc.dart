@@ -7,7 +7,6 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/group.dart';
 
 part 'get_groups_event.dart';
-
 part 'get_groups_state.dart';
 
 class GetGroupsBloc extends Bloc<GetGroupsEvent, GetGroupsState> {

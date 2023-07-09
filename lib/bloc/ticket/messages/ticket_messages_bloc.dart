@@ -11,7 +11,6 @@ import 'package:siraf3/models/ticket_details.dart';
 import 'package:siraf3/models/user.dart';
 
 part 'ticket_messages_event.dart';
-
 part 'ticket_messages_state.dart';
 
 class TicketMessagesBloc extends Bloc<TicketMessagesEvent, TicketMessagesState> {

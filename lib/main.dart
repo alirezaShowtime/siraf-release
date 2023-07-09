@@ -11,8 +11,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:siraf3/bloc/categories_bloc.dart';
-import 'package:siraf3/bloc/get_cities_bloc.dart';
 import 'package:siraf3/bloc/files_list_bloc.dart';
+import 'package:siraf3/bloc/get_cities_bloc.dart';
 import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/dark_theme_provider.dart';
 import 'package:siraf3/dark_themes.dart';
@@ -34,10 +34,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
+  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
 
   firebaseMessageListener(message);
 }
@@ -87,8 +84,7 @@ late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (await (Settings().showNotification())) {
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
@@ -101,13 +97,9 @@ void main() async {
 
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
+    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
 
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
@@ -136,8 +128,6 @@ void main() async {
     ),
   );
 }
-
-
 
 class RestartWidget extends StatefulWidget {
   RestartWidget({required this.child});
@@ -211,8 +201,7 @@ class App extends State<AppStf> {
       create: (_) {
         return themeChangeProvider;
       },
-      child: Consumer<DarkThemeProvider>(
-          builder: (BuildContext context, value, Widget? child) {
+      child: Consumer<DarkThemeProvider>(builder: (BuildContext context, value, Widget? child) {
         isDark = value.darkTheme;
         theme = value.darkTheme ? darkTheme : lightTheme;
         return OKToast(
@@ -242,6 +231,7 @@ class App extends State<AppStf> {
               );
             },
             routes: {
+              //todo
               '/': (_) => SplashScreen(),
               '/home': (_) => HomeScreen(),
             },
@@ -254,8 +244,7 @@ class App extends State<AppStf> {
 
 class MyBehavior extends ScrollBehavior {
   @override
-  Widget buildOverscrollIndicator(
-      BuildContext context, Widget child, ScrollableDetails details) {
+  Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
     return child;
   }
 }
@@ -263,8 +252,6 @@ class MyBehavior extends ScrollBehavior {
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+    return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }

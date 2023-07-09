@@ -1,1 +1,1 @@
-enum MessageOwner { ForME, ForHer }
+enum MessageOwner { ForMe, ForHer }

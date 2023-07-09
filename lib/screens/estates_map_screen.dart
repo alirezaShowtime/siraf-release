@@ -3,24 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:siraf3/bloc/estate_bloc.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/map_utilities.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/estate.dart';
-import 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
 import 'package:siraf3/screens/request_file/request_file_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
-import 'package:latlong2/latlong.dart';
 
-import 'package:siraf3/dialog.dart';
+import 'estate_profile/estate_profile_screen.dart';
 
 class EstatesMapScreen extends StatefulWidget {
   EstatesMapScreen({super.key});
@@ -29,8 +29,7 @@ class EstatesMapScreen extends StatefulWidget {
   State<EstatesMapScreen> createState() => _EstatesMapScreenState();
 }
 
-class _EstatesMapScreenState extends State<EstatesMapScreen>
-    with TickerProviderStateMixin {
+class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProviderStateMixin {
   List<City> cities = [];
 
   bool _showFileOnMyLocation = false;
@@ -79,12 +78,8 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
     bloc.add(
       EstateLoadEvent(
         city_ids: cities.map((e) => e.id!).toList(),
-        search: _searchController.text.trim().isEmpty
-            ? null
-            : _searchController.text.trim(),
-        latLng: (_showFileOnMyLocation && myLocationMarker != null)
-            ? myLocationMarker!.point
-            : null,
+        search: _searchController.text.trim().isEmpty ? null : _searchController.text.trim(),
+        latLng: (_showFileOnMyLocation && myLocationMarker != null) ? myLocationMarker!.point : null,
       ),
     );
   }
@@ -129,13 +124,11 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
           title: TextField2(
             decoration: InputDecoration(
               hintText: "جستجو در دفاتر املاک",
-              hintStyle: TextStyle(
-                  color: App.theme.tooltipTheme.textStyle?.color, fontSize: 13),
+              hintStyle: TextStyle(color: App.theme.tooltipTheme.textStyle?.color, fontSize: 13),
               border: InputBorder.none,
             ),
             controller: _searchController,
-            style: TextStyle(
-                color: App.theme.textTheme.bodyLarge?.color, fontSize: 13),
+            style: TextStyle(color: App.theme.textTheme.bodyLarge?.color, fontSize: 13),
             textInputAction: TextInputAction.search,
             onSubmitted: (value) {
               getEstates();
@@ -196,15 +189,13 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                 mapController: _controller,
                 options: MapOptions(
                   center: defaultLocation,
-                  interactiveFlags:
-                      InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                  interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                   zoom: 14.0,
                 ),
                 children: [
                   TileLayerWidget(
                     options: TileLayerOptions(
-                      urlTemplate:
-                          App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
+                      urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
                     ),
                   ),
                   CircleLayerWidget(
@@ -275,9 +266,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: _showFileOnMyLocation
-                        ? Themes.primary
-                        : App.theme.dialogBackgroundColor,
+                    color: _showFileOnMyLocation ? Themes.primary : App.theme.dialogBackgroundColor,
                     borderRadius: BorderRadius.circular(100),
                     boxShadow: [
                       BoxShadow(
@@ -457,10 +446,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
 
     LocationData locationData = await _location.getLocation();
 
-    if (locationData.latitude == null ||
-        locationData.longitude == null ||
-        locationData.latitude == 0 ||
-        locationData.longitude == 0) {
+    if (locationData.latitude == null || locationData.longitude == null || locationData.latitude == 0 || locationData.longitude == 0) {
       return false;
     }
 
@@ -486,10 +472,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
 
     LocationData locationData = await _location.getLocation();
 
-    if (locationData.latitude == null ||
-        locationData.longitude == null ||
-        locationData.latitude == 0 ||
-        locationData.longitude == 0) {
+    if (locationData.latitude == null || locationData.longitude == null || locationData.latitude == 0 || locationData.longitude == 0) {
       notify("موقعیت مکانی دریافت نشد");
       return;
     }
@@ -577,8 +560,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                                 itemCount: 5,
                                 itemSize: 14,
                                 unratedColor: Colors.grey,
-                                itemPadding:
-                                    EdgeInsets.symmetric(horizontal: .2),
+                                itemPadding: EdgeInsets.symmetric(horizontal: .2),
                                 itemBuilder: (context, _) {
                                   return Icon(
                                     Icons.star,
@@ -652,11 +634,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                           Expanded(
                             child: MaterialButton(
                               onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => RequestFileScreen(
-                                            estates: [estate])));
+                                Navigator.push(context, MaterialPageRoute(builder: (_) => RequestFileScreen(estates: [estate])));
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
@@ -686,7 +664,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => AgencyProfileScreen(
+                                    builder: (_) => EstateProfileScreen(
                                       estateId: estate.id!,
                                       estateName: estate.name,
                                     ),
@@ -780,8 +758,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen>
                                 itemCount: 5,
                                 itemSize: 14,
                                 unratedColor: Colors.grey,
-                                itemPadding:
-                                    EdgeInsets.symmetric(horizontal: .2),
+                                itemPadding: EdgeInsets.symmetric(horizontal: .2),
                                 itemBuilder: (context, _) {
                                   return Icon(
                                     Icons.star,

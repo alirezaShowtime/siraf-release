@@ -78,22 +78,14 @@ class ConsultantInfo {
 class Comment {
   int? id;
   int? likeCount;
-  int? countDisLike;
+  int? dislikeCount;
   String? comment;
   int? consultantId;
   UserId? userId;
   String? createDate;
   double? rate;
 
-  Comment(
-      {this.id,
-      this.likeCount,
-      this.countDisLike,
-      this.comment,
-      this.consultantId,
-      this.userId,
-      this.createDate,
-      this.rate});
+  Comment({this.id, this.likeCount, this.dislikeCount, this.comment, this.consultantId, this.userId, this.createDate, this.rate});
 
   Comment.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -103,7 +95,7 @@ class Comment {
       likeCount = json["likeCount"];
     }
     if (json["countDisLike"] is int) {
-      countDisLike = json["countDisLike"];
+      dislikeCount = json["countDisLike"];
     }
     if (json["comment"] is String) {
       comment = json["comment"];
@@ -127,7 +119,7 @@ class Comment {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["id"] = id;
     _data["likeCount"] = likeCount;
-    _data["countDisLike"] = countDisLike;
+    _data["countDisLike"] = dislikeCount;
     _data["comment"] = comment;
     _data["consultant_id"] = consultantId;
     if (userId != null) {
