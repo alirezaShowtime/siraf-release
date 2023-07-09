@@ -10,6 +10,7 @@ class MyTextButton extends StatefulWidget {
   void Function()? onPressed;
   Color? rippleColor;
   Color? textColor;
+  Color? color;
   late Color disableColor;
   Color disableTextColor;
   double? fontSize;
@@ -25,6 +26,7 @@ class MyTextButton extends StatefulWidget {
     this.onPressed,
     this.rippleColor,
     this.textColor,
+    this.color,
     this.child,
     this.padding,
     this.fontSize,
@@ -51,7 +53,7 @@ class _MyTextButton extends State<MyTextButton> {
       style: TextButton.styleFrom(
         padding: widget.padding,
         minimumSize: widget.minimumSize,
-        backgroundColor: widget.disable ? widget.disableColor : null,
+        backgroundColor: getColor(),
         foregroundColor: widget.rippleColor ?? Themes.primary,
         tapTargetSize: widget.tapTargetSize,
         shape: RoundedRectangleBorder(
@@ -76,7 +78,7 @@ class _MyTextButton extends State<MyTextButton> {
       style: TextButton.styleFrom(
         padding: widget.padding,
         minimumSize: widget.minimumSize,
-        backgroundColor: widget.disable ? widget.disableColor : null,
+        backgroundColor: getColor(),
         foregroundColor: widget.rippleColor ?? Themes.primary,
         tapTargetSize: widget.tapTargetSize,
         shape: RoundedRectangleBorder(
@@ -93,5 +95,11 @@ class _MyTextButton extends State<MyTextButton> {
             ),
           ),
     );
+  }
+
+  Color? getColor() {
+    if (widget.color != null && !widget.disable) return widget.color;
+
+    return widget.disable ? widget.disableColor : null;
   }
 }

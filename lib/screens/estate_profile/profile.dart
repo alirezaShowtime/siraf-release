@@ -134,7 +134,10 @@ extension Profile on _EstateProfileScreen {
                 itemBuilder: (context, i) {
                   if (i == 0) return addCommentWidget(estateProfile.id!);
 
-                  return CommentItemWidget(comment: estateProfile.comment![i - 1]);
+                  return CommentItemWidget(
+                    estateId: widget.estateId,
+                    comment: estateProfile.comment![i - 1],
+                  );
                 },
               ),
             ),

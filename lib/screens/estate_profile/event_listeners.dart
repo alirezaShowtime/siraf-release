@@ -61,17 +61,17 @@ extension EventListener on _EstateProfileScreen {
 
     //if true, the comment and the rate will be sent
     if (commentIsValid && rateIsValid) {
-      commentRateBloc.add(EstateProfileCommentRateSendCommentAndRateEvent(estateId, rate!, comment));
+      sendCommentRateBloc.add(EstateProfileCommentRateSendCommentAndRateEvent(estateId, rate!, comment));
     }
 
     //if true, only the comment will be sent
     if (commentIsValid && !rateIsValid) {
-      commentRateBloc.add(EstateProfileCommentRateSendCommentEvent(estateId, comment));
+      sendCommentRateBloc.add(EstateProfileCommentRateSendCommentEvent(estateId, comment));
     }
 
     //if true, ony the rate will be sent
     if (!commentIsValid && rateIsValid) {
-      commentRateBloc.add(EstateProfileCommentRateSendRateEvent(estateId, rate!));
+      sendCommentRateBloc.add(EstateProfileCommentRateSendRateEvent(estateId, rate!));
     }
   }
 
