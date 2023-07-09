@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/themes.dart';
 
 class MyBackButton extends StatefulWidget {
   Color? color;
@@ -17,7 +16,7 @@ class _MyBackButton extends State<MyBackButton> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: widget.onPressed ?? back(context),
+      onPressed: widget.onPressed ?? () => back(context),
       icon: Icon(
         CupertinoIcons.back,
         color: widget.color,

@@ -198,10 +198,10 @@ doWithLogin(BuildContext context, void Function() onLoggedIn, {bool pop = true})
   onLoggedIn();
 }
 
-VoidCallback back(BuildContext context) {
-  return () {
+void back(BuildContext context) {
+  if (Navigator.canPop(context)) {
     Navigator.of(context).pop();
-  };
+  }
 }
 
 FaIcon icon(IconData icon, {Color? color, double size = 24}) {

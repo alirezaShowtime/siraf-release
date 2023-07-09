@@ -11,6 +11,8 @@ class SelectMessageCountEvent extends SelectMessageEvent {
 
 class SelectMessageDeselectAllEvent extends SelectMessageEvent {}
 
+class SelectMessageClearEvent extends SelectMessageEvent {}
+
 class SelectMessageSelectEvent extends SelectMessageEvent {
   Key widgetKey;
   int? messageId;
@@ -27,6 +29,8 @@ class SelectMessageDeselectEvent extends SelectMessageEvent {
 abstract class SelectMessageState {}
 
 class SelectMessageDeselectAllState extends SelectMessageState {}
+
+class SelectMessageClearState extends SelectMessageState {}
 
 class SelectMessageCountSate extends SelectMessageState {
   int count;
@@ -53,5 +57,6 @@ class SelectMessageBloc extends Bloc<SelectMessageEvent, SelectMessageState?> {
     on<SelectMessageDeselectEvent>((event, emit) => emit(SelectMessageDeselectState(event.widgetKey)));
     on<SelectMessageDeselectAllEvent>((event, emit) => emit(SelectMessageDeselectAllState()));
     on<SelectMessageCountEvent>((event, emit) => emit(SelectMessageCountSate(event.count)));
+    on<SelectMessageClearEvent>((event, emit) => emit(SelectMessageClearState()));
   }
 }

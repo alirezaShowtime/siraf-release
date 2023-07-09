@@ -106,6 +106,11 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
         selectedMessages.removeWhere((e) => e.key == state.widgetKey);
         selectMessageBloc.add(SelectMessageCountEvent(selectedMessages.length));
       }
+
+      if (state is SelectMessageClearState) {
+        selectedMessages.clear();
+        selectMessageBloc.add(SelectMessageCountEvent(0));
+      }
     });
 
     recordingVoiceBloc.stream.listen((state) async {
@@ -181,195 +186,202 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
         BlocProvider(create: (_) => voiceMessagePlayBloc),
         BlocProvider(create: (_) => selectMessageBloc),
       ],
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        backgroundColor: Colors.white,
-        appBar: AppBarChat(chatItem: widget.chatItem),
-        body: Stack(
-          children: [
-            Column(
-              children: [
-                Container(
-                  height: 55,
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border(
-                      bottom: BorderSide(color: Colors.grey.shade300, width: 0.7),
+      child: WillPopScope(
+        onWillPop: () async {
+          if (selectedMessages.isEmpty) return true;
+          selectMessageBloc.add(SelectMessageClearEvent());
+          return false;
+        },
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          backgroundColor: Colors.white,
+          appBar: AppBarChat(chatItem: widget.chatItem),
+          body: Stack(
+            children: [
+              Column(
+                children: [
+                  Container(
+                    height: 55,
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border(
+                        bottom: BorderSide(color: Colors.grey.shade300, width: 0.7),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          offset: const Offset(1, -3),
+                          spreadRadius: 3,
+                          blurRadius: 1,
+                          color: Colors.black12,
+                        ),
+                      ],
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        offset: const Offset(1, -3),
-                        spreadRadius: 3,
-                        blurRadius: 1,
-                        color: Colors.black12,
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(7),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.grey.shade200,
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(7),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.grey.shade200,
+                          ),
+                          child: Icon(Icons.home_rounded),
                         ),
-                        child: Icon(Icons.home_rounded),
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          widget.chatItem.fileTitle ?? "نامشخص",
-                          style: TextStyle(fontSize: 12, color: Colors.black),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            widget.chatItem.fileTitle ?? "نامشخص",
+                            style: TextStyle(fontSize: 12, color: Colors.black),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Stack(
-                    children: [
-                      BlocBuilder(bloc: chatMessagesBloc, builder: _blocBuilder),
-                      AnimatedBuilder(
-                        animation: _scrollDownAnimation,
-                        builder: (_, __) {
-                          return Positioned(
-                            right: 10,
-                            bottom: _scrollDownAnimation.value,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(100),
-                              onTap: scrollDown,
-                              child: Container(
-                                width: 45,
-                                height: 45,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(100),
-                                  border: Border.all(color: Colors.grey.shade300, width: 0.7),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      offset: const Offset(0, 0),
-                                      spreadRadius: -1.25,
-                                      blurRadius: 1.5,
-                                      color: Colors.black54,
-                                    ),
-                                  ],
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        BlocBuilder(bloc: chatMessagesBloc, builder: _blocBuilder),
+                        AnimatedBuilder(
+                          animation: _scrollDownAnimation,
+                          builder: (_, __) {
+                            return Positioned(
+                              right: 10,
+                              bottom: _scrollDownAnimation.value,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(100),
+                                onTap: scrollDown,
+                                child: Container(
+                                  width: 45,
+                                  height: 45,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(100),
+                                    border: Border.all(color: Colors.grey.shade300, width: 0.7),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        offset: const Offset(0, 0),
+                                        spreadRadius: -1.25,
+                                        blurRadius: 1.5,
+                                        color: Colors.black54,
+                                      ),
+                                    ],
+                                  ),
+                                  child: icon(Icons.expand_more_rounded),
                                 ),
-                                child: icon(Icons.expand_more_rounded),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  ChatMessageEditor(onClickSendMessage: sendMessage),
+                ],
+              ),
+              BlocBuilder(
+                  bloc: recordingVoiceBloc,
+                  builder: ((context, state) {
+                    if (state != RecordingVoiceState.Recording) return Container();
+                    return Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border(top: BorderSide(color: Colors.grey.shade300, width: 0.7)),
+                          boxShadow: [
+                            BoxShadow(
+                              offset: const Offset(1, -3),
+                              spreadRadius: -3,
+                              blurRadius: 1,
+                              color: Colors.black12,
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            AnimatedBuilder(animation: voiceAnim, builder: (_, __) => SizedBox(width: 50 - voiceAnim.value * 3)),
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "برای لغو بکشید",
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontFamily: "IranSansBold",
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.chevron_right_rounded,
+                                    color: Colors.grey,
+                                    size: 18,
+                                  ),
+                                ],
                               ),
                             ),
-                          );
-                        },
+                            StreamBuilder<int>(
+                                stream: recordTimeStream.stream,
+                                builder: (context, snapshot) {
+                                  return Text(
+                                    timeFormatter(snapshot.data ?? 0),
+                                    style: TextStyle(
+                                      color: Themes.text,
+                                      fontFamily: "IranSansBold",
+                                      fontSize: 11,
+                                    ),
+                                  );
+                                }),
+                            SizedBox(width: 5),
+                            AnimatedBuilder(
+                              animation: recordIconAnim,
+                              builder: (_, __) {
+                                return Icon(Icons.circle, size: 8, color: Colors.red.withOpacity(recordIconAnim.value));
+                              },
+                            ),
+                            SizedBox(width: 15),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                ),
-                ChatMessageEditor(onClickSendMessage: sendMessage),
-              ],
-            ),
-            BlocBuilder(
+                    );
+                  })),
+              BlocBuilder(
                 bloc: recordingVoiceBloc,
                 builder: ((context, state) {
                   if (state != RecordingVoiceState.Recording) return Container();
                   return Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(top: BorderSide(color: Colors.grey.shade300, width: 0.7)),
-                        boxShadow: [
-                          BoxShadow(
-                            offset: const Offset(1, -3),
-                            spreadRadius: -3,
-                            blurRadius: 1,
-                            color: Colors.black12,
+                    bottom: -20 + (voiceAnim.value * 0),
+                    right: -20 + (voiceAnim.value * 0),
+                    child: AnimatedBuilder(
+                      animation: voiceAnim,
+                      builder: (_, __) {
+                        return Material(
+                          color: Themes.primary,
+                          borderRadius: BorderRadius.circular(100),
+                          child: Container(
+                            height: 95,
+                            width: 95,
+                            margin: EdgeInsets.only(top: voiceAnim.value, left: voiceAnim.value),
+                            child: Icon(Icons.keyboard_voice_outlined, color: Colors.white),
                           ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          AnimatedBuilder(animation: voiceAnim, builder: (_, __) => SizedBox(width: 50 - voiceAnim.value * 3)),
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "برای لغو بکشید",
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontFamily: "IranSansBold",
-                                    fontSize: 10,
-                                  ),
-                                ),
-                                Icon(
-                                  Icons.chevron_right_rounded,
-                                  color: Colors.grey,
-                                  size: 18,
-                                ),
-                              ],
-                            ),
-                          ),
-                          StreamBuilder<int>(
-                              stream: recordTimeStream.stream,
-                              builder: (context, snapshot) {
-                                return Text(
-                                  timeFormatter(snapshot.data ?? 0),
-                                  style: TextStyle(
-                                    color: Themes.text,
-                                    fontFamily: "IranSansBold",
-                                    fontSize: 11,
-                                  ),
-                                );
-                              }),
-                          SizedBox(width: 5),
-                          AnimatedBuilder(
-                            animation: recordIconAnim,
-                            builder: (_, __) {
-                              return Icon(Icons.circle, size: 8, color: Colors.red.withOpacity(recordIconAnim.value));
-                            },
-                          ),
-                          SizedBox(width: 15),
-                        ],
-                      ),
+                        );
+                      },
                     ),
                   );
-                })),
-            BlocBuilder(
-              bloc: recordingVoiceBloc,
-              builder: ((context, state) {
-                if (state != RecordingVoiceState.Recording) return Container();
-                return Positioned(
-                  bottom: -20 + (voiceAnim.value * 0),
-                  right: -20 + (voiceAnim.value * 0),
-                  child: AnimatedBuilder(
-                    animation: voiceAnim,
-                    builder: (_, __) {
-                      return Material(
-                        color: Themes.primary,
-                        borderRadius: BorderRadius.circular(100),
-                        child: Container(
-                          height: 95,
-                          width: 95,
-                          margin: EdgeInsets.only(top: voiceAnim.value, left: voiceAnim.value),
-                          child: Icon(Icons.keyboard_voice_outlined, color: Colors.white),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              }),
-            ),
-            // BlocBuilder(
-            //   bloc: recordingVoiceBloc,
+                }),
+              ),
+              // BlocBuilder(
+              //   bloc: recordingVoiceBloc,
 
-            // ),
-          ],
+              // ),
+            ],
+          ),
         ),
       ),
     );

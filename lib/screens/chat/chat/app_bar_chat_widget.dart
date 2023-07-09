@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/chat/select_message/select_message_bloc.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/chat_item.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/avatar.dart';
@@ -42,7 +43,12 @@ class _AppBarChat extends State<AppBarChat> {
       automaticallyImplyLeading: false,
       elevation: defaultElevation,
       titleSpacing: 0,
-      leading: MyBackButton(),
+      leading: MyBackButton(
+        onPressed: () {
+          if (selectedCount <= 0) return back(context);
+          BlocProvider.of<SelectMessageBloc>(context).add(SelectMessageClearEvent());
+        },
+      ),
       title: title(),
       actions: [
         if (selectedCount > 0)

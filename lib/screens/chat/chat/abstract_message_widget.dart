@@ -41,15 +41,22 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
       if (state is SelectMessageCountSate) {
         canSelectWithClick = state.count > 0;
       }
+
+      if (state is SelectMessageClearState) {
+        isSelected = false;
+        try {
+          setState(() {});
+        } catch (e) {}
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTapUp: onTapUpMessage,
-      // onTap: onClickMessage,
-      // onLongPress: onLongClickMessage,
+      onTap: onClickMessage,
+      onLongPress: onLongClickMessage,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
         foregroundDecoration: !isSelected ? null : BoxDecoration(color: Themes.primary.withOpacity(0.08)),
