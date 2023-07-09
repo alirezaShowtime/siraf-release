@@ -1,6 +1,6 @@
-part of 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
+part of 'package:siraf3/screens/estate_profile/estate_profile_screen.dart';
 
-extension SearchBar on _AgencyProfileScreen {
+extension SearchBar on _EstateProfileScreen {
   Widget searchBar(String estateName) {
     return Container(
       height: 45,

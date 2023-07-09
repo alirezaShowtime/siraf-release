@@ -1,6 +1,6 @@
-part of 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
+part of 'package:siraf3/screens/estate_profile/estate_profile_screen.dart';
 
-extension AnswerItem on _AgencyProfileScreen {
+extension AnswerItem on _EstateProfileScreen {
   Widget answerItem(Map<String, dynamic> answer) {
     return Container(
       padding: const EdgeInsets.only(top: 8, bottom: 4, left: 12, right: 12),

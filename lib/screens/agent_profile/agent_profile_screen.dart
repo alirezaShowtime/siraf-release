@@ -24,29 +24,19 @@ import 'package:siraf3/widgets/my_text_icon_button.dart';
 import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
-import 'package:siraf3/models/city.dart' as city;
 
 import '../../bloc/agent_profile/agent_profile_bloc.dart';
 import '../../widgets/file_horizontal_item.dart';
 
 part 'add_comment_widget.dart';
-
 part 'answer_item.dart';
-
 part 'appbar.dart';
-
 part 'comment_item.dart';
-
 part 'event_listeners.dart';
-
 part 'my_card.dart';
-
 part 'profile.dart';
-
 part 'profile_detail.dart';
-
 part 'search_bar.dart';
-
 part 'widgets.dart';
 
 class AgentProfileScreen extends StatefulWidget {
@@ -71,8 +61,8 @@ class _AgentProfileScreen extends State<AgentProfileScreen>
   bool showSearchBarWidget = true;
   bool showCommentWidget = false;
 
-  late AnimationController collopsController;
-  late Animation<double> collopsAnimation;
+  late AnimationController collapseController;
+  late Animation<double> collapseAnimation;
 
   late BuildContext scaffoldContext;
 
@@ -94,12 +84,10 @@ class _AgentProfileScreen extends State<AgentProfileScreen>
   void initState() {
     super.initState();
 
-    collopsController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 400));
-    collopsAnimation =
-        CurvedAnimation(parent: collopsController, curve: Curves.fastOutSlowIn);
+    collapseController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+    collapseAnimation = CurvedAnimation(parent: collapseController, curve: Curves.fastOutSlowIn);
 
-    collopsController.addListener(_collopsControllerListener);
+    collapseController.addListener(_collapseControllerListener);
 
     bloc.add(AgentProfileLoad(widget.consultantId));
   }
@@ -107,7 +95,7 @@ class _AgentProfileScreen extends State<AgentProfileScreen>
   @override
   void dispose() {
     super.dispose();
-    collopsController.removeListener(_collopsControllerListener);
+    collapseController.removeListener(_collapseControllerListener);
   }
 
 
@@ -154,8 +142,8 @@ class _AgentProfileScreen extends State<AgentProfileScreen>
     );
   }
 
-  void _collopsControllerListener() {
-    if (collopsController.isDismissed && !showComment) {
+  void _collapseControllerListener() {
+    if (collapseController.isDismissed && !showComment) {
       showSearchBarWidget = true;
     }
   }

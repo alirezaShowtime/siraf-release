@@ -1,6 +1,6 @@
-part of 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
+part of 'package:siraf3/screens/estate_profile/estate_profile_screen.dart';
 
-extension Profile on _AgencyProfileScreen {
+extension Profile on _EstateProfileScreen {
   Widget profile(BuildContext context, estateProfileModel.EstateProfile estateProfile) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -118,7 +118,7 @@ extension Profile on _AgencyProfileScreen {
             ),
           ),
           // SizeTransition(
-          //   sizeFactor: collopsAnimation,
+          //   sizeFactor: collapseAnimation,
           //   axis: Axis.vertical,
           //   child: profileDetail(estateProfile),
           // ),

@@ -1,6 +1,6 @@
-part of 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
+part of 'estate_profile_screen.dart';
 
-extension AddCommentWidget on _AgencyProfileScreen {
+extension AddCommentWidget on _EstateProfileScreen {
   Widget addCommentWidget(int estateId) {
     return Container(
       color: Colors.white,
@@ -54,30 +54,28 @@ extension AddCommentWidget on _AgencyProfileScreen {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: BlocConsumer<AgencyProfileCommentRateBloc,
-                  AgencyProfileCommentRateState>(
+              child: BlocConsumer(
                 bloc: commentRateBloc,
                 listener: (context, state) {
-                  if (state is AgencyProfileCommentRateSuccessState) {
+                  if (state is EstateProfileCommentRateSuccessState) {
                     setState(() {
                       rate = null;
                       comment = null;
                     });
-                    bloc.add(AgencyProfileLoadEvent(widget.estateId));
+                    bloc.add(EstateProfileLoadEvent(widget.estateId));
                     notify("امتیاز/نظر شما ثبت شد.");
                   }
 
-                  if (state is AgencyProfileCommentRateErrorState) {
+                  if (state is EstateProfileCommentRateErrorState) {
                     notify("خطایی در ثبت امتیاز/نظر پیش آمد.");
                   }
                 },
                 builder: (context, state) {
-                  if (state is AgencyProfileCommentRateSendingState) {
+                  if (state is EstateProfileCommentRateSendingState) {
                     return SizedBox(
                       width: 15,
                       height: 15,
-                      child: SpinKitRing(
-                          color: Colors.white, size: 12, lineWidth: 2),
+                      child: SpinKitRing(color: Colors.white, size: 12, lineWidth: 2),
                     );
                   }
                   return Text(

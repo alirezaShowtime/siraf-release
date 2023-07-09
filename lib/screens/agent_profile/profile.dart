@@ -132,7 +132,7 @@ extension Profile on _AgentProfileScreen {
             ),
           ),
           // SizeTransition(
-          //   sizeFactor: collopsAnimation,
+          //   sizeFactor: collapseAnimation,
           //   axis: Axis.vertical,
           //   child: profileDetail(),
           // ),

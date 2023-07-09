@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/my_card.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:siraf3/widgets/simple_app_bar.dart';
 
-class PreviewAgencyRegistrationScreen extends StatefulWidget {
+class PreviewEstateRegistrationScreen extends StatefulWidget {
   @override
-  State<PreviewAgencyRegistrationScreen> createState() =>
-      _PreviewAgencyRegistrationScreen();
+  State<PreviewEstateRegistrationScreen> createState() => _PreviewEstateRegistrationScreen();
 }
 
-class _PreviewAgencyRegistrationScreen
-    extends State<PreviewAgencyRegistrationScreen> {
+class _PreviewEstateRegistrationScreen extends State<PreviewEstateRegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

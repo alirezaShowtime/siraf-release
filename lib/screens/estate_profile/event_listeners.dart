@@ -1,17 +1,15 @@
-part of 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
+part of 'package:siraf3/screens/estate_profile/estate_profile_screen.dart';
 
-extension EventListener on _AgencyProfileScreen {
+extension EventListener on _EstateProfileScreen {
   void share() {
     if (estateProfile == null) return;
 
-    
-
-      FlutterShare.share(
-        title: 'اشتراک گذاری فایل',
-        text: '',
-        linkUrl: estateProfile!.shareLink,
-        chooserTitle: 'اشتراک گذاری در',
-      );
+    FlutterShare.share(
+      title: 'اشتراک گذاری فایل',
+      text: '',
+      linkUrl: estateProfile!.shareLink,
+      chooserTitle: 'اشتراک گذاری در',
+    );
   }
 
   void viewComments() {
@@ -59,9 +57,9 @@ extension EventListener on _AgencyProfileScreen {
       if (moreDetail) {
         showCommentWidget = false;
         showSearchBarWidget = false;
-        collopsController.forward();
+        collapseController.forward();
       } else {
-        collopsController.reverse();
+        collapseController.reverse();
       }
     });
   }
@@ -74,26 +72,22 @@ extension EventListener on _AgencyProfileScreen {
 
     //if true, the comment and the rate will be sent
     if (commentIsValid && rateIsValid) {
-      commentRateBloc.add(AgencyProfileCommentRateSendCommentAndRateEvent(
-          estateId, rate!, comment));
+      commentRateBloc.add(EstateProfileCommentRateSendCommentAndRateEvent(estateId, rate!, comment));
     }
 
     //if true, only the comment will be sent
     if (commentIsValid && !rateIsValid) {
-      commentRateBloc
-          .add(AgencyProfileCommentRateSendCommentEvent(estateId, comment));
+      commentRateBloc.add(EstateProfileCommentRateSendCommentEvent(estateId, comment));
     }
 
     //if true, ony the rate will be sent
     if (!commentIsValid && rateIsValid) {
-      commentRateBloc
-          .add(AgencyProfileCommentRateSendRateEvent(estateId, rate!));
+      commentRateBloc.add(EstateProfileCommentRateSendRateEvent(estateId, rate!));
     }
   }
 
   void retry(BuildContext context) {
-    BlocProvider.of<AgencyProfileBloc>(context)
-        .add(AgencyProfileLoadingEvent(widget.estateId));
+    BlocProvider.of<EstateProfileBloc>(context).add(EstateProfileLoadingEvent(widget.estateId));
   }
 
   void report() {

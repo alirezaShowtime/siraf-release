@@ -5,8 +5,8 @@ import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:siraf3/bloc/agency_profile/agency_profile_bloc.dart';
-import 'package:siraf3/bloc/agency_profile_comment/agency_profile_comment_rate_bloc.dart';
+import 'package:siraf3/bloc/estate_profile/comment/estate_profile_comment_rate_bloc.dart';
+import 'package:siraf3/bloc/estate_profile/profile/agency_profile_bloc.dart';
 import 'package:siraf3/bloc/files_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
@@ -31,31 +31,24 @@ import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 part 'add_comment_widget.dart';
-
 part 'answer_item.dart';
-
 part 'comment_item.dart';
-
 part 'event_listeners.dart';
-
 part 'profile.dart';
-
 part 'profile_detail.dart';
-
 part 'search_bar.dart';
 
-class AgencyProfileScreen extends StatefulWidget {
+class EstateProfileScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _AgencyProfileScreen();
+  State<StatefulWidget> createState() => _EstateProfileScreen();
 
   int estateId;
   String? estateName;
 
-  AgencyProfileScreen({required this.estateId, this.estateName});
+  EstateProfileScreen({required this.estateId, this.estateName});
 }
 
-class _AgencyProfileScreen extends State<AgencyProfileScreen>
-    with SingleTickerProviderStateMixin {
+class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerProviderStateMixin {
   bool showComment = false;
 
   bool moreDetail = false;
@@ -63,8 +56,8 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen>
   bool showSearchBarWidget = false;
   bool showCommentWidget = false;
 
-  late AnimationController collopsController;
-  late Animation<double> collopsAnimation;
+  late AnimationController collapseController;
+  late Animation<double> collapseAnimation;
 
   late BuildContext scaffoldContext;
 
@@ -75,8 +68,8 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen>
   TextEditingController searchController = TextEditingController();
   TextEditingController commentController = TextEditingController();
 
-  AgencyProfileBloc bloc = AgencyProfileBloc();
-  AgencyProfileCommentRateBloc commentRateBloc = AgencyProfileCommentRateBloc();
+  EstateProfileBloc bloc = EstateProfileBloc();
+  EstateProfileCommentRateBloc commentRateBloc = EstateProfileCommentRateBloc();
 
   estateProfileModel.EstateProfile? estateProfile;
 
@@ -88,12 +81,10 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen>
   void initState() {
     super.initState();
 
-    collopsController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 400));
-    collopsAnimation =
-        CurvedAnimation(parent: collopsController, curve: Curves.fastOutSlowIn);
+    collapseController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+    collapseAnimation = CurvedAnimation(parent: collapseController, curve: Curves.fastOutSlowIn);
 
-    collopsController.addListener(_collopsControllerListener);
+    collapseController.addListener(_collapseControllerListener);
 
     setState(() {
       title = widget.estateName ?? title;
@@ -106,7 +97,7 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen>
   void dispose() {
     super.dispose();
     filesBloc.close();
-    collopsController.removeListener(_collopsControllerListener);
+    collapseController.removeListener(_collapseControllerListener);
   }
 
   @override
@@ -116,23 +107,21 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen>
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: appBar(),
-        body: BlocConsumer<AgencyProfileBloc, AgencyProfileState>(
+        body: BlocConsumer<EstateProfileBloc, EstateProfileState>(
           listener: (context, state) {
-            if (state is AgencyProfileSuccessState) {
+            if (state is EstateProfileSuccessState) {
               setState(() {
                 title = state.estateProfile.name!;
                 estateProfile = state.estateProfile;
               });
             }
           },
-          bloc: bloc..add(AgencyProfileLoadEvent(widget.estateId)),
+          bloc: bloc..add(EstateProfileLoadEvent(widget.estateId)),
           builder: (context, state) {
             scaffoldContext = context;
-            if (state is AgencyProfileInitial) return Center(child: Loading());
-            if (state is AgencyProfileErrorState)
-              return retryWidget(context, state.message);
-            if (state is AgencyProfileSuccessState)
-              return profile(context, state.estateProfile);
+            if (state is EstateProfileInitial) return Center(child: Loading());
+            if (state is EstateProfileErrorState) return retryWidget(context, state.message);
+            if (state is EstateProfileSuccessState) return profile(context, state.estateProfile);
             return Container();
           },
         ),
@@ -200,7 +189,7 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen>
     );
   }
 
-  Widget agencyImageItem(estateProfileModel.Image image) {
+  Widget estateImageItem(estateProfileModel.Image image) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 3),
       child: ClipRRect(
@@ -246,8 +235,8 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen>
 
   Widget fileItem(File file) => FileHorizontalItem(file: file);
 
-  void _collopsControllerListener() {
-    if (collopsController.isDismissed && !showComment) {
+  void _collapseControllerListener() {
+    if (collapseController.isDismissed && !showComment) {
       showSearchBarWidget = true;
     }
   }
@@ -257,8 +246,7 @@ class _AgencyProfileScreen extends State<AgencyProfileScreen>
   void setFilterData() async {
     cities = await city.City.getList();
 
-    filterData = FilterData(
-        cityIds: cities.map<int>((e) => e.id!).toList(),
+    filterData = FilterData(cityIds: cities.map<int>((e) => e.id!).toList(),
         estateId: widget.estateId);
     getFiles();
   }

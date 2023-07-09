@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/screens/agency_registration/agency_registration_form_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
 
-class AgencyRegistrationInfoScreen extends StatefulWidget {
+import 'estate_registration_form_screen.dart';
+
+class EstateRegistrationInfoScreen extends StatefulWidget {
   @override
-  State<AgencyRegistrationInfoScreen> createState() =>
-      _AgencyRegistrationInfoScreen();
+  State<EstateRegistrationInfoScreen> createState() => _EstateRegistrationInfoScreen();
 }
 
-class _AgencyRegistrationInfoScreen
-    extends State<AgencyRegistrationInfoScreen> {
+class _EstateRegistrationInfoScreen extends State<EstateRegistrationInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,7 +126,7 @@ class _AgencyRegistrationInfoScreen
                   rippleColor: Themes.primary,
                 ),
                 MaterialButton(
-                  onPressed: registerAgency,
+                  onPressed: registerEstate,
                   color: Themes.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -190,10 +189,9 @@ class _AgencyRegistrationInfoScreen
     //todo: implement event listener
   }
 
-  void registerAgency() {
+  void registerEstate() {
     //todo: implement event listener
-    Navigator.push(context,
-        MaterialPageRoute(builder: (_) => AgencyRegistrationFormScreen()));
+    Navigator.push(context, MaterialPageRoute(builder: (_) => EstateRegistrationFormScreen()));
   }
 
   void viewIntroductionVideo() {

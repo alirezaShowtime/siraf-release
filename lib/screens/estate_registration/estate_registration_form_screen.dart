@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/screens/agency_registration/preview_agency_registration_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:siraf3/widgets/simple_app_bar.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 
-class AgencyRegistrationFormScreen extends StatefulWidget {
+import 'preview_estate_registration_screen.dart';
+
+class EstateRegistrationFormScreen extends StatefulWidget {
   @override
-  State<AgencyRegistrationFormScreen> createState() =>
-      _AgencyRegistrationFormScreen();
+  State<EstateRegistrationFormScreen> createState() => _EstateRegistrationFormScreen();
 }
 
-class _AgencyRegistrationFormScreen
-    extends State<AgencyRegistrationFormScreen> {
+class _EstateRegistrationFormScreen extends State<EstateRegistrationFormScreen> {
   TextEditingController businessNameController = TextEditingController();
   TextEditingController businessIdController = TextEditingController();
   TextEditingController officeAddressController = TextEditingController();
@@ -162,8 +161,7 @@ class _AgencyRegistrationFormScreen
         descriptionController.value.text.isEmpty ||
         trackingController.value.text.isEmpty) {}
 
-    Navigator.push(context,
-        MaterialPageRoute(builder: (_) => PreviewAgencyRegistrationScreen()));
+    Navigator.push(context, MaterialPageRoute(builder: (_) => PreviewEstateRegistrationScreen()));
   }
 
   void attachSymbolBusiness() {

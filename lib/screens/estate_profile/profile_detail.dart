@@ -1,6 +1,6 @@
-part of 'package:siraf3/screens/agency_profile/agency_profile_screen.dart';
+part of 'package:siraf3/screens/estate_profile/estate_profile_screen.dart';
 
-extension ProfileDetail on _AgencyProfileScreen {
+extension ProfileDetail on _EstateProfileScreen {
   Widget profileDetail(estateProfileModel.EstateProfile estateProfile) {
     return Container(
       constraints: BoxConstraints(
@@ -43,7 +43,7 @@ extension ProfileDetail on _AgencyProfileScreen {
               scrollDirection: Axis.horizontal,
               physics: BouncingScrollPhysics(),
               itemCount: estateProfile.images?.length ?? 0,
-              itemBuilder: (context, i) => agencyImageItem(estateProfile.images![i]),
+              itemBuilder: (context, i) => estateImageItem(estateProfile.images![i]),
             ),
           ),
           if ((estateProfile.consultants?.length ?? 0) > 0) divider(),

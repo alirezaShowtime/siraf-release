@@ -32,9 +32,9 @@ extension EventListener on _AgentProfileScreen {
       if (moreDetail) {
         showCommentWidget = false;
         showSearchBarWidget = false;
-        collopsController.forward();
+        collapseController.forward();
       } else {
-        collopsController.reverse();
+        collapseController.reverse();
       }
     });
   }
