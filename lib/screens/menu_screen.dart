@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:badges/badges.dart' as badge;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,7 +31,6 @@ import 'package:siraf3/screens/ticket/ticket_list_screen.dart';
 import 'package:siraf3/screens/verify_contract/inquiry_contract_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/accordion.dart';
-import 'package:badges/badges.dart' as badge;
 import 'package:siraf3/widgets/avatar.dart';
 
 import '../helpers.dart';
@@ -212,10 +212,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                       });
                                       hasNewMessageStream.add(hasNewMessage);
                                     }
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) => ChatListScreen()));
+                                    push(context, ChatListScreen());
                                   },
                                   padding: EdgeInsets.only(
                                       right: 30, left: 15, top: 20, bottom: 20),

@@ -1,18 +1,24 @@
-import 'package:siraf3/widgets/my_back_button.dart';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:siraf3/extensions/string_extension.dart';
+import 'package:siraf3/extensions/uri_extension.dart';
+import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:video_player/video_player.dart';
 
 import '../helpers.dart';
 import '../themes.dart';
 
 class VideoScreen extends StatefulWidget {
-  String videoUrl;
+  String? videoUrl;
+  File? videoFile;
   String? title;
+  bool attemptOffline;
 
-  VideoScreen({required this.videoUrl, this.title, Key? key}) : super(key: key);
+  VideoScreen({this.videoUrl, this.videoFile, this.title, this.attemptOffline = false, Key? key}) : super(key: key);
 
   @override
   State<VideoScreen> createState() => _VideoScreenState();
@@ -29,34 +35,53 @@ class _VideoScreenState extends State<VideoScreen> {
   void initState() {
     super.initState();
 
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
+    SystemChrome.setPreferredOrientations(
+      [
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ],
+    );
 
     _isLoading = true;
 
-    loadVideo(widget.videoUrl);
+    loadVideo(widget.videoUrl ?? widget.videoFile);
   }
 
-  loadVideo(url) {
+  Future<VideoPlayerController> attemptOfflineLoad(bool attempt) async {
+    if (!attempt) return VideoPlayerController.network(widget.videoUrl!);
+
+    var fileName = Uri.parse(widget.videoUrl!).getFileName();
+
+    if (!fileName.isFill()) return VideoPlayerController.network(widget.videoUrl!);
+
+    var file = File("${await chatDownloadPath()}/$fileName");
+
+    if (!await file.exists()) {
+      return VideoPlayerController.network(widget.videoUrl!);
+    }
+    return VideoPlayerController.file(file);
+  }
+
+  loadVideo(url) async {
     _controller?.dispose();
     setState(() {});
-    _controller = VideoPlayerController.network(url)
-      ..initialize().then((_) {
-        setState(() {});
-        _controller?.play();
-      }).catchError((_) {
-        notify("خطایی پیش آمد مجدد تلاش کنید");
-        setState(() {
-          _isLoading = false;
-        });
-      });
-    _controller?.addListener(() {
+
+    if (widget.videoFile != null) {
+      _controller = await VideoPlayerController.file(widget.videoFile!);
+    } else {
+      _controller = await attemptOfflineLoad(widget.attemptOffline);
+    }
+
+    _controller!.initialize().then((_) {
       setState(() {});
+      _controller?.play();
+    }).catchError((_) {
+      notify("خطایی پیش آمد مجدد تلاش کنید");
+      setState(() => _isLoading = false);
     });
+    _controller?.addListener(() => setState(() {}));
   }
 
   bool _showControllers = false;
@@ -67,11 +92,13 @@ class _VideoScreenState extends State<VideoScreen> {
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text(widget.title ?? "",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.normal,
-            )),
+        title: Text(
+          widget.title ?? "",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.black,
           statusBarBrightness: Brightness.light,
@@ -100,13 +127,7 @@ class _VideoScreenState extends State<VideoScreen> {
                       child: VideoPlayer(_controller!),
                     ),
                   )
-                : (_isLoading
-                    ? SpinKitRing(
-                        color: Themes.iconLight,
-                        size: 40,
-                        lineWidth: 5,
-                      )
-                    : Container()),
+                : (_isLoading ? SpinKitRing(color: Themes.iconLight, size: 40, lineWidth: 2) : Container()),
           ),
           if (_showControllers)
             GestureDetector(
@@ -131,16 +152,12 @@ class _VideoScreenState extends State<VideoScreen> {
                 icon: Stack(
                   children: [
                     Icon(
-                      (_controller?.value.isPlaying ?? false)
-                          ? CupertinoIcons.pause_fill
-                          : CupertinoIcons.play_fill,
+                      (_controller?.value.isPlaying ?? false) ? CupertinoIcons.pause_fill : CupertinoIcons.play_fill,
                       size: 44,
                       color: Themes.primary,
                     ),
                     Icon(
-                      (_controller?.value.isPlaying ?? false)
-                          ? CupertinoIcons.pause_fill
-                          : CupertinoIcons.play_fill,
+                      (_controller?.value.isPlaying ?? false) ? CupertinoIcons.pause_fill : CupertinoIcons.play_fill,
                       size: 40,
                       color: Themes.iconLight,
                     ),
@@ -159,36 +176,27 @@ class _VideoScreenState extends State<VideoScreen> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Text(
-                      timeText(
-                          minute: _controller?.value.duration.inMinutes,
-                          second: _controller?.value.duration.inSeconds
-                              .remainder(60)),
+                      timeText(minute: _controller?.value.duration.inMinutes, second: _controller?.value.duration.inSeconds.remainder(60)),
                       style: TextStyle(color: Colors.white),
                     ),
                     Expanded(
                       child: Directionality(
                         textDirection: TextDirection.ltr,
                         child: Slider(
-                          value: (_controller?.value.position.inSeconds ?? 0)
-                              .toDouble(),
+                          value: (_controller?.value.position.inSeconds ?? 0).toDouble(),
                           min: 0,
-                          max: (_controller?.value.duration.inSeconds ?? 0)
-                              .toDouble(),
+                          max: (_controller?.value.duration.inSeconds ?? 0).toDouble(),
                           activeColor: Themes.primary,
                           onChanged: (value) {
                             setState(() {
-                              _controller
-                                  ?.seekTo(Duration(seconds: value.toInt()));
+                              _controller?.seekTo(Duration(seconds: value.toInt()));
                             });
                           },
                         ),
                       ),
                     ),
                     Text(
-                      timeText(
-                          minute: _controller?.value.position.inMinutes,
-                          second: _controller?.value.position.inSeconds
-                              .remainder(60)),
+                      timeText(minute: _controller?.value.position.inMinutes, second: _controller?.value.position.inSeconds.remainder(60)),
                       style: TextStyle(color: Colors.white),
                     ),
                   ],

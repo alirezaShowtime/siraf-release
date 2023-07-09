@@ -80,6 +80,13 @@ dependencies:
   flutter_local_notifications: ^8.2.0
   dart_amqp: ^0.2.5
   logger: ^1.4.0
+  flutter_staggered_grid_view: ^0.6.2
+  record: ^4.4.4
+  cached_network_image: ^3.2.3
+  flutter_slidable: ^3.0.0
+  linkwell: ^2.0.6
+  intl: ^0.17.0
+
 
 dev_dependencies:
   flutter_test:

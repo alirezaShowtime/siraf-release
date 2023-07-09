@@ -5,6 +5,12 @@ abstract class SendMessageState {}
 
 class SendMessageInitial extends SendMessageState {}
 
+class SendMessageCanceled extends SendMessageState {
+  Key widgetKey;
+
+  SendMessageCanceled(this.widgetKey);
+}
+
 class SendMessageLoading extends SendMessageState {
   dio.CancelToken cancelToken;
   int count;
@@ -22,9 +28,14 @@ class SendMessageError extends SendMessageState {
 class SendMessageSuccess extends SendMessageState {
   Key widgetKey;
   late Message message;
+  List<File>? sentFiles;
 
-  SendMessageSuccess(this.widgetKey, dio.Response response) {
-    message = Message.fromJson(response.data['data']);
+  SendMessageSuccess(this.widgetKey, dio.Response response, {this.sentFiles}) {
+    message = Message.fromJson(response.data['data']["Message"]);
+
+    if (message.fileMessage.isFill() && sentFiles.isFill()) {
+      message.fileMessage!.first.uploadedPath = sentFiles!.first.path;
+    }
   }
 
   Future<void> playSentSound() async {

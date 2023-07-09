@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +6,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:siraf3/bloc/ticket/downloadFile/ticket_download_file_bloc.dart';
 import 'package:siraf3/extensions/int_extension.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/models/ticket_details.dart';
 import 'package:siraf3/screens/ticket/ticket_chat/message_config.dart';
 
@@ -23,7 +22,7 @@ class MessageFileWidget extends StatefulWidget {
 }
 
 class _MessageFileWidget extends State<MessageFileWidget> with SingleTickerProviderStateMixin {
-  late final AnimationController loadingController = AnimationController(vsync: this, duration: Duration(seconds: 3))..repeat();
+  late AnimationController loadingController;
 
   TicketDownloadFileBloc ticketDownloadFileBloc = TicketDownloadFileBloc();
 
@@ -32,8 +31,14 @@ class _MessageFileWidget extends State<MessageFileWidget> with SingleTickerProvi
   @override
   void initState() {
     super.initState();
-
+    loadingController = AnimationController(vsync: this, duration: Duration(seconds: 3))..repeat();
     ticketDownloadFileBloc.add(TicketDownloadFileIsExist(widget.fileMessage));
+  }
+
+  @override
+  void dispose() {
+    loadingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -42,11 +47,11 @@ class _MessageFileWidget extends State<MessageFileWidget> with SingleTickerProvi
       bloc: ticketDownloadFileBloc,
       builder: (context, TicketDownloadFileState state) {
         if (state is TicketDownloadFileInitial) {
-          return _fileInitWidget();
+          return widget.fileMessage.uploadedPath.isFill() ? _fileDownloadedWidget(widget.fileMessage.uploadedPath!) : _fileInitWidget();
         }
 
         if (state is TicketDownloadFileSuccess) {
-          return _fileDownloadedWidget(state.file);
+          return _fileDownloadedWidget(state.file.path);
         }
 
         if (state is TicketDownloadFileError) {
@@ -72,12 +77,12 @@ class _MessageFileWidget extends State<MessageFileWidget> with SingleTickerProvi
     );
   }
 
-  Widget _fileDownloadedWidget(File file) {
+  Widget _fileDownloadedWidget(String filePath) {
     return _baseFileWidget(
       icon: Icon(Icons.insert_drive_file_rounded, color: widget.messageConfig.background, size: 24),
       fileName: widget.fileMessage.name,
       fileInfo: "${widget.fileMessage.fileSize} ${widget.fileMessage.extension.toUpperCase()}",
-      onTap: () => onClickOpen(file),
+      onTap: () => onClickOpen(filePath),
     );
   }
 
@@ -190,8 +195,8 @@ class _MessageFileWidget extends State<MessageFileWidget> with SingleTickerProvi
     ticketDownloadFileBloc.add(TicketDownloadFileRequest(widget.fileMessage));
   }
 
-  void onClickOpen(File file) {
-    OpenFile.open(file.path);
+  void onClickOpen(String path) {
+    OpenFile.open(path);
   }
 
   void onClickTryAgain() {
