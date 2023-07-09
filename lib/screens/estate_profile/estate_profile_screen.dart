@@ -31,15 +31,10 @@ import 'package:siraf3/widgets/try_again.dart';
 import 'comment_item_widget.dart';
 
 part 'add_comment_widget.dart';
-
 part 'answer_item.dart';
-
 part 'event_listeners.dart';
-
 part 'profile.dart';
-
 part 'profile_detail.dart';
-
 part 'search_bar.dart';
 
 class EstateProfileScreen extends StatefulWidget {
@@ -217,7 +212,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
     );
   }
 
-  Widget agentItem(estateProfileModel.Consultants consultant) {
+  Widget consultantItem(estateProfileModel.Consultants consultant) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 5),
       child: Column(

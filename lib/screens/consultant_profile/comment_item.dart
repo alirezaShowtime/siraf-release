@@ -1,6 +1,6 @@
-part of 'agent_profile_screen.dart';
+part of 'consultant_profile_screen.dart';
 
-extension CommentItem on _AgentProfileScreen {
+extension CommentItem on _ConsultantProfileScreen {
   Widget commentItem(Comment comment) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),

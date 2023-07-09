@@ -1,6 +1,6 @@
-part of 'agent_profile_screen.dart';
+part of 'consultant_profile_screen.dart';
 
-extension Profile on _AgentProfileScreen {
+extension Profile on _ConsultantProfileScreen {
   Widget profile(ConsultantInfo consultantInfo) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),

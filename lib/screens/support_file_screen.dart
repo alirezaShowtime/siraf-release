@@ -12,7 +12,7 @@ import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file_consulant.dart';
 import 'package:siraf3/models/file_detail.dart' as file_detail;
 import 'package:siraf3/models/user.dart';
-import 'package:siraf3/screens/agent_profile/agent_profile_screen.dart';
+import 'package:siraf3/screens/consultant_profile/consultant_profile_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/try_again.dart';
@@ -150,7 +150,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
       onTap: () {
         push(
             context,
-            AgentProfileScreen(
+            ConsultantProfileScreen(
               consultantId: item.consultantId!.id!,
               name: item.consultantId!.name,
             ));

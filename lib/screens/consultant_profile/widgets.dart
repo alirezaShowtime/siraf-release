@@ -1,6 +1,6 @@
-part of 'agent_profile_screen.dart';
+part of 'consultant_profile_screen.dart';
 
-extension Widgets on _AgentProfileScreen {
+extension Widgets on _ConsultantProfileScreen {
   Widget agencyImageItem() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 3),

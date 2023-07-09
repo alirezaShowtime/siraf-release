@@ -1,6 +1,6 @@
-part of 'agent_profile_screen.dart';
+part of 'consultant_profile_screen.dart';
 
-extension AnswerItem on _AgentProfileScreen {
+extension AnswerItem on _ConsultantProfileScreen {
   Widget answerItem(Map<String, dynamic> answer) {
     return Container(
       padding: const EdgeInsets.only(top: 8, bottom: 4, left: 12, right: 12),

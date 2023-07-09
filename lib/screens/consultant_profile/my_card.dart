@@ -1,6 +1,6 @@
-part of 'agent_profile_screen.dart';
+part of 'consultant_profile_screen.dart';
 
-extension MyCard on _AgentProfileScreen {
+extension MyCard on _ConsultantProfileScreen {
   Widget card({
     required String title,
     required String value,

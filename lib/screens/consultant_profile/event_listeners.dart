@@ -1,6 +1,6 @@
-part of 'agent_profile_screen.dart';
+part of 'consultant_profile_screen.dart';
 
-extension EventListener on _AgentProfileScreen {
+extension EventListener on _ConsultantProfileScreen {
   void share() {
     FlutterShare.share(
       title: 'اشتراک گذاری',
@@ -47,26 +47,22 @@ extension EventListener on _AgentProfileScreen {
 
     //if true, the comment and the rate will be sent
     if (commentIsValid && rateIsValid) {
-      BlocProvider.of<AgentProfileBloc>(context).add(AgentProfileSendComment(
-          massage: comment, consultantId: consultantId));
+      BlocProvider.of<ConsultantProfileBloc>(context).add(ConsultantProfileSendComment(massage: comment, consultantId: consultantId));
     }
 
     //if true, only the comment will be sent
     if (commentIsValid && !rateIsValid) {
-      BlocProvider.of<AgentProfileBloc>(context).add(AgentProfileSendComment(
-          massage: comment, consultantId: consultantId));
+      BlocProvider.of<ConsultantProfileBloc>(context).add(ConsultantProfileSendComment(massage: comment, consultantId: consultantId));
     }
 
     //if true, ony the rate will be sent
     if (!commentIsValid && rateIsValid) {
-      BlocProvider.of<AgentProfileBloc>(context)
-          .add(AgentProfileSendRate(rate: rating!, consultantId: consultantId));
+      BlocProvider.of<ConsultantProfileBloc>(context).add(ConsultantProfileSendRate(rate: rating!, consultantId: consultantId));
     }
   }
 
   void retry(BuildContext context) {
-    BlocProvider.of<AgentProfileBloc>(context)
-        .add(AgentProfileLoad(widget.consultantId));
+    BlocProvider.of<ConsultantProfileBloc>(context).add(ConsultantProfileLoad(widget.consultantId));
   }
 
   void viewFilterFileWidget() async {

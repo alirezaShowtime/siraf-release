@@ -1,6 +1,6 @@
-part of 'agent_profile_screen.dart';
+part of 'consultant_profile_screen.dart';
 
-extension ProfileDetail on _AgentProfileScreen {
+extension ProfileDetail on _ConsultantProfileScreen {
   Widget profileDetail() {
     return Container(
       constraints: BoxConstraints(

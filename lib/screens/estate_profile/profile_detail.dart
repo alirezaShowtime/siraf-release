@@ -67,7 +67,7 @@ extension ProfileDetail on _EstateProfileScreen {
                 scrollDirection: Axis.horizontal,
                 physics: BouncingScrollPhysics(),
                 itemCount: estateProfile.consultants?.length ?? 0,
-                itemBuilder: (context, i) => agentItem(estateProfile.consultants![i]),
+                itemBuilder: (context, i) => consultantItem(estateProfile.consultants![i]),
               ),
             ),
         ],

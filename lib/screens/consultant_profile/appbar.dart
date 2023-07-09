@@ -1,6 +1,6 @@
-part of 'agent_profile_screen.dart';
+part of 'consultant_profile_screen.dart';
 
-extension AppBarWidget on _AgentProfileScreen {
+extension AppBarWidget on _ConsultantProfileScreen {
   appBar() {
     return AppBar(
       backgroundColor: Themes.appBar,

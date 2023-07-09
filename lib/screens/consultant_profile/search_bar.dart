@@ -1,6 +1,6 @@
-part of 'agent_profile_screen.dart';
+part of 'consultant_profile_screen.dart';
 
-extension SearchBar on _AgentProfileScreen {
+extension SearchBar on _ConsultantProfileScreen {
   Widget searchBar() {
     return Container(
       height: 45,

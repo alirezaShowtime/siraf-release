@@ -1,6 +1,6 @@
-part of 'agent_profile_screen.dart';
+part of 'consultant_profile_screen.dart';
 
-extension AddCommentWidget on _AgentProfileScreen {
+extension AddCommentWidget on _ConsultantProfileScreen {
   Widget addCommentWidget({required int consultantId}) {
     return Container(
       color: Colors.white,
@@ -52,22 +52,22 @@ extension AddCommentWidget on _AgentProfileScreen {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: BlocConsumer<AgentProfileCommentRateBloc, AgentProfileCommentRateState>(
+              child: BlocConsumer<ConsultantProfileCommentRateBloc, ConsultantProfileCommentRateState>(
                 bloc: commentRateBloc,
                 listener: (context, state) {
-                  if (state is AgentProfileCommentRateSuccessState && state.comment != null) {
+                  if (state is ConsultantProfileCommentRateSuccessState && state.comment != null) {
                     setState(() {
                       consultantInfo!.comment!.add(state.comment!);
                     });
                     notify("امتیاز/نظر شما ثبت شد.");
                   }
 
-                  if (state is AgentProfileCommentRateErrorState) {
+                  if (state is ConsultantProfileCommentRateErrorState) {
                     notify("خطایی در ثبت امتیاز/نظر پیش آمد.");
                   }
                 },
                 builder: (context, state) {
-                  if (state is AgentProfileCommentRateSendingState) {
+                  if (state is ConsultantProfileCommentRateSendingState) {
                     return SizedBox(
                       width: 15,
                       height: 15,
