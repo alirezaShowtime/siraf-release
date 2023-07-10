@@ -90,7 +90,7 @@ extension Profile on _ConsultantProfileScreen {
                                     }
                                   }),
                                   child: Text(
-                                    !showComment ? "نمایش نظرات (${consultantInfo.comment?.length ?? 0})" : "فایل های مشاور",
+                                    !showComment ? "نمایش نظرات ($comments.length)" : "فایل های مشاور",
                                     style: TextStyle(
                                       color: Themes.text,
                                       fontWeight: FontWeight.bold,
@@ -118,13 +118,13 @@ extension Profile on _ConsultantProfileScreen {
           if (showComment)
             Expanded(
               child: MyListView(
-                isEmpty: !consultantInfo.comment.isFill(),
+                isEmpty: !comments.isFill(),
                 listView: ListView.builder(
-                  itemCount: (consultantInfo.comment?.length ?? 0) + 1,
+                  itemCount: comments.length + 1,
                   itemBuilder: (context, i) {
                     if (i == 0) return addCommentWidget(consultantId: consultantInfo.id!);
                     return CommentItemWidget(
-                      comment: consultantInfo.comment![i - 1],
+                      comment: comments[i - 1],
                       consultantId: widget.consultantId,
                     );
                   },

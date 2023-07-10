@@ -8,9 +8,15 @@ class EstateProfileCommentRateInitial extends EstateProfileCommentRateState {}
 class EstateProfileCommentRateSending extends EstateProfileCommentRateState {}
 
 class EstateProfileCommentRateSuccess extends EstateProfileCommentRateState {
-  final Comment? comment;
+  Comment? comment;
 
   EstateProfileCommentRateSuccess({this.comment});
 }
 
-class EstateProfileCommentRateError extends EstateProfileCommentRateState {}
+class EstateProfileCommentRateError extends EstateProfileCommentRateState {
+  String? message;
+
+  EstateProfileCommentRateError(Response response) {
+    message = jDecode(response.body)["message"];
+  }
+}

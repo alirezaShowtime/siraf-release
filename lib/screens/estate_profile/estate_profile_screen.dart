@@ -79,6 +79,9 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
   FilesBloc filesBloc = FilesBloc();
   FilesBloc _moreFilesBloc = FilesBloc();
   late FilterData filterData;
+  var nowState;
+
+  List<Comment> comments = [];
 
   @override
   void initState() {
@@ -94,6 +97,27 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
     });
 
     setFilterData();
+
+    sendCommentRateBloc.stream.listen((state) {
+      if (state is EstateProfileCommentRateError) {
+        notify(state.message ?? "خطایی در ثبت امتیاز/نظر پیش آمد.");
+      }
+      if (state is EstateProfileCommentRateSuccess) {
+        rate = null;
+        commentController.clear();
+        if (state.comment != null) {
+          List<Comment> list = comments;
+          comments = [];
+          comments.add(state.comment!);
+          comments.addAll(list);
+        }
+        try {
+          setState(() {});
+        } catch (e) {}
+
+        notify("نظر / امتیاز شما ثبت شد");
+      }
+    });
   }
 
   @override
@@ -129,7 +153,14 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
             scaffoldContext = context;
             if (state is EstateProfileInitial) return Center(child: Loading());
             if (state is EstateProfileErrorState) return retryWidget(context, state.message);
-            if (state is EstateProfileSuccessState) return profile(context, state.estateProfile);
+            if (state is EstateProfileSuccessState) {
+              if (nowState == null) {
+                nowState = state;
+                comments = state.estateProfile.comments ?? [];
+              }
+              print("comments ${comments.length}");
+              return profile(context, state.estateProfile);
+            }
             return Container();
           },
         ),

@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
@@ -28,10 +29,10 @@ class EstateProfileCommentRateBloc extends Bloc<EstateProfileCommentRateEvent, E
     );
 
     if (!isResponseOk(res)) {
-      return emit(EstateProfileCommentRateError());
+      return emit(EstateProfileCommentRateError(res));
     }
 
-    emit(EstateProfileCommentRateSuccess(comment: Comment.fromJson(jDecode(res.body)["data"])));
+    emit(EstateProfileCommentRateSuccess(comment: event.replyId != null ? null : Comment.fromJson(jDecode(res.body)["data"])));
   }
 
   _onSendRate(EstateProfileCommentRateSendRateEvent event, Emitter<EstateProfileCommentRateState> emit) async {
@@ -47,7 +48,7 @@ class EstateProfileCommentRateBloc extends Bloc<EstateProfileCommentRateEvent, E
     );
 
     if (!isResponseOk(res)) {
-      return emit(EstateProfileCommentRateError());
+      return emit(EstateProfileCommentRateError(res));
     }
 
     emit(EstateProfileCommentRateSuccess());
@@ -73,8 +74,12 @@ class EstateProfileCommentRateBloc extends Bloc<EstateProfileCommentRateEvent, E
       },
     );
 
-    if (!isResponseOk(rateRes) || !isResponseOk(commentRes)) {
-      return emit(EstateProfileCommentRateError());
+    if (!isResponseOk(rateRes)) {
+      return emit(EstateProfileCommentRateError(rateRes));
+    }
+
+    if (!isResponseOk(commentRes)) {
+      return emit(EstateProfileCommentRateError(commentRes));
     }
 
     emit(EstateProfileCommentRateSuccess(comment: Comment.fromJson(jDecode(commentRes.body)["data"])));

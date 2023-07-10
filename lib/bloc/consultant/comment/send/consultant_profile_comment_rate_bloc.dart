@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
@@ -28,7 +29,7 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
       },
     );
     if (!isResponseOk(res)) {
-      return emit(ConsultantProfileCommentRateError());
+      return emit(ConsultantProfileCommentRateError(res));
     }
 
     emit(ConsultantProfileCommentRateSuccess(comment: Comment.fromJson(jDecode(res.body)["data"])));
@@ -48,7 +49,7 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
     );
 
     if (!isResponseOk(res)) {
-      return emit(ConsultantProfileCommentRateError());
+      return emit(ConsultantProfileCommentRateError(res));
     }
 
     emit(ConsultantProfileCommentRateSuccess());
@@ -74,8 +75,12 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
       },
     );
 
-    if (!isResponseOk(rateRes) || !isResponseOk(commentRes)) {
-      return emit(ConsultantProfileCommentRateError());
+    if (!isResponseOk(rateRes)) {
+      return emit(ConsultantProfileCommentRateError(rateRes));
+    }
+
+    if (!isResponseOk(commentRes)) {
+      return emit(ConsultantProfileCommentRateError(commentRes));
     }
 
     emit(ConsultantProfileCommentRateSuccess(comment: Comment.fromJson(jDecode(commentRes.body)["data"])));

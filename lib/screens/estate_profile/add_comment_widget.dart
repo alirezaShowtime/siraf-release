@@ -19,7 +19,7 @@ extension AddCommentWidget on _EstateProfileScreen {
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: RatingBar.builder(
               initialRating: 0,
-              minRating: 1,
+              minRating: 0,
               direction: Axis.horizontal,
               itemCount: 5,
               itemPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -53,17 +53,8 @@ extension AddCommentWidget on _EstateProfileScreen {
               child: BlocConsumer(
                 bloc: sendCommentRateBloc,
                 listener: (context, state) {
-                  if (state is EstateProfileCommentRateSuccess) {
-                    setState(() {
-                      rate = null;
-                      comment = null;
-                    });
-                    bloc.add(EstateProfileLoadEvent(widget.estateId));
-                    notify("امتیاز/نظر شما ثبت شد.");
-                  }
-
                   if (state is EstateProfileCommentRateError) {
-                    notify("خطایی در ثبت امتیاز/نظر پیش آمد.");
+                    notify(state.message ?? "خطایی در ثبت امتیاز/نظر پیش آمد.");
                   }
                 },
                 builder: (context, state) {

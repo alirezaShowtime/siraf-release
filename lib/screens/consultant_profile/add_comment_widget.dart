@@ -25,7 +25,7 @@ extension AddCommentWidget on _ConsultantProfileScreen {
               itemPadding: EdgeInsets.symmetric(horizontal: 10),
               itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
               itemSize: 35,
-              onRatingUpdate: (double value) => rating = value,
+              onRatingUpdate: (double value) => rate = value,
               glow: false,
               unratedColor: Colors.grey.shade200,
             ),
@@ -52,20 +52,8 @@ extension AddCommentWidget on _ConsultantProfileScreen {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: BlocConsumer<ConsultantProfileCommentRateBloc, ConsultantProfileCommentRateState>(
-                bloc: commentRateBloc,
-                listener: (context, state) {
-                  if (state is ConsultantProfileCommentRateSuccess && state.comment != null) {
-                    setState(() {
-                      consultantInfo!.comment!.add(state.comment!);
-                    });
-                    notify("امتیاز/نظر شما ثبت شد.");
-                  }
-
-                  if (state is ConsultantProfileCommentRateError) {
-                    notify("خطایی در ثبت امتیاز/نظر پیش آمد.");
-                  }
-                },
+              child: BlocBuilder(
+                bloc: sendCommentRateBloc,
                 builder: (context, state) {
                   if (state is ConsultantProfileCommentRateSending) {
                     return SizedBox(

@@ -32,9 +32,13 @@ class _CommentItemWidget extends State<CommentItemWidget> {
   TextEditingController replyFieldController = TextEditingController();
   bool showReplyField = false;
 
+  List<ReplyComment> replyComments = [];
+
   @override
   void initState() {
     super.initState();
+
+    replyComments = widget.comment.replies ?? [];
 
     likeCommentBloc.stream.listen((state) {
       if (state is ConsultantLikeCommentLoading) {
@@ -44,6 +48,9 @@ class _CommentItemWidget extends State<CommentItemWidget> {
 
     BlocProvider.of<ConsultantProfileCommentRateBloc>(context).stream.listen((state) {
       if (state is ConsultantProfileCommentRateSuccess) {
+        if (state.comment?.id == widget.comment.id) {
+          replyComments == state.comment?.replies;
+        }
         replyFieldController.clear();
         showReplyField = false;
         try {
@@ -164,7 +171,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
             ],
           ),
           if (showReplyField) replyFieldWidget(),
-          if (widget.comment.replies.isFill()) Column(children: widget.comment.replies!.map<Widget>((answer) => AnswerItemWidget(answer)).toList()),
+          if (widget.comment.replies.isFill()) Column(children: replyComments.map<Widget>((answer) => AnswerItemWidget(answer)).toList()),
         ],
       ),
     );

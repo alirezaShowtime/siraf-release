@@ -13,4 +13,10 @@ class ConsultantProfileCommentRateSuccess extends ConsultantProfileCommentRateSt
   ConsultantProfileCommentRateSuccess({this.comment});
 }
 
-class ConsultantProfileCommentRateError extends ConsultantProfileCommentRateState {}
+class ConsultantProfileCommentRateError extends ConsultantProfileCommentRateState {
+  String? message;
+
+  ConsultantProfileCommentRateError(Response response) {
+    message = jDecode(response.body)["message"];
+  }
+}

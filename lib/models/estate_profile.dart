@@ -16,10 +16,10 @@ class EstateProfile {
   List<Image>? images;
   double? rate;
   String? description;
-  List<Comment>? comment;
+  List<Comment>? comments;
   List<Consultants>? consultants;
 
-  EstateProfile({this.id, this.countConstruction, this.countRent, this.countOnSale, this.status, this.guildCode, this.shareLink, this.name, this.bio, this.logoFile, this.address, this.video, this.images, this.rate, this.description, this.comment, this.consultants});
+  EstateProfile({this.id, this.countConstruction, this.countRent, this.countOnSale, this.status, this.guildCode, this.shareLink, this.name, this.bio, this.logoFile, this.address, this.video, this.images, this.rate, this.description, this.comments, this.consultants});
 
   EstateProfile.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -68,7 +68,7 @@ class EstateProfile {
       description = json["description"];
     }
     if (json["comment"] is List) {
-      comment = json["comment"] == null ? null : (json["comment"] as List).map((e) => Comment.fromJson(e)).toList();
+      comments = json["comment"] == null ? null : (json["comment"] as List).map((e) => Comment.fromJson(e)).toList();
     }
     if (json["consultants"] is List) {
       consultants = json["consultants"] == null ? null : (json["consultants"] as List).map((e) => Consultants.fromJson(e)).toList();
@@ -92,8 +92,8 @@ class EstateProfile {
     _data["rate"] = rate;
     _data["shareLink"] = shareLink;
     _data["description"] = description;
-    if (comment != null) {
-      _data["comment"] = comment?.map((e) => e.toJson()).toList();
+    if (comments != null) {
+      _data["comment"] = comments?.map((e) => e.toJson()).toList();
     }
     if (consultants != null) {
       _data["consultants"] = consultants?.map((e) => e.toJson()).toList();

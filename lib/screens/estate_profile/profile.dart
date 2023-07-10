@@ -103,11 +103,8 @@ extension Profile on _EstateProfileScreen {
                                     }
                                   }),
                                   child: Text(
-                                    !showComment ? "نمایش نظرات (${estateProfile.comment?.length ?? 0})" : "فایل های دفتر املاک",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 9,
-                                    ),
+                                    !showComment ? "نمایش نظرات (${comments.length})" : "فایل های دفتر املاک",
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 9),
                                   ),
                                 ),
                               ],
@@ -121,39 +118,26 @@ extension Profile on _EstateProfileScreen {
               ],
             ),
           ),
-          // SizeTransition(
-          //   sizeFactor: collapseAnimation,
-          //   axis: Axis.vertical,
-          //   child: profileDetail(estateProfile),
-          // ),
           if (!showComment) searchBar(estateProfile.name ?? ""),
           if (showComment)
             Expanded(
               child: MyListView(
-                isEmpty: !estateProfile.comment.isFill(),
+                isEmpty: !comments.isFill(),
                 listView: ListView.builder(
-                  itemCount: (estateProfile.comment?.length ?? 0) + 1,
+                  itemCount: comments.length + 1,
                   itemBuilder: (context, i) {
                     if (i == 0) return addCommentWidget(estateProfile.id!);
                     return CommentItemWidget(
                       estateId: widget.estateId,
-                      comment: estateProfile.comment![i - 1],
+                      comment: comments[i - 1],
                     );
                   },
                 ),
               ),
             ),
           if (!showComment)
-            // Expanded(
-            //   child: ListView.builder(
-            //     itemCount: list.length,
-            //     itemBuilder: (context, i) => fileItem(list[i]),
-            //   ),
-            // ),
             Expanded(
-              child: BlocBuilder<FilesBloc, FilesState>(
-                builder: _buildEstateFilesBloc,
-              ),
+              child: BlocBuilder<FilesBloc, FilesState>(builder: _buildEstateFilesBloc),
             ),
         ],
       ),
@@ -173,10 +157,7 @@ extension Profile on _EstateProfileScreen {
   Widget _buildEstateFilesBloc(BuildContext context, FilesState state) {
     if (state is FilesInitState) return Container();
 
-    if (state is FilesLoadingState)
-      return Center(
-        child: Loading(),
-      );
+    if (state is FilesLoadingState) return Center(child: Loading());
 
     if (state is FilesErrorState) {
       return Center(
