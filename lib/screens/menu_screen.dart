@@ -62,6 +62,8 @@ class _MenuScreenState extends State<MenuScreen> {
     setState(() {
       this.user = user;
     });
+
+    print(user.toJson());
   }
 
   GetGroupsBloc getGroupsBloc = GetGroupsBloc();

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart' as m;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:flutter_octicons/flutter_octicons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:siraf3/bloc/location_files_bloc.dart';
@@ -16,11 +18,13 @@ import 'package:siraf3/map_utilities.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/models/location_file.dart';
+import 'package:siraf3/screens/filter_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/location_file_item.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:badges/badges.dart' as badges;
 
 import 'file_screen.dart';
 
@@ -185,7 +189,42 @@ class _FilesMapScreenState extends State<FilesMapScreen>
               ),
             ),
             SizedBox(
-              width: 20,
+              width: 10,
+            ),
+            IconButton(
+              onPressed: () async {
+                var result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => FilterScreen(
+                      originalFilterData: FilterData(
+                          cityIds: cities.map<int>((e) => e.id!).toList()),
+                      filterData: filterData,
+                      total_url: getFileUrl("file/locationFiles/").toString(),
+                    ),
+                  ),
+                );
+
+                if (result != null && result is FilterData) {
+                  setState(() {
+                    filterData = result;
+                  });
+
+                  print(filterData.toQueryString());
+
+                  getFiles();
+                }
+              },
+              icon: badges.Badge(
+                badgeContent: Text(''),
+                showBadge: filterData.hasFilter(),
+                position: badges.BadgePosition.custom(top: -15, start: -10),
+                badgeStyle: badges.BadgeStyle(badgeColor: Themes.primary),
+                child: FaIcon(
+                  OctIcons.sliders_16,
+                  size: 20,
+                ),
+              ),
             ),
           ],
           leading: IconButton(

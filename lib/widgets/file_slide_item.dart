@@ -236,7 +236,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                   await FlutterShare.share(
                     title: 'اشتراک گذاری فایل',
                     text: widget.file.name ?? '',
-                    linkUrl: FILE_URL + widget.file.id!.toString(),
+                    linkUrl: widget.file.shareLink,
                     chooserTitle: 'اشتراک گذاری در',
                   );
                 },
@@ -300,7 +300,6 @@ class _FileSlideItemState extends State<FileSlideItem> {
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          print("tappped");
                           setState(() {
                             showSummary = !showSummary;
                           });

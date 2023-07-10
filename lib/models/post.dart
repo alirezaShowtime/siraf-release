@@ -7,6 +7,7 @@ class Post {
   List<Videos>? videos;
   List<Images>? images;
   String? title;
+  String? shareLink;
   String? description;
   int? type;
   String? createAt;
@@ -14,7 +15,7 @@ class Post {
   int? creator;
   int? modifier;
 
-  Post({this.id, this.isBookmark, this.coverImage, this.tag, this.videos, this.images, this.title, this.description, this.type, this.createAt, this.modifyAt, this.creator, this.modifier});
+  Post({this.id, this.isBookmark, this.coverImage, this.tag, this.shareLink, this.videos, this.images, this.title, this.description, this.type, this.createAt, this.modifyAt, this.creator, this.modifier});
 
   Post.fromJson(Map<String, dynamic> json) {
     if(json["id"] is int) {
@@ -56,6 +57,9 @@ class Post {
     if(json["modifier"] is int) {
       modifier = json["modifier"];
     }
+    if(json["shareLink"] is String) {
+      shareLink = json["shareLink"];
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -79,6 +83,7 @@ class Post {
     _data["modifyAt"] = modifyAt;
     _data["creator"] = creator;
     _data["modifier"] = modifier;
+    _data["shareLink"] = shareLink;
     return _data;
   }
 

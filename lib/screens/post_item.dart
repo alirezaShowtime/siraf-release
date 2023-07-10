@@ -1,3 +1,8 @@
+import 'dart:io';
+
+import 'package:flutter_share/flutter_share.dart';
+import 'package:image_size_getter/file_input.dart';
+import 'package:image_size_getter/image_size_getter.dart';
 import 'package:siraf3/bloc/post_bookmark_bloc.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
@@ -57,6 +62,12 @@ class _PostItemState extends State<PostItem> {
         });
       }
     });
+
+    if ((widget.post.images?.length ?? 0) > 0) {
+      final file = File(widget.post.images!.first.path!);
+      final size = ImageSizeGetter.getSize(FileInput(file));
+      print('jpg = $size');
+    }
   }
 
   setData() {
@@ -81,6 +92,8 @@ class _PostItemState extends State<PostItem> {
     });
   }
 
+  double postItemHeight = 250;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -89,87 +102,104 @@ class _PostItemState extends State<PostItem> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(
-            children: [
-              if (!widget.post.images.isNotNullOrEmpty() &&
-                  !widget.post.videos.isNotNullOrEmpty())
-                Container(
-                  padding: EdgeInsets.only(bottom: 15),
-                  height: 250,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Themes.background,
-                    image: DecorationImage(
-                        image:
-                            AssetImage("assets/images/image_not_avialable.png"),
-                        alignment: Alignment.center),
-                  ),
-                ),
-              if (widget.post.images.isNotNullOrEmpty() ||
-                  widget.post.videos.isNotNullOrEmpty())
-                CarouselSliderCustom(
-                  sliders: images
-                          .map<s.Slider>(
-                            (e) => s.Slider(
-                              image: NetworkImage(e),
-                              type: s.SliderType.image,
-                              link: e,
-                            ),
-                          )
-                          .toList() +
-                      videos
-                          .map<s.Slider>(
-                            (e) => s.Slider(
-                              image: NetworkImage(e),
-                              type: s.SliderType.video,
-                              link: e,
-                            ),
-                          )
-                          .toList(),
-                  height: 250,
-                  autoPlay: false,
-                  indicatorsCenterAlign: true,
-                  viewportFraction: 1.0,
-                  itemMargin: EdgeInsets.only(bottom: 43),
-                  indicatorPosition:
-                      EdgeInsets.only(left: 0, right: 0, bottom: 20),
-                  itemBorderRadius: BorderRadius.zero,
-                  imageFit: BoxFit.cover,
-                  indicatorSelectedColor: Themes.blue,
-                  indicatorColor: Colors.grey,
-                ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: IconButton(
-                  onPressed: () {
-                    if (isBookmark) {
-                      postBookmarkBloc
-                          .add(PostBookmarkRemoveEvent(id: widget.post.id!));
-                    } else {
-                      postBookmarkBloc
-                          .add(PostBookmarkAddEvent(id: widget.post.id!));
-                    }
-                  },
-                  icon: Icon(
-                    isBookmark
-                        ? CupertinoIcons.bookmark_fill
-                        : CupertinoIcons.bookmark,
-                    color: isBookmark ? Themes.primary : Themes.icon,
-                  ),
-                ),
-              )
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15, bottom: 10),
-            child: Text(
-              widget.post.title ?? "",
-              style: TextStyle(
-                color: Themes.text,
-                fontSize: 15,
+          if (!widget.post.images.isNotNullOrEmpty() &&
+              !widget.post.videos.isNotNullOrEmpty())
+            Container(
+              padding: EdgeInsets.only(bottom: 15),
+              height: 250,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Themes.background,
+                image: DecorationImage(
+                    image: AssetImage("assets/images/image_not_avialable.png"),
+                    alignment: Alignment.center),
               ),
             ),
+          if (widget.post.images.isNotNullOrEmpty() ||
+              widget.post.videos.isNotNullOrEmpty())
+            CarouselSliderCustom(
+              sliders: images
+                      .map<s.Slider>(
+                        (e) => s.Slider(
+                          image: NetworkImage(e),
+                          type: s.SliderType.image,
+                          link: e,
+                        ),
+                      )
+                      .toList() +
+                  videos
+                      .map<s.Slider>(
+                        (e) => s.Slider(
+                          image: NetworkImage(e),
+                          type: s.SliderType.video,
+                          link: e,
+                        ),
+                      )
+                      .toList(),
+              height: postItemHeight,
+              autoPlay: false,
+              indicatorsCenterAlign: true,
+              viewportFraction: 1.0,
+              itemMargin: EdgeInsets.only(bottom: 5),
+              indicatorPosition: EdgeInsets.only(left: 0, right: 0, bottom: 20),
+              itemBorderRadius: BorderRadius.zero,
+              imageFit: BoxFit.cover,
+              indicatorSelectedColor: Themes.blue,
+              indicatorColor: Colors.grey,
+            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      if (isBookmark) {
+                        postBookmarkBloc
+                            .add(PostBookmarkRemoveEvent(id: widget.post.id!));
+                      } else {
+                        postBookmarkBloc
+                            .add(PostBookmarkAddEvent(id: widget.post.id!));
+                      }
+                    },
+                    icon: Icon(
+                      isBookmark
+                          ? CupertinoIcons.bookmark_fill
+                          : CupertinoIcons.bookmark,
+                      color: isBookmark ? Themes.primary : Themes.icon,
+                    ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 60 - 60,
+                    child: Text(
+                      "Dsadjksa djdhjashdsjhdasjdjashd djashdsajdjshd shdjshdadjahsshd ashdjsahdjksadas hh",
+                      style: TextStyle(
+                        color: Themes.text,
+                        fontSize: 13,
+                      ),
+                      // overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      textDirection: TextDirection.rtl,
+                    ),
+                  ),
+                ],
+              ),
+              IconButton(
+                onPressed: () async {
+                  await FlutterShare.share(
+                    title: 'اشتراک گذاری',
+                    text: widget.post.title,
+                    linkUrl: widget.post.shareLink,
+                    chooserTitle: 'اشتراک گذاری در',
+                  );
+                },
+                icon: Icon(
+                  Icons.share_rounded,
+                  color: Themes.icon,
+                  size: 21,
+                ),
+              ),
+            ],
           ),
           Padding(
             padding: const EdgeInsets.only(left: 15, right: 15, bottom: 10),

@@ -260,6 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     originalFilterData: FilterData(
                         cityIds: cities.map<int>((e) => e.id!).toList()),
                     filterData: filterData,
+                    total_url: getFileUrl('file/files/').toString(),
                   ),
                 ),
               );

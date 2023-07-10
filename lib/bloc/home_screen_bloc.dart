@@ -128,7 +128,7 @@ class HSBloc extends Bloc<HSEvent, HSState> {
     var countFinal = files.length + posts.length;
 
     for (int o = 0; files.isNotEmpty; o++) {
-      var rand = 3 + random.nextInt(count - 3);
+      var rand = 2 + random.nextInt(count - 2);
 
       for (int i = 0; i < rand; i++) {
         if (!files.asMap().containsKey(i)) continue;

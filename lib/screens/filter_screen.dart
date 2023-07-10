@@ -24,9 +24,13 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 class FilterScreen extends StatefulWidget {
   FilterData originalFilterData;
   FilterData filterData;
+  String? total_url;
 
   FilterScreen(
-      {required this.originalFilterData, required this.filterData, super.key});
+      {required this.originalFilterData,
+      required this.filterData,
+      required this.total_url,
+      super.key});
 
   @override
   State<FilterScreen> createState() => _FilterScreenState();
@@ -38,7 +42,7 @@ class _FilterScreenState extends State<FilterScreen> {
 
   StreamController<List<Category>> subCategories = StreamController();
 
-  TotalFileBloc totalFileBloc = TotalFileBloc();
+  TotalFileBloc totalFileBloc = TotalFileBloc(url: "");
 
   bool _hasImage = false;
   bool _hasVideo = false;
@@ -58,6 +62,9 @@ class _FilterScreenState extends State<FilterScreen> {
   void initState() {
     super.initState();
 
+    if (widget.total_url != null)
+      totalFileBloc = TotalFileBloc(url: widget.total_url!);
+
     categoriesBloc.add(CategoriesFetchEvent());
     categoriesBloc.stream.listen((event) {
       if (event is CategoriesBlocLoaded) {
@@ -75,7 +82,37 @@ class _FilterScreenState extends State<FilterScreen> {
           _hasVideo = widget.filterData.hasVideo ?? false;
           _hasTour = widget.filterData.hasTour ?? false;
 
-          filters = widget.filterData.filters ?? Filters();
+          var filterNumeric = widget.filterData.filters ?? Filters();
+
+          if (filterNumeric.prices?.length == 2 &&
+              filterNumeric.prices![1] == 99999999999999999) {
+            filterNumeric.prices = [
+              filterNumeric.prices![0],
+            ];
+          }
+
+          if (filterNumeric.price?.length == 2 &&
+              filterNumeric.price![1] == 99999999999999999) {
+            filterNumeric.price = [
+              filterNumeric.price![0],
+            ];
+          }
+
+          if (filterNumeric.rent?.length == 2 &&
+              filterNumeric.rent![1] == 99999999999999999) {
+            filterNumeric.rent = [
+              filterNumeric.rent![0],
+            ];
+          }
+
+          if (filterNumeric.mater?.length == 2 &&
+              filterNumeric.mater![1] == 99999999999999999) {
+            filterNumeric.mater = [
+              filterNumeric.mater![0],
+            ];
+          }
+
+          filters = filterNumeric;
 
           onChangeFilter();
         } else {
@@ -98,7 +135,7 @@ class _FilterScreenState extends State<FilterScreen> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => categoriesBloc),
-        BlocProvider(create: (_) => totalFileBloc),
+        BlocProvider<TotalFileBloc>(create: (_) => totalFileBloc),
       ],
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
@@ -913,7 +950,7 @@ class _FilterScreenState extends State<FilterScreen> {
                           break;
                         default:
                       }
-                      
+
                       onChangeFilter();
                     },
                     style: TextStyle(
@@ -1055,6 +1092,8 @@ class _FilterScreenState extends State<FilterScreen> {
   }
 
   onChangeFilter() {
+    if (widget.total_url == null) return;
+
     var filterData = widget.filterData;
     filterData.filters = filters;
     filterData.mainCategory = _mainCategory;

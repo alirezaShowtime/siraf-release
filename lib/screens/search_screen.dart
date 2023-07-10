@@ -68,6 +68,7 @@ class _SearchScreen extends State<SearchScreen> {
               color: App.theme.tooltipTheme.textStyle?.color,
             ),
           ),
+          textInputAction: TextInputAction.search,
           style: TextStyle(
             fontSize: 14,
             color: App.theme.textTheme.bodyLarge?.color,
@@ -82,6 +83,7 @@ class _SearchScreen extends State<SearchScreen> {
                   builder: (_) => FilterScreen(
                     originalFilterData: widget.originalFilterData,
                     filterData: widget.filterData,
+                    total_url: getFileUrl('file/files/').toString(),
                   ),
                 ),
               );

@@ -30,17 +30,19 @@ class TotalFileErrorState extends TotalFileState {
 }
 
 class TotalFileBloc extends Bloc<TotalFileGetEvent, TotalFileState> {
-  TotalFileBloc() : super(TotalFileInitState()) {
+  String url;
+  
+  TotalFileBloc({required this.url}) : super(TotalFileInitState()) {
     on(_onEvent);
   }
 
   _onEvent(TotalFileGetEvent event, emit) async {
     emit(TotalFileLoadingState());
 
-    var url = getFileUrl("file/totalFile/" + event.filterData.toQueryString());
+    var newUrl = Uri.parse(url + event.filterData.toQueryString() + "&total=true");
 
     var response =
-        await (event.withToken ? http2.get(url) : http2.getWithToken(url));
+        await (event.withToken ? http2.get(newUrl) : http2.getWithToken(newUrl));
 
     if (isResponseOk(response)) {
       emit(
