@@ -19,30 +19,26 @@ extension AddCommentWidget on _EstateProfileScreen {
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: RatingBar.builder(
               initialRating: 0,
-              minRating: 1,
+              minRating: 0,
               direction: Axis.horizontal,
               itemCount: 5,
               itemPadding: EdgeInsets.symmetric(horizontal: 10),
-              itemBuilder: (context, _) =>
-                  icon(Icons.star, color: Colors.amber),
+              itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
               itemSize: 35,
               onRatingUpdate: (double value) => rate = value,
               glow: false,
               unratedColor: Colors.grey.shade200,
             ),
           ),
-          TextField2(
+          MyTextField(
             controller: commentController,
             style: TextStyle(fontSize: 12),
             maxLines: 8,
             minLines: 4,
+            maxLength: 500,
             decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(10),
-              focusedBorder: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: App.theme.primaryColor, width: 1.5)),
+              isDense: true,
               labelText: "توضیحات",
-              labelStyle: TextStyle(color: App.theme.primaryColor),
             ),
           ),
           Align(
@@ -55,23 +51,14 @@ extension AddCommentWidget on _EstateProfileScreen {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: BlocConsumer(
-                bloc: commentRateBloc,
+                bloc: sendCommentRateBloc,
                 listener: (context, state) {
-                  if (state is EstateProfileCommentRateSuccessState) {
-                    setState(() {
-                      rate = null;
-                      comment = null;
-                    });
-                    bloc.add(EstateProfileLoadEvent(widget.estateId));
-                    notify("امتیاز/نظر شما ثبت شد.");
-                  }
-
-                  if (state is EstateProfileCommentRateErrorState) {
-                    notify("خطایی در ثبت امتیاز/نظر پیش آمد.");
+                  if (state is EstateProfileCommentRateError) {
+                    notify(state.message ?? "خطایی در ثبت امتیاز/نظر پیش آمد.");
                   }
                 },
                 builder: (context, state) {
-                  if (state is EstateProfileCommentRateSendingState) {
+                  if (state is EstateProfileCommentRateSending) {
                     return SizedBox(
                       width: 15,
                       height: 15,

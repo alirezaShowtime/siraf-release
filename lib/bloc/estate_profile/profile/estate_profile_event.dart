@@ -1,4 +1,4 @@
-part of 'agency_profile_bloc.dart';
+part of 'estate_profile_bloc.dart';
 
 @immutable
 abstract class EstateProfileEvent {}

@@ -8,6 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/bloc/consultant/comment/send/consultant_profile_comment_rate_bloc.dart';
 import 'package:siraf3/bloc/consultant/profile/consultant_profile_bloc.dart';
 import 'package:siraf3/bloc/files_bloc.dart';
+import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/consultant_info.dart';
 import 'package:siraf3/models/file.dart';
@@ -20,6 +21,7 @@ import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
+import 'package:siraf3/widgets/my_list_view.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:siraf3/widgets/static_star.dart';
@@ -29,21 +31,13 @@ import 'package:siraf3/widgets/try_again.dart';
 import 'comment_item_widget.dart';
 
 part 'add_comment_widget.dart';
-
 part 'answer_item.dart';
-
 part 'appbar.dart';
-
 part 'event_listeners.dart';
-
 part 'my_card.dart';
-
 part 'profile.dart';
-
 part 'profile_detail.dart';
-
 part 'search_bar.dart';
-
 part 'widgets.dart';
 
 class ConsultantProfileScreen extends StatefulWidget {
@@ -76,7 +70,7 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
   TextEditingController commentController = TextEditingController();
 
   ConsultantProfileBloc bloc = ConsultantProfileBloc();
-  ConsultantProfileCommentRateBloc commentRateBloc = ConsultantProfileCommentRateBloc();
+  ConsultantProfileCommentRateBloc sendCommentRateBloc = ConsultantProfileCommentRateBloc();
   FilesBloc filesBloc = FilesBloc();
   FilterData filterData = FilterData();
 
@@ -84,7 +78,11 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
 
   String? comment;
   String title = "در حال بارگذاری...";
-  double? rating;
+  double? rate;
+
+  List<Comment> comments = [];
+
+  var nowState;
 
   @override
   void initState() {
@@ -96,6 +94,28 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
     collapseController.addListener(_collapseControllerListener);
 
     bloc.add(ConsultantProfileLoad(widget.consultantId));
+
+    sendCommentRateBloc.stream.listen((state) {
+      if (state is ConsultantProfileCommentRateError) {
+        notify(state.message ?? "خطایی در ثبت امتیاز/نظر پیش آمد.");
+      }
+
+      if (state is ConsultantProfileCommentRateSuccess) {
+        rate = null;
+        commentController.clear();
+        if (state.comment != null) {
+          List<Comment> list = comments;
+          comments = [];
+          comments.add(state.comment!);
+          comments.addAll(list);
+        }
+        try {
+          setState(() {});
+        } catch (e) {}
+
+        notify("نظر / امتیاز شما ثبت شد");
+      }
+    });
   }
 
   @override
@@ -111,8 +131,11 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => filesBloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => filesBloc),
+        BlocProvider(create: (_) => sendCommentRateBloc),
+      ],
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: appBar(),
@@ -135,6 +158,12 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
 
             if (state is ConsultantProfileSuccessState) {
               setFilterData(state.consultantInfo);
+
+              if (nowState == null) {
+                nowState = state;
+                comments = state.consultantInfo.comments ?? [];
+              }
+
               return profile(state.consultantInfo);
             }
             return Container();

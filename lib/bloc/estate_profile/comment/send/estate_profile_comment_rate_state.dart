@@ -3,14 +3,20 @@ part of 'estate_profile_comment_rate_bloc.dart';
 @immutable
 abstract class EstateProfileCommentRateState {}
 
-class EstateProfileCommentRateInitialState extends EstateProfileCommentRateState {}
+class EstateProfileCommentRateInitial extends EstateProfileCommentRateState {}
 
-class EstateProfileCommentRateSendingState extends EstateProfileCommentRateState {}
+class EstateProfileCommentRateSending extends EstateProfileCommentRateState {}
 
-class EstateProfileCommentRateSuccessState extends EstateProfileCommentRateState {
-  final Comment? comment;
+class EstateProfileCommentRateSuccess extends EstateProfileCommentRateState {
+  Comment? comment;
 
-  EstateProfileCommentRateSuccessState({this.comment});
+  EstateProfileCommentRateSuccess({this.comment});
 }
 
-class EstateProfileCommentRateErrorState extends EstateProfileCommentRateState {}
+class EstateProfileCommentRateError extends EstateProfileCommentRateState {
+  String? message;
+
+  EstateProfileCommentRateError(Response response) {
+    message = jDecode(response.body)["message"];
+  }
+}

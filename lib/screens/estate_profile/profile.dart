@@ -103,11 +103,8 @@ extension Profile on _EstateProfileScreen {
                                     }
                                   }),
                                   child: Text(
-                                    !showComment ? "نمایش نظرات (${estateProfile.comment?.length ?? 0})" : "فایل های دفتر املاک",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 9,
-                                    ),
+                                    !showComment ? "نمایش نظرات (${comments.length})" : "فایل های دفتر املاک",
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 9),
                                   ),
                                 ),
                               ],
@@ -121,34 +118,27 @@ extension Profile on _EstateProfileScreen {
               ],
             ),
           ),
-          // SizeTransition(
-          //   sizeFactor: collapseAnimation,
-          //   axis: Axis.vertical,
-          //   child: profileDetail(estateProfile),
-          // ),
           if (!showComment) searchBar(estateProfile.name ?? ""),
           if (showComment)
             Expanded(
-              child: ListView.builder(
-                itemCount: (estateProfile.comment?.length ?? 0) + 1,
-                itemBuilder: (context, i) {
-                  if (i == 0) return addCommentWidget(estateProfile.id!);
-
-                  return CommentItemWidget(comment: estateProfile.comment![i - 1]);
-                },
+              child: MyListView(
+                isEmpty: !comments.isFill(),
+                listView: ListView.builder(
+                  itemCount: comments.length + 1,
+                  itemBuilder: (context, i) {
+                    if (i == 0) return addCommentWidget(estateProfile.id!);
+                    return CommentItemWidget(
+                      estateId: widget.estateId,
+                      comment: comments[i - 1],
+                    );
+                  },
+                ),
               ),
             ),
           if (!showComment)
-            // Expanded(
-            //   child: ListView.builder(
-            //     itemCount: list.length,
-            //     itemBuilder: (context, i) => fileItem(list[i]),
-            //   ),
-            // ),
             Expanded(
-                child: BlocBuilder<FilesBloc, FilesState>(
-              builder: _buildEstateFilesBloc,
-            )),
+              child: BlocBuilder<FilesBloc, FilesState>(builder: _buildEstateFilesBloc),
+            ),
         ],
       ),
     );
@@ -167,10 +157,7 @@ extension Profile on _EstateProfileScreen {
   Widget _buildEstateFilesBloc(BuildContext context, FilesState state) {
     if (state is FilesInitState) return Container();
 
-    if (state is FilesLoadingState)
-      return Center(
-        child: Loading(),
-      );
+    if (state is FilesLoadingState) return Center(child: Loading());
 
     if (state is FilesErrorState) {
       return Center(
@@ -185,25 +172,23 @@ extension Profile on _EstateProfileScreen {
 
     files = state.files;
 
-    return ListView(
-      children: files
-          .map<Widget>(
-            (e) => GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => FileScreen(id: e.id!),
-                  ),
-                );
-              },
-              child: Padding(
-                padding: EdgeInsets.only(top: files.first == e ? 0 : 5),
-                child: FileHorizontalItem(file: e),
+    return MyListView(
+      isEmpty: files.isEmpty,
+      listView: ListView(
+        children: files
+            .map<Widget>(
+              (e) => GestureDetector(
+                onTap: () {
+                  push(context, FileScreen(id: e.id!));
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(top: files.first == e ? 0 : 5),
+                  child: FileHorizontalItem(file: e),
+                ),
               ),
-            ),
-          )
-          .toList(),
+            )
+            .toList(),
+      ),
     );
   }
 

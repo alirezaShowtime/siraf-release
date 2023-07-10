@@ -3,7 +3,7 @@ class ConsultantInfo {
   String? name;
   String? avatar;
   dynamic rate;
-  List<Comment>? comment;
+  List<Comment>? comments;
   int? countConstruction;
   int? countRent;
   int? countOnSale;
@@ -11,15 +11,7 @@ class ConsultantInfo {
   String? shareLink;
   String? bio;
 
-  ConsultantInfo(
-      {this.id,
-      this.name,
-      this.avatar,
-      this.rate,
-      this.comment,
-      this.countConstruction,
-      this.countRent,
-      this.countOnSale});
+  ConsultantInfo({this.id, this.name, this.avatar, this.rate, this.comments, this.countConstruction, this.countRent, this.countOnSale});
 
   ConsultantInfo.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -33,9 +25,7 @@ class ConsultantInfo {
     }
     rate = json["rate"];
     if (json["comment"] is List) {
-      comment = json["comment"] == null
-          ? null
-          : (json["comment"] as List).map((e) => Comment.fromJson(e)).toList();
+      comments = json["comment"] == null ? null : (json["comment"] as List).map((e) => Comment.fromJson(e)).toList();
     }
     if (json["countConstruction"] is int) {
       countConstruction = json["countConstruction"];
@@ -63,8 +53,8 @@ class ConsultantInfo {
     _data["name"] = name;
     _data["avatar"] = avatar;
     _data["rate"] = rate;
-    if (comment != null) {
-      _data["comment"] = comment?.map((e) => e.toJson()).toList();
+    if (comments != null) {
+      _data["comment"] = comments?.map((e) => e.toJson()).toList();
     }
     _data["countConstruction"] = countConstruction;
     _data["countRent"] = countRent;
@@ -83,9 +73,8 @@ class Comment {
   int? consultantId;
   UserId? userId;
   String? createDate;
-  double? rate;
-
-  Comment({this.id, this.likeCount, this.dislikeCount, this.comment, this.consultantId, this.userId, this.createDate, this.rate});
+  double rate = 0.0;
+  List<ReplyComment>? replies;
 
   Comment.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -103,9 +92,13 @@ class Comment {
     if (json["consultant_id"] is int) {
       consultantId = json["consultant_id"];
     }
+
+    if (json["reply_id"] is List) {
+      replies = (json["reply_id"] as List).map((e) => ReplyComment.fromJson(e)).toList();
+    }
+
     if (json["user_id"] is Map) {
-      userId =
-          json["user_id"] == null ? null : UserId.fromJson(json["user_id"]);
+      userId = json["user_id"] == null ? null : UserId.fromJson(json["user_id"]);
     }
     if (json["createDate"] is String) {
       createDate = json["createDate"];
@@ -128,6 +121,32 @@ class Comment {
     _data["createDate"] = createDate;
     _data["rate"] = rate;
     return _data;
+  }
+}
+
+class ReplyComment {
+  int? id;
+  String? comment;
+  String? createDate;
+  String? name;
+  String? avatar;
+
+  ReplyComment.fromJson(dynamic json) {
+    if (json['id'] is int) {
+      id = json['id'];
+    }
+    if (json['comment'] is String) {
+      comment = json['comment'];
+    }
+    if (json['createDate'] is String) {
+      createDate = json['createDate'];
+    }
+    if (json['name'] is String) {
+      name = json['name'];
+    }
+    if (json['avatar'] is String) {
+      avatar = json['avatar'];
+    }
   }
 }
 

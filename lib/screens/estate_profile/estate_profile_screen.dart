@@ -6,12 +6,14 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/bloc/estate_profile/comment/send/estate_profile_comment_rate_bloc.dart';
-import 'package:siraf3/bloc/estate_profile/profile/agency_profile_bloc.dart';
+import 'package:siraf3/bloc/estate_profile/profile/estate_profile_bloc.dart';
 import 'package:siraf3/bloc/files_bloc.dart';
 import 'package:siraf3/extensions/string_extension.dart';
+import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/city.dart' as city;
+import 'package:siraf3/models/consultant_info.dart';
 import 'package:siraf3/models/estate_profile.dart' as estateProfileModel;
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
@@ -23,8 +25,10 @@ import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
+import 'package:siraf3/widgets/my_list_view.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
+import 'package:siraf3/widgets/my_text_field.dart';
 import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
@@ -70,13 +74,16 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
   TextEditingController commentController = TextEditingController();
 
   EstateProfileBloc bloc = EstateProfileBloc();
-  EstateProfileCommentRateBloc commentRateBloc = EstateProfileCommentRateBloc();
+  EstateProfileCommentRateBloc sendCommentRateBloc = EstateProfileCommentRateBloc();
 
   estateProfileModel.EstateProfile? estateProfile;
 
   FilesBloc filesBloc = FilesBloc();
   FilesBloc _moreFilesBloc = FilesBloc();
   late FilterData filterData;
+  var nowState;
+
+  List<Comment> comments = [];
 
   @override
   void initState() {
@@ -92,11 +99,32 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
     });
 
     setFilterData();
+
+    sendCommentRateBloc.stream.listen((state) {
+      if (state is EstateProfileCommentRateError) {
+        notify(state.message ?? "خطایی در ثبت امتیاز/نظر پیش آمد.");
+      }
+      if (state is EstateProfileCommentRateSuccess) {
+        rate = null;
+        commentController.clear();
+        if (state.comment != null) {
+          List<Comment> list = comments;
+          comments = [];
+          comments.add(state.comment!);
+          comments.addAll(list);
+        }
+        try {
+          setState(() {});
+        } catch (e) {}
+
+        notify("نظر / امتیاز شما ثبت شد");
+      }
+    });
   }
 
   @override
   void dispose() {
-    commentRateBloc.close();
+    sendCommentRateBloc.close();
     filesBloc.close();
     bloc.close();
     collapseController.removeListener(_collapseControllerListener);
@@ -105,8 +133,11 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => filesBloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => filesBloc),
+        BlocProvider(create: (context) => sendCommentRateBloc),
+      ],
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: appBar(),
@@ -124,7 +155,14 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
             scaffoldContext = context;
             if (state is EstateProfileInitial) return Center(child: Loading());
             if (state is EstateProfileErrorState) return retryWidget(context, state.message);
-            if (state is EstateProfileSuccessState) return profile(context, state.estateProfile);
+            if (state is EstateProfileSuccessState) {
+              if (nowState == null) {
+                nowState = state;
+                comments = state.estateProfile.comments ?? [];
+              }
+              print("comments ${comments.length}");
+              return profile(context, state.estateProfile);
+            }
             return Container();
           },
         ),
@@ -132,7 +170,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
     );
   }
 
-  Widget retryWidget(context, String message) {
+  Widget retryWidget(context, String? message) {
     return Center(
       child: TryAgain(onPressed: () => retry(context), message: message),
     );

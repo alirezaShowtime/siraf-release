@@ -2,34 +2,62 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:siraf3/bloc/estate_profile/comment/like_and_dislike/estate_profile_like_comment_bloc.dart';
+import 'package:siraf3/bloc/estate_profile/comment/send/estate_profile_comment_rate_bloc.dart';
 import 'package:siraf3/enums/comment_action.dart';
 import 'package:siraf3/extensions/int_extension.dart';
+import 'package:siraf3/extensions/list_extension.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/consultant_info.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
+import 'package:siraf3/widgets/my_text_field.dart';
 import 'package:siraf3/widgets/my_text_icon_button.dart';
+
+import 'estate_profile_screen.dart';
 
 class CommentItemWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _CommentItemWidget();
 
   Comment comment;
+  int estateId;
 
-  CommentItemWidget({required this.comment});
+  CommentItemWidget({required this.comment, required this.estateId});
 }
 
 class _CommentItemWidget extends State<CommentItemWidget> {
   EstateProfileLikeCommentBloc likeCommentBloc = EstateProfileLikeCommentBloc();
 
+  TextEditingController replyFieldController = TextEditingController();
+
+  bool showReplyField = false;
+
+  List<ReplyComment> replyComments = [];
+
   @override
   void initState() {
     super.initState();
 
+    replyComments = widget.comment.replies ?? [];
+
     likeCommentBloc.stream.listen((state) {
       if (state is EstateProfileLikeCommentLoading) {
         notify("در حال ثبت...");
+      }
+    });
+
+    BlocProvider.of<EstateProfileCommentRateBloc>(context).stream.listen((state) {
+      if (state is EstateProfileCommentRateSuccess) {
+        if (state.comment?.id == widget.comment.id) {
+          replyComments == state.comment?.replies;
+        }
+        replyFieldController.clear();
+        showReplyField = false;
+        try {
+          setState(() {});
+        } catch (e) {}
       }
     });
   }
@@ -110,13 +138,13 @@ class _CommentItemWidget extends State<CommentItemWidget> {
                   return Row(
                     children: [
                       MyTextIconButton(
-                        onPressed: () => onClickLike(widget.comment),
+                        onPressed: onClickLike,
                         icon: icon(Icons.thumb_up_alt_outlined, size: 15),
                         text: like.emptable(),
                         rippleColor: Themes.text,
                       ),
                       MyTextIconButton(
-                        onPressed: () => onClickDislike(widget.comment),
+                        onPressed: onClickDislike,
                         icon: icon(Icons.thumb_up_alt_outlined, size: 15),
                         text: dislike.emptable(),
                         rippleColor: Themes.text,
@@ -125,37 +153,89 @@ class _CommentItemWidget extends State<CommentItemWidget> {
                   );
                 },
               ),
-              MyTextButton(
-                rippleColor: Themes.text,
-                padding: EdgeInsets.zero,
-                onPressed: () => answer(widget.comment),
-                child: Text(
-                  "پاسخ",
-                  style: TextStyle(
-                    color: Themes.text,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
+              if (!showReplyField)
+                MyTextButton(
+                  rippleColor: Themes.text,
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    setState(() => showReplyField = !showReplyField);
+                  },
+                  child: Text(
+                    "پاسخ",
+                    style: TextStyle(
+                      color: Themes.text,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
-          //todo: answer feature do not implement yet
-          // if (comment["answers"] != null && (comment["answers"] as List).length > 0) Column(children: (comment["answers"] as List).map((answer) => answerItem(answer)).toList()),
+          if (showReplyField) replyFieldWidget(),
+          if (widget.comment.replies.isFill()) Column(children: replyComments.map<Widget>((answer) => AnswerItemWidget(answer)).toList()),
         ],
       ),
     );
   }
 
-  void onClickLike(Comment comment) {
-    likeCommentBloc.add(EstateProfileLikeCommentRequestEvent(comment.id!, CommentAction.Like));
+  void onClickLike() {
+    likeCommentBloc.add(EstateProfileLikeCommentRequestEvent(widget.comment.id!, CommentAction.Like));
   }
 
-  void onClickDislike(Comment comment) {
-    likeCommentBloc.add(EstateProfileLikeCommentRequestEvent(comment.id!, CommentAction.Dislike));
+  void onClickDislike() {
+    likeCommentBloc.add(EstateProfileLikeCommentRequestEvent(widget.comment.id!, CommentAction.Dislike));
   }
 
-  void answer(Comment comment) {
-    //todo: implement event listener
+  void answer() {
+    var text = replyFieldController.value.text;
+
+    if (!text.isFill()) {
+      notify("متن پاسخ وارد نشده است");
+      return;
+    }
+    BlocProvider.of<EstateProfileCommentRateBloc>(context).add(EstateProfileCommentRateSendCommentEvent(widget.estateId, text, replyId: widget.comment.id!));
+  }
+
+  Widget replyFieldWidget() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        MyTextField(
+          controller: replyFieldController,
+          maxLines: 1,
+          maxLength: 500,
+          decoration: InputDecoration(hintText: "پاسخ..."),
+        ),
+        Row(
+          children: [
+            BlocBuilder(
+              bloc: BlocProvider.of<EstateProfileCommentRateBloc>(context),
+              builder: (context, state) {
+                return MyTextButton(
+                  text: "ارسال",
+                  color: Themes.primary,
+                  textColor: Colors.white,
+                  fontSize: 10,
+                  minimumSize: Size(50, 15),
+                  disable: state is EstateProfileCommentRateSending,
+                  onPressed: answer,
+                );
+              },
+            ),
+            SizedBox(width: 5),
+            MyTextButton(
+              fontSize: 10,
+              text: "صرف نظر",
+              border: false,
+              rippleColor: Themes.text,
+              minimumSize: Size(50, 15),
+              onPressed: () {
+                setState(() => showReplyField = !showReplyField);
+              },
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }

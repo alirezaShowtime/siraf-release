@@ -4,10 +4,12 @@ import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
+import 'package:siraf3/models/consultant_info.dart';
 import 'package:siraf3/models/estate_profile.dart';
 
-part 'agency_profile_event.dart';
-part 'agency_profile_state.dart';
+part 'estate_profile_event.dart';
+
+part 'estate_profile_state.dart';
 
 class EstateProfileBloc extends Bloc<EstateProfileEvent, EstateProfileState> {
   EstateProfileBloc() : super(EstateProfileInitial()) {

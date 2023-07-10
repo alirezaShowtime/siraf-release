@@ -1,4 +1,4 @@
-part of 'agency_profile_bloc.dart';
+part of 'estate_profile_bloc.dart';
 
 @immutable
 abstract class EstateProfileState {}
@@ -12,8 +12,9 @@ class EstateProfileSuccessState extends EstateProfileState {
 }
 
 class EstateProfileErrorState extends EstateProfileState {
-  String get message => jDecode(response.body)["message"] ?? "";
-  final Response response;
+  String? message;
 
-  EstateProfileErrorState(this.response);
+  EstateProfileErrorState(Response response) {
+    message = jDecode(response.body)["message"];
+  }
 }

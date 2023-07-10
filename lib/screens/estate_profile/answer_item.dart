@@ -1,7 +1,17 @@
 part of 'package:siraf3/screens/estate_profile/estate_profile_screen.dart';
 
-extension AnswerItem on _EstateProfileScreen {
-  Widget answerItem(Map<String, dynamic> answer) {
+class AnswerItemWidget extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _AnswerItemWidget();
+
+  ReplyComment comment;
+
+  AnswerItemWidget(this.comment);
+}
+
+class _AnswerItemWidget extends State<AnswerItemWidget> {
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(top: 8, bottom: 4, left: 12, right: 12),
       margin: const EdgeInsets.symmetric(vertical: 2.5),
@@ -20,12 +30,11 @@ extension AnswerItem on _EstateProfileScreen {
                 children: [
                   Avatar(
                     size: 25,
-                    imagePath:
-                        "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png",
+                    imagePath: widget.comment.avatar ?? "",
                   ),
                   SizedBox(width: 5),
                   Text(
-                    answer["user"]["username"],
+                    widget.comment.name ?? "ناشناس",
                     style: TextStyle(
                       color: Themes.textGrey,
                       fontSize: 11,
@@ -34,7 +43,7 @@ extension AnswerItem on _EstateProfileScreen {
                 ],
               ),
               Text(
-                answer["date"],
+                widget.comment.createDate ?? "",
                 style: TextStyle(
                   color: Themes.textGrey,
                   fontSize: 9,
@@ -44,7 +53,7 @@ extension AnswerItem on _EstateProfileScreen {
           ),
           SizedBox(height: 10),
           Text(
-            answer["comment"],
+            widget.comment.comment ?? "",
             style: TextStyle(
               fontSize: 11,
               color: Themes.textGrey,

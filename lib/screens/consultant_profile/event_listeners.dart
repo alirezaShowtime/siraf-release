@@ -27,7 +27,7 @@ extension EventListener on _ConsultantProfileScreen {
   void sendCommentOrRate(int consultantId) {
     String comment = commentController.value.text;
 
-    bool rateIsValid = (rating ?? 0) > 0;
+    bool rateIsValid = (rate ?? 0) > 0;
     bool commentIsValid = comment.isNotEmpty;
 
     //if true, the comment and the rate will be sent
@@ -42,7 +42,7 @@ extension EventListener on _ConsultantProfileScreen {
 
     //if true, ony the rate will be sent
     if (!commentIsValid && rateIsValid) {
-      BlocProvider.of<ConsultantProfileBloc>(context).add(ConsultantProfileSendRate(rate: rating!, consultantId: consultantId));
+      BlocProvider.of<ConsultantProfileBloc>(context).add(ConsultantProfileSendRate(rate: rate!, consultantId: consultantId));
     }
   }
 
