@@ -216,7 +216,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
                             size: 10,
                           );
                         },
-                        rating: item.consultantId?.rate ?? 5.0,
+                        rating: item.consultantId?.rate ?? 0,
                       ),
                     ],
                   ),

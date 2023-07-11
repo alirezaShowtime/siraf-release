@@ -10,17 +10,20 @@ class File {
   List<Property>? propertys;
   FullCategory? fullCategory;
   City? city;
+  String? shareLink;
 
-  File(
-      {this.id,
-      this.name,
-      this.description,
-      this.images,
-      this.favorite,
-      this.publishedAgo,
-      this.propertys,
-      this.fullCategory,
-      this.city});
+  File({
+    this.id,
+    this.name,
+    this.description,
+    this.images,
+    this.favorite,
+    this.publishedAgo,
+    this.propertys,
+    this.fullCategory,
+    this.city,
+    this.shareLink,
+  });
 
   File.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -65,6 +68,10 @@ class File {
     if (propertys != null) {
       propertys!.sort((a, b) => a.weightList!.compareTo(b.weightList!));
     }
+    
+    if (json["shareLink"] is String) {
+      shareLink = json["shareLink"];
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -84,6 +91,7 @@ class File {
       _data["category"] = fullCategory?.toJson();
     }
     _data["city"] = city;
+    _data["shareLink"] = shareLink;
     return _data;
   }
 
@@ -167,7 +175,7 @@ class FullCategory {
   }
 
   String? getMainCategoryName() {
-    return fullCategory != null ? fullCategory!.split("-")[0] : null;
+    return fullCategory != null ? fullCategory!.split("-")[0].trim() : null;
   }
 }
 
@@ -213,16 +221,16 @@ class City {
   City({this.id, this.name, this.weight, this.countFile});
 
   City.fromJson(Map<String, dynamic> json) {
-    if(json["id"] is int) {
+    if (json["id"] is int) {
       id = json["id"];
     }
-    if(json["name"] is String) {
+    if (json["name"] is String) {
       name = json["name"];
     }
-    if(json["weight"] is String) {
+    if (json["weight"] is String) {
       weight = json["weight"];
     }
-    if(json["countFile"] is String) {
+    if (json["countFile"] is String) {
       countFile = json["countFile"];
     }
   }

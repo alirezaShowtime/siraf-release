@@ -145,7 +145,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                       ],
                     ),
                     Text(
-                      widget.file.name!,
+                      "${widget.file.fullCategory?.getMainCategoryName()} | ${widget.file.name}",
                       style: TextStyle(
                         color: App.theme.textTheme.bodyLarge?.color,
                         fontSize: 12,

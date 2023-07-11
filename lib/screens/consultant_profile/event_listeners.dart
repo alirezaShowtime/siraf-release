@@ -58,6 +58,7 @@ extension EventListener on _ConsultantProfileScreen {
           originalFilterData:
               FilterData(cityIds: [consultantInfo?.cityId ?? -1]),
           filterData: filterData,
+          total_url: getFileUrl('file/files/').toString(),
         ),
       ),
     );

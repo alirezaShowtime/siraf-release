@@ -4,12 +4,12 @@ extension EventListener on _EstateProfileScreen {
   void share() {
     if (estateProfile == null) return;
 
-    FlutterShare.share(
-      title: 'اشتراک گذاری فایل',
-      text: '',
-      linkUrl: estateProfile!.shareLink,
-      chooserTitle: 'اشتراک گذاری در',
-    );
+      FlutterShare.share(
+        title: 'اشتراک گذاری',
+        text: estateProfile!.name!,
+        linkUrl: estateProfile!.shareLink,
+        chooserTitle: 'اشتراک گذاری در',
+      );
   }
 
   void viewComments() {
@@ -23,6 +23,7 @@ extension EventListener on _EstateProfileScreen {
         builder: (_) => FilterScreen(
           originalFilterData: FilterData(cityIds: cities.map<int>((e) => e.id!).toList()),
           filterData: filterData,
+          total_url: getFileUrl('file/files/').toString(),
         ),
       ),
     );

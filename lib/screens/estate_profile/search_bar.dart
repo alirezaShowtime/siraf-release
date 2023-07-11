@@ -8,8 +8,12 @@ extension SearchBar on _EstateProfileScreen {
       decoration: BoxDecoration(
         color: App.theme.dialogBackgroundColor,
         border: Border(
-          bottom: BorderSide(color: App.isDark ? Colors.grey.shade900 : Colors.grey.shade200, width: 1),
-          top: BorderSide(color: App.isDark ? Colors.grey.shade900 : Colors.grey.shade200, width: 1),
+          bottom: BorderSide(
+              color: App.isDark ? Colors.grey.shade900 : Colors.grey.shade200,
+              width: 1),
+          top: BorderSide(
+              color: App.isDark ? Colors.grey.shade900 : Colors.grey.shade200,
+              width: 1),
         ),
       ),
       child: Row(
@@ -18,7 +22,9 @@ extension SearchBar on _EstateProfileScreen {
             child: Container(
               decoration: BoxDecoration(
                 border: Border(
-                  right: BorderSide(color: App.isDark ? Themes.textGrey : Themes.text, width: 1),
+                  right: BorderSide(
+                      color: App.isDark ? Themes.textGrey : Themes.text,
+                      width: 1),
                 ),
               ),
               child: TextField2(
@@ -38,14 +44,28 @@ extension SearchBar on _EstateProfileScreen {
                   color: App.theme.textTheme.bodyLarge?.color,
                   fontSize: 11,
                 ),
+                textInputAction: TextInputAction.search,
+                onSubmitted: (v) {
+                  setState(() {
+                    filterData.search = v.isFill() ? v : null;
+                  });
+
+                  getFiles();
+                },
               ),
             ),
           ),
-          IconButton(
-            onPressed: openFileBox,
-            icon: icon(OctIcons.sliders_16, size: 15),
-            constraints: BoxConstraints(),
-            padding: EdgeInsets.zero,
+          badges.Badge(
+            badgeContent: Text(''),
+            showBadge: filterData.hasFilter(),
+            position: badges.BadgePosition.custom(top: -15, end: -6),
+            badgeStyle: badges.BadgeStyle(badgeColor: Themes.primary),
+            child: IconButton(
+              onPressed: openFileBox,
+              icon: icon(OctIcons.sliders_16, size: 20),
+              constraints: BoxConstraints(),
+              padding: EdgeInsets.zero,
+            ),
           ),
         ],
       ),

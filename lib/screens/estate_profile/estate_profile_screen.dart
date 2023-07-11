@@ -8,6 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/bloc/estate_profile/comment/send/estate_profile_comment_rate_bloc.dart';
 import 'package:siraf3/bloc/estate_profile/profile/estate_profile_bloc.dart';
 import 'package:siraf3/bloc/files_bloc.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
@@ -31,6 +32,7 @@ import 'package:siraf3/widgets/my_text_field.dart';
 import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:badges/badges.dart' as badges;
 
 import 'comment_item_widget.dart';
 
@@ -182,7 +184,10 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
       titleSpacing: 0,
       title: AppBarTitle(title),
       actions: [
-        IconButton(onPressed: share, icon: icon(Icons.share_rounded)),
+        IconButton(
+          onPressed: share,
+          icon: icon(Icons.share_rounded, size: 22),
+        ),
         MyPopupMenuButton(
           onSelected: (v) => report(),
           itemBuilder: (_) => [

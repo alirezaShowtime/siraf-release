@@ -8,9 +8,18 @@ class Ticket {
   String? groupName;
   String? timeAgo;
   String? statusMessage;
+  int? messageNotSeen;
   TicketSender? ticketSender;
 
-  Ticket({this.id, this.title, this.status = true, this.lastMessage, this.lastMessageCreateDate, this.groupName, this.statusMessage, this.timeAgo});
+  Ticket(
+      {this.id,
+      this.title,
+      this.status = true,
+      this.lastMessage,
+      this.lastMessageCreateDate,
+      this.groupName,
+      this.statusMessage,
+      this.timeAgo});
 
   Ticket.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -46,6 +55,9 @@ class Ticket {
     if (json["sender_id"] is Map) {
       ticketSender = TicketSender.fromJson(json["sender_id"]);
     }
+    if (json["messageNotSeen"] is int) {
+      messageNotSeen = json["messageNotSeen"];
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -59,6 +71,7 @@ class Ticket {
     _data["lastMessageCreateTime"] = lastMessageCreateTime;
     _data["groupName"] = groupName;
     _data["statusMessage"] = statusMessage;
+    _data["messageNotSeen"] = messageNotSeen;
     return _data;
   }
 
