@@ -1,9 +1,7 @@
-import 'dart:io';
-
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart';
-import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/models/user.dart';
@@ -33,7 +31,11 @@ class FilesLoadedState extends FilesState {
 class FilesErrorState extends FilesState {
   Response? response;
 
-  FilesErrorState({required this.response});
+  String? message;
+
+  FilesErrorState({required this.response}) {
+    message = jDecode(response!.body)['message'];
+  }
 }
 
 class FilesBloc extends Bloc<FilesEvent, FilesState> {
@@ -47,16 +49,12 @@ class FilesBloc extends Bloc<FilesEvent, FilesState> {
 
       Response response;
 
-      var url = getFileUrl('file/files/' +
-          event.filterData.toQueryString() +
-          '&lastId=' +
-          event.lastId.toString());
+      var url = getFileUrl('file/files/' + event.filterData.toQueryString() + '&lastId=' + event.lastId.toString());
 
       print(url.toString());
 
       if (await User.hasToken()) {
-        response =
-            await http2.getWithToken(url, timeout: Duration(seconds: 60));
+        response = await http2.getWithToken(url, timeout: Duration(seconds: 60));
       } else {
         response = await http2.get(url, timeout: Duration(seconds: 60));
       }
@@ -85,8 +83,7 @@ class FilesBloc extends Bloc<FilesEvent, FilesState> {
             var json = jDecode(response.body);
             var files = File.fromList(json['data']['files']);
 
-            emit(FilesLoadedState(
-                files: files, lastId: json['data']["lastId"] as int));
+            emit(FilesLoadedState(files: files, lastId: json['data']["lastId"] as int));
           } else {
             emit(FilesErrorState(response: response));
           }

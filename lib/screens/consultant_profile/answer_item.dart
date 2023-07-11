@@ -31,6 +31,8 @@ class _AnswerItemWidget extends State<AnswerItemWidget> {
                   Avatar(
                     size: 25,
                     imagePath: widget.replyComment.avatar ?? "",
+                    errorImage: AssetImage("assets/images/profile.png"),
+                    loadingImage: AssetImage("assets/images/profile.png"),
                   ),
                   SizedBox(width: 5),
                   Text(

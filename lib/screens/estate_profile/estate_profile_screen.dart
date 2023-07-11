@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +10,6 @@ import 'package:siraf3/bloc/estate_profile/comment/send/estate_profile_comment_r
 import 'package:siraf3/bloc/estate_profile/profile/estate_profile_bloc.dart';
 import 'package:siraf3/bloc/files_bloc.dart';
 import 'package:siraf3/extensions/string_extension.dart';
-import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/city.dart' as city;
@@ -27,12 +27,10 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_list_view.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
-import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:siraf3/widgets/my_text_field.dart';
 import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
-import 'package:badges/badges.dart' as badges;
 
 import 'comment_item_widget.dart';
 
@@ -199,34 +197,30 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
     );
   }
 
-  Widget card({required String title, required String value, void Function()? onTap}) {
+  Widget card({required String title, required String value}) {
     return Expanded(
-      child: MyTextButton(
-        onPressed: () {},
-        rippleColor: Colors.grey,
-        child: Container(
-          height: 60,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: App.theme.textTheme.bodyLarge?.color,
-                  fontSize: 11,
-                ),
+      child: Container(
+        height: 60,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: App.theme.textTheme.bodyLarge?.color,
+                fontSize: 11,
               ),
-              SizedBox(height: 2),
-              Text(
-                value,
-                style: TextStyle(
-                  color: App.theme.tooltipTheme.textStyle?.color,
-                  fontSize: 10,
-                ),
+            ),
+            SizedBox(height: 2),
+            Text(
+              value,
+              style: TextStyle(
+                color: App.theme.tooltipTheme.textStyle?.color,
+                fontSize: 10,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -255,23 +249,36 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
     );
   }
 
-  Widget consultantItem(estateProfileModel.Consultants consultant) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 5),
-      child: Column(
-        children: [
-          Avatar(size: 45, imagePath: consultant.avatar),
-          SizedBox(height: 5),
-          Text(
-            consultant.name!,
-            style: TextStyle(
-              color: Themes.textGrey,
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
+  Widget consultantItem() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 5),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {},
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            margin: EdgeInsets.only(left: 5, right: 5, top: 5),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Avatar(size: 45, imagePath: "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png"),
+                SizedBox(height: 5),
+                Text(
+                  "عباس رحیمی",
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  style: TextStyle(
+                    color: Themes.textGrey,
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                StaticStar(rating: 4.5),
+              ],
             ),
           ),
-          StaticStar(rating: consultant.rate!),
-        ],
+        ),
       ),
     );
   }

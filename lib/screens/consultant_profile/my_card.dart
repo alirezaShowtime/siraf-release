@@ -7,32 +7,28 @@ extension MyCard on _ConsultantProfileScreen {
     void Function()? onTap,
   }) {
     return Expanded(
-      child: MyTextButton(
-        onPressed: () {},
-        rippleColor: Colors.grey,
-        child: Container(
-          height: 60,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: Themes.text,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 11,
-                ),
+      child: Container(
+        height: 60,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                color: Themes.text,
+                fontWeight: FontWeight.bold,
+                fontSize: 11,
               ),
-              SizedBox(height: 2),
-              Text(
-                value,
-                style: TextStyle(
-                  color: Themes.textGrey,
-                  fontSize: 10,
-                ),
+            ),
+            SizedBox(height: 2),
+            Text(
+              value,
+              style: TextStyle(
+                color: Themes.textGrey,
+                fontSize: 10,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

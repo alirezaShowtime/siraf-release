@@ -32,22 +32,22 @@ extension EventListener on _ConsultantProfileScreen {
 
     //if true, the comment and the rate will be sent
     if (commentIsValid && rateIsValid) {
-      BlocProvider.of<ConsultantProfileBloc>(context).add(ConsultantProfileSendComment(massage: comment, consultantId: consultantId));
+      sendCommentRateBloc.add(ConsultantProfileCommentRateSendCommentAndRateEvent(consultantId, rate!, comment));
     }
 
     //if true, only the comment will be sent
     if (commentIsValid && !rateIsValid) {
-      BlocProvider.of<ConsultantProfileBloc>(context).add(ConsultantProfileSendComment(massage: comment, consultantId: consultantId));
+      sendCommentRateBloc.add(ConsultantProfileCommentRateSendCommentEvent(consultantId, comment));
     }
 
     //if true, ony the rate will be sent
     if (!commentIsValid && rateIsValid) {
-      BlocProvider.of<ConsultantProfileBloc>(context).add(ConsultantProfileSendRate(rate: rate!, consultantId: consultantId));
+      sendCommentRateBloc.add(ConsultantProfileCommentRateSendRateEvent(consultantId, rate!));
     }
   }
 
   void retry(BuildContext context) {
-    BlocProvider.of<ConsultantProfileBloc>(context).add(ConsultantProfileLoad(widget.consultantId));
+    BlocProvider.of<ConsultantProfileBloc>(context).add(ConsultantProfileRequestEvent(widget.consultantId));
   }
 
   void viewFilterFileWidget() async {
@@ -55,8 +55,7 @@ extension EventListener on _ConsultantProfileScreen {
       context,
       MaterialPageRoute(
         builder: (_) => FilterScreen(
-          originalFilterData:
-              FilterData(cityIds: [consultantInfo?.cityId ?? -1]),
+          originalFilterData: FilterData(cityIds: [consultantInfo?.cityId ?? -1]),
           filterData: filterData,
           total_url: getFileUrl('file/files/').toString(),
         ),

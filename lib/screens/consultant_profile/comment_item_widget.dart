@@ -88,7 +88,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
               Column(
                 children: [
                   RatingBar.builder(
-                    initialRating: widget.comment.rate ?? 0,
+                    initialRating: widget.comment.rate,
                     minRating: 1,
                     direction: Axis.horizontal,
                     itemCount: 5,
@@ -103,10 +103,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
                   Text(
                     //todo:
                     widget.comment.createDate ?? "",
-                    style: TextStyle(
-                      color: Themes.textGrey,
-                      fontSize: 9,
-                    ),
+                    style: TextStyle(color: Themes.textGrey, fontSize: 9),
                   ),
                 ],
               ),
@@ -195,6 +192,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
     BlocProvider.of<ConsultantProfileCommentRateBloc>(context).add(ConsultantProfileCommentRateSendCommentEvent(
       widget.consultantId,
       text,
+      replyId: widget.comment.id!,
     ));
   }
 

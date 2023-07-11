@@ -4,20 +4,16 @@ import 'package:meta/meta.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/consultant_info.dart';
-import 'package:siraf3/models/user.dart';
 
 part 'consultant_profile_event.dart';
-
 part 'consultant_profile_state.dart';
 
 class ConsultantProfileBloc extends Bloc<ConsultantProfileEvent, ConsultantProfileState> {
   ConsultantProfileBloc() : super(ConsultantProfileInitState()) {
-    on<ConsultantProfileLoad>(_onLoadConsultantProfile);
-    on<ConsultantProfileSendComment>(_onSendCommentConsultantProfile);
-    on<ConsultantProfileSendRate>(_onSendRateConsultantProfile);
+    on<ConsultantProfileRequestEvent>(_request);
   }
 
-  _onLoadConsultantProfile(ConsultantProfileLoad event, Emitter<ConsultantProfileState> emit) async {
+  _request(ConsultantProfileRequestEvent event, Emitter<ConsultantProfileState> emit) async {
     if (state is ConsultantProfileSuccessState) return;
 
     var res = await http2.get(getEstateUrl("consultant/consultantInfo?consultantId=${event.consultantId}"));
@@ -29,31 +25,4 @@ class ConsultantProfileBloc extends Bloc<ConsultantProfileEvent, ConsultantProfi
     print(json);
     emit(ConsultantProfileSuccessState(ConsultantInfo.fromJson(json["data"])));
   }
-
-  _onSendRateConsultantProfile(ConsultantProfileSendRate event, Emitter<ConsultantProfileState> emit) async {
-    Object body = {
-      "rate": event.rate,
-      "consultants_id": event.consultantId,
-    };
-
-    Map<String, String> headers = {
-      "Authorization": await User.getBearerToken(),
-    };
-
-    var res = await http2.post(
-      Uri.parse("https://rate.siraf.app/api/rate/addRateConsultant/"),
-      body: body,
-      headers: headers,
-    );
-
-    if (!isResponseOk(res)) {
-      if (res.statusCode == 401) {
-        //todo: navigate to login page
-      }
-      return emit(ConsultantProfileErrorState(res));
-    }
-    //todo: emit
-  }
-
-  _onSendCommentConsultantProfile(ConsultantProfileSendComment event, Emitter<ConsultantProfileState> emit) {}
 }

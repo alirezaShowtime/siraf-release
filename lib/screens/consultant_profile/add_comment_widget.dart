@@ -1,7 +1,7 @@
 part of 'consultant_profile_screen.dart';
 
 extension AddCommentWidget on _ConsultantProfileScreen {
-  Widget addCommentWidget({required int consultantId}) {
+  Widget addCommentWidget() {
     return Container(
       color: Colors.white,
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -18,8 +18,8 @@ extension AddCommentWidget on _ConsultantProfileScreen {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: RatingBar.builder(
-              initialRating: 4.5,
-              minRating: 1,
+              initialRating: 0,
+              minRating: 0,
               direction: Axis.horizontal,
               itemCount: 5,
               itemPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -46,7 +46,7 @@ extension AddCommentWidget on _ConsultantProfileScreen {
           Align(
             alignment: Alignment.centerLeft,
             child: MaterialButton(
-              onPressed: () => sendCommentOrRate(consultantId),
+              onPressed: () => sendCommentOrRate(widget.consultantId),
               color: Themes.primary,
               elevation: 3,
               shape: RoundedRectangleBorder(

@@ -101,9 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<HomeItem> items = [];
 
   bool _canLoadMore() {
-    return (scrollController.position.pixels ==
-            scrollController.position.maxScrollExtent) &&
-        lastId != null &&
+    return (scrollController.position.pixels == scrollController.position.maxScrollExtent) && lastId != null &&
         !_isLoadingMore;
   }
 
@@ -214,8 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
       statusBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
       statusBarBrightness: darkMode ? Brightness.light : Brightness.dark,
       statusBarIconBrightness: darkMode ? Brightness.light : Brightness.dark,
-      systemNavigationBarIconBrightness:
-          darkMode ? Brightness.light : Brightness.dark,
+      systemNavigationBarIconBrightness: darkMode ? Brightness.light : Brightness.dark,
       systemNavigationBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
     ));
 
@@ -323,10 +320,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: TryAgain(
                 onPressed: getFiles,
                 message: (currentBlocState as HSErrorState).response != null
-                    ? jDecode((currentBlocState as HSErrorState)
-                        .response!
-                        .body)['message']
-                    : null,
+                    ? jDecode((currentBlocState as HSErrorState).response!.body)['message'] : null,
               ),
             ),
           if (currentBlocState is HSLoadedState &&
@@ -351,9 +345,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   controller: scrollController,
                   children: items
                           .map<Widget>(
-                            (item) => item.type == Type.File
-                                ? fileItem(item.file!)
-                                : postItem(item.post!),
+                            (item) => item.type == Type.File ? fileItem(item.file!) : postItem(item.post!),
                           )
                           .toList() +
                       [

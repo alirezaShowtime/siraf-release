@@ -24,8 +24,8 @@ class ConsultantInfo {
       avatar = json["avatar"];
     }
     rate = json["rate"];
-    if (json["comment"] is List) {
-      comments = json["comment"] == null ? null : (json["comment"] as List).map((e) => Comment.fromJson(e)).toList();
+    if (json["comments"] is List) {
+      comments = json["comments"] == null ? null : (json["comments"] as List).map((e) => Comment.fromJson(e)).toList();
     }
     if (json["countConstruction"] is int) {
       countConstruction = json["countConstruction"];

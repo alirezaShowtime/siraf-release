@@ -7,9 +7,12 @@ extension Profile on _EstateProfileScreen {
       child: Column(
         children: [
           Container(
-            height: 170,
+            height: 190,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-            color: App.theme.dialogBackgroundColor,
+            decoration: BoxDecoration(
+              color: App.theme.dialogBackgroundColor,
+              border: !(showComment || moreDetail) ? null : Border(bottom: BorderSide(color: Colors.grey.shade200, width: 1)),
+            ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -29,10 +32,7 @@ extension Profile on _EstateProfileScreen {
                         children: [
                           Text(
                             estateProfile.name ?? "",
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                           ),
                           Text(
                             estateProfile.guildCode ?? "",
@@ -54,9 +54,9 @@ extension Profile on _EstateProfileScreen {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              card(title: "فروشی", value: (estateProfile.countOnSale ?? 0).toString(), onTap: () {}),
-                              card(title: "اجاره ای", value: (estateProfile.countRent ?? 0).toString(), onTap: () {}),
-                              card(title: "ساخت و ساز", value: (estateProfile.countConstruction ?? 0).toString(), onTap: () {}),
+                              card(title: "فروشی", value: (estateProfile.countOnSale ?? 0).toString()),
+                              card(title: "اجاره ای", value: (estateProfile.countRent ?? 0).toString()),
+                              card(title: "ساخت و ساز", value: (estateProfile.countConstruction ?? 0).toString()),
                             ],
                           ),
                         ),
@@ -66,28 +66,27 @@ extension Profile on _EstateProfileScreen {
                             Text(
                               estateProfile.bio ?? "",
                               maxLines: 2,
-                              style: TextStyle(color: App.theme.tooltipTheme.textStyle?.color, fontSize: 11),
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(color: App.theme.tooltipTheme.textStyle?.color, fontSize: 10),
                             ),
                             Text(
                               "آدرس : ${estateProfile.address}",
                               maxLines: 2,
-                              style: TextStyle(color: App.theme.tooltipTheme.textStyle?.color, fontSize: 11),
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(color: App.theme.tooltipTheme.textStyle?.color, fontSize: 10),
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 5),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                GestureDetector(
+                                InkWell(
                                   onTap: viewMoreDetail,
                                   child: Text(
                                     moreDetail ? "کمتر" : "بیشتر...",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 9,
-                                    ),
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 9),
                                   ),
                                 ),
-                                GestureDetector(
+                                InkWell(
                                   onTap: () => setState(() {
                                     final bool previousValueOfMoreDetail = moreDetail;
                                     showComment = !showComment;
@@ -118,27 +117,23 @@ extension Profile on _EstateProfileScreen {
               ],
             ),
           ),
-          if (!showComment) searchBar(estateProfile.name ?? ""),
+          if (moreDetail) profileDetail(estateProfile),
+          if (!moreDetail && !showComment) searchBar(estateProfile.name ?? ""),
           if (showComment)
             Expanded(
-              child: MyListView(
-                isEmpty: !comments.isFill(),
-                listView: ListView.builder(
-                  itemCount: comments.length + 1,
-                  itemBuilder: (context, i) {
-                    if (i == 0) return addCommentWidget(estateProfile.id!);
-                    return CommentItemWidget(
-                      estateId: widget.estateId,
-                      comment: comments[i - 1],
+              child: ListView.builder(
+                itemCount: comments.length + 1,
+                itemBuilder: (context, i) {
+                  if (i == 0)
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      child: addCommentWidget(estateProfile.id!),
                     );
-                  },
-                ),
+                  return CommentItemWidget(estateId: widget.estateId, comment: comments[i - 1]);
+                },
               ),
             ),
-          if (!showComment)
-            Expanded(
-              child: BlocBuilder<FilesBloc, FilesState>(builder: _buildEstateFilesBloc),
-            ),
+          if (!showComment) Expanded(child: BlocBuilder<FilesBloc, FilesState>(builder: _buildEstateFilesBloc)),
         ],
       ),
     );
@@ -155,17 +150,10 @@ extension Profile on _EstateProfileScreen {
   }
 
   Widget _buildEstateFilesBloc(BuildContext context, FilesState state) {
-    if (state is FilesInitState) return Container();
-
-    if (state is FilesLoadingState) return Center(child: Loading());
+    if (state is FilesLoadingState || state is FilesInitState) return Center(child: Loading());
 
     if (state is FilesErrorState) {
-      return Center(
-        child: TryAgain(
-          onPressed: getFiles,
-          message: state.response != null ? jDecode(state.response!.body)['message'] : null,
-        ),
-      );
+      return Center(child: TryAgain(onPressed: getFiles, message: state.message));
     }
 
     state = FilesLoadedState(files: (state as FilesLoadedState).files);
@@ -174,20 +162,18 @@ extension Profile on _EstateProfileScreen {
 
     return MyListView(
       isEmpty: files.isEmpty,
-      listView: ListView(
-        children: files
-            .map<Widget>(
-              (e) => GestureDetector(
-                onTap: () {
-                  push(context, FileScreen(id: e.id!));
-                },
-                child: Padding(
-                  padding: EdgeInsets.only(top: files.first == e ? 0 : 5),
-                  child: FileHorizontalItem(file: e),
-                ),
-              ),
-            )
-            .toList(),
+      emptyText: "این املاک فایلی ندارد",
+      listView: ListView.builder(
+        itemCount: files.length + 1,
+        itemBuilder: (context, i) {
+          if (i == 0) return SizedBox(height: 10);
+          return GestureDetector(
+            onTap: () {
+              push(context, FileScreen(id: files[i - 1].id!));
+            },
+            child: FileHorizontalItem(file: files[i - 1]),
+          );
+        },
       ),
     );
   }

@@ -24,7 +24,7 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
       Uri.parse("https://rate.siraf.app/api/comment/addCommentConsultant/"),
       body: {
         "comment": event.message,
-        "estate_id": event.consultantId,
+        "consultant_id": event.consultantId,
         if (event.replyId != null) "reply_id": event.replyId,
       },
     );
@@ -44,7 +44,7 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
       Uri.parse("https://rate.siraf.app/api/rate/consultantRate/"),
       body: {
         "rate": event.rate,
-        "estate_id": event.consultantId,
+        "consultant_id": event.consultantId,
       },
     );
 
@@ -64,14 +64,14 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
       Uri.parse("https://rate.siraf.app/api/comment/addCommentConsultant/"),
       body: {
         "comment": event.message,
-        "estate_id": event.consultantId,
+        "consultant_id": event.consultantId,
       },
     );
     var rateRes = await http2.post(
       Uri.parse("https://rate.siraf.app/api/rate/consultantRate/"),
       body: {
         "rate": event.rate,
-        "estate_id": event.consultantId,
+        "consultant_id": event.consultantId,
       },
     );
 

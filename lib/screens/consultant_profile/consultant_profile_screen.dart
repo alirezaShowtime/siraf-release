@@ -23,7 +23,6 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_list_view.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
-import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
@@ -93,7 +92,7 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
 
     collapseController.addListener(_collapseControllerListener);
 
-    bloc.add(ConsultantProfileLoad(widget.consultantId));
+    bloc.add(ConsultantProfileRequestEvent(widget.consultantId));
 
     sendCommentRateBloc.stream.listen((state) {
       if (state is ConsultantProfileCommentRateError) {
@@ -159,8 +158,8 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
             if (state is ConsultantProfileSuccessState) {
               setFilterData(state.consultantInfo);
 
+              print(nowState);
               if (nowState == null) {
-                nowState = state;
                 comments = state.consultantInfo.comments ?? [];
               }
 

@@ -4,9 +4,9 @@ extension ProfileDetail on _EstateProfileScreen {
   Widget profileDetail(estateProfileModel.EstateProfile estateProfile) {
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height - (Scaffold.of(scaffoldContext).appBarMaxHeight ?? 0) - 170,
+        maxHeight: MediaQuery.of(context).size.height - (Scaffold.of(scaffoldContext).appBarMaxHeight ?? 0) - 190,
       ),
-      padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+      padding: const EdgeInsets.only(left: 20, right: 20),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(
@@ -15,12 +15,10 @@ extension ProfileDetail on _EstateProfileScreen {
       ),
       child: ListView(
         children: [
+          SizedBox(height: 20),
           Text(
             estateProfile.description ?? "",
-            style: TextStyle(
-              color: Themes.textGrey,
-              fontSize: 11,
-            ),
+            style: TextStyle(color: Themes.textGrey, fontSize: 11),
           ),
           //todo:: show video thumbnail
           Container(
@@ -67,7 +65,7 @@ extension ProfileDetail on _EstateProfileScreen {
                 scrollDirection: Axis.horizontal,
                 physics: BouncingScrollPhysics(),
                 itemCount: estateProfile.consultants?.length ?? 0,
-                itemBuilder: (context, i) => consultantItem(estateProfile.consultants![i]),
+                itemBuilder: (context, i) => consultantItem(),
               ),
             ),
         ],
