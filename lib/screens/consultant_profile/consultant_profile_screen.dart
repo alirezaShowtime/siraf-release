@@ -120,8 +120,8 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
 
   @override
   void dispose() {
-    super.dispose();
     collapseController.removeListener(_collapseControllerListener);
+    super.dispose();
   }
 
   void setFilterData(ConsultantInfo consultantInfo) async {
@@ -137,7 +137,7 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
         BlocProvider(create: (_) => sendCommentRateBloc),
       ],
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: appBar(),
         body: BlocConsumer<ConsultantProfileBloc, ConsultantProfileState>(
           bloc: bloc,
