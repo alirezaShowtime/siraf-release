@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as m;
@@ -83,8 +81,7 @@ class _FileScreenState extends State<FileScreen> {
           }
         });
 
-        bookmark =
-            Bookmark(id: widget.id, isFavorite: isFavorite, context: context);
+        bookmark = Bookmark(id: widget.id, isFavorite: isFavorite, context: context);
 
         bookmark.favoriteStream.stream.listen((bool data) {
           setState(() {
@@ -92,8 +89,7 @@ class _FileScreenState extends State<FileScreen> {
           });
         });
 
-        if (event.file.media!.image!.asMap().containsKey(0) &&
-            event.file.media!.image![0].name.isNotNullOrEmpty()) {
+        if (event.file.media!.image!.asMap().containsKey(0) && event.file.media!.image![0].name.isNotNullOrEmpty()) {
           imageName = " | ${event.file.media!.image![0].name!.trim()}";
         } else {
           imageName = "";
@@ -115,11 +111,9 @@ class _FileScreenState extends State<FileScreen> {
     });
 
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels > imgHeight && toolbarOpacity == 1)
-        return;
+      if (_scrollController.position.pixels > imgHeight && toolbarOpacity == 1) return;
 
-      if (_scrollController.position.pixels <= imgHeight && toolbarOpacity == 0)
-        return;
+      if (_scrollController.position.pixels <= imgHeight && toolbarOpacity == 0) return;
 
       setState(() {
         toolbarOpacity = _scrollController.position.pixels <= imgHeight ? 0 : 1;
@@ -127,11 +121,9 @@ class _FileScreenState extends State<FileScreen> {
     });
 
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels > imgHeight + 50 && titleShow)
-        return;
+      if (_scrollController.position.pixels > imgHeight + 50 && titleShow) return;
 
-      if (_scrollController.position.pixels <= imgHeight + 50 && !titleShow)
-        return;
+      if (_scrollController.position.pixels <= imgHeight + 50 && !titleShow) return;
 
       setState(() {
         titleShow = _scrollController.position.pixels > imgHeight + 50;
@@ -157,8 +149,7 @@ class _FileScreenState extends State<FileScreen> {
     return BlocProvider(
       create: (context) => fileBloc,
       child: Scaffold(
-        body: SafeArea(
-            child: BlocBuilder<FileBloc, FileState>(builder: buildBaseBloc)),
+        body: SafeArea(child: BlocBuilder<FileBloc, FileState>(builder: buildBaseBloc)),
       ),
     );
   }
@@ -192,8 +183,7 @@ class _FileScreenState extends State<FileScreen> {
             SizedBox(height: 10),
             _buildTitle(state.file),
             SizedBox(height: 15),
-            if (state.file.getMainProperties().isNotEmpty)
-              _buildMainProps(state.file),
+            if (state.file.getMainProperties().isNotEmpty) _buildMainProps(state.file),
             if (state.file.getMainProperties().isNotEmpty) SizedBox(height: 15),
             _buildDescription(state.file),
             SizedBox(height: 15),
@@ -202,13 +192,10 @@ class _FileScreenState extends State<FileScreen> {
                 height: 0.7,
                 color: Themes.textGrey,
               ),
-            if (state.file.getOtherProperties().isNotEmpty)
-              SizedBox(height: 15),
-            if (state.file.getOtherProperties().isNotEmpty)
-              _buildProps(state.file),
+            if (state.file.getOtherProperties().isNotEmpty) SizedBox(height: 15),
+            if (state.file.getOtherProperties().isNotEmpty) _buildProps(state.file),
             SizedBox(height: 15),
-            if (state.file.lat != null || state.file.long != null)
-              _buildMap(state.file),
+            if (state.file.lat != null || state.file.long != null) _buildMap(state.file),
             SizedBox(
               height: 10,
             ),
@@ -225,9 +212,9 @@ class _FileScreenState extends State<FileScreen> {
                   child: Text(
                     "ثبت تخلف و مشکل فایل",
                     style: TextStyle(
-                      fontSize: 13,
-                      fontFamily: "IranSans",
-                      color: Color(0xff8c8c8c),
+                      fontSize: 12,
+                      fontFamily: "IranSansMedium",
+                      color: Colors.grey.shade500,
                     ),
                   ),
                 ),
@@ -261,9 +248,7 @@ class _FileScreenState extends State<FileScreen> {
             width: double.infinity,
             decoration: BoxDecoration(
               color: App.theme.backgroundColor,
-              image: DecorationImage(
-                  image: AssetImage(IMAGE_NOT_AVAILABLE),
-                  alignment: Alignment.center),
+              image: DecorationImage(image: AssetImage(IMAGE_NOT_AVAILABLE), alignment: Alignment.center),
             ),
           ),
         if (file.media?.image != null && file.media!.image!.isNotEmpty)
@@ -281,8 +266,7 @@ class _FileScreenState extends State<FileScreen> {
             indicatorColor: Colors.grey,
             onPageChanged: (i) {
               setState(() {
-                if (file.media!.image!.asMap().containsKey(i) &&
-                    file.media!.image![i].name.isNotNullOrEmpty()) {
+                if (file.media!.image!.asMap().containsKey(i) && file.media!.image![i].name.isNotNullOrEmpty()) {
                   imageName = " | ${file.media!.image![i].name!.trim()}";
                 } else {
                   imageName = "";
@@ -291,10 +275,7 @@ class _FileScreenState extends State<FileScreen> {
             },
             onImageTap: (s.Slider slider) {
               if (slider.type == s.SliderType.image) {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => FileImagesScreen(file: file)));
+                Navigator.push(context, MaterialPageRoute(builder: (_) => FileImagesScreen(file: file)));
               }
               if (slider.type == s.SliderType.virtual_tour) {
                 Navigator.push(
@@ -345,17 +326,13 @@ class _FileScreenState extends State<FileScreen> {
                   maxWidth: MediaQuery.of(context).size.width - 40 - 25,
                 ),
                 child: Text(
-                  (file.fullCategory != null
-                          ? file.fullCategory!
-                                  .getMainCategoryName()
-                                  .toString()
-                                  .trim() +
-                              " | "
-                          : "") +
-                      file.name!.trim(),
-                  style: TextStyle(
-                      fontFamily: "IranSans", fontSize: 14, height: 1.3),
+                  (file.fullCategory != null ? file.fullCategory!.getMainCategoryName().toString().trim() + " | " : "") + file.name!.trim(),
                   maxLines: 3,
+                  style: TextStyle(
+                    fontSize: 14,
+                    height: 1.3,
+                    fontFamily: "IranSansBold",
+                  ),
                 ),
               ),
               Text(
@@ -363,7 +340,7 @@ class _FileScreenState extends State<FileScreen> {
                 style: TextStyle(
                   color: App.theme.tooltipTheme.textStyle?.color,
                   fontFamily: "IranSans",
-                  fontSize: 11,
+                  fontSize: 9,
                 ),
               ),
             ],
@@ -388,13 +365,10 @@ class _FileScreenState extends State<FileScreen> {
     var a = file
         .getMainProperties()
         .map<List<Widget>>(
-          (e) => [
+          (e) =>
+          [
             _buildPropItem(nonIfZero(e.value), e.name!),
-            if (file.getMainProperties().last != e)
-              VerticalDivider(
-                width: 0.7,
-                color: Themes.textGrey,
-              ),
+            if (file.getMainProperties().last != e) VerticalDivider(width: 1.5, color: Colors.grey.shade300),
           ],
         )
         .toList();
@@ -412,23 +386,24 @@ class _FileScreenState extends State<FileScreen> {
 
   Widget _buildPropItem(String value, String label) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           value,
           style: TextStyle(
-            fontFamily: "IranSans",
-            fontSize: 14,
+            color: Colors.black,
+            fontFamily: "IranSansBold",
+            fontSize: 13,
           ),
         ),
-        SizedBox(
-          height: 10,
-        ),
+        SizedBox(height: 5),
         Text(
           label.split(r" ").take(2).join(" "),
           style: TextStyle(
-            color: App.theme.tooltipTheme.textStyle?.color,
+            color: Themes.themeData().tooltipTheme.textStyle?.color,
             fontFamily: "IranSans",
-            fontSize: 11,
+            fontSize: 10,
           ),
         ),
       ],
@@ -472,8 +447,7 @@ class _FileScreenState extends State<FileScreen> {
         alignment: Alignment.center,
         child: Text(
           "موقعیت مکانی صحیح نیست ${lat} , ${long}",
-          style: TextStyle(
-              fontSize: 13, fontFamily: "IranSansMedium", color: Colors.red),
+          style: TextStyle(fontSize: 13, fontFamily: "IranSansMedium", color: Colors.red),
         ),
       );
     }
@@ -499,8 +473,7 @@ class _FileScreenState extends State<FileScreen> {
               options: MarkerLayerOptions(
                 markers: [
                   Marker(
-                    point: LatLng(
-                        double.parse(file.lat!), double.parse(file.long!)),
+                    point: LatLng(double.parse(file.lat!), double.parse(file.long!)),
                     builder: (_) {
                       return m.Image(
                         image: AssetImage('assets/images/map_marker.png'),
@@ -544,9 +517,7 @@ class _FileScreenState extends State<FileScreen> {
                   });
                 },
                 child: Icon(
-                  isPropOpen
-                      ? Icons.keyboard_arrow_up
-                      : Icons.keyboard_arrow_down,
+                  isPropOpen ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                   size: 18,
                   color: Color(0xff8c8c8c),
                 ),
@@ -561,9 +532,7 @@ class _FileScreenState extends State<FileScreen> {
                     .getOtherProperties()
                     .map<Widget>(
                       (e) => Padding(
-                        padding: EdgeInsets.only(
-                            bottom:
-                                (file.getOtherProperties().last != e ? 5 : 0)),
+                        padding: EdgeInsets.only(bottom: (file.getOtherProperties().last != e ? 5 : 0)),
                         child: Text(
                           e.name.toString() + " : " + e.value.toString(),
                           style: TextStyle(
@@ -610,16 +579,12 @@ class _FileScreenState extends State<FileScreen> {
                           alignment: Alignment.centerRight,
                           child: Text(
                             "قیمت",
-                            style: TextStyle(
-                                color: Colors.grey.shade500, fontSize: 12),
+                            style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
                           ),
                         ),
                         Text(
-                          file.getPrice()?.value != null
-                              ? number_format(int.parse(file.getPrice()!.value!))
-                              : "توافقی",
-                          style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.bold),
+                          file.getPrice()?.value != null ? number_format(int.parse(file.getPrice()!.value!)) : "توافقی",
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                         ),
                       ],
                     )
@@ -633,18 +598,11 @@ class _FileScreenState extends State<FileScreen> {
                           children: [
                             Text(
                               "ودیعه",
-                              style: TextStyle(
-                                  color: greyColor, fontSize: 10, height: 1),
+                              style: TextStyle(color: greyColor, fontSize: 10, height: 1),
                             ),
                             Text(
-                              file.getVadie()?.value != null
-                                  ? number_format(int.parse(file.getVadie()!.value!))
-                                  : "توافقی",
-                              style: TextStyle(
-                                  color: Themes.text,
-                                  fontSize: 12,
-                                  height: 1,
-                                  fontWeight: FontWeight.bold),
+                              file.getVadie()?.value != null ? number_format(int.parse(file.getVadie()!.value!)) : "توافقی",
+                              style: TextStyle(color: Themes.text, fontSize: 12, height: 1, fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -657,11 +615,8 @@ class _FileScreenState extends State<FileScreen> {
                               style: TextStyle(color: greyColor, fontSize: 13),
                             ),
                             Text(
-                              file.rent != null
-                                  ? number_format(file.rent)
-                                  : "توافقی",
-                              style: TextStyle(
-                                  color: Colors.grey.shade500, fontSize: 11),
+                              file.rent != null ? number_format(file.rent) : "توافقی",
+                              style: TextStyle(color: Colors.grey.shade500, fontSize: 11),
                             ),
                           ],
                         ),
@@ -735,24 +690,18 @@ class _FileScreenState extends State<FileScreen> {
                       height: 5,
                     ),
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       child: TextField2(
                         maxLines: 1,
                         controller: _controller,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(
-                                color:
-                                    App.theme.tooltipTheme.textStyle?.color ??
-                                        Themes.textGrey,
-                                width: 1),
+                            borderSide: BorderSide(color: App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey, width: 1),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
-                            borderSide:
-                                BorderSide(color: Themes.primary, width: 1),
+                            borderSide: BorderSide(color: Themes.primary, width: 1),
                           ),
                           hintText: "عنوان",
                           hintStyle: TextStyle(
@@ -769,8 +718,7 @@ class _FileScreenState extends State<FileScreen> {
                       ),
                     ),
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       child: TextField2(
                         minLines: 6,
                         maxLines: 10,
@@ -778,16 +726,11 @@ class _FileScreenState extends State<FileScreen> {
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(
-                                color:
-                                    App.theme.tooltipTheme.textStyle?.color ??
-                                        Themes.textGrey,
-                                width: 1),
+                            borderSide: BorderSide(color: App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey, width: 1),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
-                            borderSide:
-                                BorderSide(color: Themes.primary, width: 1),
+                            borderSide: BorderSide(color: Themes.primary, width: 1),
                           ),
                           hintText: "توضیحات",
                           hintStyle: TextStyle(
@@ -869,8 +812,7 @@ class _FileScreenState extends State<FileScreen> {
   Widget _buildTopBar(FileDetail file) {
     var iconColor = Themes.iconLight;
 
-    var toolbarOpacity =
-        (file.media?.image?.isNotEmpty ?? false) ? this.toolbarOpacity : 1.0;
+    var toolbarOpacity = (file.media?.image?.isNotEmpty ?? false) ? this.toolbarOpacity : 1.0;
 
     if (toolbarOpacity > 0) {
       iconColor = App.theme.appBarTheme.foregroundColor ?? Themes.iconLight;
@@ -880,8 +822,7 @@ class _FileScreenState extends State<FileScreen> {
       left: 0,
       right: 0,
       child: Container(
-        color:
-            App.theme.appBarTheme.backgroundColor?.withOpacity(toolbarOpacity),
+        color: App.theme.appBarTheme.backgroundColor?.withOpacity(toolbarOpacity),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -897,15 +838,13 @@ class _FileScreenState extends State<FileScreen> {
                         Positioned(
                           left: 1.0,
                           top: 2.0,
-                          child:
-                              Icon(CupertinoIcons.back, color: Colors.black26),
+                          child: Icon(CupertinoIcons.back, color: Colors.black26),
                         ),
                       if (toolbarOpacity == 0)
                         Positioned(
                           right: 1.0,
                           top: 2.0,
-                          child:
-                              Icon(CupertinoIcons.back, color: Colors.black26),
+                          child: Icon(CupertinoIcons.back, color: Colors.black26),
                         ),
                       Icon(
                         CupertinoIcons.back,
@@ -918,11 +857,7 @@ class _FileScreenState extends State<FileScreen> {
                   SizedBox(
                     width: 210,
                     child: Text(
-                      (file.name ?? "") +
-                          (file.name ?? "") +
-                          (file.name ?? "") +
-                          (file.name ?? "") +
-                          (file.name ?? ""),
+                      (file.name ?? "") + (file.name ?? "") + (file.name ?? "") + (file.name ?? "") + (file.name ?? ""),
                       style: TextStyle(
                         fontFamily: "IranSansMedium",
                         color: Themes.text,
