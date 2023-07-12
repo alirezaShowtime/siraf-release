@@ -81,6 +81,8 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
   late FilterData filterData;
   var nowState;
 
+  FocusNode focusNode = FocusNode();
+
   List<Comment> comments = [];
 
   @override
@@ -105,6 +107,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
       if (state is EstateProfileCommentRateSuccess) {
         rate = null;
         commentController.clear();
+        focusNode.unfocus();
         if (state.comment != null) {
           List<Comment> list = comments;
           comments = [];

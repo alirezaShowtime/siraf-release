@@ -5,8 +5,8 @@ import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:siraf3/bloc/consultant/comment/send/consultant_profile_comment_rate_bloc.dart';
-import 'package:siraf3/bloc/consultant/profile/consultant_profile_bloc.dart';
+import 'package:siraf3/bloc/consultant_profile/comment/send/consultant_profile_comment_rate_bloc.dart';
+import 'package:siraf3/bloc/consultant_profile/profile/consultant_profile_bloc.dart';
 import 'package:siraf3/bloc/files_bloc.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
@@ -23,6 +23,7 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_list_view.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
+import 'package:siraf3/widgets/my_text_field.dart';
 import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
@@ -80,6 +81,7 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
   double? rate;
 
   List<Comment> comments = [];
+  FocusNode focusNode = FocusNode();
 
   var nowState;
 
@@ -102,6 +104,7 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
       if (state is ConsultantProfileCommentRateSuccess) {
         rate = null;
         commentController.clear();
+        focusNode.unfocus();
         if (state.comment != null) {
           List<Comment> list = comments;
           comments = [];

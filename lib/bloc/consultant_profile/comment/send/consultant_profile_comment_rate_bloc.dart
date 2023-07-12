@@ -32,7 +32,7 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
       return emit(ConsultantProfileCommentRateError(res));
     }
 
-    emit(ConsultantProfileCommentRateSuccess(comment: Comment.fromJson(jDecode(res.body)["data"])));
+    emit(ConsultantProfileCommentRateSuccess(comment: event.replyId != null ? null : Comment.fromJson(jDecode(res.body)["data"])));
   }
 
   _onSendRate(ConsultantProfileCommentRateSendRateEvent event, Emitter<ConsultantProfileCommentRateState> emit) async {
@@ -40,7 +40,7 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
 
     emit(ConsultantProfileCommentRateSending());
 
-    var res = await http2.post(
+    var res = await http2.postJsonWithToken(
       Uri.parse("https://rate.siraf.app/api/rate/consultantRate/"),
       body: {
         "rate": event.rate,
@@ -60,20 +60,23 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
 
     emit(ConsultantProfileCommentRateSending());
 
-    var commentRes = await http2.post(
+    var commentRes = await http2.postJsonWithToken(
       Uri.parse("https://rate.siraf.app/api/comment/addCommentConsultant/"),
       body: {
         "comment": event.message,
         "consultant_id": event.consultantId,
       },
     );
-    var rateRes = await http2.post(
+    var rateRes = await http2.postJsonWithToken(
       Uri.parse("https://rate.siraf.app/api/rate/consultantRate/"),
       body: {
         "rate": event.rate,
         "consultant_id": event.consultantId,
       },
     );
+
+    print(commentRes.body);
+    print(rateRes.body);
 
     if (!isResponseOk(rateRes)) {
       return emit(ConsultantProfileCommentRateError(rateRes));

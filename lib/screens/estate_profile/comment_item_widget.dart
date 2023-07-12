@@ -36,6 +36,8 @@ class _CommentItemWidget extends State<CommentItemWidget> {
 
   List<ReplyComment> replyComments = [];
 
+  FocusNode focusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -49,12 +51,11 @@ class _CommentItemWidget extends State<CommentItemWidget> {
     });
 
     BlocProvider.of<EstateProfileCommentRateBloc>(context).stream.listen((state) {
-      if (state is EstateProfileCommentRateSuccess) {
-        if (state.comment?.id == widget.comment.id) {
-          replyComments == state.comment?.replies;
-        }
+      if (state is EstateProfileCommentRateSuccess && state.comment?.id == widget.comment.id) {
+        replyComments == state.comment?.replies;
         replyFieldController.clear();
         showReplyField = false;
+        focusNode.unfocus();
         try {
           setState(() {});
         } catch (e) {}
@@ -201,6 +202,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         MyTextField(
+          focusNode: focusNode,
           controller: replyFieldController,
           maxLines: 1,
           maxLength: 500,

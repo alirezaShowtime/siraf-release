@@ -30,16 +30,12 @@ extension AddCommentWidget on _ConsultantProfileScreen {
               unratedColor: Colors.grey.shade200,
             ),
           ),
-          TextField2(
+          MyTextField(
+            focusNode: focusNode,
             controller: commentController,
-            style: TextStyle(
-              fontSize: 12,
-            ),
             maxLines: 8,
             minLines: 4,
             decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(10),
-              border: OutlineInputBorder(),
               labelText: "توضیحات",
             ),
           ),

@@ -7,7 +7,6 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
 
 part 'estate_profile_like_comment_event.dart';
-
 part 'estate_profile_like_comment_state.dart';
 
 class EstateProfileLikeCommentBloc extends Bloc<EstateProfileLikeCommentEvent, EstateProfileLikeCommentState> {
@@ -23,7 +22,7 @@ class EstateProfileLikeCommentBloc extends Bloc<EstateProfileLikeCommentEvent, E
       Uri.parse("https://rate.siraf.app/api/likeComment/likeCommentEstate/"),
       body: {
         "commentEstate_id": event.estateId,
-        "status": event.action == CommentAction.Dislike ? 0 : 1,
+        "status": event.action == CommentAction.Like ? 1 : 0,
       },
     );
 

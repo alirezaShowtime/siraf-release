@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:siraf3/bloc/consultant/comment/like_and_dislike/consultant_like_comment_bloc.dart';
-import 'package:siraf3/bloc/consultant/comment/send/consultant_profile_comment_rate_bloc.dart';
+import 'package:siraf3/bloc/consultant_profile/comment/like_and_dislike/consultant_like_comment_bloc.dart';
+import 'package:siraf3/bloc/consultant_profile/comment/send/consultant_profile_comment_rate_bloc.dart';
 import 'package:siraf3/enums/comment_action.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
@@ -34,6 +34,8 @@ class _CommentItemWidget extends State<CommentItemWidget> {
 
   List<ReplyComment> replyComments = [];
 
+  FocusNode focusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -47,12 +49,11 @@ class _CommentItemWidget extends State<CommentItemWidget> {
     });
 
     BlocProvider.of<ConsultantProfileCommentRateBloc>(context).stream.listen((state) {
-      if (state is ConsultantProfileCommentRateSuccess) {
-        if (state.comment?.id == widget.comment.id) {
-          replyComments == state.comment?.replies;
-        }
+      if (state is ConsultantProfileCommentRateSuccess && state.comment?.id == widget.comment.id) {
+        replyComments == state.comment?.replies;
         replyFieldController.clear();
         showReplyField = false;
+        focusNode.unfocus();
         try {
           setState(() {});
         } catch (e) {}
@@ -201,6 +202,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         MyTextField(
+          focusNode: focusNode,
           controller: replyFieldController,
           maxLines: 1,
           maxLength: 500,

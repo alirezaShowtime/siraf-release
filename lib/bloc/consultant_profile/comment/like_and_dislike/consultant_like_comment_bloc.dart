@@ -7,7 +7,6 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
 
 part 'consultant_like_comment_event.dart';
-
 part 'consultant_like_comment_state.dart';
 
 class ConsultantLikeCommentBloc extends Bloc<ConsultantLikeCommentEvent, ConsultantLikeCommentState> {

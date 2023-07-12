@@ -31,6 +31,7 @@ extension AddCommentWidget on _EstateProfileScreen {
             ),
           ),
           MyTextField(
+            focusNode: focusNode,
             controller: commentController,
             style: TextStyle(fontSize: 12),
             maxLines: 8,
