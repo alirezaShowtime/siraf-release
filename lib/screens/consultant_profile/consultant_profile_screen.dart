@@ -36,33 +36,26 @@ part 'appbar.dart';
 part 'event_listeners.dart';
 part 'my_card.dart';
 part 'profile.dart';
-part 'profile_detail.dart';
 part 'search_bar.dart';
-part 'widgets.dart';
 
 class ConsultantProfileScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ConsultantProfileScreen();
 
   int consultantId;
-  String? name;
+  String? consultantName;
 
-  //todo: important , remove default value of consultantId variable and required
-  ConsultantProfileScreen({required this.consultantId, required this.name});
+  ConsultantProfileScreen({required this.consultantId, required this.consultantName});
 }
 
-class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with SingleTickerProviderStateMixin {
+class _ConsultantProfileScreen extends State<ConsultantProfileScreen> {
   List<File> files = [];
+  List<Comment> comments = [];
 
   bool showComment = false;
-
   bool moreDetail = false;
-
   bool showSearchBarWidget = true;
   bool showCommentWidget = false;
-
-  late AnimationController collapseController;
-  late Animation<double> collapseAnimation;
 
   late BuildContext scaffoldContext;
 
@@ -72,6 +65,7 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
   ConsultantProfileBloc bloc = ConsultantProfileBloc();
   ConsultantProfileCommentRateBloc sendCommentRateBloc = ConsultantProfileCommentRateBloc();
   FilesBloc filesBloc = FilesBloc();
+
   FilterData filterData = FilterData();
 
   ConsultantInfo? consultantInfo;
@@ -80,19 +74,15 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
   String title = "در حال بارگذاری...";
   double? rate;
 
-  List<Comment> comments = [];
   FocusNode focusNode = FocusNode();
-
-  var nowState;
 
   @override
   void initState() {
     super.initState();
 
-    collapseController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
-    collapseAnimation = CurvedAnimation(parent: collapseController, curve: Curves.fastOutSlowIn);
-
-    collapseController.addListener(_collapseControllerListener);
+    if (widget.consultantName != null) {
+      setState(() => title = widget.consultantName!);
+    }
 
     bloc.add(ConsultantProfileRequestEvent(widget.consultantId));
 
@@ -101,16 +91,14 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
         notify(state.message ?? "خطایی در ثبت امتیاز/نظر پیش آمد.");
       }
 
-      if (state is ConsultantProfileCommentRateSuccess) {
+      if (state is ConsultantProfileCommentRateSuccess && !state.isReply) {
         rate = null;
         commentController.clear();
         focusNode.unfocus();
-        if (!state.isReply) {
-          List<Comment> list = comments;
-          comments = [];
-          comments.add(state.comment);
-          comments.addAll(list);
-        }
+        List<Comment> list = comments;
+        comments = [];
+        comments.add(state.comment);
+        comments.addAll(list);
         try {
           setState(() {});
         } catch (e) {}
@@ -122,7 +110,9 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
 
   @override
   void dispose() {
-    collapseController.removeListener(_collapseControllerListener);
+    bloc.close();
+    sendCommentRateBloc.close();
+    filesBloc.close();
     super.dispose();
   }
 
@@ -148,6 +138,7 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
               setState(() {
                 consultantInfo = state.consultantInfo;
                 title = state.consultantInfo.name!;
+                comments = state.consultantInfo.comments ?? [];
               });
             }
           },
@@ -161,11 +152,6 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
             if (state is ConsultantProfileSuccessState) {
               setFilterData(state.consultantInfo);
 
-              print(nowState);
-              if (nowState == null) {
-                comments = state.consultantInfo.comments ?? [];
-              }
-
               return profile(state.consultantInfo);
             }
             return Container();
@@ -173,12 +159,6 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
         ),
       ),
     );
-  }
-
-  void _collapseControllerListener() {
-    if (collapseController.isDismissed && !showComment) {
-      showSearchBarWidget = true;
-    }
   }
 
   Widget _profileWidget() {
@@ -189,5 +169,9 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
       alignment: Alignment.center,
       child: Icon(CupertinoIcons.person, color: Themes.primary, size: 34),
     );
+  }
+
+  Widget retryWidget(context, String message) {
+    return Center(child: TryAgain(onPressed: () => retry(context), message: message));
   }
 }

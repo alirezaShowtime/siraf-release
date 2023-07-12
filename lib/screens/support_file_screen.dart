@@ -152,7 +152,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
             context,
             ConsultantProfileScreen(
               consultantId: item.consultantId!.id!,
-              name: item.consultantId!.name,
+              consultantName: item.consultantId!.name,
             ));
       },
       child: Container(

@@ -2,6 +2,8 @@ part of 'consultant_profile_screen.dart';
 
 extension EventListener on _ConsultantProfileScreen {
   void share() {
+    if (consultantInfo?.shareLink == null) return;
+
     FlutterShare.share(
       title: 'اشتراک گذاری',
       text: consultantInfo?.name ?? '',
@@ -17,9 +19,6 @@ extension EventListener on _ConsultantProfileScreen {
       if (moreDetail) {
         showCommentWidget = false;
         showSearchBarWidget = false;
-        collapseController.forward();
-      } else {
-        collapseController.reverse();
       }
     });
   }
@@ -30,17 +29,14 @@ extension EventListener on _ConsultantProfileScreen {
     bool rateIsValid = (rate ?? 0) > 0;
     bool commentIsValid = comment.isNotEmpty;
 
-    //if true, the comment and the rate will be sent
     if (commentIsValid && rateIsValid) {
       sendCommentRateBloc.add(ConsultantProfileCommentRateSendCommentAndRateEvent(consultantId, rate!, comment));
     }
 
-    //if true, only the comment will be sent
     if (commentIsValid && !rateIsValid) {
       sendCommentRateBloc.add(ConsultantProfileCommentRateSendCommentEvent(consultantId, comment));
     }
 
-    //if true, ony the rate will be sent
     if (!commentIsValid && rateIsValid) {
       sendCommentRateBloc.add(ConsultantProfileCommentRateSendRateEvent(consultantId, rate!));
     }
@@ -51,14 +47,12 @@ extension EventListener on _ConsultantProfileScreen {
   }
 
   void viewFilterFileWidget() async {
-    var result = await Navigator.push(
+    var result = await push(
       context,
-      MaterialPageRoute(
-        builder: (_) => FilterScreen(
-          originalFilterData: FilterData(cityIds: [consultantInfo?.cityId ?? -1]),
-          filterData: filterData,
-          total_url: getFileUrl('file/files/').toString(),
-        ),
+      FilterScreen(
+        originalFilterData: FilterData(cityIds: [consultantInfo?.cityId ?? -1]),
+        filterData: filterData,
+        total_url: getFileUrl('file/files/').toString(),
       ),
     );
 

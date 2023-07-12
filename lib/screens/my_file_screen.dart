@@ -778,7 +778,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
             context,
             ConsultantProfileScreen(
               consultantId: item.consultantId!.id!,
-              name: item.consultantId!.name,
+              consultantName: item.consultantId!.name,
             ));
       },
       child: Container(

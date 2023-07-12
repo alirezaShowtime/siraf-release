@@ -118,7 +118,17 @@ extension Profile on _ConsultantProfileScreen {
                 },
               ),
             ),
-          if (!showComment) Expanded(child: BlocBuilder<FilesBloc, FilesState>(builder: _buildFilesBloc)),
+          if (!showComment)
+            Expanded(
+              child: BlocConsumer<FilesBloc, FilesState>(
+                builder: _buildFilesBloc,
+                listener: (_, state) {
+                  if (state is FilesLoadedState) {
+                    files = state.files;
+                  }
+                },
+              ),
+            ),
         ],
       ),
     );
@@ -141,9 +151,7 @@ extension Profile on _ConsultantProfileScreen {
       );
     }
 
-    state = FilesLoadedState(files: (state as FilesLoadedState).files);
-
-    files = state.files;
+    state = state as FilesLoadedState;
 
     return MyListView(
       isEmpty: !files.isFill(),

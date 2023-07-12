@@ -51,52 +51,43 @@ class EstateProfileScreen extends StatefulWidget {
   EstateProfileScreen({required this.estateId, this.estateName});
 }
 
-class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerProviderStateMixin {
+class _EstateProfileScreen extends State<EstateProfileScreen> {
+  List<city.City> cities = [];
+  List<File> files = [];
+  List<Comment> comments = [];
+
+  var nowState;
+
   bool showComment = false;
-
   bool moreDetail = false;
-
   bool showSearchBarWidget = false;
   bool showCommentWidget = false;
 
-  late AnimationController collapseController;
-  late Animation<double> collapseAnimation;
-
   late BuildContext scaffoldContext;
+  late FilterData filterData;
 
   String? comment;
   double? rate;
+  estateProfileModel.EstateProfile? estateProfile;
+
   String title = "در حال بارگذاری...";
 
   TextEditingController searchController = TextEditingController();
   TextEditingController commentController = TextEditingController();
 
-  EstateProfileBloc bloc = EstateProfileBloc();
-  EstateProfileCommentRateBloc sendCommentRateBloc = EstateProfileCommentRateBloc();
-
-  estateProfileModel.EstateProfile? estateProfile;
-
   FilesBloc filesBloc = FilesBloc();
   FilesBloc _moreFilesBloc = FilesBloc();
-  late FilterData filterData;
-  var nowState;
-
+  EstateProfileBloc bloc = EstateProfileBloc();
+  EstateProfileCommentRateBloc sendCommentRateBloc = EstateProfileCommentRateBloc();
   FocusNode focusNode = FocusNode();
-
-  List<Comment> comments = [];
 
   @override
   void initState() {
     super.initState();
 
-    collapseController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
-    collapseAnimation = CurvedAnimation(parent: collapseController, curve: Curves.fastOutSlowIn);
-
-    collapseController.addListener(_collapseControllerListener);
-
-    setState(() {
-      title = widget.estateName ?? title;
-    });
+    if (widget.estateName != null) {
+      setState(() => title = widget.estateName!);
+    }
 
     setFilterData();
 
@@ -104,16 +95,15 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
       if (state is EstateProfileCommentRateError) {
         notify(state.message ?? "خطایی در ثبت امتیاز/نظر پیش آمد.");
       }
-      if (state is EstateProfileCommentRateSuccess) {
+      if (state is EstateProfileCommentRateSuccess && !state.isReply) {
         rate = null;
         commentController.clear();
         focusNode.unfocus();
-        if (!state.isReply) {
-          List<Comment> list = comments;
-          comments = [];
-          comments.add(state.comment);
-          comments.addAll(list);
-        }
+        List<Comment> list = comments;
+        comments = [];
+        comments.add(state.comment);
+        comments.addAll(list);
+
         try {
           setState(() {});
         } catch (e) {}
@@ -128,7 +118,6 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
     sendCommentRateBloc.close();
     filesBloc.close();
     bloc.close();
-    collapseController.removeListener(_collapseControllerListener);
     super.dispose();
   }
 
@@ -161,7 +150,6 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
                 nowState = state;
                 comments = state.estateProfile.comments ?? [];
               }
-              print("comments ${comments.length}");
               return profile(context, state.estateProfile);
             }
             return Container();
@@ -288,20 +276,10 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
 
   Widget fileItem(File file) => FileHorizontalItem(file: file);
 
-  void _collapseControllerListener() {
-    if (collapseController.isDismissed && !showComment) {
-      showSearchBarWidget = true;
-    }
-  }
-
-  List<city.City> cities = [];
-
   void setFilterData() async {
     cities = await city.City.getList();
 
     filterData = FilterData(cityIds: cities.map<int>((e) => e.id!).toList(), estateId: widget.estateId);
     getFiles();
   }
-
-  List<File> files = [];
 }
