@@ -62,12 +62,6 @@ class _PostItemState extends State<PostItem> {
         });
       }
     });
-
-    if ((widget.post.images?.length ?? 0) > 0) {
-      final file = File(widget.post.images!.first.path!);
-      final size = ImageSizeGetter.getSize(FileInput(file));
-      print('jpg = $size');
-    }
   }
 
   setData() {
