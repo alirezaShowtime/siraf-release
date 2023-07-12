@@ -139,7 +139,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> with SingleTickerP
         BlocProvider(create: (context) => sendCommentRateBloc),
       ],
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: appBar(),
         body: BlocConsumer<EstateProfileBloc, EstateProfileState>(
           listener: (context, state) {
