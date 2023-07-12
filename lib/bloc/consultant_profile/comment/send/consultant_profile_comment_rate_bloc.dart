@@ -25,14 +25,14 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
       body: {
         "comment": event.message,
         "consultant_id": event.consultantId,
-        if (event.replyId != null) "reply_id": event.replyId,
+        if (event.commentId != null) "reply_id": event.commentId,
       },
     );
     if (!isResponseOk(res)) {
       return emit(ConsultantProfileCommentRateError(res));
     }
 
-    emit(ConsultantProfileCommentRateSuccess(comment: event.replyId != null ? null : Comment.fromJson(jDecode(res.body)["data"])));
+    emit(ConsultantProfileCommentRateSuccess(res, event.commentId != null));
   }
 
   _onSendRate(ConsultantProfileCommentRateSendRateEvent event, Emitter<ConsultantProfileCommentRateState> emit) async {
@@ -52,7 +52,7 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
       return emit(ConsultantProfileCommentRateError(res));
     }
 
-    emit(ConsultantProfileCommentRateSuccess());
+    emit(ConsultantProfileCommentRateSuccess(res, false));
   }
 
   _onSendCommentAndRate(ConsultantProfileCommentRateSendCommentAndRateEvent event, Emitter<ConsultantProfileCommentRateState> emit) async {
@@ -86,6 +86,6 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
       return emit(ConsultantProfileCommentRateError(commentRes));
     }
 
-    emit(ConsultantProfileCommentRateSuccess(comment: Comment.fromJson(jDecode(commentRes.body)["data"])));
+    emit(ConsultantProfileCommentRateSuccess(commentRes, false));
   }
 }

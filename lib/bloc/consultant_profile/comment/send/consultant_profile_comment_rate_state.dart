@@ -8,9 +8,12 @@ class ConsultantProfileCommentRateInitial extends ConsultantProfileCommentRateSt
 class ConsultantProfileCommentRateSending extends ConsultantProfileCommentRateState {}
 
 class ConsultantProfileCommentRateSuccess extends ConsultantProfileCommentRateState {
-  final Comment? comment;
+  late Comment comment;
+  bool isReply;
 
-  ConsultantProfileCommentRateSuccess({this.comment});
+  ConsultantProfileCommentRateSuccess(Response res, this.isReply) {
+    comment = Comment.fromJson(jDecode(res.body)["data"]);
+  }
 }
 
 class ConsultantProfileCommentRateError extends ConsultantProfileCommentRateState {

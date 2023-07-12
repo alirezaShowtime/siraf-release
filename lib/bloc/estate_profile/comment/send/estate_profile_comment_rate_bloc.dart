@@ -24,7 +24,7 @@ class EstateProfileCommentRateBloc extends Bloc<EstateProfileCommentRateEvent, E
       body: {
         "comment": event.message,
         "estate_id": event.estateId,
-        if (event.replyId != null) "reply_id": event.replyId,
+        if (event.commentId != null) "reply_id": event.commentId,
       },
     );
 
@@ -32,7 +32,7 @@ class EstateProfileCommentRateBloc extends Bloc<EstateProfileCommentRateEvent, E
       return emit(EstateProfileCommentRateError(res));
     }
 
-    emit(EstateProfileCommentRateSuccess(comment: event.replyId != null ? null : Comment.fromJson(jDecode(res.body)["data"])));
+    emit(EstateProfileCommentRateSuccess(res, event.commentId != null));
   }
 
   _onSendRate(EstateProfileCommentRateSendRateEvent event, Emitter<EstateProfileCommentRateState> emit) async {
@@ -51,7 +51,7 @@ class EstateProfileCommentRateBloc extends Bloc<EstateProfileCommentRateEvent, E
       return emit(EstateProfileCommentRateError(res));
     }
 
-    emit(EstateProfileCommentRateSuccess());
+    emit(EstateProfileCommentRateSuccess(res, false));
   }
 
   _onSendCommentAndRate(EstateProfileCommentRateSendCommentAndRateEvent event, Emitter<EstateProfileCommentRateState> emit) async {
@@ -82,6 +82,6 @@ class EstateProfileCommentRateBloc extends Bloc<EstateProfileCommentRateEvent, E
       return emit(EstateProfileCommentRateError(commentRes));
     }
 
-    emit(EstateProfileCommentRateSuccess(comment: Comment.fromJson(jDecode(commentRes.body)["data"])));
+    emit(EstateProfileCommentRateSuccess(commentRes, false));
   }
 }

@@ -49,8 +49,8 @@ class _CommentItemWidget extends State<CommentItemWidget> {
     });
 
     BlocProvider.of<ConsultantProfileCommentRateBloc>(context).stream.listen((state) {
-      if (state is ConsultantProfileCommentRateSuccess && state.comment?.id == widget.comment.id) {
-        replyComments == state.comment?.replies;
+      if (state is ConsultantProfileCommentRateSuccess && state.isReply) {
+        replyComments == state.comment.replies;
         replyFieldController.clear();
         showReplyField = false;
         focusNode.unfocus();
@@ -193,7 +193,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
     BlocProvider.of<ConsultantProfileCommentRateBloc>(context).add(ConsultantProfileCommentRateSendCommentEvent(
       widget.consultantId,
       text,
-      replyId: widget.comment.id!,
+      commentId: widget.comment.id!,
     ));
   }
 

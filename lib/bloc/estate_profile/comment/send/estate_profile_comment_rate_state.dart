@@ -8,9 +8,12 @@ class EstateProfileCommentRateInitial extends EstateProfileCommentRateState {}
 class EstateProfileCommentRateSending extends EstateProfileCommentRateState {}
 
 class EstateProfileCommentRateSuccess extends EstateProfileCommentRateState {
-  Comment? comment;
+  late Comment comment;
+  bool isReply;
 
-  EstateProfileCommentRateSuccess({this.comment});
+  EstateProfileCommentRateSuccess(Response res, this.isReply) {
+    comment = Comment.fromJson(jDecode(res.body)["data"]);
+  }
 }
 
 class EstateProfileCommentRateError extends EstateProfileCommentRateState {

@@ -6,9 +6,9 @@ abstract class ConsultantProfileCommentRateEvent {}
 class ConsultantProfileCommentRateSendCommentEvent extends ConsultantProfileCommentRateEvent {
   final String message;
   final int consultantId;
-  int? replyId;
+  int? commentId;
 
-  ConsultantProfileCommentRateSendCommentEvent(this.consultantId, this.message, {this.replyId});
+  ConsultantProfileCommentRateSendCommentEvent(this.consultantId, this.message, {this.commentId});
 }
 
 class ConsultantProfileCommentRateSendRateEvent extends ConsultantProfileCommentRateEvent {

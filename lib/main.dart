@@ -231,7 +231,6 @@ class App extends State<AppStf> {
               );
             },
             routes: {
-              //todo
               '/': (_) => SplashScreen(),
               '/home': (_) => HomeScreen(),
             },

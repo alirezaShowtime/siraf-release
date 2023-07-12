@@ -5,9 +5,9 @@ abstract class EstateProfileCommentRateEvent {}
 class EstateProfileCommentRateSendCommentEvent extends EstateProfileCommentRateEvent {
   final String message;
   final int estateId;
-  final int? replyId;
+  final int? commentId;
 
-  EstateProfileCommentRateSendCommentEvent(this.estateId, this.message, {this.replyId});
+  EstateProfileCommentRateSendCommentEvent(this.estateId, this.message, {this.commentId});
 }
 
 class EstateProfileCommentRateSendRateEvent extends EstateProfileCommentRateEvent {

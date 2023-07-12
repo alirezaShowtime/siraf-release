@@ -105,10 +105,10 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> with Singl
         rate = null;
         commentController.clear();
         focusNode.unfocus();
-        if (state.comment != null) {
+        if (!state.isReply) {
           List<Comment> list = comments;
           comments = [];
-          comments.add(state.comment!);
+          comments.add(state.comment);
           comments.addAll(list);
         }
         try {

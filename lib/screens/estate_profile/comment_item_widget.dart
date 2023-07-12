@@ -51,8 +51,8 @@ class _CommentItemWidget extends State<CommentItemWidget> {
     });
 
     BlocProvider.of<EstateProfileCommentRateBloc>(context).stream.listen((state) {
-      if (state is EstateProfileCommentRateSuccess && state.comment?.id == widget.comment.id) {
-        replyComments == state.comment?.replies;
+      if (state is EstateProfileCommentRateSuccess && state.isReply) {
+        replyComments == state.comment.replies;
         replyFieldController.clear();
         showReplyField = false;
         focusNode.unfocus();
@@ -194,7 +194,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
       notify("متن پاسخ وارد نشده است");
       return;
     }
-    BlocProvider.of<EstateProfileCommentRateBloc>(context).add(EstateProfileCommentRateSendCommentEvent(widget.estateId, text, replyId: widget.comment.id!));
+    BlocProvider.of<EstateProfileCommentRateBloc>(context).add(EstateProfileCommentRateSendCommentEvent(widget.estateId, text, commentId: widget.comment.id!));
   }
 
   Widget replyFieldWidget() {
