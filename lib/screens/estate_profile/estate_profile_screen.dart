@@ -95,15 +95,12 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
       if (state is EstateProfileCommentRateError) {
         notify(state.message ?? "خطایی در ثبت امتیاز/نظر پیش آمد.");
       }
-      if (state is EstateProfileCommentRateSuccess && !state.isReply) {
-        rate = null;
+      if (state is EstateProfileCommentRateSuccess && state.comment != null && !state.isReply) {
         commentController.clear();
-        focusNode.unfocus();
         List<Comment> list = comments;
         comments = [];
-        comments.add(state.comment);
+        comments.add(state.comment!);
         comments.addAll(list);
-
         try {
           setState(() {});
         } catch (e) {}

@@ -60,6 +60,8 @@ extension EventListener on _EstateProfileScreen {
     if (!commentIsValid && rateIsValid) {
       sendCommentRateBloc.add(EstateProfileCommentRateSendRateEvent(estateId, rate!));
     }
+    focusNode.unfocus();
+    rate = null;
   }
 
   void retry(BuildContext context) {

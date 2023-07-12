@@ -40,6 +40,8 @@ extension EventListener on _ConsultantProfileScreen {
     if (!commentIsValid && rateIsValid) {
       sendCommentRateBloc.add(ConsultantProfileCommentRateSendRateEvent(consultantId, rate!));
     }
+    rate =  null;
+    focusNode.unfocus();
   }
 
   void retry(BuildContext context) {

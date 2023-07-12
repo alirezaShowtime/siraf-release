@@ -52,9 +52,10 @@ class _CommentItemWidget extends State<CommentItemWidget> {
     });
 
     BlocProvider.of<ConsultantProfileCommentRateBloc>(context).stream.listen((state) {
-      if (state is ConsultantProfileCommentRateSuccess && state.isReply) {
-        replyComments == state.comment.replies;
+      if (state is ConsultantProfileCommentRateSuccess && state.comment != null && state.isReply) {
+        replyComments == state.comment!.replies;
         showReplyField = false;
+        replyFieldController.clear();
         try {
           setState(() {});
         } catch (e) {}
@@ -82,7 +83,12 @@ class _CommentItemWidget extends State<CommentItemWidget> {
             children: [
               Row(
                 children: [
-                  Avatar(size: 40, imagePath: widget.comment.userId?.avatar ?? ""),
+                  Avatar(
+                    size: 40,
+                    imagePath: widget.comment.userId?.avatar ?? "",
+                    errorImage: AssetImage("assets/images/profile.png"),
+                    loadingImage: AssetImage("assets/images/profile.png"),
+                  ),
                   SizedBox(width: 10),
                   Text(
                     widget.comment.userId?.name ?? "ناشناس",

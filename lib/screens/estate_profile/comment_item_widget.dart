@@ -54,8 +54,8 @@ class _CommentItemWidget extends State<CommentItemWidget> {
     });
 
     BlocProvider.of<EstateProfileCommentRateBloc>(context).stream.listen((state) {
-      if (state is EstateProfileCommentRateSuccess && state.isReply) {
-        replyComments == state.comment.replies;
+      if (state is EstateProfileCommentRateSuccess && state.comment != null && state.isReply) {
+        replyComments == state.comment!.replies;
         replyFieldController.clear();
         showReplyField = false;
         try {
@@ -88,6 +88,8 @@ class _CommentItemWidget extends State<CommentItemWidget> {
                   Avatar(
                     size: 40,
                     imagePath: widget.comment.userId!.avatar,
+                    errorImage: AssetImage("assets/images/profile.png"),
+                    loadingImage: AssetImage("assets/images/profile.png"),
                   ),
                   SizedBox(width: 10),
                   Text(
@@ -152,7 +154,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
                       ),
                       MyTextIconButton(
                         onPressed: onClickDislike,
-                        icon: icon(Icons.thumb_up_alt_outlined, size: 15),
+                        icon: icon(Icons.thumb_down_alt_outlined, size: 15),
                         text: dislike.emptable(),
                         rippleColor: Themes.text,
                       ),

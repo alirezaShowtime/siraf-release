@@ -51,7 +51,7 @@ class EstateProfileCommentRateBloc extends Bloc<EstateProfileCommentRateEvent, E
       return emit(EstateProfileCommentRateError(res));
     }
 
-    emit(EstateProfileCommentRateSuccess(res, false));
+    emit(EstateProfileCommentRateSuccess(null, false));
   }
 
   _onSendCommentAndRate(EstateProfileCommentRateSendCommentAndRateEvent event, Emitter<EstateProfileCommentRateState> emit) async {

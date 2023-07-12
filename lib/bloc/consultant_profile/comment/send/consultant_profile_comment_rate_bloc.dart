@@ -52,7 +52,7 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
       return emit(ConsultantProfileCommentRateError(res));
     }
 
-    emit(ConsultantProfileCommentRateSuccess(res, false));
+    emit(ConsultantProfileCommentRateSuccess(null, false));
   }
 
   _onSendCommentAndRate(ConsultantProfileCommentRateSendCommentAndRateEvent event, Emitter<ConsultantProfileCommentRateState> emit) async {
@@ -74,9 +74,6 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
         "consultant_id": event.consultantId,
       },
     );
-
-    print(commentRes.body);
-    print(rateRes.body);
 
     if (!isResponseOk(rateRes)) {
       return emit(ConsultantProfileCommentRateError(rateRes));

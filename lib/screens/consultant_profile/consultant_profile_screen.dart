@@ -91,13 +91,11 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> {
         notify(state.message ?? "خطایی در ثبت امتیاز/نظر پیش آمد.");
       }
 
-      if (state is ConsultantProfileCommentRateSuccess && !state.isReply) {
-        rate = null;
+      if (state is ConsultantProfileCommentRateSuccess && state.comment != null && !state.isReply) {
         commentController.clear();
-        focusNode.unfocus();
         List<Comment> list = comments;
         comments = [];
-        comments.add(state.comment);
+        comments.add(state.comment!);
         comments.addAll(list);
         try {
           setState(() {});
