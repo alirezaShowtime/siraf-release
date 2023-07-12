@@ -38,6 +38,9 @@ class _CommentItemWidget extends State<CommentItemWidget> {
 
   FocusNode focusNode = FocusNode();
 
+  int like = 0;
+  int dislike = 0;
+
   @override
   void initState() {
     super.initState();
@@ -55,7 +58,6 @@ class _CommentItemWidget extends State<CommentItemWidget> {
         replyComments == state.comment.replies;
         replyFieldController.clear();
         showReplyField = false;
-        focusNode.unfocus();
         try {
           setState(() {});
         } catch (e) {}
@@ -65,6 +67,9 @@ class _CommentItemWidget extends State<CommentItemWidget> {
 
   @override
   Widget build(BuildContext context) {
+    like = widget.comment.likeCount ?? 0;
+    dislike = widget.comment.dislikeCount ?? 0;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       decoration: BoxDecoration(
@@ -125,17 +130,18 @@ class _CommentItemWidget extends State<CommentItemWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              BlocBuilder(
+              BlocConsumer(
                 bloc: likeCommentBloc,
-                builder: (context, state) {
-                  int like = widget.comment.likeCount ?? 0;
-                  int dislike = widget.comment.dislikeCount ?? 0;
+                listener: (context, state) {
+                  like = widget.comment.likeCount ?? 0;
+                  dislike = widget.comment.dislikeCount ?? 0;
 
                   if (state is EstateProfileLikeCommentSuccess) {
                     like = state.action == CommentAction.Like ? like + 1 : like;
                     dislike = state.action == CommentAction.Dislike ? dislike + 1 : dislike;
                   }
-
+                },
+                builder: (context, state) {
                   return Row(
                     children: [
                       MyTextIconButton(
@@ -194,7 +200,12 @@ class _CommentItemWidget extends State<CommentItemWidget> {
       notify("متن پاسخ وارد نشده است");
       return;
     }
-    BlocProvider.of<EstateProfileCommentRateBloc>(context).add(EstateProfileCommentRateSendCommentEvent(widget.estateId, text, commentId: widget.comment.id!));
+    BlocProvider.of<EstateProfileCommentRateBloc>(context).add(EstateProfileCommentRateSendCommentEvent(
+      widget.estateId,
+      text,
+      commentId: widget.comment.id!,
+    ));
+    focusNode.unfocus();
   }
 
   Widget replyFieldWidget() {

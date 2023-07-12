@@ -36,6 +36,9 @@ class _CommentItemWidget extends State<CommentItemWidget> {
 
   FocusNode focusNode = FocusNode();
 
+  int like = 0;
+  int dislike = 0;
+
   @override
   void initState() {
     super.initState();
@@ -51,9 +54,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
     BlocProvider.of<ConsultantProfileCommentRateBloc>(context).stream.listen((state) {
       if (state is ConsultantProfileCommentRateSuccess && state.isReply) {
         replyComments == state.comment.replies;
-        replyFieldController.clear();
         showReplyField = false;
-        focusNode.unfocus();
         try {
           setState(() {});
         } catch (e) {}
@@ -63,6 +64,9 @@ class _CommentItemWidget extends State<CommentItemWidget> {
 
   @override
   Widget build(BuildContext context) {
+    like = widget.comment.likeCount ?? 0;
+    dislike = widget.comment.dislikeCount ?? 0;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       decoration: BoxDecoration(
@@ -121,27 +125,28 @@ class _CommentItemWidget extends State<CommentItemWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              BlocBuilder(
+              BlocConsumer(
                 bloc: likeCommentBloc,
-                builder: (context, state) {
-                  int like = widget.comment.likeCount ?? 0;
-                  int dislike = widget.comment.dislikeCount ?? 0;
+                listener: (context, state) {
+                  like = widget.comment.likeCount ?? 0;
+                  dislike = widget.comment.dislikeCount ?? 0;
 
                   if (state is ConsultantLikeCommentSuccess) {
                     like = state.action == CommentAction.Like ? like + 1 : like;
                     dislike = state.action == CommentAction.Dislike ? dislike + 1 : dislike;
                   }
-
+                },
+                builder: (context, state) {
                   return Row(
                     children: [
                       MyTextIconButton(
-                        onPressed: () => onClickLike(widget.comment),
+                        onPressed: onClickLike,
                         icon: icon(Icons.thumb_up_alt_outlined, size: 15),
                         text: like.toString(),
                         rippleColor: Themes.text,
                       ),
                       MyTextIconButton(
-                        onPressed: () => onClickDislike(widget.comment),
+                        onPressed: onClickDislike,
                         icon: icon(Icons.thumb_down_alt_outlined, size: 15),
                         text: dislike.toString(),
                         rippleColor: Themes.text,
@@ -175,11 +180,11 @@ class _CommentItemWidget extends State<CommentItemWidget> {
     );
   }
 
-  void onClickLike(Comment comment) {
+  void onClickLike() {
     likeCommentBloc.add(ConsultantLikeCommentRequestEvent(widget.comment.id!, CommentAction.Like));
   }
 
-  void onClickDislike(Comment comment) {
+  void onClickDislike() {
     likeCommentBloc.add(ConsultantLikeCommentRequestEvent(widget.comment.id!, CommentAction.Dislike));
   }
 
@@ -195,6 +200,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
       text,
       commentId: widget.comment.id!,
     ));
+    focusNode.unfocus();
   }
 
   Widget replyFieldWidget() {

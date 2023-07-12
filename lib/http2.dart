@@ -106,7 +106,6 @@ Future<http.Response> postJsonWithToken(Uri url, {Object? body, Encoding? encodi
   return post(url, body: jsonEncode(body), encoding: encoding, headers: headers);
 }
 
-
 Future<http.Response> putJsonWithToken(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {
   if (!await User.hasToken()) return authErrorResponse();
 
@@ -120,7 +119,6 @@ Future<http.Response> putJsonWithToken(Uri url, {Object? body, Encoding? encodin
 
   return put(url, body: jsonEncode(body), encoding: encoding, headers: headers);
 }
-
 
 Future<http.Response> deleteWithToken(Uri url, {Object? body, Encoding? encoding, Map<String, String>? headers, Duration? timeout}) async {
   if (!await User.hasToken()) {
@@ -193,6 +191,7 @@ void logRequest(http.Response response, {Object? requestBody}) async {
   try {
     messages.add("\n\n\nRESPONSE BODY : ${convertUtf8(getPrettyJSONString(jsonDecode(response.body)))}");
   } catch (e) {
+    print(response.body);
     messages.add("\n\n\nRESPONSE BODY have HTML format :(");
   }
 

@@ -19,7 +19,7 @@ class ConsultantLikeCommentBloc extends Bloc<ConsultantLikeCommentEvent, Consult
     emit(ConsultantLikeCommentLoading());
 
     var res = await http2.postJsonWithToken(
-      Uri.parse("https://rate.siraf.app/api/likeComment/likeCommentConsultant"),
+      Uri.parse("https://rate.siraf.app/api/likeComment/likeCommentConsultant/"),
       body: {
         "commentConsultant_id": event.commentId,
         "status": event.action == CommentAction.Like ? 1 : 0,
