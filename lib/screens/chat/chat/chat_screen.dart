@@ -242,7 +242,26 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                   Expanded(
                     child: Stack(
                       children: [
-                        BlocBuilder(bloc: chatMessagesBloc, builder: _blocBuilder),
+                        BlocConsumer(
+                          bloc: chatMessagesBloc,
+                          builder: _blocBuilder,
+                          listener: (context, state) {
+                            if (state is MessagesSuccess) {
+                              messages = state.messages;
+
+                              for (ChatMessage message in messages) {
+                                messageWidgets.add(
+                                  createDate: message.createDate!,
+                                  widget: ChatMessageWidget(
+                                    key: GlobalObjectKey(message.id!),
+                                    message: message,
+                                    onClickReplyMessage: scrollTo,
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                        ),
                         AnimatedBuilder(
                           animation: _scrollDownAnimation,
                           builder: (_, __) {
@@ -432,23 +451,6 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
       return Center(child: TryAgain(onPressed: _request, message: state.message));
     }
 
-    messages = (state as MessagesSuccess).messages;
-
-    if (nowMessagesState != state) {
-      nowMessagesState = state;
-
-      for (ChatMessage message in messages) {
-        messageWidgets.add(
-          createDate: message.createDate!,
-          widget: ChatMessageWidget(
-            key: GlobalObjectKey(message.id!),
-            message: message,
-            onClickReplyMessage: scrollTo,
-          ),
-        );
-      }
-    }
-
     if (messages.isFill() && !messages.last.forMe && nowMessagesState != state) {
       seenMessageBloc.add(SeenMessageRequestEvent(widget.chatItem.id!));
     }
@@ -457,7 +459,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
       listViewSetState = setState;
 
       return ListView(
-        shrinkWrap: true,
+        // shrinkWrap: true,
         reverse: true,
         controller: _chatController,
         children: generateList(),

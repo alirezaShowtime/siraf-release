@@ -62,6 +62,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
       if (state is CreateChatSuccess) {
         dismissDialog(loadingDialogContext);
         notify("چت ایجاد شد");
+        // push(context, ChatListScreen());
       }
     });
   }

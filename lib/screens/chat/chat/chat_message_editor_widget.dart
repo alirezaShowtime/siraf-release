@@ -148,10 +148,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(
-            Icons.reply_rounded,
-            color: Themes.primary,
-          ),
+          Icon(Icons.reply_rounded, color: Themes.primary),
           SizedBox(width: 10),
           Expanded(
             child: Column(
@@ -232,6 +229,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
 
     widget.onClickSendMessage?.call(text.isEmpty ? null : text, selectedFiles, replyMessage);
     showSendButton = false;
+    messageController.clear();
     setState(selectedFileWidgets.clear);
   }
 

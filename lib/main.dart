@@ -17,8 +17,8 @@ import 'package:siraf3/bloc/home_screen_bloc.dart';
 import 'package:siraf3/dark_theme_provider.dart';
 import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/firebase_options.dart';
+import 'package:siraf3/screens/chat/chat_list_screen.dart';
 import 'package:siraf3/screens/home_screen.dart';
-import 'package:siraf3/screens/splash_screens.dart';
 import 'package:siraf3/settings.dart';
 import 'package:siraf3/themes.dart';
 
@@ -231,7 +231,7 @@ class App extends State<AppStf> {
               );
             },
             routes: {
-              '/': (_) => SplashScreen(),
+              '/': (_) => ChatListScreen(),
               '/home': (_) => HomeScreen(),
             },
           ),
