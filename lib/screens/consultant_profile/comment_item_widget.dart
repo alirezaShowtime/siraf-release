@@ -32,8 +32,6 @@ class _CommentItemWidget extends State<CommentItemWidget> {
   TextEditingController replyFieldController = TextEditingController();
   bool showReplyField = false;
 
-  List<ReplyComment> replyComments = [];
-
   FocusNode focusNode = FocusNode();
 
   int like = 0;
@@ -43,8 +41,6 @@ class _CommentItemWidget extends State<CommentItemWidget> {
   void initState() {
     super.initState();
 
-    replyComments = widget.comment.replies ?? [];
-
     likeCommentBloc.stream.listen((state) {
       if (state is ConsultantLikeCommentLoading) {
         notify("در حال ثبت...");
@@ -53,7 +49,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
 
     BlocProvider.of<ConsultantProfileCommentRateBloc>(context).stream.listen((state) {
       if (state is ConsultantProfileCommentRateSuccess && state.comment != null && state.isReply) {
-        replyComments == state.comment!.replies;
+        widget.comment.replies = state.comment!.replies ?? [];
         showReplyField = false;
         replyFieldController.clear();
         try {
@@ -180,7 +176,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
             ],
           ),
           if (showReplyField) replyFieldWidget(),
-          if (widget.comment.replies.isFill()) Column(children: replyComments.map<Widget>((answer) => AnswerItemWidget(answer)).toList()),
+          if (widget.comment.replies.isFill()) Column(children: widget.comment.replies!.map<Widget>((answer) => AnswerItemWidget(answer)).toList()),
         ],
       ),
     );
