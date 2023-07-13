@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/chat/select_message/select_message_bloc.dart';
 import 'package:siraf3/config.dart';
-import 'package:siraf3/helpers.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
@@ -18,11 +17,15 @@ class AppBarChat extends AppBar {
   String? consultantName;
   String? consultantImage;
   int? consultantId;
+  int? chatId;
+  String? lastMessage;
 
   AppBarChat({
     this.consultantName,
     this.consultantImage,
     this.consultantId,
+    this.chatId,
+    this.lastMessage,
   });
 }
 
@@ -50,8 +53,15 @@ class _AppBarChat extends State<AppBarChat> {
       titleSpacing: 0,
       leading: MyBackButton(
         onPressed: () {
-          if (selectedCount <= 0) return back(context);
-          BlocProvider.of<SelectMessageBloc>(context).add(SelectMessageClearEvent());
+          if (selectedCount > 0) {
+            BlocProvider.of<SelectMessageBloc>(context).add(SelectMessageClearEvent());
+            return;
+          }
+
+          Navigator.pop(context, {
+            "chatId": widget.chatId,
+            "sentMessage": widget.lastMessage,
+          });
         },
       ),
       title: title(),

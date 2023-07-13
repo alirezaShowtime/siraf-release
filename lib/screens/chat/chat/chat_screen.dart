@@ -93,6 +93,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
   List<MapEntry<Key, int?>> selectedMessages = [];
 
+  String? lastMessage = "";
+
   @override
   void initState() {
     super.initState();
@@ -161,6 +163,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
       for (var i = 0; i < messageWidgets.length(); i++) {
         if (messageWidgets.get(i).key != state.widgetKey) continue;
 
+        lastMessage = state.message.message;
+
         listViewSetState?.call(
           () => messageWidgets.replace(
             i,
@@ -201,8 +205,16 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
       ],
       child: WillPopScope(
         onWillPop: () async {
-          if (selectedMessages.isEmpty) return true;
-          selectMessageBloc.add(SelectMessageClearEvent());
+          if (selectedMessages.isNotEmpty) {
+            selectMessageBloc.add(SelectMessageClearEvent());
+            return false;
+          }
+
+          Navigator.pop(context, {
+            "chatId": widget.chatId,
+            "sentMessage": lastMessage,
+          });
+
           return false;
         },
         child: Scaffold(
@@ -212,6 +224,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
             consultantId: widget.consultantId,
             consultantName: widget.consultantName,
             consultantImage: widget.consultantImage,
+            chatId: widget.chatId,
+            lastMessage: lastMessage,
           ),
           body: Stack(
             children: [
@@ -265,6 +279,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                           listener: (context, state) {
                             if (state is! MessagesSuccess) return;
                             messages = state.messages;
+
+                            lastMessage = messages.last.message;
 
                             for (ChatMessage message in messages) {
                               messageWidgets.add(

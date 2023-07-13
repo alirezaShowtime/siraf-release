@@ -1,95 +1,94 @@
 class ChatItem {
-  int? id;
-  ChatLastMessage? message;
-  int? fileId;
-  String? fileTitle;
-  String? fileAddress;
+  int? countNotSeen;
+  String? timeAgo;
+  String? type;
+  dynamic message;
+  bool? isConsultant;
+  bool? disableBySender;
+  bool? disableByConsultant;
+  bool? deleteByConsultant;
+  bool? deleteBySender;
+  int? status;
+  String? createDate;
+  String? modifyDate;
+  String? lastMessage;
+  String? createTime;
   int? consultantId;
   String? consultantName;
   String? consultantAvatar;
+  bool? isSeen;
+  int? userId;
+  int? id;
+  int? fileId;
+  String? fileTitle;
+  String? fileAddress;
+  String? fileImage;
+  dynamic replyId;
+  int? consultantFileId;
 
   ChatItem.fromJson(dynamic json) {
     if (json["id"] is int) {
       id = json["id"];
     }
-    if (json["file"] is List) {
-      Map<String, dynamic> file = json["file"][0];
 
-      fileId = file["id"];
-      fileTitle = file["title"];
-      fileAddress = file["address"];
+    if (json["file"] is Map) {
+      if (json["file"]["id"] is int) {
+        fileId = json["file"]["id"];
+      }
+      if (json["file"]["title"] is String) {
+        fileTitle = json["file"]["title"];
+      }
+      if (json["file"]["address"] is String) {
+        fileAddress = json["file"]["address"];
+      }
+      if (json["file"]["image"] is String) {
+        fileImage = json["file"]["image"];
+      }
     }
-    if (json["consultant"] is List) {
-      Map<String, dynamic> consultant = json["consultant"][0];
 
-      consultantId = consultant["id"];
-      consultantName = consultant["name"];
-      consultantAvatar = consultant["avatar"];
-    }
     if (json["message"] is Map) {
-      message = json["message"] == null ? null : ChatLastMessage.fromJson(json["message"]);
+      if (json["message"]["countNotSeen"] is int) {
+        countNotSeen = json["message"]["countNotSeen"];
+      }
+      if (json["message"]["createDate"] is String) {
+        createDate = json["message"]["createDate"];
+      }
+      if (json["message"]["createTime"] is String) {
+        createTime = json["message"]["createTime"];
+      }
+      if (json["message"]["lastMessage"] is String) {
+        lastMessage = json["message"]["lastMessage"];
+      }
+      if (json["message"]["isSeen"] is bool) {
+        isSeen = json["message"]["isSeen"];
+      }
+      if (json["message"]["isConsultant"] is bool) {
+        isConsultant = json["message"]["isConsultant"];
+      }
     }
-  }
-}
 
-class ChatLastMessage {
-  int? id;
-  int? countUnseen;
-  String? timeAgo;
-  String? type;
-  dynamic message;
-  bool? isConsultant;
-  int? status;
-  bool? deleteBySender;
-  String? createDate;
-  String? modifyDate;
-  bool? isSeen;
-  int? userId;
-  int? chatId;
-  dynamic replyId;
-  int? consultantFileId;
-
-  ChatLastMessage.fromJson(dynamic json) {
-    if (json["id"] is int) {
-      id = json["id"];
+    if (json["consultant"] is Map) {
+      if (json["consultant"]["id"] is int) {
+        consultantId = json["consultant"]["id"];
+      }
+      if (json["consultant"]["name"] is String) {
+        consultantName = json["consultant"]["name"];
+      }
+      if (json["consultant"]["avatar"] is String) {
+        consultantAvatar = json["consultant"]["avatar"];
+      }
     }
-    if (json["countUnseen"] is int) {
-      countUnseen = json["countUnseen"];
-    }
-    if (json["timeAgo"] is String) {
-      timeAgo = json["timeAgo"];
-    }
-    if (json["type"] is String) {
-      type = json["type"];
-    }
-    message = json["message"];
-    if (json["isConsultant"] is bool) {
-      isConsultant = json["isConsultant"];
-    }
-    if (json["status"] is int) {
-      status = json["status"];
+    if (json["disableBySender"] is bool) {
+      disableBySender = json["disableBySender"];
     }
     if (json["deleteBySender"] is bool) {
       deleteBySender = json["deleteBySender"];
     }
-    if (json["createDate"] is String) {
-      createDate = json["createDate"];
+    if (json["disableByConsultant"] is bool) {
+      disableByConsultant = json["disableByConsultant"];
     }
-    if (json["modifyDate"] is String) {
-      modifyDate = json["modifyDate"];
-    }
-    if (json["isSeen"] is bool) {
-      isSeen = json["isSeen"];
-    }
-    if (json["user_id"] is int) {
-      userId = json["user_id"];
-    }
-    if (json["chat_id"] is int) {
-      chatId = json["chat_id"];
-    }
-    replyId = json["reply_id"];
-    if (json["consultantFile_id"] is int) {
-      consultantFileId = json["consultantFile_id"];
+    if (json["deleteByConsultant"] is bool) {
+      deleteByConsultant = json["deleteByConsultant"];
     }
   }
 }

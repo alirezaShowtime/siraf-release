@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:siraf3/bloc/chat/list/chat_list_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
@@ -87,7 +88,13 @@ class _ChatListScreen extends State<ChatListScreen> {
               ),
             ],
           ),
-          body: BlocBuilder<ChatListBloc, ChatListState>(builder: _listBlocBuilder),
+          body: BlocConsumer<ChatListBloc, ChatListState>(
+            builder: _listBlocBuilder,
+            listener: (context, state) {
+              if (state is! ChatListSuccess) return;
+              chats = state.chatList;
+            },
+          ),
         ),
       ),
     );
@@ -109,7 +116,7 @@ class _ChatListScreen extends State<ChatListScreen> {
           }
         },
         onTap: () {
-          if (!isSelected && isSelectable) {
+          if (!isSelected && isSelectable && selectedChats.length > 0) {
             setState(() {
               selectedChats.add(chatItem);
             });
@@ -122,16 +129,7 @@ class _ChatListScreen extends State<ChatListScreen> {
             return;
           }
 
-          push(
-              context,
-              ChatScreen(
-                chatId: chatItem.id!,
-                consultantId: chatItem.consultantId,
-                consultantImage: chatItem.consultantAvatar,
-                consultantName: chatItem.consultantName,
-                fileId: chatItem.fileId,
-                fileTitle: chatItem.fileTitle,
-              ));
+          goToChatScreen(chatItem);
         },
         child: Container(
           height: 65,
@@ -185,7 +183,7 @@ class _ChatListScreen extends State<ChatListScreen> {
                       ],
                     ),
                     Text(
-                      chatItem.message?.type == "file " ? "سند" : (chatItem.message?.message ?? ""),
+                      chatItem.lastMessage ?? "",
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: TextStyle(
@@ -203,21 +201,27 @@ class _ChatListScreen extends State<ChatListScreen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      if (chatItem.message?.isConsultant == false)
+                      if (chatItem.isConsultant == false)
                         Icon(
-                          chatItem.message!.isSeen! ? Icons.done_all_rounded : Icons.check_rounded,
+                          chatItem.isSeen! ? Icons.done_all_rounded : Icons.check_rounded,
                           color: App.theme.primaryColor,
                           size: 18,
                         ),
                       SizedBox(width: 4),
                       Text(
-                        chatItem.message?.timeAgo ?? "",
-                        style: TextStyle(color: Colors.grey.shade600, fontSize: 9, height: 1),
+                        getChatTime(chatItem.createDate, chatItem.createTime),
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 9,
+                          height: 1,
+                          fontFamily: "sans-serif",
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ],
                   ),
                   SizedBox(height: 10),
-                  if (chatItem.message?.countUnseen != null && chatItem.message!.countUnseen! > 0 && chatItem.message?.isConsultant == true)
+                  if (chatItem.countNotSeen != null && chatItem.countNotSeen! > 0)
                     Container(
                       height: 20,
                       constraints: BoxConstraints(minWidth: 20),
@@ -228,11 +232,12 @@ class _ChatListScreen extends State<ChatListScreen> {
                         borderRadius: BorderRadius.circular(100),
                       ),
                       child: Text(
-                        "${chatItem.message!.countUnseen!}",
+                        "${chatItem.countNotSeen!}",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 10,
-                          fontFamily: "IranSansMedium",
+                          fontFamily: "sans-serif",
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
@@ -259,8 +264,6 @@ class _ChatListScreen extends State<ChatListScreen> {
       );
     }
 
-    chats = (state as ChatListSuccess).chatList;
-
     if (!chats.isNotNullOrEmpty()) return Center(child: Empty());
 
     return ListView(
@@ -279,5 +282,51 @@ class _ChatListScreen extends State<ChatListScreen> {
       return false;
     }
     return true;
+  }
+
+  String getChatTime(String? createDate, String? createTime) {
+    if (createTime == null || createDate == null) return "";
+
+    var nowDays = Jalali.now().day;
+
+    var split = createDate.split("/");
+    var days = int.parse(split[2]);
+    var mouths = int.parse(split[1]);
+    var years = int.parse(split[0]);
+
+    if (nowDays == days) {
+      return createTime;
+    }
+
+    var f = Jalali(years, mouths, days).formatter;
+    return '${f.wN} ${f.d} ${f.mN} ${f.yy}';
+  }
+
+  void goToChatScreen(ChatItem chatItem) async {
+    var result = await push<Map>(
+        context,
+        ChatScreen(
+          chatId: chatItem.id!,
+          consultantId: chatItem.consultantId,
+          consultantImage: chatItem.consultantAvatar,
+          consultantName: chatItem.consultantName,
+          fileId: chatItem.fileId,
+          fileTitle: chatItem.fileTitle,
+        ));
+
+    if (result is! Map || !result.containsKey("chatId") || chatItem.id != result["chatId"]) return;
+
+    var index = chats.indexOf(chatItem);
+
+    chatItem.countNotSeen = 0;
+
+    if (!result.containsKey("sentMessage")) {
+      chatItem.isConsultant = false;
+      chatItem.lastMessage = result["sentMessage"];
+    }
+
+    chats[index] = chatItem;
+
+    setState(() {});
   }
 }
