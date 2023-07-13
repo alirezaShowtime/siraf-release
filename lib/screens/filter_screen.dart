@@ -1053,6 +1053,34 @@ class _FilterScreenState extends State<FilterScreen> {
       }
     }
 
+    if (filters.prices?.length == 1) {
+      filters.prices = [
+        filters.prices![0],
+        99999999999999999,
+      ];
+    }
+
+    if (filters.price?.length == 1) {
+      filters.price = [
+        filters.price![0],
+        99999999999999999,
+      ];
+    }
+
+    if (filters.rent?.length == 1) {
+      filters.rent = [
+        filters.rent![0],
+        99999999999999999,
+      ];
+    }
+
+    if (filters.mater?.length == 1) {
+      filters.mater = [
+        filters.mater![0],
+        99999999999999999,
+      ];
+    }
+
     widget.filterData.filters = filters;
     widget.filterData.mainCategory = _mainCategory;
     widget.filterData.category = _subCategory;
@@ -1101,6 +1129,35 @@ class _FilterScreenState extends State<FilterScreen> {
     filterData.hasImage = _hasImage;
     filterData.hasVideo = _hasVideo;
     filterData.hasTour = _hasTour;
+
+    
+    if (filters.prices?.length == 1) {
+      filters.prices = [
+        filters.prices![0],
+        99999999999999999,
+      ];
+    }
+
+    if (filters.price?.length == 1) {
+      filters.price = [
+        filters.price![0],
+        99999999999999999,
+      ];
+    }
+
+    if (filters.rent?.length == 1) {
+      filters.rent = [
+        filters.rent![0],
+        99999999999999999,
+      ];
+    }
+
+    if (filters.mater?.length == 1) {
+      filters.mater = [
+        filters.mater![0],
+        99999999999999999,
+      ];
+    }
 
     totalFileBloc.add(TotalFileGetEvent(filterData: filterData));
   }

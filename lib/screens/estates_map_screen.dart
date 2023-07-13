@@ -29,7 +29,8 @@ class EstatesMapScreen extends StatefulWidget {
   State<EstatesMapScreen> createState() => _EstatesMapScreenState();
 }
 
-class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProviderStateMixin {
+class _EstatesMapScreenState extends State<EstatesMapScreen>
+    with TickerProviderStateMixin {
   List<City> cities = [];
 
   bool _showFileOnMyLocation = false;
@@ -78,8 +79,12 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
     bloc.add(
       EstateLoadEvent(
         city_ids: cities.map((e) => e.id!).toList(),
-        search: _searchController.text.trim().isEmpty ? null : _searchController.text.trim(),
-        latLng: (_showFileOnMyLocation && myLocationMarker != null) ? myLocationMarker!.point : null,
+        search: _searchController.text.trim().isEmpty
+            ? null
+            : _searchController.text.trim(),
+        latLng: (_showFileOnMyLocation && myLocationMarker != null)
+            ? myLocationMarker!.point
+            : null,
       ),
     );
   }
@@ -124,11 +129,13 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
           title: TextField2(
             decoration: InputDecoration(
               hintText: "جستجو در دفاتر املاک",
-              hintStyle: TextStyle(color: App.theme.tooltipTheme.textStyle?.color, fontSize: 13),
+              hintStyle: TextStyle(
+                  color: App.theme.tooltipTheme.textStyle?.color, fontSize: 13),
               border: InputBorder.none,
             ),
             controller: _searchController,
-            style: TextStyle(color: App.theme.textTheme.bodyLarge?.color, fontSize: 13),
+            style: TextStyle(
+                color: App.theme.textTheme.bodyLarge?.color, fontSize: 13),
             textInputAction: TextInputAction.search,
             onSubmitted: (value) {
               getEstates();
@@ -189,13 +196,15 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                 mapController: _controller,
                 options: MapOptions(
                   center: defaultLocation,
-                  interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                  interactiveFlags:
+                      InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                   zoom: 14.0,
                 ),
                 children: [
                   TileLayerWidget(
                     options: TileLayerOptions(
-                      urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
+                      urlTemplate:
+                          App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
                     ),
                   ),
                   CircleLayerWidget(
@@ -266,7 +275,9 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: _showFileOnMyLocation ? Themes.primary : App.theme.dialogBackgroundColor,
+                    color: _showFileOnMyLocation
+                        ? Themes.primary
+                        : App.theme.dialogBackgroundColor,
                     borderRadius: BorderRadius.circular(100),
                     boxShadow: [
                       BoxShadow(
@@ -394,6 +405,14 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
       } else {
         _controller.move(defaultLocation, 14);
       }
+
+      if (estates.isNotEmpty)
+        animatedMapMove(
+            _controller,
+            LatLng(double.parse(estates.elementAt(0).lat!),
+                double.parse(estates.elementAt(0).long!)),
+            _controller.zoom,
+            this);
     }
   }
 
@@ -446,7 +465,10 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
 
     LocationData locationData = await _location.getLocation();
 
-    if (locationData.latitude == null || locationData.longitude == null || locationData.latitude == 0 || locationData.longitude == 0) {
+    if (locationData.latitude == null ||
+        locationData.longitude == null ||
+        locationData.latitude == 0 ||
+        locationData.longitude == 0) {
       return false;
     }
 
@@ -472,7 +494,10 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
 
     LocationData locationData = await _location.getLocation();
 
-    if (locationData.latitude == null || locationData.longitude == null || locationData.latitude == 0 || locationData.longitude == 0) {
+    if (locationData.latitude == null ||
+        locationData.longitude == null ||
+        locationData.latitude == 0 ||
+        locationData.longitude == 0) {
       notify("موقعیت مکانی دریافت نشد");
       return;
     }
@@ -560,7 +585,8 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                                 itemCount: 5,
                                 itemSize: 14,
                                 unratedColor: Colors.grey,
-                                itemPadding: EdgeInsets.symmetric(horizontal: .2),
+                                itemPadding:
+                                    EdgeInsets.symmetric(horizontal: .2),
                                 itemBuilder: (context, _) {
                                   return Icon(
                                     Icons.star,
@@ -634,7 +660,11 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                           Expanded(
                             child: MaterialButton(
                               onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => RequestFileScreen(estates: [estate])));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => RequestFileScreen(
+                                            estates: [estate])));
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
@@ -758,7 +788,8 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                                 itemCount: 5,
                                 itemSize: 14,
                                 unratedColor: Colors.grey,
-                                itemPadding: EdgeInsets.symmetric(horizontal: .2),
+                                itemPadding:
+                                    EdgeInsets.symmetric(horizontal: .2),
                                 itemBuilder: (context, _) {
                                   return Icon(
                                     Icons.star,

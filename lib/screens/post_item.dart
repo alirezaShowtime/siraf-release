@@ -143,8 +143,10 @@ class _PostItemState extends State<PostItem> {
             ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   IconButton(
                     onPressed: () {
@@ -166,13 +168,13 @@ class _PostItemState extends State<PostItem> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 60 - 60,
                     child: Text(
-                      "Dsadjksa djdhjashdsjhdasjdjashd djashdsajdjshd shdjshdadjahsshd ashdjsahdjksadas hh",
+                      widget.post.title ?? "",
                       style: TextStyle(
                         color: Themes.text,
                         fontSize: 13,
                       ),
-                      // overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
                       textDirection: TextDirection.rtl,
                     ),
                   ),

@@ -523,6 +523,13 @@ class _FilesMapScreenState extends State<FilesMapScreen>
 
         print(markers.length);
       });
+      if (files.isNotEmpty)
+        animatedMapMove(
+            _controller,
+            LatLng(double.parse(files.elementAt(0).lat!),
+                double.parse(files.elementAt(0).long!)),
+            _controller.zoom,
+            this);
       if (_firstTime) {
         setState(() {
           _firstTime = false;
