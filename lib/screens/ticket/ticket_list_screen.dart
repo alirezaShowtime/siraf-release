@@ -1,8 +1,10 @@
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/ticket/close/close_ticket_bloc.dart';
 import 'package:siraf3/bloc/ticket/list/ticket_list_bloc.dart';
 import 'package:siraf3/dialog.dart';
+import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/ticket.dart';
 import 'package:siraf3/screens/ticket/ticket_chat/ticket_chat_screen.dart';
@@ -11,12 +13,12 @@ import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
+import 'package:siraf3/widgets/empty.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_item.dart';
 import 'package:siraf3/widgets/try_again.dart';
-import 'package:badges/badges.dart' as badges;
 
 class TicketListScreen extends StatefulWidget {
   @override
@@ -105,9 +107,7 @@ class _TicketListScreen extends State<TicketListScreen> {
                       "${totalNoSeen}",
                       style: TextStyle(color: Colors.white),
                     ),
-                    badgeStyle: badges.BadgeStyle(
-                        badgeColor: Themes.primary,
-                        padding: EdgeInsets.symmetric(horizontal: 12)),
+                    badgeStyle: badges.BadgeStyle(badgeColor: Themes.primary, padding: EdgeInsets.symmetric(horizontal: 12)),
                   ),
               ],
             ),
@@ -118,8 +118,7 @@ class _TicketListScreen extends State<TicketListScreen> {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(20),
                     onTap: () {
-                      showDeleteDialog(
-                          selectedTickets.map((e) => e.id!).toList());
+                      showDeleteDialog(selectedTickets.map((e) => e.id!).toList());
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
@@ -146,12 +145,8 @@ class _TicketListScreen extends State<TicketListScreen> {
               MyPopupMenuButton(
                 itemBuilder: (context) {
                   return [
-                    MyPopupMenuItem<int>(
-                        enable: selectedTickets.length < tickets.length,
-                        value: 0,
-                        label: "انتخاب همه"),
-                    if (selectedTickets.isNotEmpty)
-                      MyPopupMenuItem<int>(value: 1, label: "لغو انتخاب همه"),
+                    MyPopupMenuItem<int>(enable: selectedTickets.length < tickets.length, value: 0, label: "انتخاب همه"),
+                    if (selectedTickets.isNotEmpty) MyPopupMenuItem<int>(value: 1, label: "لغو انتخاب همه"),
                   ];
                 },
                 onSelected: (value) {
@@ -173,8 +168,7 @@ class _TicketListScreen extends State<TicketListScreen> {
               ),
             ],
           ),
-          body: BlocBuilder<TicketListBloc, TicketListState>(
-              builder: _listBlocBuilder),
+          body: BlocBuilder<TicketListBloc, TicketListState>(builder: _listBlocBuilder),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               push(context, TicketCreationScreen());
@@ -231,9 +225,7 @@ class _TicketListScreen extends State<TicketListScreen> {
         },
         child: Container(
           height: 65,
-          foregroundDecoration: !isSelected
-              ? null
-              : BoxDecoration(color: Themes.primary.withOpacity(0.1)),
+          foregroundDecoration: !isSelected ? null : BoxDecoration(color: Themes.primary.withOpacity(0.1)),
           decoration: BoxDecoration(
             border: Border(
               top: BorderSide(color: Colors.black12, width: 0.5),
@@ -297,20 +289,14 @@ class _TicketListScreen extends State<TicketListScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    ticket.timeAgo ??
-                        "${ticket.lastMessageCreateTime} ${ticket.lastMessageCreateDate}",
+                    ticket.timeAgo ?? "${ticket.lastMessageCreateTime} ${ticket.lastMessageCreateDate}",
                     style: TextStyle(color: Colors.grey.shade600, fontSize: 9),
                   ),
                   Row(
                     children: [
                       Text(
-                        !ticket.status
-                            ? "بسته شده"
-                            : (ticket.statusMessage ?? ""),
-                        style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 9,
-                            fontFamily: "IRANSansBold"),
+                        !ticket.status ? "بسته شده" : (ticket.statusMessage ?? ""),
+                        style: TextStyle(color: Colors.grey.shade600, fontSize: 9, fontFamily: "IRANSansBold"),
                       ),
                       if ((ticket.messageNotSeen ?? 0) > 0)
                         SizedBox(
@@ -323,9 +309,7 @@ class _TicketListScreen extends State<TicketListScreen> {
                             "${ticket.messageNotSeen}",
                             style: TextStyle(color: Colors.white),
                           ),
-                          badgeStyle: badges.BadgeStyle(
-                              badgeColor: Themes.primary,
-                              padding: EdgeInsets.symmetric(horizontal: 12)),
+                          badgeStyle: badges.BadgeStyle(badgeColor: Themes.primary, padding: EdgeInsets.symmetric(horizontal: 12)),
                         ),
                     ],
                   ),
@@ -339,9 +323,7 @@ class _TicketListScreen extends State<TicketListScreen> {
   }
 
   Widget _listBlocBuilder(BuildContext context, TicketListState state) {
-    if (state is TicketListInitial) return Container();
-
-    if (state is TicketListLoading) return Center(child: Loading());
+    if (state is TicketListLoading || state is TicketListInitial) return Center(child: Loading());
 
     if (state is TicketListError) {
       return Center(
@@ -358,6 +340,10 @@ class _TicketListScreen extends State<TicketListScreen> {
 
     tickets = sortTickets(tickets);
 
+    if (!tickets.isFill()) {
+      return Center(child: Empty(message: "تیکتی نساخته اید"));
+    }
+
     return ListView(
       children: tickets.map<Widget>((e) => item(e)).toList(),
     );
@@ -371,11 +357,9 @@ class _TicketListScreen extends State<TicketListScreen> {
         builder: (dialogContext) {
           return ConfirmDialog(
             dialogContext: dialogContext,
-            content:
-                "آیا واقعا قصد بستن ${selectedTickets.length} تیکت را دارید؟",
+            content: "آیا واقعا قصد بستن ${selectedTickets.length} تیکت را دارید؟",
             onApply: () {
-              closeTicketBloc.add(CloseTicketRequestEvent(
-                  selectedTickets.map((e) => e.id!).toList()));
+              closeTicketBloc.add(CloseTicketRequestEvent(selectedTickets.map((e) => e.id!).toList()));
               dismissDialog(dialogContext);
             },
           );
