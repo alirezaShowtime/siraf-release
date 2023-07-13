@@ -44,7 +44,7 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
       Uri.parse("https://rate.siraf.app/api/rate/consultantRate/"),
       body: {
         "rate": event.rate,
-        "consultant_id": event.consultantId,
+        "consultants_id": event.consultantId,
       },
     );
 
@@ -71,7 +71,7 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
       Uri.parse("https://rate.siraf.app/api/rate/consultantRate/"),
       body: {
         "rate": event.rate,
-        "consultant_id": event.consultantId,
+        "consultants_id": event.consultantId,
       },
     );
 

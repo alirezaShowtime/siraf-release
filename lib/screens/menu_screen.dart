@@ -434,8 +434,7 @@ class _MenuScreenState extends State<MenuScreen> {
                           },
                           child: Container(
                             margin: EdgeInsets.only(bottom: 5),
-                            padding:
-                                EdgeInsets.only(bottom: 11, top: 11, right: 7),
+                            padding: EdgeInsets.only(bottom: 11, top: 11, right: 7),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),
                               color: App.theme.dialogBackgroundColor,

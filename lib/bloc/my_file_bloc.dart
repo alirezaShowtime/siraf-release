@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart';
-import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/file_consulant.dart';
 import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/models/user.dart';
@@ -26,10 +26,9 @@ class MyFileLoadingState extends MyFileState {}
 class MyFileLoadedState extends MyFileState {
   MyFileDetail file;
   bool? favorite;
-  List<FileConsulant> consulants;
+  List<FileConsultant> consulants;
 
-  MyFileLoadedState(
-      {required this.file, required this.favorite, required this.consulants});
+  MyFileLoadedState({required this.file, required this.favorite, required this.consulants});
 }
 
 class MyFileErrorState extends MyFileState {
@@ -54,18 +53,15 @@ class MyFileBloc extends Bloc<MyFileEvent, MyFileState> {
 
         response = await http2.getWithToken(url);
 
-        List<FileConsulant> consulants = [];
+        List<FileConsultant> consulants = [];
 
         print(event.progress);
 
-        var response2 = await http2
-            .get(getEstateUrl("consultant/consultantsFile?fileId=${event.id}"));
+        var response2 = await http2.get(getEstateUrl("consultant/consultantsFile?fileId=${event.id}"));
 
         if (isResponseOk(response2)) {
           var json2 = jDecode(response2.body);
-          consulants = !(json2['data'] is String)
-              ? FileConsulant.fromList(json2['data'])
-              : [];
+          consulants = !(json2['data'] is String) ? FileConsultant.fromList(json2['data']) : [];
         }
 
         print(consulants.length);

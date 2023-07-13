@@ -89,8 +89,8 @@ class _FileScreenState extends State<FileScreen> {
           });
         });
 
-        if (event.file.media!.image!.asMap().containsKey(0) && event.file.media!.image![0].name.isNotNullOrEmpty()) {
-          imageName = " | ${event.file.media!.image![0].name!.trim()}";
+        if (event.file.media!.images!.asMap().containsKey(0) && event.file.media!.images![0].name.isNotNullOrEmpty()) {
+          imageName = " | ${event.file.media!.images![0].name!.trim()}";
         } else {
           imageName = "";
         }
@@ -241,7 +241,7 @@ class _FileScreenState extends State<FileScreen> {
   Widget _buildSliders(FileDetail file) {
     return Stack(
       children: [
-        if (file.media!.image.isNotNullOrEmpty() || file.media!.video.isNotNullOrEmpty() || file.media!.virtualTour.isNotNullOrEmpty())
+        if (file.media!.images.isNotNullOrEmpty() && file.media!.video.isNotNullOrEmpty() && file.media!.virtualTour.isNotNullOrEmpty())
           Container(
             padding: EdgeInsets.only(bottom: 15),
             height: 250,
@@ -251,7 +251,7 @@ class _FileScreenState extends State<FileScreen> {
               image: DecorationImage(image: AssetImage(IMAGE_NOT_AVAILABLE), alignment: Alignment.center),
             ),
           ),
-        if (!file.media!.image.isNotNullOrEmpty() || !file.media!.video.isNotNullOrEmpty() || !file.media!.virtualTour.isNotNullOrEmpty())
+        if (!file.media!.images.isNotNullOrEmpty() || !file.media!.video.isNotNullOrEmpty() || !file.media!.virtualTour.isNotNullOrEmpty())
           CarouselSliderCustom(
             sliders: sliders,
             autoPlay: false,
@@ -266,8 +266,8 @@ class _FileScreenState extends State<FileScreen> {
             indicatorColor: Colors.grey,
             onPageChanged: (i) {
               setState(() {
-                if (file.media!.image!.asMap().containsKey(i) && file.media!.image![i].name.isNotNullOrEmpty()) {
-                  imageName = " | ${file.media!.image![i].name!.trim()}";
+                if (file.media!.images!.asMap().containsKey(i) && file.media!.images![i].name.isNotNullOrEmpty()) {
+                  imageName = " | ${file.media!.images![i].name!.trim()}";
                 } else {
                   imageName = "";
                 }
@@ -365,8 +365,7 @@ class _FileScreenState extends State<FileScreen> {
     var a = file
         .getMainProperties()
         .map<List<Widget>>(
-          (e) =>
-          [
+          (e) => [
             _buildPropItem(nonIfZero(e.value), e.name!),
             if (file.getMainProperties().last != e) VerticalDivider(width: 1.5, color: Colors.grey.shade300),
           ],
@@ -812,7 +811,7 @@ class _FileScreenState extends State<FileScreen> {
   Widget _buildTopBar(FileDetail file) {
     var iconColor = Themes.iconLight;
 
-    var toolbarOpacity = (file.media?.image?.isNotEmpty ?? false) ? this.toolbarOpacity : 1.0;
+    var toolbarOpacity = (file.media?.images?.isNotEmpty ?? false) ? this.toolbarOpacity : 1.0;
 
     if (toolbarOpacity > 0) {
       iconColor = App.theme.appBarTheme.foregroundColor ?? Themes.iconLight;

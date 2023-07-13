@@ -15,8 +15,10 @@ import 'package:siraf3/main.dart';
 import 'package:siraf3/models/city.dart' as city;
 import 'package:siraf3/models/consultant_info.dart';
 import 'package:siraf3/models/estate_profile.dart' as estateProfileModel;
+import 'package:siraf3/models/estate_profile.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
+import 'package:siraf3/screens/consultant_profile/consultant_profile_screen.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
 import 'package:siraf3/themes.dart';
@@ -25,6 +27,7 @@ import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
+import 'package:siraf3/widgets/my_image.dart';
 import 'package:siraf3/widgets/my_list_view.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_text_field.dart';
@@ -219,41 +222,46 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 3),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
-        child: Image(
+        child: MyImage(
           image: NetworkImage(image.path ?? ""),
           height: 50,
           width: 70,
           fit: BoxFit.fill,
-          loadingBuilder: (context, child, progressEvent) {
-            if (progressEvent == null) return child;
-            return Container(
-              height: 50,
-              width: 70,
-              color: Colors.grey.shade200,
-            );
-          },
+          errorWidget: MyImage.defaultErrorImageWidget(50, 70, text: "خطا!"),
+          loadingWidget: MyImage.defaultErrorImageWidget(50, 70, text: "درحال بارگزاری.."),
         ),
       ),
     );
   }
 
-  Widget consultantItem() {
+  Widget consultantItem(Consultants consultant) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 5),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {},
+          onTap: () => push(
+            context,
+            ConsultantProfileScreen(
+              consultantId: consultant.id!,
+              consultantName: consultant.name,
+            ),
+          ),
           borderRadius: BorderRadius.circular(10),
           child: Container(
             margin: EdgeInsets.only(left: 5, right: 5, top: 5),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Avatar(size: 45, imagePath: "https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png"),
+                Avatar(
+                  size: 45,
+                  imagePath: consultant.avatar,
+                  errorImage: AssetImage("assets/images/profile.png"),
+                  loadingImage: AssetImage("assets/images/profile.png"),
+                ),
                 SizedBox(height: 5),
                 Text(
-                  "عباس رحیمی",
+                  consultant.name ?? "",
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   style: TextStyle(
@@ -262,7 +270,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                StaticStar(rating: 4.5),
+                StaticStar(rating: consultant.rate ?? 0.0),
               ],
             ),
           ),

@@ -216,9 +216,9 @@ doWithLogin(BuildContext context, void Function() onLoggedIn, {bool pop = true})
   onLoggedIn();
 }
 
-void back(BuildContext context) {
+void back<T extends Object?>(BuildContext context, [T? result]) {
   if (Navigator.canPop(context)) {
-    Navigator.of(context).pop();
+    Navigator.pop(context, T);
   }
 }
 

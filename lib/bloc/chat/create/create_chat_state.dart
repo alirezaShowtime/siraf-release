@@ -9,4 +9,12 @@ class CreateChatLoading extends CreateChatState {}
 
 class CreateChatError extends CreateChatState {}
 
-class CreateChatSuccess extends CreateChatState {}
+class CreateChatSuccess extends CreateChatState {
+  late int chatId;
+  FileConsultant fileConsultant;
+  FileDetail file;
+
+  CreateChatSuccess(Response res, {required this.file, required this.fileConsultant}) {
+    chatId = jDecode(res.body)["data"]["id"];
+  }
+}

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file_detail.dart';
-import 'package:siraf3/themes.dart';
 
 class FileImagesScreen extends StatefulWidget {
   FileDetail file;
@@ -50,22 +48,19 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
             // maxScale: 4.0,
             // minScale: 0.5,
             minScale: 0.1,
-            imageProvider: NetworkImage(widget.file.media!.image![index].path!),
+            imageProvider: NetworkImage(widget.file.media!.images![index].path!),
             initialScale: PhotoViewComputedScale.contained,
-            heroAttributes: PhotoViewHeroAttributes(
-                tag: widget.file.media!.image![index].id!),
+            heroAttributes: PhotoViewHeroAttributes(tag: widget.file.media!.images![index].id!),
           );
         },
         pageController: PageController(initialPage: widget.index ?? 0),
-        itemCount: widget.file.media!.image!.length,
+        itemCount: widget.file.media!.images!.length,
         loadingBuilder: (context, event) => Center(
           child: Container(
             width: 20.0,
             height: 20.0,
             child: CircularProgressIndicator(
-              value: event == null
-                  ? 0
-                  : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
+              value: event == null ? 0 : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
             ),
           ),
         ),

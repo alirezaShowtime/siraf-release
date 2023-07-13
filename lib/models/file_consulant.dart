@@ -1,4 +1,4 @@
-class FileConsulant {
+class FileConsultant {
   int? id;
   ConsultantId? consultantId;
   String? estateName;
@@ -6,22 +6,14 @@ class FileConsulant {
   bool? status;
   int? estateFileId;
 
-  FileConsulant(
-      {this.id,
-      this.consultantId,
-      this.estateName,
-      this.createDate,
-      this.status,
-      this.estateFileId});
+  FileConsultant({this.id, this.consultantId, this.estateName, this.createDate, this.status, this.estateFileId});
 
-  FileConsulant.fromJson(Map<String, dynamic> json) {
+  FileConsultant.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
       id = json["id"];
     }
     if (json["consultant_id"] is Map) {
-      consultantId = json["consultant_id"] == null
-          ? null
-          : ConsultantId.fromJson(json["consultant_id"]);
+      consultantId = json["consultant_id"] == null ? null : ConsultantId.fromJson(json["consultant_id"]);
     }
     if (json["estateName"] is String) {
       estateName = json["estateName"];
@@ -50,11 +42,11 @@ class FileConsulant {
     return _data;
   }
 
-  static List<FileConsulant> fromList(List<dynamic> list) {
-    var list2 = <FileConsulant>[];
+  static List<FileConsultant> fromList(List<dynamic> list) {
+    var list2 = <FileConsultant>[];
 
     for (dynamic item in list) {
-      list2.add(FileConsulant.fromJson(item));
+      list2.add(FileConsultant.fromJson(item));
     }
 
     return list2;

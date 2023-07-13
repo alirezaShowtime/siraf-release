@@ -183,7 +183,8 @@ void logRequest(http.Response response, {Object? requestBody}) async {
   }
 
   messages.add("\n\nTO :  ${Uri.decodeFull(response.request!.url.toString())}");
-  messages.add("\n\nHEADERS :  ${convertUtf8(getPrettyJSONString(response.request!.headers..remove("Authorization")))}");
+  // messages.add("\n\nHEADERS :  ${convertUtf8(getPrettyJSONString(response.request!.headers..remove("Authorization")))}");
+  messages.add("\n\nHEADERS :  ${convertUtf8(getPrettyJSONString(response.request!.headers))}");
   messages.add("\n\nQUERIES :  ${convertUtf8(getPrettyJSONString(response.request!.url.queryParameters))}");
 
   messages.add("\n\n\nREQUEST BODY : ${convertUtf8(getPrettyJSONString(requestBody))}");

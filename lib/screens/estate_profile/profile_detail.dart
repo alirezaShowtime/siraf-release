@@ -27,7 +27,7 @@ extension ProfileDetail on _EstateProfileScreen {
               aspectRatio: 2.1,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
-                child: Image(
+                child: MyImage(
                   image: NetworkImage("https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png"),
                   fit: BoxFit.cover,
                 ),
@@ -65,7 +65,7 @@ extension ProfileDetail on _EstateProfileScreen {
                 scrollDirection: Axis.horizontal,
                 physics: BouncingScrollPhysics(),
                 itemCount: estateProfile.consultants?.length ?? 0,
-                itemBuilder: (context, i) => consultantItem(),
+                itemBuilder: (context, i) => consultantItem(estateProfile.consultants![i]),
               ),
             ),
         ],

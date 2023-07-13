@@ -26,6 +26,7 @@ class _MyListView extends State<MyListView> {
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Image.asset("assets/images/no-result.png"),
           Text(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 
 class MyImage extends StatefulWidget {
   @override
@@ -58,6 +59,46 @@ class MyImage extends StatefulWidget {
     this.borderRadius = BorderRadius.zero,
     this.background = Colors.transparent,
   });
+
+  static Widget defaultLoadingImageWidget(double height, double width, {String? text}) {
+    return Container(
+      height: height,
+      width: width,
+      color: Colors.grey.shade200,
+      alignment: Alignment.center,
+      child: !text.isFill()
+          ? null
+          : Text(
+              text!,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.grey.shade400,
+                fontFamily: "IranSansBold",
+                fontSize: 11,
+              ),
+            ),
+    );
+  }
+
+  static Widget defaultErrorImageWidget(double height, double width, {String? text}) {
+    return Container(
+      height: height,
+      width: width,
+      color: Colors.grey.shade200,
+      alignment: Alignment.center,
+      child: !text.isFill()
+          ? null
+          : Text(
+              text!,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.grey.shade400,
+                fontFamily: "IranSansBold",
+                fontSize: 11,
+              ),
+            ),
+    );
+  }
 }
 
 class _MyImage extends State<MyImage> {

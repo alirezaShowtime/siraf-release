@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart';
-import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/file_consulant.dart';
 
 class FileConsulantsEvent {
@@ -23,7 +23,7 @@ class FileConsulantsInitState extends FileConsulantsState {}
 class FileConsulantsLoadingState extends FileConsulantsState {}
 
 class FileConsulantsLoadedState extends FileConsulantsState {
-  List<FileConsulant> consultants;
+  List<FileConsultant> consultants;
 
   FileConsulantsLoadedState({required this.consultants});
 }
@@ -64,7 +64,7 @@ class FileConsulantsBloc
 
       emit(
         FileConsulantsLoadedState(
-          consultants: FileConsulant.fromList(json['data']),
+          consultants: FileConsultant.fromList(json['data']),
         ),
       );
     } else {

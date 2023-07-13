@@ -3,11 +3,11 @@ extension Int2 on int {
     String result;
 
     if (this >= 1000000) {
-      result = (this / 1000000).toStringAsFixed(2) + "MB";
+      result = (this / 1000000).toStringAsFixed(2) + " MB";
     } else if (this >= 1000) {
-      result = (this / 1000).toStringAsFixed(2) + "KB";
+      result = (this / 1000).toStringAsFixed(2) + " KB";
     } else {
-      result = "${this}B";
+      result = "${this} B";
     }
     return unit ? result : result.replaceAll(RegExp("[a-zA-Z]"), "");
   }

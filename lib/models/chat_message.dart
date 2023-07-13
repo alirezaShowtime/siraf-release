@@ -19,13 +19,16 @@ class ChatMessage {
   ChatMessage? replyMessage;
   String? messageCreateDate;
   String? createTime;
-  bool isSeen = false;
+  bool isSeenByUser = false;
+  bool isSeenByConsultant = false;
 
   ChatMessage(this.fileMessages, this.createDate, this.message);
 
   MessageOwner get owner => isConsultant != true ? MessageOwner.ForMe : MessageOwner.ForHer;
 
   bool get forMe => isConsultant != true;
+
+  bool get isSeen => forMe ? isSeenByConsultant : isSeenByUser;
 
   static List<ChatMessage> fromList(List<dynamic> list) {
     List<ChatMessage> newList = [];
@@ -63,6 +66,12 @@ class ChatMessage {
     }
     if (json["isConsultant"] is bool) {
       isConsultant = json["isConsultant"];
+    }
+    if (json["isSeen"] is bool) {
+      isSeenByUser = json["isSeen"];
+    }
+    if (json["isSeenByConsultant"] is bool) {
+      isSeenByConsultant = json["isSeenByConsultant"];
     }
     if (json["consultantFile_id"] is int) {
       consultantFileId = json["consultantFile_id"];

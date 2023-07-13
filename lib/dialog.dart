@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:siraf3/widgets/error_dialog.dart';
 import 'package:siraf3/widgets/loading_dialog.dart';
 
-
 BuildContext? dialogContext;
 
 Future<T?> showDialog2<T>({
@@ -26,8 +25,7 @@ Future<T?> showDialog2<T>({
 
   FocusScope.of(context).unfocus();
 
-  return Navigator.of(context, rootNavigator: useRootNavigator)
-      .push<T>(DialogRoute<T>(
+  return Navigator.of(context, rootNavigator: useRootNavigator).push<T>(DialogRoute<T>(
     context: context,
     builder: builder,
     barrierColor: barrierColor,
@@ -42,10 +40,7 @@ Future<T?> showDialog2<T>({
 
 BuildContext? loadingDialogContext;
 
-loadingDialog(
-    {required BuildContext context,
-    String? message,
-    bool showMessage = true}) async {
+loadingDialog({required BuildContext context, String? message, bool showMessage = true}) async {
   showDialog2(
     context: context,
     barrierDismissible: false,
@@ -75,7 +70,9 @@ BuildContext? errorDialog({required BuildContext context, String? message}) {
 }
 
 dismissDialog(BuildContext? dialogContext) {
-  if (dialogContext != null && Navigator.canPop(dialogContext)) {
-    Navigator.pop(dialogContext);
-  }
+  try {
+    if (dialogContext != null && Navigator.canPop(dialogContext)) {
+      Navigator.pop(dialogContext);
+    }
+  } catch (e) {}
 }
