@@ -50,7 +50,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
     });
 
     BlocProvider.of<EstateProfileCommentRateBloc>(context).stream.listen((state) {
-      if (state is EstateProfileCommentRateSuccess && state.comment != null && state.isReply) {
+      if (state is EstateProfileCommentRateSuccess && state.comment != null && state.isReply && widget.comment.id == state.comment!.id) {
         widget.comment.replies = state.comment!.replies ?? [];
         replyFieldController.clear();
         showReplyField = false;
