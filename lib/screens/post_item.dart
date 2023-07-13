@@ -1,18 +1,13 @@
-import 'dart:io';
-
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
-import 'package:image_size_getter/file_input.dart';
-import 'package:image_size_getter/image_size_getter.dart';
 import 'package:siraf3/bloc/post_bookmark_bloc.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/post.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-
 import 'package:siraf3/widgets/slider.dart' as s;
 
 class PostItem extends StatefulWidget {
@@ -143,17 +138,17 @@ class _PostItemState extends State<PostItem> {
             ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   IconButton(
                     onPressed: () {
                       if (isBookmark) {
-                        postBookmarkBloc
-                            .add(PostBookmarkRemoveEvent(id: widget.post.id!));
+                        postBookmarkBloc.add(PostBookmarkRemoveEvent(id: widget.post.id!));
                       } else {
-                        postBookmarkBloc
-                            .add(PostBookmarkAddEvent(id: widget.post.id!));
+                        postBookmarkBloc.add(PostBookmarkAddEvent(id: widget.post.id!));
                       }
                     },
                     icon: Icon(
@@ -166,13 +161,13 @@ class _PostItemState extends State<PostItem> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 60 - 60,
                     child: Text(
-                      "Dsadjksa djdhjashdsjhdasjdjashd djashdsajdjshd shdjshdadjahsshd ashdjsahdjksadas hh",
+                      widget.post.title ?? "",
                       style: TextStyle(
                         color: Themes.text,
                         fontSize: 13,
                       ),
-                      // overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
                       textDirection: TextDirection.rtl,
                     ),
                   ),

@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/bloc/categories_bloc.dart';
 import 'package:siraf3/bloc/property_bloc.dart';
 import 'package:siraf3/bloc/total_file_bloc.dart';
@@ -18,8 +20,6 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/text_form_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:siraf3/widgets/usefull/text/light/text_normal_light.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class FilterScreen extends StatefulWidget {
   FilterData originalFilterData;
@@ -1053,6 +1053,34 @@ class _FilterScreenState extends State<FilterScreen> {
       }
     }
 
+    if (filters.prices?.length == 1) {
+      filters.prices = [
+        filters.prices![0],
+        99999999999999999,
+      ];
+    }
+
+    if (filters.price?.length == 1) {
+      filters.price = [
+        filters.price![0],
+        99999999999999999,
+      ];
+    }
+
+    if (filters.rent?.length == 1) {
+      filters.rent = [
+        filters.rent![0],
+        99999999999999999,
+      ];
+    }
+
+    if (filters.mater?.length == 1) {
+      filters.mater = [
+        filters.mater![0],
+        99999999999999999,
+      ];
+    }
+
     widget.filterData.filters = filters;
     widget.filterData.mainCategory = _mainCategory;
     widget.filterData.category = _subCategory;
@@ -1101,6 +1129,34 @@ class _FilterScreenState extends State<FilterScreen> {
     filterData.hasImage = _hasImage;
     filterData.hasVideo = _hasVideo;
     filterData.hasTour = _hasTour;
+
+    if (filters.prices?.length == 1) {
+      filters.prices = [
+        filters.prices![0],
+        99999999999999999,
+      ];
+    }
+
+    if (filters.price?.length == 1) {
+      filters.price = [
+        filters.price![0],
+        99999999999999999,
+      ];
+    }
+
+    if (filters.rent?.length == 1) {
+      filters.rent = [
+        filters.rent![0],
+        99999999999999999,
+      ];
+    }
+
+    if (filters.mater?.length == 1) {
+      filters.mater = [
+        filters.mater![0],
+        99999999999999999,
+      ];
+    }
 
     totalFileBloc.add(TotalFileGetEvent(filterData: filterData));
   }

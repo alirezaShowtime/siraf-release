@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart' as badges;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,6 @@ import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/location_file_item.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
-import 'package:badges/badges.dart' as badges;
 
 import 'file_screen.dart';
 
@@ -245,7 +245,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
                 options: MapOptions(
                   center: defaultLocation,
                   interactiveFlags:
-                      InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                  InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                   zoom: 14.0,
                   plugins: [
                     MarkerClusterPlugin(),
@@ -255,7 +255,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
                   TileLayerWidget(
                     options: TileLayerOptions(
                       urlTemplate:
-                          App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
+                      App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
                     ),
                   ),
                   CircleLayerWidget(
@@ -391,21 +391,21 @@ class _FilesMapScreenState extends State<FilesMapScreen>
                 child: CarouselSlider(
                   items: files
                       .map((e) => Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => FileScreen(id: e.id!),
-                                  ),
-                                );
-                              },
-                              child: LocationFileItem(
-                                locationFile: e,
-                              ),
-                            ),
-                          ))
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => FileScreen(id: e.id!),
+                          ),
+                        );
+                      },
+                      child: LocationFileItem(
+                        locationFile: e,
+                      ),
+                    ),
+                  ))
                       .toList(),
                   options: CarouselOptions(
                       height: 120,
@@ -472,9 +472,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
       showDialog2(
           context: context,
           barrierDismissible: false,
-          builder: (
-            _c,
-          ) {
+          builder: (_c,) {
             errorDialogContext = _c;
             return AlertDialog(
               contentPadding: EdgeInsets.all(0),
@@ -523,6 +521,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
 
         print(markers.length);
       });
+      if (files.isNotEmpty) animatedMapMove(_controller, LatLng(double.parse(files.elementAt(0).lat!), double.parse(files.elementAt(0).long!)), _controller.zoom, this);
       if (_firstTime) {
         setState(() {
           _firstTime = false;
@@ -786,7 +785,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
     return cities.isEmpty
         ? "انتخاب شهر"
         : cities.length == 1
-            ? cities.first.name ?? "${cities.length} شهر"
-            : "${cities.length} شهر";
+        ? cities.first.name ?? "${cities.length} شهر"
+        : "${cities.length} شهر";
   }
 }

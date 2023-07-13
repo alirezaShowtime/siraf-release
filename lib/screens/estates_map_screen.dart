@@ -395,6 +395,8 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
       } else {
         _controller.move(defaultLocation, 14);
       }
+
+      if (estates.isNotEmpty) animatedMapMove(_controller, LatLng(double.parse(estates.elementAt(0).lat!), double.parse(estates.elementAt(0).long!)), _controller.zoom, this);
     }
   }
 
@@ -591,6 +593,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                                 ),
                               ),
                               Text(
+                                //todo
                                 "تلفن : " + "02133333333",
                                 style: TextStyle(
                                   color: Themes.textGrey,

@@ -18,10 +18,9 @@ import 'package:siraf3/dark_theme_provider.dart';
 import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/firebase_options.dart';
 import 'package:siraf3/screens/home_screen.dart';
+import 'package:siraf3/screens/splash_screens.dart';
 import 'package:siraf3/settings.dart';
 import 'package:siraf3/themes.dart';
-
-import 'screens/splash_screens.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
