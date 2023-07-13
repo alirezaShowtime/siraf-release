@@ -60,7 +60,7 @@ class MyImage extends StatefulWidget {
     this.background = Colors.transparent,
   });
 
-  static Widget defaultLoadingImageWidget(double height, double width, {String? text}) {
+  static Widget defaultLoadingImageWidget([double? height, double? width, String? text]) {
     return Container(
       height: height,
       width: width,
@@ -80,7 +80,7 @@ class MyImage extends StatefulWidget {
     );
   }
 
-  static Widget defaultErrorImageWidget(double height, double width, {String? text}) {
+  static Widget defaultErrorImageWidget([double? height, double? width, String? text]) {
     return Container(
       height: height,
       width: width,

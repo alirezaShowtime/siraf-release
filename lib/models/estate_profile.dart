@@ -13,13 +13,11 @@ class EstateProfile {
   String? shareLink;
   String? address;
   String? video;
-  List<Image>? images;
+  List<Image> images = [];
   double? rate;
   String? description;
   List<Comment>? comments;
   List<Consultants>? consultants;
-
-  EstateProfile({this.id, this.countConstruction, this.countRent, this.countOnSale, this.status, this.guildCode, this.shareLink, this.name, this.bio, this.logoFile, this.address, this.video, this.images, this.rate, this.description, this.comments, this.consultants});
 
   EstateProfile.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -58,8 +56,11 @@ class EstateProfile {
     if (json["shareLink"] is String) {
       shareLink = json["shareLink"];
     }
-    if (json["images"] is String) {
-      images = json["images"];
+    if (json["images"] is List) {
+      images = [];
+      for (Map img in json["images"]) {
+        images.add(img["image"]);
+      }
     }
     if (json["rate"] is double) {
       rate = json["rate"];

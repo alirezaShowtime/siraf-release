@@ -27,9 +27,16 @@ extension ProfileDetail on _EstateProfileScreen {
               aspectRatio: 2.1,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
-                child: MyImage(
-                  image: NetworkImage("https://blog.logrocket.com/wp-content/uploads/2021/04/10-best-Tailwind-CSS-component-and-template-collections.png"),
-                  fit: BoxFit.cover,
+                child: FutureBuilder<Uint8List?>(
+                  future: VideoThumbnail.thumbnailData(video: estateProfile.video!, imageFormat: ImageFormat.JPEG),
+                  builder: (context, snapshot) {
+                    return MyImage(
+                      image: (snapshot.data == null ? NetworkImage("") : MemoryImage(snapshot.data!)) as ImageProvider,
+                      errorWidget: MyImage.defaultErrorImageWidget(),
+                      loadingWidget: MyImage.defaultLoadingImageWidget(),
+                      fit: BoxFit.cover,
+                    );
+                  },
                 ),
               ),
             ),
@@ -40,12 +47,12 @@ extension ProfileDetail on _EstateProfileScreen {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               physics: BouncingScrollPhysics(),
-              itemCount: estateProfile.images?.length ?? 0,
-              itemBuilder: (context, i) => estateImageItem(estateProfile.images![i]),
+              itemCount: estateProfile.images.length,
+              itemBuilder: (context, i) => estateImageItem(estateProfile.images[i]),
             ),
           ),
-          if ((estateProfile.consultants?.length ?? 0) > 0) divider(),
-          if ((estateProfile.consultants?.length ?? 0) > 0)
+          if (estateProfile.consultants.isFill()) divider(),
+          if (estateProfile.consultants.isFill())
             Container(
               margin: EdgeInsets.symmetric(vertical: 10),
               alignment: Alignment.center,
@@ -58,7 +65,7 @@ extension ProfileDetail on _EstateProfileScreen {
                 ),
               ),
             ),
-          if ((estateProfile.consultants?.length ?? 0) > 0)
+          if (estateProfile.consultants.isFill())
             SizedBox(
               height: 100,
               child: ListView.builder(

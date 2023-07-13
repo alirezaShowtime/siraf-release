@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/bloc/estate_profile/comment/send/estate_profile_comment_rate_bloc.dart';
 import 'package:siraf3/bloc/estate_profile/profile/estate_profile_bloc.dart';
 import 'package:siraf3/bloc/files_bloc.dart';
+import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
@@ -34,6 +37,7 @@ import 'package:siraf3/widgets/my_text_field.dart';
 import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 import 'comment_item_widget.dart';
 
@@ -227,8 +231,8 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
           height: 50,
           width: 70,
           fit: BoxFit.fill,
-          errorWidget: MyImage.defaultErrorImageWidget(50, 70, text: "خطا!"),
-          loadingWidget: MyImage.defaultErrorImageWidget(50, 70, text: "درحال بارگزاری.."),
+          errorWidget: MyImage.defaultErrorImageWidget(50, 70, "خطا!"),
+          loadingWidget: MyImage.defaultErrorImageWidget(50, 70, "درحال بارگزاری.."),
         ),
       ),
     );

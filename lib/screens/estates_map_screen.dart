@@ -16,6 +16,7 @@ import 'package:siraf3/models/estate.dart';
 import 'package:siraf3/screens/request_file/request_file_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
@@ -555,21 +556,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                                   fontSize: 14,
                                 ),
                               ),
-                              RatingBarIndicator(
-                                direction: Axis.horizontal,
-                                itemCount: 5,
-                                itemSize: 14,
-                                unratedColor: Colors.grey,
-                                itemPadding: EdgeInsets.symmetric(horizontal: .2),
-                                itemBuilder: (context, _) {
-                                  return Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
-                                    size: 10,
-                                  );
-                                },
-                                rating: estate.rate ?? 0.0,
-                              ),
+                              StaticStar(rating: estate.rate ?? 0.0),
                             ],
                           ),
                           SizedBox(height: 7),
