@@ -13,7 +13,6 @@ import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/models/user.dart';
 
 part 'send_message_event.dart';
-
 part 'send_message_state.dart';
 
 class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
@@ -70,6 +69,8 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
     }
 
     try {
+      event.requestModel.controller.messageSate.add(MessageState.Uploading);
+
       var res = await dio.Dio().post(
         url,
         options: options,

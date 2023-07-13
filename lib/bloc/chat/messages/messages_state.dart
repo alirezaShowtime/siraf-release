@@ -26,10 +26,6 @@ class MessagesSuccess extends MessagesState {
           continue;
         }
 
-        if (i + 1 < messages.length) {
-          message.isSeen = message.forMe && !messages[i + 1].forMe;
-        }
-
         try {
           var reply = messages.singleWhere((e) => e.id == message.replyId);
 
@@ -38,6 +34,7 @@ class MessagesSuccess extends MessagesState {
 
         messages[i] = message;
       }
+      messages = messages.reversed.toList();
     } catch (e) {
       return;
     }

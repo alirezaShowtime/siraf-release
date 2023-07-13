@@ -14,5 +14,7 @@ extension File2 on File {
   //todo voice
   bool get isVoice => false;
 
-  String lengthStr() => this.lengthSync().toFileSize();
+  Future<String> lengthStr() async {
+    return (await this.length()).toFileSize();
+  }
 }

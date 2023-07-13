@@ -10,7 +10,7 @@ class UploadingDetail {
 
   UploadingDetail(this.uploaded, this.count) {
     percent = uploaded == 0 || count == 0 ? 0 : uploaded / count;
-    percentStr = "${percent.toInt()}%";
+    percentStr = "${(percent * 100).toInt()}%";
   }
 }
 

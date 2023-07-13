@@ -169,16 +169,16 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
       case TypeFile.Voice:
         return "صدا";
       case TypeFile.Doc:
-        return replyMessage.message!;
+        return "سند";
       default:
-        return replyMessage.message!;
+        return replyMessage.message ?? "";
     }
   }
 
-  Widget textWidget(String? message) {
+  Widget textWidget(String? message, {double? marginVertical}) {
     if (!message.isFill()) return Container();
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      padding: EdgeInsets.symmetric(horizontal: 7, vertical: marginVertical ?? 3.0),
       child: Wrap(
         children: [
           AutoDirection(

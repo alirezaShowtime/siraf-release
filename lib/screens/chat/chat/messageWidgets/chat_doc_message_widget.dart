@@ -12,6 +12,7 @@ import 'chat_message_widget.dart';
 class ChatDocMessageWidgetState extends ChatMessageWidgetState {
   late ChatMessageConfig messageConfig;
   late bool hasFile;
+  late bool hasText;
 
   @override
   void initState() {
@@ -20,14 +21,20 @@ class ChatDocMessageWidgetState extends ChatMessageWidgetState {
     messageConfig = getConfig();
 
     hasFile = widget.fileMessages.isFill();
+    hasText = widget.message.message.isFill();
 
     BlocProvider.of<SeenMessageBloc>(context).stream.listen((state) {
-      widget.message.isSeen = state is SeenMessageError;
+      //todo change to isSeenByUser in consultant app
+      widget.message.isSeenByConsultant = state is SeenMessageError;
     });
   }
 
   @override
   Widget content() {
+    return widget.message.message.isFill() ? textAndFileWidget() : fileWidget();
+  }
+
+  Widget textAndFileWidget() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,14 +46,41 @@ class ChatDocMessageWidgetState extends ChatMessageWidgetState {
             fileMessage: fileMessage,
             messageConfig: messageConfig,
           ),
-        if (hasFile && widget.message.message.isFill()) SizedBox(height: 10),
-        Wrap(
-          verticalDirection: VerticalDirection.up,
-          crossAxisAlignment: WrapCrossAlignment.start,
+        if (hasText && hasFile) textWidget(widget.message.message, marginVertical: 0),
+        if (hasFile) footerWidget(widget.message.isSeen, widget.message.createTime!),
+        if (!hasFile)
+          Wrap(
+            verticalDirection: VerticalDirection.up,
+            crossAxisAlignment: WrapCrossAlignment.start,
+            children: [
+              footerWidget(widget.message.isSeen, widget.message.createTime!),
+              textWidget(widget.message.message),
+            ],
+          ),
+      ],
+    );
+  }
+
+  Widget fileWidget() {
+    return Stack(
+      children: [
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            footerWidget(widget.message.isSeen, widget.message.createTime!),
-            if (widget.message.message.isFill()) textWidget(widget.message.message),
+            replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
+            for (ChatFileMessage fileMessage in widget.fileMessages)
+              ChatMessageFileWidget(
+                fileMessage: fileMessage,
+                messageConfig: messageConfig,
+              ),
           ],
+        ),
+        Positioned(
+          bottom: 0,
+          right: 0,
+          child: footerWidget(widget.message.isSeen, widget.message.createTime!),
         ),
       ],
     );

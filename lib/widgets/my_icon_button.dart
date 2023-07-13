@@ -9,7 +9,7 @@ class MyIconButton extends StatefulWidget {
   IconData? iconData;
   double? size;
 
-  void Function()? onTap;
+  GestureTapCallback? onTap;
 
   MyIconButton({this.iconData, this.icon, this.onTap, this.size = 40});
 }

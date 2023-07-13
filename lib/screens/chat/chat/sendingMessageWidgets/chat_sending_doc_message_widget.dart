@@ -16,9 +16,8 @@ class ChatSendingDocMessageWidgetState extends ChatSendingMessageWidgetState {
 
   late ChatMessageConfig messageConfig;
 
-  void Function(void Function())? fileUploadingWidgetSetState;
-
-  UploadingDetail uploadingDetail = UploadingDetail(0, 0);
+  bool hasFile = false;
+  bool hasText = false;
 
   @override
   void initState() {
@@ -26,14 +25,14 @@ class ChatSendingDocMessageWidgetState extends ChatSendingMessageWidgetState {
 
     messageConfig = getConfig();
 
-    widget.controller.uploading.stream.listen((detail) {
-      uploadingDetail = detail;
-    });
+    hasFile = widget.files.isFill();
+    hasText = widget.message.isFill();
   }
 
   Widget _getFileWidget(File file) {
     return StreamBuilder<MessageState>(
       initialData: MessageState.Init,
+      stream: widget.controller.messageSate.stream,
       builder: (_, snapshot) {
         switch (snapshot.data) {
           case MessageState.Init:
@@ -53,7 +52,7 @@ class ChatSendingDocMessageWidgetState extends ChatSendingMessageWidgetState {
 
   Widget _fileInitWidget(File file) {
     return _baseFileWidget(
-      icon: Icon(Icons.arrow_downward_rounded, color: messageConfig.background, size: 30),
+      icon: Icon(Icons.arrow_downward_rounded, color: messageConfig.background, size: 24),
       fileName: file.fileName,
       fileInfo: "${file.lengthStr()}  ${file.extension}",
     );
@@ -68,48 +67,56 @@ class ChatSendingDocMessageWidgetState extends ChatSendingMessageWidgetState {
   }
 
   Widget _fileUploadingWidget(File file) {
-    return StatefulBuilder(builder: (context, setState) {
-      fileUploadingWidgetSetState = setState;
-      return _baseFileWidget(
-        onTap: () => onClickCancel(file),
-        icon: Stack(
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: RotationTransition(
-                turns: Tween(begin: 0.0, end: 1.0).animate(loadingController),
-                child: CircularPercentIndicator(
-                  radius: 20,
-                  backgroundColor: Colors.transparent,
-                  percent: uploadingDetail.percent < 0.01 ? 0.02 : uploadingDetail.percent,
-                  animation: true,
-                  lineWidth: 3.5,
-                  circularStrokeCap: CircularStrokeCap.round,
-                  progressColor: messageConfig.background,
+    return StreamBuilder<UploadingDetail>(
+        initialData: UploadingDetail(0, 0),
+        stream: widget.controller.uploading.stream,
+        builder: (context, snapshot) {
+          return _baseFileWidget(
+            onTap: () => onClickCancel(file),
+            icon: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: RotationTransition(
+                    turns: Tween(begin: 0.0, end: 1.0).animate(loadingController),
+                    child: CircularPercentIndicator(
+                      radius: 20,
+                      backgroundColor: Colors.transparent,
+                      percent: snapshot.data!.percent < 0.01 ? 0.02 : snapshot.data!.percent,
+                      lineWidth: 3.5,
+                      animation: false,
+                      circularStrokeCap: CircularStrokeCap.round,
+                      progressColor: messageConfig.background,
+                    ),
+                  ),
                 ),
-              ),
+                Align(
+                  alignment: Alignment.center,
+                  child: GestureDetector(
+                    onTap: () => onClickCancel(file),
+                    child: Icon(Icons.close_rounded, color: messageConfig.background, size: 24),
+                  ),
+                ),
+              ],
             ),
-            Align(
-              alignment: Alignment.center,
-              child: GestureDetector(
-                onTap: () => onClickCancel(file),
-                child: Icon(Icons.close_rounded, color: messageConfig.background, size: 24),
-              ),
-            ),
-          ],
-        ),
-        fileName: file.fileName,
-        fileInfo: "${uploadingDetail.uploaded.toFileSize(unit: false)}/${uploadingDetail.uploaded.toFileSize()}  ${uploadingDetail.percentStr}%  ${file.extension}",
-      );
-    });
+            fileName: file.fileName,
+            fileInfo: "${snapshot.data!.uploaded.toFileSize(unit: false)}/${snapshot.data!.uploaded.toFileSize()}  ${snapshot.data!.percentStr}  ${file.extension}",
+          );
+        });
   }
 
   Widget _fileErrorUpload(File file) {
-    return _baseFileWidget(
-      icon: Icon(Icons.refresh_rounded, color: messageConfig.background, size: 34),
-      fileName: file.fileName,
-      fileInfo: "${uploadingDetail.uploaded.toFileSize()}/${uploadingDetail.count.toFileSize()} ${uploadingDetail.percentStr}%  ${file.extension}",
-      onTap: () => onClickTryAgain(file),
+    return StreamBuilder<UploadingDetail>(
+      initialData: UploadingDetail(0, 0),
+      stream: widget.controller.uploading.stream,
+      builder: (context, snapshot) {
+        return _baseFileWidget(
+          icon: Icon(Icons.refresh_rounded, color: messageConfig.background, size: 34),
+          fileName: file.fileName,
+          fileInfo: "${snapshot.data!.uploaded.toFileSize()}/${snapshot.data!.count.toFileSize()} ${snapshot.data!.percentStr}%  ${file.extension}",
+          onTap: () => onClickTryAgain(file),
+        );
+      },
     );
   }
 
@@ -152,7 +159,7 @@ class ChatSendingDocMessageWidgetState extends ChatSendingMessageWidgetState {
                   ),
                   Text(
                     fileInfo,
-                    style: TextStyle(color: messageConfig.secondTextColor, fontSize: 9),
+                    style: TextStyle(color: messageConfig.secondTextColor, fontSize: 8, fontFamily: "sans-serif", fontWeight: FontWeight.w500),
                   ),
                 ],
               ),
@@ -173,31 +180,62 @@ class ChatSendingDocMessageWidgetState extends ChatSendingMessageWidgetState {
 
   @override
   Widget content() {
+    return widget.message.isFill() ? textAndFileWidget() : fileWidget();
+  }
+
+  Widget textAndFileWidget() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         replyWidget(widget.replyMessage, widget.onClickReplyMessage),
-        if (widget.files.isFill())
+        if (hasFile)
           for (File file in widget.files!) _getFileWidget(file),
-        if (widget.message.isFill())
-          Padding(
-            padding: EdgeInsets.only(bottom: 5, right: 5, top: widget.files.isFill() ? 10 : 0),
-            child: textWidget(widget.message),
+        if (hasText && hasFile) textWidget(widget.message, marginVertical: 0),
+        if (hasFile) customFooter(),
+        if (!hasFile)
+          Wrap(
+            verticalDirection: VerticalDirection.up,
+            crossAxisAlignment: WrapCrossAlignment.start,
+            children: [
+              customFooter(),
+              if (hasText) textWidget(widget.message),
+            ],
           ),
-        StreamBuilder<MessageState>(
-          initialData: MessageState.Uploading,
-          stream: widget.controller.messageSate.stream,
-          builder: (context, snapshot) {
-            return footerWidget(
-              false,
-              createTime ?? "",
-              sending: snapshot.data == MessageState.Uploading,
-              error: snapshot.data == MessageState.ErrorUpload,
-            );
-          },
+      ],
+    );
+  }
+
+  Widget customFooter() {
+    return StreamBuilder<MessageState>(
+      initialData: MessageState.Uploading,
+      stream: widget.controller.messageSate.stream,
+      builder: (context, snapshot) {
+        return footerWidget(
+          false,
+          createTime ?? "",
+          sending: snapshot.data == MessageState.Uploading,
+          error: snapshot.data == MessageState.ErrorUpload,
+        );
+      },
+    );
+  }
+
+  Widget fileWidget() {
+    return Stack(
+      children: [
+        Column(
+          children: [
+            replyWidget(widget.replyMessage, widget.onClickReplyMessage),
+            for (File file in widget.files!) _getFileWidget(file),
+          ],
         ),
+        Positioned(
+          right: 0,
+          bottom: 0,
+          child: customFooter(),
+        )
       ],
     );
   }

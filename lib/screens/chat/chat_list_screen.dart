@@ -122,7 +122,16 @@ class _ChatListScreen extends State<ChatListScreen> {
             return;
           }
 
-          push(context, ChatScreen(chatItem: chatItem));
+          push(
+              context,
+              ChatScreen(
+                chatId: chatItem.id!,
+                consultantId: chatItem.consultantId,
+                consultantImage: chatItem.consultantAvatar,
+                consultantName: chatItem.consultantName,
+                fileId: chatItem.fileId,
+                fileTitle: chatItem.fileTitle,
+              ));
         },
         child: Container(
           height: 65,

@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/chat/select_message/select_message_bloc.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/models/chat_item.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
@@ -16,9 +15,15 @@ class AppBarChat extends AppBar {
   @override
   State<AppBar> createState() => _AppBarChat();
 
-  ChatItem chatItem;
+  String? consultantName;
+  String? consultantImage;
+  int? consultantId;
 
-  AppBarChat({required this.chatItem});
+  AppBarChat({
+    this.consultantName,
+    this.consultantImage,
+    this.consultantId,
+  });
 }
 
 class _AppBarChat extends State<AppBarChat> {
@@ -57,6 +62,7 @@ class _AppBarChat extends State<AppBarChat> {
             child: MyIconButton(
               onTap: deleteMessages,
               iconData: CupertinoIcons.delete,
+              size: 18,
             ),
           ),
         if (selectedCount <= 0)
@@ -80,7 +86,7 @@ class _AppBarChat extends State<AppBarChat> {
         Padding(
           padding: const EdgeInsets.only(left: 10),
           child: Avatar(
-            imagePath: widget.chatItem.consultantAvatar ?? "",
+            imagePath: widget.consultantImage ?? "",
             size: 40,
             errorImage: AssetImage("assets/images/profile.jpg"),
             loadingImage: AssetImage("assets/images/profile.jpg"),
@@ -88,7 +94,7 @@ class _AppBarChat extends State<AppBarChat> {
         ),
         Expanded(
           child: Text(
-            widget.chatItem.consultantName ?? "مشاور",
+            widget.consultantName ?? "مشاور",
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 12,

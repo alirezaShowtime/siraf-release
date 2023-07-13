@@ -16,12 +16,12 @@ import 'package:siraf3/bloc/chat/sendMessage/send_message_bloc.dart';
 import 'package:siraf3/controller/chat_message_upload_controller.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/models/chat_item.dart';
 import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/screens/chat/chat/app_bar_chat_widget.dart';
 import 'package:siraf3/screens/chat/chat/chat_message_editor_widget.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/widgets/my_image.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 import 'messageWidgets/chat_message_widget.dart';
@@ -29,9 +29,23 @@ import 'message_widget_list.dart';
 import 'sendingMessageWidgets/chat_sending_message_widget.dart';
 
 class ChatScreen extends StatefulWidget {
-  ChatItem chatItem;
+  String? consultantName;
+  String? consultantImage;
+  int? consultantId;
+  String? fileTitle;
+  String? fileImage;
+  int? fileId;
+  int chatId;
 
-  ChatScreen({required this.chatItem});
+  ChatScreen({
+    required this.chatId,
+    this.consultantName,
+    this.consultantImage,
+    this.consultantId,
+    this.fileTitle,
+    this.fileImage,
+    this.fileId,
+  });
 
   @override
   State<ChatScreen> createState() => _ChatScreen();
@@ -59,11 +73,10 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
   List<ChatMessage> messages = [];
 
-  MessagesState? nowMessagesState;
-
   late AnimationController voiceAnimController;
   late Animation<double> voiceAnim;
   late Animation<double> recordIconAnim;
+  Timer? scrollDownButtonTimer;
 
   String? recorderVoicePath;
   MessageWidgetList messageWidgets = MessageWidgetList();
@@ -152,7 +165,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
           () => messageWidgets.replace(
             i,
             ChatMessageWidget(
-              key: Key(state.message.replyMessage!.id!.toString()),
+              key: Key(state.message.id!.toString()),
               message: state.message,
               files: state.sentFiles,
               onClickReplyMessage: scrollTo,
@@ -195,7 +208,11 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
         child: Scaffold(
           resizeToAvoidBottomInset: true,
           backgroundColor: Colors.white,
-          appBar: AppBarChat(chatItem: widget.chatItem),
+          appBar: AppBarChat(
+            consultantId: widget.consultantId,
+            consultantName: widget.consultantName,
+            consultantImage: widget.consultantImage,
+          ),
           body: Stack(
             children: [
               Column(
@@ -220,19 +237,19 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                     ),
                     child: Row(
                       children: [
-                        Container(
-                          padding: EdgeInsets.all(7),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.grey.shade200,
-                          ),
-                          child: Icon(Icons.home_rounded),
+                        MyImage(
+                          borderRadius: BorderRadius.circular(5),
+                          image: NetworkImage(widget.fileImage ?? ""),
+                          errorWidget: defaultFileImage(40),
+                          loadingWidget: defaultFileImage(40),
+                          height: 40,
+                          width: 40,
+                          fit: BoxFit.cover,
                         ),
                         SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            widget.chatItem.fileTitle ?? "نامشخص",
+                            widget.fileTitle ?? "نامشخص",
                             style: TextStyle(fontSize: 12, color: Colors.black),
                           ),
                         ),
@@ -246,19 +263,21 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                           bloc: chatMessagesBloc,
                           builder: _blocBuilder,
                           listener: (context, state) {
-                            if (state is MessagesSuccess) {
-                              messages = state.messages;
+                            if (state is! MessagesSuccess) return;
+                            messages = state.messages;
 
-                              for (ChatMessage message in messages) {
-                                messageWidgets.add(
-                                  createDate: message.createDate!,
-                                  widget: ChatMessageWidget(
-                                    key: GlobalObjectKey(message.id!),
-                                    message: message,
-                                    onClickReplyMessage: scrollTo,
-                                  ),
-                                );
-                              }
+                            for (ChatMessage message in messages) {
+                              messageWidgets.add(
+                                createDate: message.createDate!,
+                                widget: ChatMessageWidget(
+                                  key: Key(message.id.toString()),
+                                  message: message,
+                                  onClickReplyMessage: scrollTo,
+                                ),
+                              );
+                            }
+                            if (messages.isFill() && !messages.last.forMe) {
+                              seenMessageBloc.add(SeenMessageRequestEvent(widget.chatId));
                             }
                           },
                         ),
@@ -416,18 +435,24 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   }
 
   void _scrollListener() {
+    if (_chatController.position.pixels < 150) {
+      _scrollDownAnimationController.reset();
+      _scrollDownAnimationController.reverse();
+      return;
+    }
+
     if (_chatController.position.userScrollDirection == ScrollDirection.forward) {
       if (_scrollDownAnimation.value != end_floatingActionButtonOffset) {
         _scrollDownAnimationController.reset();
-        _scrollDownAnimationController.forward();
       }
+      _scrollDownAnimationController.forward();
     }
 
     if (_chatController.position.userScrollDirection == ScrollDirection.reverse) {
       if (_scrollDownAnimation.value != begin_floatingActionButtonOffset) {
         _scrollDownAnimationController.reset();
-        _scrollDownAnimationController.reverse();
       }
+      _scrollDownAnimationController.reverse();
     }
   }
 
@@ -451,24 +476,35 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
       return Center(child: TryAgain(onPressed: _request, message: state.message));
     }
 
-    if (messages.isFill() && !messages.last.forMe && nowMessagesState != state) {
-      seenMessageBloc.add(SeenMessageRequestEvent(widget.chatItem.id!));
+    if (!messages.isFill()) {
+      return Center(
+        child: Text(
+          "پیامی وجود ندارد",
+          style: TextStyle(
+            color: Colors.black,
+            fontFamily: "IranSansBold",
+            fontSize: 10,
+          ),
+        ),
+      );
     }
 
     return StatefulBuilder(builder: (context, setState) {
       listViewSetState = setState;
 
-      return ListView(
-        // shrinkWrap: true,
-        reverse: true,
-        controller: _chatController,
-        children: generateList(),
+      return NotificationListener(
+        child: ListView(
+          reverse: true,
+          controller: _chatController,
+          children: generateList(),
+        ),
+        onNotification: onNotificationListView,
       );
     });
   }
 
   _request() {
-    chatMessagesBloc.add(MessagesRequestEvent(id: widget.chatItem.id!));
+    chatMessagesBloc.add(MessagesRequestEvent(id: widget.chatId));
   }
 
   void sendMessage(String? text, List<File>? files, ChatMessage? reply) {
@@ -494,7 +530,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
     sendMessageBloc.add(
       AddToSendQueueEvent(
-        chatId: widget.chatItem.id!,
+        chatId: widget.chatId,
         message: text,
         files: files,
         controller: messageUploadController,
@@ -510,7 +546,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     }
 
     try {
-      final index = messageWidgets.indexByKey(Key(replyMessage.id!.toString())) + 2;
+      final index = messageWidgets.length() - 1 - messageWidgets.indexByKey(Key(replyMessage.id!.toString())) + 2;
 
       final contentSize = _chatController.position.viewportDimension + _chatController.position.maxScrollExtent;
 
@@ -543,5 +579,32 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   void endTimer() {
     recordTime = 0;
     recordTimeStream.add(0);
+  }
+
+  Widget defaultFileImage(double size) {
+    return Container(
+      padding: EdgeInsets.all(7),
+      height: size,
+      width: size,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: Themes.primary.withOpacity(0.1),
+      ),
+      child: Icon(Icons.home, color: Themes.primary),
+    );
+  }
+
+  bool onNotificationListView(Notification notification) {
+    if (notification is ScrollUpdateNotification) {
+      scrollDownButtonTimer?.cancel();
+    }
+
+    if (notification is ScrollEndNotification) {
+      scrollDownButtonTimer = Timer(Duration(seconds: 3), () {
+        _scrollDownAnimationController.reverse();
+      });
+    }
+    return false;
   }
 }

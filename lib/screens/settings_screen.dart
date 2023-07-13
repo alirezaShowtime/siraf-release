@@ -15,7 +15,6 @@ import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/settings.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
-import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/app_bar_title.dart';
@@ -103,12 +102,18 @@ class _SettingsScreen extends State<SettingsScreen> {
         leading: MyBackButton(),
         title: AppBarTitle("تنظیمات"),
         actions: [
-          MyTextButton(
-            rippleColor: Colors.grey,
-            onPressed: logout,
-            child: Text(
-              "خروج",
-              style: TextStyle(color: Colors.red, fontSize: 12),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: IconButton(
+              onPressed: logout,
+              icon: Text(
+                "خروج",
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 11,
+                  fontFamily: "IranSansBold",
+                ),
+              ),
             ),
           ),
         ],
@@ -118,21 +123,27 @@ class _SettingsScreen extends State<SettingsScreen> {
         children: [
           if (widget.user!.id != null)
             item(
-                title: "نام و نام خانوادگی",
-                widget: GestureDetector(
-                    onTap: editProfile,
-                    child: RichText(
-                      text: TextSpan(children: [
-                        TextSpan(
-                          text: widget.user!.name.isNotNullOrEmpty() ? widget.user!.name! : "وارد نشده",
-                          style: TextStyle(fontSize: 11, fontFamily: "IranSansMedium", color: App.theme.textTheme.bodyLarge?.color),
-                        ),
-                        TextSpan(
-                          text: " (ویرایش)",
-                          style: TextStyle(fontSize: 11, color: App.theme.primaryColor, fontFamily: "IranSansMedium"),
-                        ),
-                      ]),
-                    ))),
+              title: "نام و نام خانوادگی",
+              widget: GestureDetector(
+                onTap: editProfile,
+                child: RichText(
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: widget.user!.name.isNotNullOrEmpty() ? widget.user!.name! : "وارد نشده",
+                      style: TextStyle(fontSize: 11, fontFamily: "IranSansMedium", color: App.theme.textTheme.bodyLarge?.color),
+                    ),
+                    TextSpan(
+                      text: " (ویرایش)",
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: App.theme.primaryColor,
+                        fontFamily: "IranSansMedium",
+                      ),
+                    ),
+                  ]),
+                ),
+              ),
+            ),
           if (widget.user?.phone != null) item(title: "شماره همراه", text: phoneFormat(widget.user!.phone!)),
           // item(
           //   title: "نمایش شماره همراه برای مشاوران",

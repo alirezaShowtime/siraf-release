@@ -48,6 +48,7 @@ class ChatImageMessageWidgetState extends ChatMessageWidgetState {
 
   Widget onlyImage() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
         Stack(

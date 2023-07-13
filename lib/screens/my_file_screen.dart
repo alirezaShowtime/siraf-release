@@ -771,7 +771,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
 
   BuildContext? loadingDContext;
 
-  Widget _item(FileConsulant item) {
+  Widget _item(FileConsultant item) {
     return GestureDetector(
       onTap: () {
         push(

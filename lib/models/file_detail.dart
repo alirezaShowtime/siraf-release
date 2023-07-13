@@ -1,12 +1,13 @@
-import 'dart:io';
+import 'dart:io' as io;
 
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
-import 'dart:io' as io;
+import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class FileDetail {
+  int? id;
   String? name;
   int? elevator;
   int? countRoom;
@@ -24,25 +25,7 @@ class FileDetail {
   City? city;
   Media? media;
   bool? favorite;
-
-  FileDetail(
-      {this.name,
-      this.elevator,
-      this.countRoom,
-      this.meter,
-      this.parking,
-      this.rent,
-      this.prices,
-      this.description,
-      this.lat,
-      this.long,
-      this.address,
-      this.property,
-      this.fullCategory,
-      this.publishedAgo,
-      this.city,
-      this.media,
-      this.favorite});
+  Image? firstImage;
 
   FileDetail.fromJson(Map<String, dynamic> json) {
     if (json["name"] is String) {
@@ -50,6 +33,9 @@ class FileDetail {
     }
     if (json["elevator"] is int) {
       elevator = json["elevator"];
+    }
+    if (json["id"] is int) {
+      id = json["id"];
     }
     if (json["countRoom"] is int) {
       countRoom = json["countRoom"];
@@ -77,27 +63,23 @@ class FileDetail {
       address = json["address"];
     }
     if (json["propertys"] is List) {
-      property = json["propertys"] == null
-          ? null
-          : (json["propertys"] as List)
-              .map((e) => Property.fromJson(e))
-              .toList();
+      property = json["propertys"] == null ? null : (json["propertys"] as List).map((e) => Property.fromJson(e)).toList();
     }
     if (json["fullCategory"] is Map) {
-      fullCategory = json["fullCategory"] == null
-          ? null
-          : FullCategory.fromJson(json["fullCategory"]);
+      fullCategory = json["fullCategory"] == null ? null : FullCategory.fromJson(json["fullCategory"]);
     }
     if (json["publishedAgo"] is String) {
       publishedAgo = json["publishedAgo"];
     }
     if (json["city"] is Map) {
-      city = json["city"] == null
-          ? null
-          : City.fromJson(json["city"]);
+      city = json["city"] == null ? null : City.fromJson(json["city"]);
     }
     if (json["media"] is Map) {
       media = json["media"] == null ? null : Media.fromJson(json["media"]);
+
+      if (media != null && media!.images.isFill()) {
+        firstImage = media!.images!.first;
+      }
     }
     if (json["favorite"] is bool) {
       favorite = json["favorite"];
@@ -150,16 +132,10 @@ class FileDetail {
     return prices.asMap().containsKey(1) ? prices[1] : null;
   }
 
-  List<Property> getPrices() =>
-      property?.where((element) => element.section == 3).toList() ??
-      <Property>[];
+  List<Property> getPrices() => property?.where((element) => element.section == 3).toList() ?? <Property>[];
 
   List<Property> getMainProperties() {
-    var list = property
-            ?.where((element) => element.section == 1 && element.value != null)
-            .take(6)
-            .toList() ??
-        [];
+    var list = property?.where((element) => element.section == 1 && element.value != null).take(6).toList() ?? [];
 
     list.sort((a, b) => a.weightSection!.compareTo(b.weightSection!));
 
@@ -167,10 +143,7 @@ class FileDetail {
   }
 
   List<Property> getOtherProperties() {
-    var list = property
-            ?.where((element) => element.section == 2 && element.value != null)
-            .toList() ??
-        [];
+    var list = property?.where((element) => element.section == 2 && element.value != null).toList() ?? [];
 
     list.sort((a, b) => a.weightSection!.compareTo(b.weightSection!));
 
@@ -178,7 +151,7 @@ class FileDetail {
   }
 
   Future<List<s.Slider>> getSliders() async {
-    var images = media?.image
+    var images = media?.images
             ?.map<s.Slider>(
               (e) => s.Slider(
                 image: NetworkImage(e.path ?? ""),
@@ -230,16 +203,16 @@ class City {
   City({this.id, this.name, this.weight, this.countFile});
 
   City.fromJson(Map<String, dynamic> json) {
-    if(json["id"] is int) {
+    if (json["id"] is int) {
       id = json["id"];
     }
-    if(json["name"] is String) {
+    if (json["name"] is String) {
       name = json["name"];
     }
-    if(json["weight"] is String) {
+    if (json["weight"] is String) {
       weight = json["weight"];
     }
-    if(json["countFile"] is String) {
+    if (json["countFile"] is String) {
       countFile = json["countFile"];
     }
   }
@@ -256,21 +229,17 @@ class City {
 
 class Media {
   List<Video>? video;
-  List<Image>? image;
+  List<Image>? images;
   String? virtualTour;
 
-  Media({this.video, this.image, this.virtualTour});
+  Media({this.video, this.images, this.virtualTour});
 
   Media.fromJson(Map<String, dynamic> json) {
     if (json["Video"] is List) {
-      video = json["Video"] == null
-          ? null
-          : (json["Video"] as List).map((e) => Video.fromJson(e)).toList();
+      video = json["Video"] == null ? null : (json["Video"] as List).map((e) => Video.fromJson(e)).toList();
     }
     if (json["Image"] is List) {
-      image = json["Image"] == null
-          ? null
-          : (json["Image"] as List).map((e) => Image.fromJson(e)).toList();
+      images = json["Image"] == null ? null : (json["Image"] as List).map((e) => Image.fromJson(e)).toList();
     }
     if (json["virtualTour"] is String) {
       virtualTour = json["virtualTour"];
@@ -282,8 +251,8 @@ class Media {
     if (video != null) {
       _data["Video"] = video?.map((e) => e.toJson()).toList();
     }
-    if (image != null) {
-      _data["Image"] = image?.map((e) => e.toJson()).toList();
+    if (images != null) {
+      _data["Image"] = images?.map((e) => e.toJson()).toList();
     }
     _data["virtualTour"] = virtualTour;
     return _data;
@@ -299,14 +268,7 @@ class Image {
   String? name;
   int? fileId;
 
-  Image(
-      {this.id,
-      this.createDate,
-      this.path,
-      this.status,
-      this.weight,
-      this.name,
-      this.fileId});
+  Image({this.id, this.createDate, this.path, this.status, this.weight, this.name, this.fileId});
 
   Image.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -354,14 +316,7 @@ class Video {
   int? weight;
   int? fileId;
 
-  Video(
-      {this.id,
-      this.name,
-      this.path,
-      this.createData,
-      this.status,
-      this.weight,
-      this.fileId});
+  Video({this.id, this.name, this.path, this.createData, this.status, this.weight, this.fileId});
 
   Video.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -408,13 +363,7 @@ class FullCategory {
   bool? isAll;
   int? parentId;
 
-  FullCategory(
-      {this.id,
-      this.name,
-      this.image,
-      this.fullCategory,
-      this.isAll,
-      this.parentId});
+  FullCategory({this.id, this.name, this.image, this.fullCategory, this.isAll, this.parentId});
 
   FullCategory.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {

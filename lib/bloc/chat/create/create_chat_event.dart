@@ -4,7 +4,11 @@ part of 'create_chat_bloc.dart';
 abstract class CreateChatEvent {}
 
 class CreateChatRequestEvent extends CreateChatEvent {
-  int fileConsultantId;
+  FileConsultant fileConsultant;
+  FileDetail file;
 
-  CreateChatRequestEvent(this.fileConsultantId);
+  CreateChatRequestEvent({
+    required this.fileConsultant,
+    required this.file,
+  });
 }

@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
+import 'package:siraf3/models/file_consulant.dart';
+import 'package:siraf3/models/file_detail.dart';
 
 part 'create_chat_event.dart';
 
@@ -20,7 +23,7 @@ class CreateChatBloc extends Bloc<CreateChatEvent, CreateChatState> {
     var res = await http2.postJsonWithToken(
       Uri.parse("https://chat.siraf.app/api/chat/addChatUser/"),
       body: {
-        "fileConsultantId": event.fileConsultantId,
+        "fileConsultantId": event.fileConsultant.id!,
       },
     );
 
@@ -28,6 +31,10 @@ class CreateChatBloc extends Bloc<CreateChatEvent, CreateChatState> {
       return emit(CreateChatError());
     }
 
-    return emit(CreateChatSuccess());
+    return emit(CreateChatSuccess(
+      res,
+      file: event.file,
+      fileConsultant: event.fileConsultant,
+    ));
   }
 }

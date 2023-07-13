@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart';
 import 'package:siraf3/bloc/chat/create/create_chat_bloc.dart';
 import 'package:siraf3/bloc/file_consulants_bloc.dart';
@@ -14,10 +13,14 @@ import 'package:siraf3/models/file_detail.dart' as file_detail;
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/consultant_profile/consultant_profile_screen.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/widgets/my_icon_button.dart';
+import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 import '../helpers.dart';
+import 'chat/chat/chat_screen.dart';
 
 class SupportFileScreen extends StatefulWidget {
   bool isFavorite;
@@ -38,7 +41,6 @@ class _SupportFileScreen extends State<SupportFileScreen> {
   @override
   void dispose() {
     super.dispose();
-
     bloc.close();
   }
 
@@ -61,8 +63,18 @@ class _SupportFileScreen extends State<SupportFileScreen> {
 
       if (state is CreateChatSuccess) {
         dismissDialog(loadingDialogContext);
-        notify("چت ایجاد شد");
-        // push(context, ChatListScreen());
+        push(
+          context,
+          ChatScreen(
+            chatId: state.chatId,
+            consultantId: state.fileConsultant.consultantId?.id,
+            consultantImage: state.fileConsultant.consultantId?.avatar,
+            consultantName: state.fileConsultant.consultantId?.name,
+            fileId: state.file.id,
+            fileTitle: state.file.name,
+            fileImage: state.file.firstImage?.path,
+          ),
+        );
       }
     });
   }
@@ -146,7 +158,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
     );
   }
 
-  Widget _item(FileConsulant item) {
+  Widget _item(FileConsultant item) {
     return GestureDetector(
       onTap: () {
         push(
@@ -173,22 +185,16 @@ class _SupportFileScreen extends State<SupportFileScreen> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(50),
-                  child: Image.network(
-                    item.consultantId?.avatar ?? '',
-                    height: 50,
-                    width: 50,
-                    errorBuilder: (_, _1, _2) => Image.asset(
-                      "assets/images/profile.png",
-                      height: 50,
-                      width: 50,
-                    ),
-                  ),
+                Avatar(
+                  imagePath: item.consultantId?.avatar ?? "",
+                  errorImage: AssetImage("assets/images/profile.png"),
+                  loadingImage: AssetImage("assets/images/profile.png"),
+                  size: 50,
                 ),
                 Padding(
                   padding: EdgeInsets.only(right: 10),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
@@ -204,21 +210,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
                           fontSize: 10,
                         ),
                       ),
-                      RatingBarIndicator(
-                        direction: Axis.horizontal,
-                        itemCount: 5,
-                        itemSize: 14,
-                        unratedColor: Colors.grey,
-                        itemPadding: EdgeInsets.symmetric(horizontal: .2),
-                        itemBuilder: (context, _) {
-                          return Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                            size: 10,
-                          );
-                        },
-                        rating: item.consultantId?.rate ?? 0,
-                      ),
+                      StaticStar(rating: item.consultantId?.rate ?? 0)
                     ],
                   ),
                 ),
@@ -226,24 +218,24 @@ class _SupportFileScreen extends State<SupportFileScreen> {
             ),
             Row(
               children: [
-                GestureDetector(
+                MyIconButton(
                   onTap: () async {
-                    doWithLogin(context, () => createChat(item.id!));
+                    doWithLogin(context, () => createChat(item, widget.file));
                   },
-                  child: Icon(
+                  icon: Icon(
                     CupertinoIcons.chat_bubble_2,
-                    size: 35,
+                    size: 30,
                     color: Themes.primary,
                   ),
                 ),
                 SizedBox(width: 20),
-                GestureDetector(
+                MyIconButton(
                   onTap: () {
                     callTo(item.consultantId!.phone!);
                   },
-                  child: Icon(
+                  icon: Icon(
                     CupertinoIcons.phone_circle,
-                    size: 35,
+                    size: 30,
                     color: Themes.primary,
                   ),
                 ),
@@ -255,8 +247,8 @@ class _SupportFileScreen extends State<SupportFileScreen> {
     );
   }
 
-  createChat(int fileConsultantId) async {
-    createChatBloc.add(CreateChatRequestEvent(fileConsultantId));
+  createChat(FileConsultant consultant, file_detail.FileDetail file) async {
+    createChatBloc.add(CreateChatRequestEvent(fileConsultant: consultant, file: file));
   }
 
   Future<bool> addOrRemoveFavorite(int id) async {
