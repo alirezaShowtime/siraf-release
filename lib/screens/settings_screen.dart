@@ -15,6 +15,7 @@ import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/settings.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
+import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/app_bar_title.dart';
@@ -62,8 +63,7 @@ class _SettingsScreen extends State<SettingsScreen> {
             builder: (_context) {
               return ConfirmDialog(
                 dialogContext: context,
-                content:
-                    "نسخه جدیدی از برنامه موجود است آیا میخواهید بروزرسانی کنید؟",
+                content: "نسخه جدیدی از برنامه موجود است آیا میخواهید بروزرسانی کنید؟",
                 applyText: "بله",
                 cancelText: "خیر",
                 onApply: () => openBazarOrOpenUrl(event.downloadUrl),
@@ -98,11 +98,13 @@ class _SettingsScreen extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.7,
+        backgroundColor: Themes.background,
         automaticallyImplyLeading: false,
         leading: MyBackButton(),
         title: AppBarTitle("تنظیمات"),
         actions: [
-          TextButton(
+          MyTextButton(
+            rippleColor: Colors.grey,
             onPressed: logout,
             child: Text(
               "خروج",
@@ -122,25 +124,16 @@ class _SettingsScreen extends State<SettingsScreen> {
                     child: RichText(
                       text: TextSpan(children: [
                         TextSpan(
-                          text: widget.user!.name.isNotNullOrEmpty()
-                              ? widget.user!.name!
-                              : "وارد نشده",
-                          style: TextStyle(
-                              fontSize: 11,
-                              fontFamily: "IranSansMedium",
-                              color: App.theme.textTheme.bodyLarge?.color),
+                          text: widget.user!.name.isNotNullOrEmpty() ? widget.user!.name! : "وارد نشده",
+                          style: TextStyle(fontSize: 11, fontFamily: "IranSansMedium", color: App.theme.textTheme.bodyLarge?.color),
                         ),
                         TextSpan(
                           text: " (ویرایش)",
-                          style: TextStyle(
-                              fontSize: 11,
-                              color: App.theme.primaryColor,
-                              fontFamily: "IranSansMedium"),
+                          style: TextStyle(fontSize: 11, color: App.theme.primaryColor, fontFamily: "IranSansMedium"),
                         ),
                       ]),
                     ))),
-          if (widget.user?.phone != null)
-            item(title: "شماره همراه", text: phoneFormat(widget.user!.phone!)),
+          if (widget.user?.phone != null) item(title: "شماره همراه", text: phoneFormat(widget.user!.phone!)),
           // item(
           //   title: "نمایش شماره همراه برای مشاوران",
           //   widget: FlutterSwitch(
@@ -207,14 +200,10 @@ class _SettingsScreen extends State<SettingsScreen> {
 
                 SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
                   statusBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
-                  statusBarBrightness:
-                      darkMode ? Brightness.light : Brightness.dark,
-                  statusBarIconBrightness:
-                      darkMode ? Brightness.light : Brightness.dark,
-                  systemNavigationBarIconBrightness:
-                      darkMode ? Brightness.light : Brightness.dark,
-                  systemNavigationBarColor:
-                      darkMode ? DarkThemes.appBar : Themes.appBar,
+                  statusBarBrightness: darkMode ? Brightness.light : Brightness.dark,
+                  statusBarIconBrightness: darkMode ? Brightness.light : Brightness.dark,
+                  systemNavigationBarIconBrightness: darkMode ? Brightness.light : Brightness.dark,
+                  systemNavigationBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
                 ));
               },
             ),
@@ -234,28 +223,24 @@ class _SettingsScreen extends State<SettingsScreen> {
               inactiveToggleColor: Themes.blue,
               onToggle: (value) async {
                 await changeViewType(value);
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (_) => HomeScreen()),
-                    (route) => false);
+                pushAndRemoveUntil(context, HomeScreen());
               },
             ),
           ),
+          // item(
+          //   title: "تایید دو مرحله‌ای",
+          //   widget: Text(
+          //     "تعیین",
+          //     style: TextStyle(
+          //       color: Themes.blue,
+          //       fontSize: 11,
+          //       fontWeight: FontWeight.bold,
+          //     ),
+          //   ),
+          //   onTap: twoVerification,
+          // ),
           item(
-            title: "تایید دو مرحله‌ای",
-            widget: Text(
-              "تعیین",
-              style: TextStyle(
-                color: Themes.blue,
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            onTap: twoVerification,
-          ),
-          item(
-            title:
-                "نسخه برنامه(3.0.0)",
+            title: "نسخه برنامه(3.0.0)",
             widget: Text(
               isLastVersion ? "آخرین نسخه نصب میباشد" : "بررسی بروزرسانی",
               style: TextStyle(
@@ -273,15 +258,11 @@ class _SettingsScreen extends State<SettingsScreen> {
 
   bool isLastVersion = false;
 
-  Widget item(
-      {required String title,
-      String? text,
-      Widget? widget,
-      GestureTapCallback? onTap}) {
+  Widget item({required String title, String? text, Widget? widget, GestureTapCallback? onTap}) {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
@@ -315,7 +296,7 @@ class _SettingsScreen extends State<SettingsScreen> {
 
   //onClick Listeners
   logout() {
-    showDialog2(
+    animationDialog(
       context: context,
       builder: (_) => ConfirmDialog(
         dialogContext: context,
@@ -381,7 +362,7 @@ class _SettingsScreen extends State<SettingsScreen> {
       launchUrl(Uri.parse(downloadUrl), mode: LaunchMode.externalApplication);
     }
   }
-  
+
   void getUser() async {
     widget.user = await User.fromLocal();
     setState(() {});

@@ -15,8 +15,8 @@ class Empty extends StatelessWidget {
         children: [
           MyImage(
             image: AssetImage("assets/images/no-result.png"),
-            height: 220,
-            width: 220,
+            height: 150,
+            width: 150,
           ),
           Text(
             message ?? "نتیجه ای یافت نشد",

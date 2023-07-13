@@ -28,6 +28,7 @@ import 'package:siraf3/screens/post_item.dart';
 import 'package:siraf3/screens/search_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/widgets/empty.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
 import 'package:siraf3/widgets/file_slide_item.dart';
 import 'package:siraf3/widgets/loading.dart';
@@ -101,8 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<HomeItem> items = [];
 
   bool _canLoadMore() {
-    return (scrollController.position.pixels == scrollController.position.maxScrollExtent) && lastId != null &&
-        !_isLoadingMore;
+    return (scrollController.position.pixels == scrollController.position.maxScrollExtent) && lastId != null && !_isLoadingMore;
   }
 
   void pagination() async {
@@ -110,10 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (_moreBloc.isClosed) {
         _moreBloc = HSBloc();
       }
-      _moreBloc.add(HSLoadEvent(
-          filterData: filterData,
-          lastId: lastId!,
-          contentLastId: contentLastId));
+      _moreBloc.add(HSLoadEvent(filterData: filterData, lastId: lastId!, contentLastId: contentLastId));
     }
   }
 
@@ -174,8 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   changeViewType() async {
     var sh = await SharedPreferences.getInstance();
-    sh.setString(
-        "FILE_VIEW_TYPE", viewType == ViewType.List ? "slide" : "list");
+    sh.setString("FILE_VIEW_TYPE", viewType == ViewType.List ? "slide" : "list");
 
     await getViewType();
 
@@ -183,15 +179,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   goSelectCity({showSelected = false}) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (_) => SelectCityScreen(showSelected: showSelected)));
+    Navigator.push(context, MaterialPageRoute(builder: (_) => SelectCityScreen(showSelected: showSelected)));
   }
 
   openMenu() async {
-    await Navigator.push(
-        context, MaterialPageRoute(builder: (_) => MenuScreen()));
+    await Navigator.push(context, MaterialPageRoute(builder: (_) => MenuScreen()));
 
     listenRabbitData();
     setState(() {});
@@ -254,8 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (_) => FilterScreen(
-                    originalFilterData: FilterData(
-                        cityIds: cities.map<int>((e) => e.id!).toList()),
+                    originalFilterData: FilterData(cityIds: cities.map<int>((e) => e.id!).toList()),
                     filterData: filterData,
                     total_url: getFileUrl('file/files/').toString(),
                   ),
@@ -310,8 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (currentBlocState is HSInitState ||
-              currentBlocState is HSLoadingState)
+          if (currentBlocState is HSInitState || currentBlocState is HSLoadingState)
             Center(
               child: Loading(),
             ),
@@ -319,22 +309,11 @@ class _HomeScreenState extends State<HomeScreen> {
             Center(
               child: TryAgain(
                 onPressed: getFiles,
-                message: (currentBlocState as HSErrorState).response != null
-                    ? jDecode((currentBlocState as HSErrorState).response!.body)['message'] : null,
+                message: (currentBlocState as HSErrorState).response != null ? jDecode((currentBlocState as HSErrorState).response!.body)['message'] : null,
               ),
             ),
-          if (currentBlocState is HSLoadedState &&
-              (currentBlocState as HSLoadedState).homeItems.isEmpty)
-            Center(
-              child: Text(
-                "موردی یافت نشد",
-                style: TextStyle(
-                  fontSize: 15,
-                ),
-              ),
-            ),
-          if (currentBlocState is HSLoadedState &&
-              (currentBlocState as HSLoadedState).homeItems.isNotEmpty)
+          if (currentBlocState is HSLoadedState && (currentBlocState as HSLoadedState).homeItems.isEmpty) Center(child: Empty(message: "موردی یافت نشد")),
+          if (currentBlocState is HSLoadedState && (currentBlocState as HSLoadedState).homeItems.isNotEmpty)
             Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
@@ -377,9 +356,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Padding(
         padding: EdgeInsets.only(top: items.first == file ? 0 : 5),
-        child: viewType == ViewType.List
-            ? FileHorizontalItem(file: file)
-            : FileSlideItem(file: file),
+        child: viewType == ViewType.List ? FileHorizontalItem(file: file) : FileSlideItem(file: file),
       ),
     );
   }
