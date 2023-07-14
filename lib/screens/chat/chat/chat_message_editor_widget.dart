@@ -266,10 +266,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
       icon = Icons.videocam_rounded;
     }
 
-    var key = Key(file.hashCode.toString());
-
     return Container(
-      key: key,
       padding: EdgeInsets.only(top: 5, bottom: 5, left: 7),
       child: Row(
         children: [
@@ -280,13 +277,9 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
-              color: Themes.primary.withOpacity(0.2),
+              color: Themes.primary.withOpacity(0.1),
             ),
-            child: Icon(
-              icon,
-              color: Themes.primary.withOpacity(0.6),
-              size: 30,
-            ),
+            child: Icon(icon, color: Themes.primary),
           ),
           Expanded(
             child: Column(
@@ -323,11 +316,9 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
           MyIconButton(
             iconData: Icons.close_rounded,
             onTap: () {
-              //t
-              selectedFileWidgets.removeWhere((e) => e.key == key);
-              if (selectedFileWidgets.isEmpty) {
-                showSendButton = false;
-              }
+              selectedFiles.clear();
+              selectedFileWidgets.clear();
+              showSendButton = false;
 
               setState(() {});
             },

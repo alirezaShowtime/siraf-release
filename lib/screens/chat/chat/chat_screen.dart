@@ -303,28 +303,12 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                             return Positioned(
                               right: 10,
                               bottom: _scrollDownAnimation.value,
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(100),
-                                onTap: scrollDown,
-                                child: Container(
-                                  width: 45,
-                                  height: 45,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(100),
-                                    border: Border.all(color: Colors.grey.shade300, width: 0.7),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        offset: const Offset(0, 0),
-                                        spreadRadius: -1.25,
-                                        blurRadius: 1.5,
-                                        color: Colors.black54,
-                                      ),
-                                    ],
-                                  ),
-                                  child: icon(Icons.expand_more_rounded),
-                                ),
+                              child: FloatingActionButton(
+                                onPressed: scrollDown,
+                                child: icon(Icons.expand_more_rounded),
+                                elevation: 10,
+                                mini: true,
+                                backgroundColor: Colors.grey.shade50,
                               ),
                             );
                           },
