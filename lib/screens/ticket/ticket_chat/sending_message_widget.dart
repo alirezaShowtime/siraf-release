@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:auto_direction/auto_direction.dart';
 import 'package:flutter/material.dart';
+import 'package:linkwell/linkwell.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 import 'package:siraf3/controller/message_upload_controller.dart';
@@ -27,7 +28,7 @@ class SendingMessageWidget extends StatefulWidget {
 }
 
 class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleTickerProviderStateMixin {
-  late final AnimationController loadingController = AnimationController(vsync: this, duration: Duration(seconds: 3))..repeat();
+  late final AnimationController loadingController;
 
   late MessageConfig messageConfig;
   late String createdAt;
@@ -62,6 +63,8 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
   @override
   void initState() {
     super.initState();
+
+    loadingController = AnimationController(vsync: this, duration: Duration(seconds: 3))..repeat();
 
     messageConfig = _getConfig();
 
@@ -125,7 +128,11 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
                 SizedBox(width: 2),
                 Text(
                   createdAt,
-                  style: TextStyle(color: Colors.grey.shade500, fontSize: 9),
+                  style: TextStyle(
+                    color: Colors.grey.shade500,
+                    fontSize: 9,
+                    fontFamily: "sans-serif",
+                  ),
                 ),
               ],
             ),
@@ -142,9 +149,20 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
           child: AutoDirection(
             text: widget.message!,
-            child: Text(
+            child: LinkWell(
               widget.message!,
-              style: TextStyle(color: messageConfig.textColor, fontSize: 12),
+              style: TextStyle(
+                color: messageConfig.textColor,
+                fontSize: 12,
+                fontFamily: "IranSans",
+              ),
+              linkStyle: TextStyle(
+                color: messageConfig.textColor,
+                fontSize: 12,
+                decoration: TextDecoration.underline,
+                decorationColor: messageConfig.textColor,
+                decorationThickness: 1.3,
+              ),
             ),
           ),
         ),
@@ -198,7 +216,7 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
                 radius: 20,
                 backgroundColor: Colors.transparent,
                 percent: percentUploading < 0.01 ? 0.02 : percentUploading,
-                animation: true,
+                animation: false,
                 lineWidth: 3.5,
                 circularStrokeCap: CircularStrokeCap.round,
                 progressColor: messageConfig.background,
@@ -215,7 +233,7 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
         ],
       ),
       fileName: file.fileName,
-      fileInfo: "${nowUploadingProgress.toFileSize(unit: false)}/${countUploadingProgress.toFileSize()}  ${percentUploading.toInt()}%  ${file.extension}",
+      fileInfo: "${nowUploadingProgress.toFileSize(unit: false)}/${countUploadingProgress.toFileSize()}  ${(percentUploading * 100).toInt()}%  ${file.extension}",
     );
   }
 
@@ -272,7 +290,7 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
                   ),
                   Text(
                     fileInfo,
-                    style: TextStyle(color: messageConfig.secondTextColor, fontSize: 9),
+                    style: TextStyle(color: messageConfig.secondTextColor, fontSize: 8, fontFamily: "sans-serif", fontWeight: FontWeight.w500),
                   ),
                 ],
               ),

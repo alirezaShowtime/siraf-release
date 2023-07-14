@@ -18,21 +18,14 @@ class ChatMessageEditor extends StatefulWidget {
 
   TextEditingController _messageController;
 
-  //todo: type of the replayingMessage variable is a test type, this variable is possible a model class
   String? replyingMessage;
 
-  //todo: type of the onSendMessage variable is a test type, this variable is possible a model class
   void Function(String? text, List<File>?)? onClickSendMessage;
-  void Function()? onRecordVoice;
-  void Function()? onAttachEmoji;
-  void Function()? onAttachFile;
 
   ChatMessageEditor({
     required TextEditingController messageController,
     this.replyingMessage,
     this.onClickSendMessage,
-    this.onAttachEmoji,
-    this.onAttachFile,
   }) : _messageController = messageController;
 }
 
@@ -41,30 +34,6 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
 
   List<File> selectedFiles = [];
   List<Widget> selectedFilesWidget = [];
-
-  @override
-  void initState() {
-    super.initState();
-    widget._messageController.addListener(_messageControlListener);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    widget._messageController.removeListener(_messageControlListener);
-  }
-
-  void _messageControlListener() {
-    if (widget._messageController.value.text.length == 0) {
-      showSendButton = false;
-      setState(() {});
-    }
-
-    if (!showSendButton && widget._messageController.value.text.length > 1) {
-      showSendButton = true;
-      setState(() {});
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,17 +81,15 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
                           onTap: attachFile,
                         ),
                       ),
-                    // if (!showSendButton)
-                    //   btn(
-                    //     iconData: Icons.keyboard_voice_outlined,
-                    //     onTap: recordVoice,
-                    //   ),
                     if (!selectedFiles.isFill())
                       Expanded(
                         child: TextField2(
                           controller: widget._messageController,
                           maxLines: 7,
                           minLines: 1,
+                          onChanged: (text) {
+                            setState(() => showSendButton = text.length > 0 || selectedFiles.isNotEmpty);
+                          },
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "پیام...",
@@ -159,15 +126,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
     );
   }
 
-  //event listeners
-  void attachEmoji() {
-    //todo: implement event listener
-    widget.onAttachEmoji?.call();
-  }
-
   Future<void> attachFile() async {
-    widget.onAttachFile?.call();
-
     FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false);
 
     if (result == null) return;
@@ -179,17 +138,10 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
     setState(() {});
   }
 
-  void recordVoice() {
-    //todo: implement event listener
-    widget.onRecordVoice?.call();
-  }
-
   void sendMessage() {
-    // FocusManager.instance.primaryFocus?.unfocus();
-
     if (widget._messageController.value.text.isFill()) {
       widget.onClickSendMessage?.call(widget._messageController.value.text, null);
-      widget._messageController.text = '';
+      widget._messageController.clear();
       return;
     }
 
@@ -235,6 +187,15 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
   }
 
   Widget attachedFileItem(File file) {
+    var icon = Icons.insert_drive_file_rounded;
+    if (file.isImage) {
+      icon = Icons.image_rounded;
+    } else if (file.isVoice) {
+      icon = Icons.music_note_rounded;
+    } else if (file.isVideo) {
+      icon = Icons.videocam_rounded;
+    }
+
     return Container(
       padding: EdgeInsets.only(top: 5, bottom: 5, left: 7),
       child: Row(
@@ -246,13 +207,9 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
-              color: Themes.primary.withOpacity(0.2),
+              color: Themes.primary.withOpacity(0.1),
             ),
-            child: Icon(
-              Icons.insert_drive_file_rounded,
-              color: Themes.primary.withOpacity(0.6),
-              size: 30,
-            ),
+            child: Icon(icon, color: Themes.primary),
           ),
           Expanded(
             child: Column(
@@ -269,19 +226,32 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
                   ),
                 ),
                 SizedBox(height: 3),
-                Text(
-                  "${file.lengthStr()} ${file.extension}",
-                  style: TextStyle(color: Colors.grey, fontSize: 9),
+                FutureBuilder<String>(
+                  initialData: "??",
+                  future: file.lengthStr(),
+                  builder: (context, snapshot) {
+                    return Text(
+                      "${file.extension} ${snapshot.data}",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 8,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: "sans-serif",
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
           ),
           MyIconButton(
-            onTap: () {
-              setState(() => selectedFiles.remove(file));
-            },
-            iconData: Icons.close_rounded,
-          ),
+              iconData: Icons.close_rounded,
+              onTap: () {
+                selectedFiles.clear();
+                selectedFilesWidget.clear();
+                showSendButton = false;
+                setState(() {});
+              }),
         ],
       ),
     );

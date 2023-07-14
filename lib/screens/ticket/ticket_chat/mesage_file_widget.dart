@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_file/open_file.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:siraf3/bloc/ticket/downloadFile/ticket_download_file_bloc.dart';
 import 'package:siraf3/extensions/int_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
@@ -173,7 +172,12 @@ class _MessageFileWidget extends State<MessageFileWidget> with SingleTickerProvi
                   ),
                   Text(
                     fileInfo,
-                    style: TextStyle(color: widget.messageConfig.secondTextColor, fontSize: 8),
+                    style: TextStyle(
+                      color: widget.messageConfig.secondTextColor,
+                      fontSize: 8,
+                      fontFamily: "sans-serif",
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ],
               ),
@@ -185,13 +189,6 @@ class _MessageFileWidget extends State<MessageFileWidget> with SingleTickerProvi
   }
 
   void onClickDownload() async {
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      await Permission.storage.request();
-    }
-
-    await Permission.manageExternalStorage.request();
-
     ticketDownloadFileBloc.add(TicketDownloadFileRequest(widget.fileMessage));
   }
 
@@ -200,7 +197,7 @@ class _MessageFileWidget extends State<MessageFileWidget> with SingleTickerProvi
   }
 
   void onClickTryAgain() {
-    ticketDownloadFileBloc.add(TicketDownloadFileResume(widget.fileMessage));
+    ticketDownloadFileBloc.add(TicketDownloadFileRequest(widget.fileMessage));
   }
 
   void onClickCancel() {

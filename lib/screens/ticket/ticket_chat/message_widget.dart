@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:auto_direction/auto_direction.dart';
 import 'package:flutter/material.dart';
+import 'package:linkwell/linkwell.dart';
 import 'package:siraf3/enums/message_owner.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
@@ -73,7 +74,12 @@ class MessageWidgetState extends State<MessageWidget> {
             padding: const EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 10),
             child: Text(
               widget.message.createDate ?? "",
-              style: TextStyle(color: Colors.grey.shade500, fontSize: 9, height: 1),
+              style: TextStyle(
+                color: Colors.grey.shade500,
+                fontSize: 9,
+                height: 1,
+                fontFamily: "sans-serif",
+              ),
             ),
           ),
         ],
@@ -87,12 +93,18 @@ class MessageWidgetState extends State<MessageWidget> {
         ConstrainedBox(
           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.6),
           child: AutoDirection(
-            text: widget.message.message!,
-            child: Text(
-              widget.message.message!,
-              style: TextStyle(color: messageConfig.textColor, fontSize: 12),
-            ),
-          ),
+              text: widget.message.message!,
+              child: LinkWell(
+                widget.message.message!,
+                style: TextStyle(color: messageConfig.textColor, fontSize: 12, fontFamily: "IranSans"),
+                linkStyle: TextStyle(
+                  color: !isForMe() ? messageConfig.primaryColor : messageConfig.textColor,
+                  fontSize: 12,
+                  decoration: TextDecoration.underline,
+                  decorationColor: !isForMe() ? messageConfig.primaryColor : messageConfig.textColor,
+                  decorationThickness: !isForMe() ? 1 : 1.3,
+                ),
+              )),
         ),
       ],
     );
@@ -131,4 +143,6 @@ class MessageWidgetState extends State<MessageWidget> {
       textDirection: TextDirection.rtl,
     );
   }
+
+  bool isForMe() => widget.message.owner == MessageOwner.ForMe;
 }
