@@ -17,7 +17,7 @@ void showMessageActionMenu(
   showMenu<String>(
     context: context,
     constraints: BoxConstraints(minWidth: 180),
-    elevation: 3,
+    elevation: 2,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(7),
     ),

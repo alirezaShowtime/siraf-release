@@ -22,13 +22,14 @@ PopupMenuItem<T> MyPopupMenuItem<T>({
         child: Row(
           mainAxisAlignment: withSpace ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
           children: [
-            iconWidget != null ? iconWidget : Icon(icon, size: 24),
+            iconWidget != null ? iconWidget : Icon(icon, size: 20),
             SizedBox(width: 10),
             Text(
               label,
               style: TextStyle(
                 color: enable ? Themes.themeData().textTheme.bodyLarge?.color : Colors.grey,
-                fontSize: 12,
+                fontSize: 11,
+                fontFamily: "IranSansMedium"
               ),
             ),
           ],

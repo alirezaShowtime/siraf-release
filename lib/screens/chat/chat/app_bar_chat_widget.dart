@@ -6,7 +6,6 @@ import 'package:siraf3/config.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
-import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_item.dart';
 
@@ -68,11 +67,13 @@ class _AppBarChat extends State<AppBarChat> {
       actions: [
         if (selectedCount > 0)
           Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: MyIconButton(
-              onTap: deleteMessages,
-              iconData: CupertinoIcons.delete,
-              size: 18,
+            padding: const EdgeInsets.only(left: 7),
+            child: IconButton(
+              onPressed: deleteMessages,
+              icon: Icon(
+                CupertinoIcons.delete,
+                size: 22,
+              ),
             ),
           ),
         if (selectedCount <= 0)
@@ -115,7 +116,7 @@ class _AppBarChat extends State<AppBarChat> {
         ),
         if (selectedCount > 0)
           Padding(
-            padding: const EdgeInsets.only(left: 20),
+            padding: const EdgeInsets.only(left: 7),
             child: Text(
               selectedCount.toString(),
               style: TextStyle(
