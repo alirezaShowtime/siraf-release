@@ -24,6 +24,8 @@ import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/screens/consultant_profile/consultant_profile_screen.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
+import 'package:siraf3/screens/image_view_screen.dart';
+import 'package:siraf3/screens/video_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/avatar.dart';
@@ -221,18 +223,23 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
     );
   }
 
-  Widget estateImageItem(estateProfileModel.Image image) {
+  Widget estateImageItem(estateProfileModel.Images image) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 3),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: MyImage(
-          image: NetworkImage(image.path ?? ""),
-          height: 50,
-          width: 70,
-          fit: BoxFit.fill,
-          errorWidget: MyImage.defaultErrorImageWidget(50, 70, "خطا!"),
-          loadingWidget: MyImage.defaultErrorImageWidget(50, 70, "درحال بارگزاری.."),
+      child: GestureDetector(
+        onTap: () {
+          push(context, ImageViewScreen(imageUrl: image.image,));
+        },
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: MyImage(
+            image: NetworkImage(image.image ?? ""),
+            height: 50,
+            width: 70,
+            fit: BoxFit.fill,
+            errorWidget: MyImage.defaultErrorImageWidget(50, 70, "خطا!"),
+            loadingWidget: MyImage.defaultErrorImageWidget(50, 70, "درحال بارگزاری.."),
+          ),
         ),
       ),
     );

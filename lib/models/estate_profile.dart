@@ -13,7 +13,7 @@ class EstateProfile {
   String? shareLink;
   String? address;
   String? video;
-  List<Image> images = [];
+  List<Images> images = [];
   double? rate;
   String? description;
   List<Comment>? comments;
@@ -57,10 +57,7 @@ class EstateProfile {
       shareLink = json["shareLink"];
     }
     if (json["images"] is List) {
-      images = [];
-      for (Map img in json["images"]) {
-        images.add(img["image"]);
-      }
+      images = json['images'] == null ? [] : Images.fromList(json["images"]);
     }
     if (json["rate"] is double) {
       rate = json["rate"];
@@ -150,5 +147,38 @@ class Image {
     if (json["path"] is String) {
       path = json["path"];
     }
+  }
+}
+
+class Images {
+  int? id;
+  String? image;
+
+  Images({this.id, this.image});
+
+  Images.fromJson(Map<String, dynamic> json) {
+    if (json["id"] is int) {
+      id = json["id"];
+    }
+    if (json["image"] is String) {
+      image = json["image"];
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["id"] = id;
+    _data["image"] = image;
+    return _data;
+  }
+
+  static List<Images> fromList(List<dynamic> list) {
+    var list2 = <Images>[];
+
+    for (dynamic item in list) {
+      list2.add(Images.fromJson(item));
+    }
+
+    return list2;
   }
 }

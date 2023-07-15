@@ -16,9 +16,10 @@ extension ProfileDetail on _EstateProfileScreen {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 20),
-          if (!estateProfile.description.isFill() || !estateProfile.video.isFill() || !estateProfile.images.isFill() || !estateProfile.consultants.isFill())
+          if (!estateProfile.description.isFill() && !estateProfile.video.isFill() && !estateProfile.images.isFill() && !estateProfile.consultants.isFill()) SizedBox(height: 15),
+          if (!estateProfile.description.isFill() && !estateProfile.video.isFill() && !estateProfile.images.isFill() && !estateProfile.consultants.isFill())
             Padding(
               padding: const EdgeInsets.only(bottom: 20),
               child: Text(
@@ -46,11 +47,45 @@ extension ProfileDetail on _EstateProfileScreen {
                   child: FutureBuilder<Uint8List?>(
                     future: VideoThumbnail.thumbnailData(video: estateProfile.video!, imageFormat: ImageFormat.JPEG),
                     builder: (context, snapshot) {
-                      return MyImage(
-                        image: (snapshot.data == null ? NetworkImage("") : MemoryImage(snapshot.data!)) as ImageProvider,
-                        errorWidget: MyImage.defaultErrorImageWidget(),
-                        loadingWidget: MyImage.defaultLoadingImageWidget(),
-                        fit: BoxFit.cover,
+                      return Stack(
+                        children: [
+                          MyImage(
+                            image: (snapshot.data == null ? NetworkImage("") : MemoryImage(snapshot.data!)) as ImageProvider,
+                            errorWidget: MyImage.defaultErrorImageWidget(),
+                            loadingWidget: MyImage.defaultLoadingImageWidget(),
+                            fit: BoxFit.cover,
+                            width: MediaQuery.of(context).size.width,
+                          ),
+                          Align(
+                            alignment: Alignment.center,
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => VideoScreen(
+                                      videoUrl: estateProfile.video!,
+                                    ),
+                                  ),
+                                );
+                              },
+                              icon: Stack(
+                                children: [
+                                  Icon(
+                                    CupertinoIcons.play_fill,
+                                    size: 44,
+                                    color: Themes.primary,
+                                  ),
+                                  Icon(
+                                    CupertinoIcons.play_fill,
+                                    size: 40,
+                                    color: Themes.iconLight,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
                       );
                     },
                   ),

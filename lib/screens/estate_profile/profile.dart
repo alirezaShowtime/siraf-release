@@ -88,19 +88,10 @@ extension Profile on _EstateProfileScreen {
                                 ),
                                 InkWell(
                                   onTap: () => setState(() {
-                                    final bool previousValueOfMoreDetail = moreDetail;
                                     moreDetail = !moreDetail;
-                                    // showComment = !showComment;
+                                    showComment = !showComment;
 
-                                    // viewMoreDetail(force: false);
-
-                                    if (!previousValueOfMoreDetail && !showComment) {
-                                      showSearchBarWidget = true;
-                                    }
-
-                                    if (!previousValueOfMoreDetail && showComment) {
-                                      showSearchBarWidget = false;
-                                    }
+                                    viewMoreDetail(force: false);
                                   }),
                                   child: Text(
                                     !showComment ? "نمایش نظرات (${comments.length})" : "فایل های دفتر املاک",
