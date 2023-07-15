@@ -586,15 +586,14 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "موبایل : " + estate.phoneNumber!,
+                                "موبایل : ${estate.phoneNumber}",
                                 style: TextStyle(
                                   color: Themes.textGrey,
                                   fontSize: 12,
                                 ),
                               ),
                               Text(
-                                //todo
-                                "تلفن : " + "02133333333",
+                                "تلفن : ${estate.telephoneNumber ?? "نامشخص"}",
                                 style: TextStyle(
                                   color: Themes.textGrey,
                                   fontSize: 12,
@@ -604,7 +603,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                           ),
                           SizedBox(height: 7),
                           Text(
-                            "آدرس : " + estate.address!,
+                            "آدرس : ${estate.address}",
                             style: TextStyle(
                               color: Themes.textGrey,
                               fontSize: 12,
