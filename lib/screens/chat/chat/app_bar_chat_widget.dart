@@ -1,10 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:siraf3/bloc/chat/block/chat_block_bloc.dart';
+import 'package:siraf3/bloc/chat/delete/chat_delete_bloc.dart';
 import 'package:siraf3/bloc/chat/select_message/select_message_bloc.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/dialog.dart';
+import 'package:siraf3/helpers.dart';
+import 'package:siraf3/screens/consultant_profile/consultant_profile_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/avatar.dart';
+import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_item.dart';
@@ -18,6 +24,7 @@ class AppBarChat extends AppBar {
   int? consultantId;
   int? chatId;
   String? lastMessage;
+  bool isDisable;
 
   AppBarChat({
     this.consultantName,
@@ -25,11 +32,13 @@ class AppBarChat extends AppBar {
     this.consultantId,
     this.chatId,
     this.lastMessage,
+    this.isDisable = false,
   });
 }
 
 class _AppBarChat extends State<AppBarChat> {
   int selectedCount = 0;
+  bool isBlock = false;
 
   @override
   void initState() {
@@ -39,6 +48,14 @@ class _AppBarChat extends State<AppBarChat> {
       try {
         if (state is SelectMessageCountSate) {
           setState(() => selectedCount = state.count);
+        }
+      } catch (e) {}
+    });
+
+    BlocProvider.of<ChatBlockBloc>(context).stream.listen((state) {
+      try {
+        if (state is ChatBlockSuccess) {
+          setState(() => isBlock = state.isBlock);
         }
       } catch (e) {}
     });
@@ -70,20 +87,23 @@ class _AppBarChat extends State<AppBarChat> {
             padding: const EdgeInsets.only(left: 7),
             child: IconButton(
               onPressed: deleteMessages,
-              icon: Icon(
-                CupertinoIcons.delete,
-                size: 22,
-              ),
+              icon: Icon(CupertinoIcons.delete, size: 22),
             ),
           ),
         if (selectedCount <= 0)
           MyPopupMenuButton(
             iconData: Icons.more_vert_rounded,
+            onSelected: (value) {
+              switch (value) {
+                case 0:
+                  return deleteChat();
+                case 1:
+                  return blockUser();
+              }
+            },
             itemBuilder: (_) => [
-              MyPopupMenuItem(
-                label: "حذف گفتوگو",
-                icon: CupertinoIcons.trash,
-              ),
+              MyPopupMenuItem(value: 0, label: "حذف چت", icon: CupertinoIcons.trash),
+              if (!isBlock) MyPopupMenuItem(value: 1, label: "مسدود کردن", icon: Icons.block),
             ],
           ),
       ],
@@ -94,23 +114,37 @@ class _AppBarChat extends State<AppBarChat> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: Avatar(
-            imagePath: widget.consultantImage ?? "",
-            size: 40,
-            errorImage: AssetImage("assets/images/profile.jpg"),
-            loadingImage: AssetImage("assets/images/profile.jpg"),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            widget.consultantName ?? "مشاور",
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: Themes.themeData().textTheme.bodyLarge?.color,
+        InkWell(
+          onTap: () {
+            if (widget.consultantId != null) {
+              push(context, ConsultantProfileScreen(consultantId: widget.consultantId!, consultantName: widget.consultantName));
+            }
+          },
+          borderRadius: BorderRadius.circular(100),
+          child: Container(
+            padding: const EdgeInsets.all(4),
+            constraints: BoxConstraints(minWidth: 200),
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Avatar(
+                    imagePath: widget.consultantImage ?? "",
+                    size: 40,
+                    errorImage: AssetImage("assets/images/profile.jpg"),
+                    loadingImage: AssetImage("assets/images/profile.jpg"),
+                  ),
+                ),
+                Text(
+                  widget.consultantName ?? "مشاور",
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Themes.themeData().textTheme.bodyLarge?.color,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -131,6 +165,39 @@ class _AppBarChat extends State<AppBarChat> {
     );
   }
 
-  //todo
   void deleteMessages() {}
+
+  void blockUser() {
+    animationDialog(
+      context: context,
+      builder: (dialogContext) {
+        return ConfirmDialog(
+          dialogContext: dialogContext,
+          title: "مسدود کردن",
+          content: "آیا واقعا قصد مسدود کردن کاربر را دارید؟",
+          onApply: () {
+            dismissDialog(dialogContext);
+            BlocProvider.of<ChatBlockBloc>(context).add(ChatBlockRequestEvent([widget.chatId!], true));
+          },
+        );
+      },
+    );
+  }
+
+  void deleteChat() {
+    animationDialog(
+      context: context,
+      builder: (dialogContext) {
+        return ConfirmDialog(
+          dialogContext: dialogContext,
+          title: "مسدود کردن",
+          content: "آیا واقعا قصد حذف کردن چت را دارید؟",
+          onApply: () {
+            dismissDialog(dialogContext);
+            BlocProvider.of<ChatDeleteBloc>(context).add(ChatDeleteRequestEvent([widget.chatId!], true));
+          },
+        );
+      },
+    );
+  }
 }

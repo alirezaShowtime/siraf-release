@@ -5,6 +5,8 @@ abstract class EstateProfileState {}
 
 class EstateProfileInitial extends EstateProfileState {}
 
+class EstateProfileLoading extends EstateProfileState {}
+
 class EstateProfileSuccessState extends EstateProfileState {
   final EstateProfile estateProfile;
 

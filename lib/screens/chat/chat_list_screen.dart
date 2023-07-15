@@ -146,7 +146,7 @@ class _ChatListScreen extends State<ChatListScreen> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(100),
                 child: Avatar(
-                  imagePath: chatItem.consultantAvatar ?? "",
+                  image: (chatItem.isDeleted ? AssetImage("assets/images/deleted_chat.jpg") : NetworkImage(chatItem.consultantAvatar ?? "")) as ImageProvider,
                   size: 50,
                   errorImage: AssetImage("assets/images/profile.jpg"),
                   loadingImage: AssetImage("assets/images/profile.jpg"),
@@ -183,12 +183,13 @@ class _ChatListScreen extends State<ChatListScreen> {
                       ],
                     ),
                     Text(
-                      chatItem.lastMessage ?? "",
+                      chatItem.isDeleted ? "چت توسط مشاور حذف شده" : chatItem.lastMessage ?? "",
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.grey.shade500,
+                        fontSize: chatItem.isDeleted ? 10 : 11,
+                        color: chatItem.isDeleted ? Colors.red : Colors.grey.shade500,
+                        fontFamily: chatItem.isDeleted ? "IranSansBold" : "IranSans",
                         height: 2,
                       ),
                     ),
@@ -221,7 +222,7 @@ class _ChatListScreen extends State<ChatListScreen> {
                     ],
                   ),
                   SizedBox(height: 10),
-                  if (chatItem.countNotSeen != null && chatItem.countNotSeen! > 0)
+                  if (chatItem.countNotSeen != null && chatItem.countNotSeen! > 0 && !chatItem.isDeleted)
                     Container(
                       height: 20,
                       constraints: BoxConstraints(minWidth: 20),
@@ -312,11 +313,20 @@ class _ChatListScreen extends State<ChatListScreen> {
           consultantName: chatItem.consultantName,
           fileId: chatItem.fileId,
           fileTitle: chatItem.fileTitle,
+          fileImage: chatItem.fileImage,
+          blockByHer: chatItem.isBlockByHer,
+          blockByMe: chatItem.isBlockByMe,
+          isDeleted: chatItem.isDeleted,
         ));
 
     if (result is! Map || !result.containsKey("chatId") || chatItem.id != result["chatId"]) return;
 
     var index = chats.indexOf(chatItem);
+
+    if (result.containsKey("deleted") && result["deleted"]) {
+      chats.removeAt(index);
+      return;
+    }
 
     chatItem.countNotSeen = 0;
 

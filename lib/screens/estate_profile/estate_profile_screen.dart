@@ -92,6 +92,8 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
   void initState() {
     super.initState();
 
+    bloc.add(EstateProfileRequestEvent(widget.estateId));
+
     if (widget.estateName != null) {
       setState(() => title = widget.estateName!);
     }
@@ -136,26 +138,21 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
         resizeToAvoidBottomInset: true,
         appBar: appBar(),
         body: BlocConsumer<EstateProfileBloc, EstateProfileState>(
+          bloc: bloc,
           listener: (context, state) {
             if (state is EstateProfileSuccessState) {
               setState(() {
                 title = state.estateProfile.name!;
                 estateProfile = state.estateProfile;
+                comments = state.estateProfile.comments ?? [];
               });
             }
           },
-          bloc: bloc..add(EstateProfileLoadEvent(widget.estateId)),
           builder: (context, state) {
             scaffoldContext = context;
-            if (state is EstateProfileInitial) return Center(child: Loading());
+            if (state is EstateProfileLoading || state is EstateProfileInitial) return Center(child: Loading());
             if (state is EstateProfileErrorState) return retryWidget(context, state.message);
-            if (state is EstateProfileSuccessState) {
-              if (nowState == null) {
-                nowState = state;
-                comments = state.estateProfile.comments ?? [];
-              }
-              return profile(context, state.estateProfile);
-            }
+            if (state is EstateProfileSuccessState) return profile(context, state.estateProfile);
             return Container();
           },
         ),

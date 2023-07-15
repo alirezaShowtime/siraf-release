@@ -24,8 +24,6 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
 
   late String videoUrl;
 
-  late Future<VideoPlayerValue> infoVideo;
-
   @override
   void initState() {
     super.initState();
@@ -35,8 +33,6 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
     loadingController = AnimationController(vsync: this, duration: Duration(milliseconds: 1700))..repeat(reverse: false);
 
     getVideoThumbnail(videoUrl);
-
-    infoVideo = getVideoInfo(videoUrl);
   }
 
   @override
@@ -174,6 +170,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
 
                           return Text(
                             len,
+                            textDirection: TextDirection.ltr,
                             style: TextStyle(
                               color: Colors.white,
                               fontFamily: "sans-serif",
@@ -184,7 +181,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
                         },
                       ),
                       FutureBuilder<VideoPlayerValue>(
-                        future: infoVideo,
+                        future: getVideoInfo(videoUrl),
                         builder: (context, snapshot) {
                           return Text(
                             timeFormatter(snapshot.data?.duration.inSeconds ?? 0, hasHour: true),

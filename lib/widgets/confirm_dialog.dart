@@ -17,16 +17,7 @@ class ConfirmDialog extends StatefulWidget {
 
   BuildContext dialogContext;
 
-  ConfirmDialog({
-    required this.dialogContext,
-    required this.content,
-    this.title,
-    this.onApply,
-    this.onCancel,
-    this.applyText = "تایید",
-    this.cancelText = "لغو",
-    this.titleColor
-  });
+  ConfirmDialog({required this.dialogContext, required this.content, this.title, this.onApply, this.onCancel, this.applyText = "تایید", this.cancelText = "لغو", this.titleColor});
 }
 
 class _ConfirmDialog extends State<ConfirmDialog> {
@@ -61,6 +52,7 @@ class _ConfirmDialog extends State<ConfirmDialog> {
             ),
           SizedBox(height: 10),
           Container(
+            constraints: BoxConstraints(minHeight: 50),
             padding: const EdgeInsets.only(left: 15, right: 25),
             alignment: Alignment.topRight,
             child: Text(

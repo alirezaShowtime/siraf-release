@@ -4,10 +4,10 @@ class ChatItem {
   String? type;
   dynamic message;
   bool? isConsultant;
-  bool? disableBySender;
-  bool? disableByConsultant;
-  bool? deleteByConsultant;
-  bool? deleteBySender;
+  bool disableBySender = false;
+  bool disableByConsultant = false;
+  bool deleteByConsultant = false;
+  bool deleteBySender = false;
   int? status;
   String? createDate;
   String? modifyDate;
@@ -25,6 +25,13 @@ class ChatItem {
   String? fileImage;
   dynamic replyId;
   int? consultantFileId;
+
+  //todo consultant
+  bool get isDeleted => deleteByConsultant;
+
+  bool get isBlockByMe => disableBySender;
+
+  bool get isBlockByHer => disableByConsultant;
 
   ChatItem.fromJson(dynamic json) {
     if (json["id"] is int) {
