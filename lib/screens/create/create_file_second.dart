@@ -777,12 +777,11 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
         optionsDialog = _;
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -1038,11 +1037,11 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
             TextEditingController(text: files[index]['title']);
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -1072,7 +1071,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       ),
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -1082,8 +1081,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                                 setState(() {
                                   files[index] = {
                                     "file": files[index]["file"],
-                                    "title": _controller.text.trim().isNotEmpty
-                                        ? _controller.text.trim()
+                                    "title": _controller.text.trim().isNotEmpty ? _controller.text.trim()
                                         : null,
                                   };
                                 });
@@ -1098,7 +1096,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "تایید",
                                 style: TextStyle(

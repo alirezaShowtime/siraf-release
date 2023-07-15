@@ -531,11 +531,11 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
         detailsDialog = _;
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -617,7 +617,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                       height: 10,
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -633,7 +633,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "سپردن فایل / درخواست",
                                 style: TextStyle(
@@ -668,7 +668,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "مشاهده پروفایل",
                                 style: TextStyle(

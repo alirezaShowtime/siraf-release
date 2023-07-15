@@ -123,9 +123,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                       section(
                         title: "دسته بندی",
                         hint: "انتخاب",
-                        value: category != null
-                            ? categories.map((e) => e.name).join(' > ')
-                            : null,
+                        value: category != null ? categories.map((e) => e.name).join(' > ') : null,
                         onTap: _selectCategory,
                       ),
                       SizedBox(
@@ -155,9 +153,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                         value: address != null ? "تغییر" : "تعیین",
                         onTap: showAddressDialog,
                       ),
-                      if (category != null)
-                        BlocBuilder<PropertyBloc, PropertyState>(
-                            builder: _buildPropertiesBloc),
+                      if (category != null) BlocBuilder<PropertyBloc, PropertyState>(builder: _buildPropertiesBloc),
                     ],
                   ),
                 ),
@@ -218,8 +214,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
 
     state = state as PropertyLoadedState;
 
-    var props = state.iproperties
-      ..sort((a, b) => a.weightInsert!.compareTo(b.weightInsert!));
+    var props = state.iproperties..sort((a, b) => a.weightInsert!.compareTo(b.weightInsert!));
 
     mainProps = props.where((element) => element.insert == 1).toList();
 
@@ -278,14 +273,11 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                     element.value == e.value &&
                     (element.items ?? [])
                         .where(
-                          (element) =>
-                              element.value.toString() ==
-                              selectedMainProps[e.value!],
+                          (element) => element.value.toString() == selectedMainProps[e.value!],
                         )
                         .isNotEmpty);
                 if (properties.isNotEmpty) {
-                  var item = properties.first.items!.firstWhere((element) =>
-                      element.value.toString() == selectedMainProps[e.value!]);
+                  var item = properties.first.items!.firstWhere((element) => element.value.toString() == selectedMainProps[e.value!]);
                   text = item.name!;
                 }
               }
@@ -352,15 +344,11 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                     element.value == e.value &&
                     (element.items ?? [])
                         .where(
-                          (element) =>
-                              element.value.toString() ==
-                              selectedMainFeatures[e.value!],
+                          (element) => element.value.toString() == selectedMainFeatures[e.value!],
                         )
                         .isNotEmpty);
                 if (properties.isNotEmpty) {
-                  var item = properties.first.items!.firstWhere((element) =>
-                      element.value.toString() ==
-                      selectedMainFeatures[e.value!]);
+                  var item = properties.first.items!.firstWhere((element) => element.value.toString() == selectedMainFeatures[e.value!]);
                   text = item.name!;
                 }
               }
@@ -385,12 +373,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
               section(
                 title: "سایر امکانات و ویژگی ها",
                 hint: "انتخاب",
-                value: (selectedOtherProps.isNotEmpty ||
-                        selectedOtherFeatures.isNotEmpty)
-                    ? (selectedOtherProps.length + selectedOtherFeatures.length)
-                            .toString() +
-                        " مورد"
-                    : null,
+                value: (selectedOtherProps.isNotEmpty || selectedOtherFeatures.isNotEmpty) ? (selectedOtherProps.length + selectedOtherFeatures.length).toString() + " مورد" : null,
                 onTap: _goPropertiesScreen,
               ),
             if (otherProps.isNotEmpty)
@@ -441,13 +424,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
     }
   }
 
-  Map<String, String> hints = {
-    "meter": "متراژ را به متر وارد کنید",
-    "price": "قیمت کل را به تومان وارد کنید",
-    "age": "سال ساخت را وارد کنید",
-    "prices": "مبلغ ودیعه را به تومان وارد کنید",
-    "rent": "مبلغ اجاره را به تومان وارد کنید"
-  };
+  Map<String, String> hints = {"meter": "متراژ را به متر وارد کنید", "price": "قیمت کل را به تومان وارد کنید", "age": "سال ساخت را وارد کنید", "prices": "مبلغ ودیعه را به تومان وارد کنید", "rent": "مبلغ اجاره را به تومان وارد کنید"};
 
   Map<String, String> helpTexts = {
     "age": "مثال : 1401",
@@ -503,17 +480,14 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
       context,
       MaterialPageRoute(
         builder: (_) => MarkInMapScreen(
-          position: location != null
-              ? LatLng(location!.latitude, location!.longitude)
-              : null,
+          position: location != null ? LatLng(location!.latitude, location!.longitude) : null,
         ),
       ),
     );
 
     if (result is LatLng?) {
       setState(() {
-        location =
-            result != null ? LatLng(result.latitude, result.longitude) : null;
+        location = result != null ? LatLng(result.latitude, result.longitude) : null;
       });
     }
   }
@@ -541,47 +515,25 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
 
     for (PropertyInsert pr in mainProps) {
       if ((pr.require ?? false) && !selectedMainProps.containsKey(pr.value!)) {
-        return notify("لطفا " +
-            pr.name! +
-            " را " +
-            (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") +
-            " کنید");
+        return notify("لطفا " + pr.name! + " را " + (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") + " کنید");
       }
     }
 
     for (PropertyInsert pr in mainFeature) {
-      if ((pr.require ?? false) &&
-          !selectedMainFeatures.containsKey(pr.value!)) {
-        return notify("لطفا " +
-            pr.name! +
-            " را " +
-            (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") +
-            " کنید");
+      if ((pr.require ?? false) && !selectedMainFeatures.containsKey(pr.value!)) {
+        return notify("لطفا " + pr.name! + " را " + (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") + " کنید");
       }
     }
 
     for (PropertyInsert pr in otherProps) {
       if ((pr.require ?? false) && !selectedOtherProps.containsKey(pr.value!)) {
-        return notify(
-            "لطفا وارد سایر امکانات و ویژگی ها شوید و " +
-                pr.name! +
-                " را " +
-                (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") +
-                " کنید",
-            duration: Duration(seconds: 4));
+        return notify("لطفا وارد سایر امکانات و ویژگی ها شوید و " + pr.name! + " را " + (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") + " کنید", duration: Duration(seconds: 4));
       }
     }
 
     for (PropertyInsert pr in otherFeature) {
-      if ((pr.require ?? false) &&
-          !selectedOtherFeatures.containsKey(pr.value!)) {
-        return notify(
-            "لطفا وارد سایر امکانات و ویژگی ها شوید و " +
-                pr.name! +
-                " را " +
-                (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") +
-                " کنید",
-            duration: Duration(seconds: 4));
+      if ((pr.require ?? false) && !selectedOtherFeatures.containsKey(pr.value!)) {
+        return notify("لطفا وارد سایر امکانات و ویژگی ها شوید و " + pr.name! + " را " + (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") + " کنید", duration: Duration(seconds: 4));
       }
     }
 
@@ -625,11 +577,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
     }
   }
 
-  Widget section(
-      {required String title,
-      required String hint,
-      required String? value,
-      required Function() onTap}) {
+  Widget section({required String title, required String hint, required String? value, required Function() onTap}) {
     return Column(
       children: [
         Row(
@@ -661,19 +609,14 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
             ),
           ],
         ),
-        SizedBox(
-          height: 5,
-        ),
-        Divider(
-          color: Themes.textGrey.withOpacity(0.5),
-          height: 1,
-        ),
+        SizedBox(height: 5),
+        divider()
       ],
     );
   }
 
   BuildContext? resetDialogContext;
-  
+
   showResetDialog() {
     showDialog2(
       context: context,
@@ -709,23 +652,21 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
       barrierDismissible: true,
       builder: (_) {
         addressDialogContext = _;
-        TextEditingController _controller =
-            TextEditingController(text: address);
+        TextEditingController _controller = TextEditingController(text: address);
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
                 Column(
                   children: [
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       child: TextField2(
                         minLines: 6,
                         maxLines: 10,
@@ -748,21 +689,19 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                       ),
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Expanded(
                             child: MaterialButton(
+                              height: 50,
                               onPressed: () {
                                 if (_controller.text.length < 10) {
-                                  return notify(
-                                      "آدرس باید حداقل 10 کاراکتر باشد");
+                                  return notify("آدرس باید حداقل 10 کاراکتر باشد");
                                 }
                                 setState(() {
-                                  address = _controller.text.trim().isNotEmpty
-                                      ? _controller.text.trim()
-                                      : null;
+                                  address = _controller.text.trim().isNotEmpty ? _controller.text.trim() : null;
                                 });
 
                                 dismissAddressDialog();
@@ -775,7 +714,6 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
                               child: Text(
                                 "تایید",
                                 style: TextStyle(
@@ -810,9 +748,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
 
   showNumberDialog(PropertyInsert property) {
     StreamController<String> persianNumberText = StreamController();
-    persianNumberText.add(
-        ((selectedMainProps[property.value!] ?? '').replaceAll(',', ''))
-            .toWord());
+    persianNumberText.add(((selectedMainProps[property.value!] ?? '').replaceAll(',', '')).toWord());
 
     StreamController<String?> value = StreamController();
     value.add(selectedMainProps[property.value!]);
@@ -823,19 +759,15 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
       builder: (_) {
         numberDialog = _;
         TextEditingController _controller = TextEditingController(
-          text: property.value != "age" &&
-                  selectedMainProps[property.value!] != null
-              ? number_format(
-                  int.parse(selectedMainProps[property.value!].toString()))
-              : selectedMainProps[property.value!],
+          text: property.value != "age" && selectedMainProps[property.value!] != null ? number_format(int.parse(selectedMainProps[property.value!].toString())) : selectedMainProps[property.value!],
         );
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -851,9 +783,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                           controller: _controller,
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: hints.containsKey(property.value)
-                                ? hints[property.value]
-                                : "${property.name!} را وارد کنید",
+                            hintText: hints.containsKey(property.value) ? hints[property.value] : "${property.name!} را وارد کنید",
                             hintStyle: TextStyle(
                               color: Themes.textGrey,
                               fontSize: 13,
@@ -865,8 +795,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                             value.add(v);
                           },
                           inputFormatters: [
-                            if (property.value != "age")
-                              MoneyInputFormatter(mantissaLength: 0),
+                            if (property.value != "age") MoneyInputFormatter(mantissaLength: 0),
                           ],
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
@@ -881,8 +810,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                     if (helpTexts.containsKey(property.value!))
                       StreamBuilder(
                         builder: ((context, snapshot) {
-                          if (!snapshot.hasData ||
-                              snapshot.data.toString().isEmpty) {
+                          if (!snapshot.hasData || snapshot.data.toString().isEmpty) {
                             return Container(
                               height: 20,
                               alignment: Alignment.center,
@@ -903,11 +831,9 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                       ),
                     StreamBuilder(
                       builder: ((context, snapshot) {
-                        if (!snapshot.hasData ||
-                            snapshot.data.toString().isEmpty) {
+                        if (!snapshot.hasData || snapshot.data.toString().isEmpty) {
                           return Container(
-                            height:
-                                helpTexts.containsKey(property.value!) ? 0 : 20,
+                            height: helpTexts.containsKey(property.value!) ? 0 : 20,
                           );
                         }
                         String text = snapshot.data.toString();
@@ -955,10 +881,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                               onPressed: () {
                                 setState(() {
                                   if (_controller.text.trim().isNotEmpty) {
-                                    selectedMainProps[property.value!] =
-                                        _controller.text
-                                            .trim()
-                                            .replaceAll(',', '');
+                                    selectedMainProps[property.value!] = _controller.text.trim().replaceAll(',', '');
                                   } else {
                                     selectedMainProps.remove(property.value!);
                                   }
@@ -1015,11 +938,11 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
         listDialog = _;
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -1029,9 +952,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                       height: 200,
                       child: ListView(
                         physics: BouncingScrollPhysics(),
-                        children: property.items!
-                            .map<Widget>((e) => buildListItem(e, property))
-                            .toList(),
+                        children: property.items!.map<Widget>((e) => buildListItem(e, property)).toList(),
                       ),
                     ),
                     SizedBox(
@@ -1087,9 +1008,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
 
   showFeatureNumberDialog(PropertyInsert property) {
     StreamController<String> persianNumberText = StreamController();
-    persianNumberText.add(
-        ((selectedMainProps[property.value!] ?? '').replaceAll(',', ''))
-            .toWord());
+    persianNumberText.add(((selectedMainProps[property.value!] ?? '').replaceAll(',', '')).toWord());
 
     StreamController<String?> value = StreamController();
     value.add(selectedMainProps[property.value!]);
@@ -1104,11 +1023,11 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
         );
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -1125,9 +1044,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                           controller: _controller,
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: hints.containsKey(property.value)
-                                ? hints[property.value]
-                                : "${property.name!} را وارد کنید",
+                            hintText: hints.containsKey(property.value) ? hints[property.value] : "${property.name!} را وارد کنید",
                             hintStyle: TextStyle(
                               color: Themes.textGrey,
                               fontSize: 13,
@@ -1139,8 +1056,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                             value.add(v);
                           },
                           inputFormatters: [
-                            if (property.value != "age")
-                              MoneyInputFormatter(mantissaLength: 0),
+                            if (property.value != "age") MoneyInputFormatter(mantissaLength: 0),
                           ],
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
@@ -1155,8 +1071,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                     if (helpTexts.containsKey(property.value!))
                       StreamBuilder(
                         builder: ((context, snapshot) {
-                          if (!snapshot.hasData ||
-                              snapshot.data.toString().isEmpty) {
+                          if (!snapshot.hasData || snapshot.data.toString().isEmpty) {
                             return Container(
                               height: 20,
                               alignment: Alignment.center,
@@ -1177,11 +1092,9 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                       ),
                     StreamBuilder(
                       builder: ((context, snapshot) {
-                        if (!snapshot.hasData ||
-                            snapshot.data.toString().isEmpty) {
+                        if (!snapshot.hasData || snapshot.data.toString().isEmpty) {
                           return Container(
-                            height:
-                                helpTexts.containsKey(property.value!) ? 0 : 20,
+                            height: helpTexts.containsKey(property.value!) ? 0 : 20,
                           );
                         }
                         String text = snapshot.data.toString();
@@ -1229,11 +1142,9 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                               onPressed: () {
                                 setState(() {
                                   if (_controller.text.trim().isNotEmpty) {
-                                    selectedMainFeatures[property.value!] =
-                                        _controller.text.trim();
+                                    selectedMainFeatures[property.value!] = _controller.text.trim();
                                   } else {
-                                    selectedMainFeatures
-                                        .remove(property.value!);
+                                    selectedMainFeatures.remove(property.value!);
                                   }
                                 });
 
@@ -1289,11 +1200,11 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
 
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -1303,10 +1214,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                       height: 200,
                       child: ListView(
                         physics: BouncingScrollPhysics(),
-                        children: property.items!
-                            .map<Widget>((e) =>
-                                buildListItem(e, property, isProp: false))
-                            .toList(),
+                        children: property.items!.map<Widget>((e) => buildListItem(e, property, isProp: false)).toList(),
                       ),
                     ),
                     SizedBox(
@@ -1364,15 +1272,9 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
     var color;
 
     if (isProp) {
-      color = (selectedMainProps.containsKey(property.value!) &&
-              selectedMainProps[property.value!] == e.value.toString())
-          ? Themes.secondary
-          : App.theme.textTheme.bodyLarge?.color;
+      color = (selectedMainProps.containsKey(property.value!) && selectedMainProps[property.value!] == e.value.toString()) ? Themes.secondary : App.theme.textTheme.bodyLarge?.color;
     } else {
-      color = (selectedMainFeatures.containsKey(property.value!) &&
-              selectedMainFeatures[property.value!] == e.value.toString())
-          ? Themes.secondary
-          : App.theme.textTheme.bodyLarge?.color;
+      color = (selectedMainFeatures.containsKey(property.value!) && selectedMainFeatures[property.value!] == e.value.toString()) ? Themes.secondary : App.theme.textTheme.bodyLarge?.color;
     }
 
     return GestureDetector(

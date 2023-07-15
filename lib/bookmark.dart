@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
-import 'package:siraf3/http2.dart' as http2;
 
 class Bookmark {
   int id;
@@ -36,11 +36,11 @@ class Bookmark {
         noteDialogContext = _;
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -99,7 +99,7 @@ class Bookmark {
                       ),
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -116,7 +116,7 @@ class Bookmark {
                               ),
                               color: Themes.secondary2,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "ذخیره بدون یادداشت",
                                 style: TextStyle(
@@ -145,7 +145,7 @@ class Bookmark {
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "ثبت با یادداشت",
                                 style: TextStyle(

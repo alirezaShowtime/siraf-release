@@ -3,8 +3,6 @@ import 'package:siraf3/dialog.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/widgets/dialog_button.dart';
 
-import '../themes.dart';
-
 class ConfirmDialog extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ConfirmDialog();
@@ -42,9 +40,7 @@ class _ConfirmDialog extends State<ConfirmDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       contentPadding: EdgeInsets.zero,
       content: Column(
         mainAxisSize: MainAxisSize.min,

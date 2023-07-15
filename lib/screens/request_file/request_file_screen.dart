@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:siraf3/bloc/add_file_request_bloc.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/main.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/category.dart';
 import 'package:siraf3/models/city.dart';
@@ -20,9 +20,8 @@ import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
-import 'package:flutter/material.dart';
+
 import '../../widgets/section.dart';
-import 'package:siraf3/dialog.dart';
 
 class RequestFileScreen extends StatefulWidget {
   List<Estate> estates;
@@ -532,12 +531,11 @@ class _RequestFileScreen extends State<RequestFileScreen> {
         );
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -681,7 +679,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                       stream: persianNumberTextMax.stream,
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -698,7 +696,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "تایید",
                                 style: TextStyle(

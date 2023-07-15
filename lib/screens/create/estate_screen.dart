@@ -751,11 +751,11 @@ class _EstateScreenState extends State<EstateScreen> {
         detailsDialog = _;
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -851,7 +851,7 @@ class _EstateScreenState extends State<EstateScreen> {
                       height: 10,
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -859,10 +859,7 @@ class _EstateScreenState extends State<EstateScreen> {
                             child: MaterialButton(
                               onPressed: () {
                                 setState(() {
-                                  if (selectedEstates
-                                      .where(
-                                          (element) => element.id == estate.id)
-                                      .isNotEmpty) {
+                                  if (selectedEstates.where((element) => element.id == estate.id).isNotEmpty) {
                                     selectedEstates.removeWhere(
                                       (element) => element.id == estate.id,
                                     );
@@ -881,14 +878,9 @@ class _EstateScreenState extends State<EstateScreen> {
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
-                                selectedEstates
-                                        .where((element) =>
-                                            element.id == estate.id)
-                                        .isNotEmpty
-                                    ? "حذف"
-                                    : "افزودن",
+                                selectedEstates.where((element) => element.id == estate.id).isNotEmpty ? "حذف" : "افزودن",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -911,7 +903,7 @@ class _EstateScreenState extends State<EstateScreen> {
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "مشاهده پروفایل",
                                 style: TextStyle(

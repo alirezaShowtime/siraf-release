@@ -2,10 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
-import 'package:siraf3/bloc/add_file_request_bloc.dart';
 import 'package:siraf3/bloc/edit_file_request_bloc.dart';
 import 'package:siraf3/dialog.dart';
-import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/category.dart';
 import 'package:siraf3/models/city.dart';
@@ -440,11 +438,11 @@ class _EditRequestScreen extends State<EditRequestScreen> {
         resetDialogContext = _;
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -470,7 +468,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                       height: 25,
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -484,7 +482,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "خیر",
                                 style: TextStyle(
@@ -512,7 +510,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "بله",
                                 style: TextStyle(
@@ -570,11 +568,11 @@ class _EditRequestScreen extends State<EditRequestScreen> {
         );
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -718,7 +716,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                       stream: persianNumberTextMax.stream,
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -735,7 +733,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "تایید",
                                 style: TextStyle(
