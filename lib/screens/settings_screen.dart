@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/check_version_bloc.dart';
@@ -15,6 +14,7 @@ import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/settings.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
+import 'package:siraf3/widgets/my_switch.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/app_bar_title.dart';
@@ -170,43 +170,20 @@ class _SettingsScreen extends State<SettingsScreen> {
           if (widget.user!.id != null)
             item(
               title: "اعلان برنامه",
-              widget: FlutterSwitch(
-                height: 20.0,
-                width: 40.0,
-                padding: 4.0,
-                toggleSize: 10.0,
-                borderRadius: 10.0,
-                activeColor: Themes.blue,
-                inactiveColor: Colors.grey.shade300,
+              widget: MySwitch(
                 value: showNotification,
-                activeToggleColor: Colors.white,
-                inactiveToggleColor: Themes.blue,
                 onToggle: (value) {
-                  setState(() {
-                    showNotification = value;
-                  });
+                  setState(() => showNotification = value);
                   settings.setShowNotification(value);
                 },
               ),
             ),
           item(
             title: "حالت شب",
-            widget: FlutterSwitch(
-              height: 20.0,
-              width: 40.0,
-              padding: 4.0,
-              toggleSize: 10.0,
-              borderRadius: 10.0,
-              activeColor: Themes.blue,
-              inactiveColor: Colors.grey.shade300,
+            widget: MySwitch(
               value: darkMode,
-              activeToggleColor: Colors.white,
-              inactiveToggleColor: Themes.blue,
               onToggle: (value) {
-                setState(() {
-                  darkMode = value;
-                });
-
+                setState(() => darkMode = value);
                 darkThemeProvider.darkTheme = value;
 
                 SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -221,17 +198,8 @@ class _SettingsScreen extends State<SettingsScreen> {
           ),
           item(
             title: "نمایش فایل ها به صورت اسلایدی",
-            widget: FlutterSwitch(
-              height: 20.0,
-              width: 40.0,
-              padding: 4.0,
-              toggleSize: 10.0,
-              borderRadius: 10.0,
-              activeColor: Themes.blue,
-              inactiveColor: Colors.grey.shade300,
+            widget: MySwitch(
               value: isSlideViewType,
-              activeToggleColor: Colors.white,
-              inactiveToggleColor: Themes.blue,
               onToggle: (value) async {
                 await changeViewType(value);
                 pushAndRemoveUntil(context, HomeScreen());

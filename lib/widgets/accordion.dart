@@ -96,7 +96,7 @@ class AccordionItem extends StatefulWidget {
   GestureTapCallback onClick;
   bool hasBadge;
 
-  AccordionItem({required this.onClick, required this.title, this.hasBadge = true});
+  AccordionItem({required this.onClick, required this.title, this.hasBadge = false});
 }
 
 class _AccordionItem extends State<AccordionItem> {
