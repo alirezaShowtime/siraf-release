@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/category.dart';
@@ -11,7 +12,6 @@ import 'package:siraf3/themes.dart';
 
 import '../../money_input_formatter.dart';
 import '../../widgets/text_field_2.dart';
-import 'package:siraf3/dialog.dart';
 
 class PropertiesScreen extends StatefulWidget {
   List<PropertyInsert> properties;
@@ -396,11 +396,11 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
         );
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -579,11 +579,11 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
         listDialog = _;
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -668,11 +668,11 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
         );
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -784,7 +784,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                       stream: persianNumberText.stream,
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -793,8 +793,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                               onPressed: () {
                                 setState(() {
                                   if (_controller.text.trim().isNotEmpty) {
-                                    selectedFeatures[property.value!] =
-                                        _controller.text.trim();
+                                    selectedFeatures[property.value!] = _controller.text.trim();
                                   } else {
                                     selectedFeatures.remove(property.value!);
                                   }
@@ -810,7 +809,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "تایید",
                                 style: TextStyle(
@@ -852,11 +851,11 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
 
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -873,7 +872,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -890,7 +889,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "تایید",
                                 style: TextStyle(

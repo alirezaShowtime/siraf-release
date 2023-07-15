@@ -1,9 +1,16 @@
+import 'dart:async';
+import 'dart:io';
+import 'dart:io' as io;
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as m;
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/edit_file_form_data.dart';
 import 'package:siraf3/models/my_file_detail.dart';
@@ -13,15 +20,8 @@ import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/slider.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
-import 'dart:io' as io;
-import 'package:path/path.dart' as p;
 import 'package:siraf3/widgets/text_form_field_2.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
-import 'dart:async';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter/material.dart' as m;
-import 'package:siraf3/dialog.dart';
 
 class EditFileSecond extends StatefulWidget {
   EditFileFormData formData;
@@ -251,45 +251,45 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         child: GridView(
                           shrinkWrap: true,
                           gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
+                          SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount:
-                                MediaQuery.of(context).size.width < 330 ? 4 : 5,
+                            MediaQuery.of(context).size.width < 330 ? 4 : 5,
                           ),
                           children: <Widget>[
-                                Container(
-                                  padding: EdgeInsets.all(5),
+                            Container(
+                              padding: EdgeInsets.all(5),
+                              alignment: Alignment.center,
+                              child: DottedBorder(
+                                color: Themes.iconGrey,
+                                borderType: BorderType.RRect,
+                                radius: Radius.circular(5),
+                                child: Container(
+                                  color: Colors.transparent,
                                   alignment: Alignment.center,
-                                  child: DottedBorder(
-                                    color: Themes.iconGrey,
-                                    borderType: BorderType.RRect,
-                                    radius: Radius.circular(5),
-                                    child: Container(
-                                      color: Colors.transparent,
-                                      alignment: Alignment.center,
-                                      child: IconButton(
-                                        highlightColor: Colors.transparent,
-                                        splashColor: Colors.transparent,
-                                        onPressed: _addMedia,
-                                        icon: Icon(
-                                          CupertinoIcons.plus,
-                                          size: 28,
-                                          color: Themes.iconGrey,
-                                        ),
-                                      ),
+                                  child: IconButton(
+                                    highlightColor: Colors.transparent,
+                                    splashColor: Colors.transparent,
+                                    onPressed: _addMedia,
+                                    icon: Icon(
+                                      CupertinoIcons.plus,
+                                      size: 28,
+                                      color: Themes.iconGrey,
                                     ),
                                   ),
                                 ),
-                              ] +
+                              ),
+                            ),
+                          ] +
                               mediaBoxes
                                   .map<Widget>(
                                     (e) => GestureDetector(
-                                      onTap: () {
-                                        showOptionsDialog(
-                                            mediaBoxes.indexOf(e));
-                                      },
-                                      child: e,
-                                    ),
-                                  )
+                                  onTap: () {
+                                    showOptionsDialog(
+                                        mediaBoxes.indexOf(e));
+                                  },
+                                  child: e,
+                                ),
+                              )
                                   .toList(),
                         ),
                       ),
@@ -318,9 +318,9 @@ class _EditFileSecondState extends State<EditFileSecond> {
                       TextFormField(
                         decoration: InputDecoration(
                           hintText:
-                              hints.containsKey(widget.formData.category.id!)
-                                  ? hints[widget.formData.category.id!]
-                                  : "مثال : آپارتمان 120 متری، میدان ونک",
+                          hints.containsKey(widget.formData.category.id!)
+                              ? hints[widget.formData.category.id!]
+                              : "مثال : آپارتمان 120 متری، میدان ونک",
                           border: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: Themes.icon,
@@ -569,7 +569,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                       TextFormField2(
                         decoration: InputDecoration(
                           hintText:
-                              "نام و نام خانوادگی جهت هماهنگی بازدید را بنویسید.",
+                          "نام و نام خانوادگی جهت هماهنگی بازدید را بنویسید.",
                           border: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: Themes.icon,
@@ -796,20 +796,20 @@ class _EditFileSecondState extends State<EditFileSecond> {
       deleteVideos: deleteVideos,
       newImages: files
           .where((element) =>
-              (element["isNew"] ?? false) && element["type"] == FileType2.image)
+      (element["isNew"] ?? false) && element["type"] == FileType2.image)
           .toList(),
       newVideos: files
           .where((element) =>
-              (element["isNew"] ?? false) && element["type"] == FileType2.video)
+      (element["isNew"] ?? false) && element["type"] == FileType2.video)
           .toList(),
       imagesWeight: files
           .where((element) =>
-              (element["path"] != null) && element["type"] == FileType2.image)
+      (element["path"] != null) && element["type"] == FileType2.image)
           .map<String>((e) => e["path"].toString())
           .toList(),
       videosWeight: files
           .where((element) =>
-              (element["path"] != null) && element["type"] == FileType2.video)
+      (element["path"] != null) && element["type"] == FileType2.video)
           .map<String>((e) => e["path"].toString())
           .toList(),
     );
@@ -834,7 +834,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
 
   void _addMedia() async {
     FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: true);
+    await FilePicker.platform.pickFiles(allowMultiple: true);
 
     if (result != null) {
       for (PlatformFile pFile in result.files) {
@@ -889,19 +889,18 @@ class _EditFileSecondState extends State<EditFileSecond> {
         optionsDialog = _;
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
                 Column(
                   children: <Widget>[
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -987,10 +986,10 @@ class _EditFileSecondState extends State<EditFileSecond> {
         Directory tempDir = await getTemporaryDirectory();
 
         File tempVideo =
-            File("${tempDir.path}/assets/" + file.uri.pathSegments.last)
-              ..createSync(recursive: true)
-              ..writeAsBytesSync(byteData.buffer
-                  .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+        File("${tempDir.path}/assets/" + file.uri.pathSegments.last)
+          ..createSync(recursive: true)
+          ..writeAsBytesSync(byteData.buffer
+              .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
 
         final fileName = await VideoThumbnail.thumbnailFile(
           video: tempVideo.path,
@@ -1028,9 +1027,9 @@ class _EditFileSecondState extends State<EditFileSecond> {
             fit: BoxFit.cover,
             colorFilter: type != FileType2.image
                 ? ColorFilter.mode(
-                    Themes.iconGrey,
-                    BlendMode.hardLight,
-                  )
+              Themes.iconGrey,
+              BlendMode.hardLight,
+            )
                 : null,
           ),
         ),
@@ -1076,9 +1075,9 @@ class _EditFileSecondState extends State<EditFileSecond> {
             fit: BoxFit.cover,
             colorFilter: type != FileType2.image
                 ? ColorFilter.mode(
-                    Themes.iconGrey,
-                    BlendMode.hardLight,
-                  )
+              Themes.iconGrey,
+              BlendMode.hardLight,
+            )
                 : null,
           ),
         ),
@@ -1088,8 +1087,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
     );
   }
 
-  Widget optionItem(
-      {required String value, required bool isLast, void Function()? onTap}) {
+  Widget optionItem({required String value, required bool isLast, void Function()? onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -1098,9 +1096,9 @@ class _EditFileSecondState extends State<EditFileSecond> {
             bottom: isLast
                 ? BorderSide.none
                 : BorderSide(
-                    color: Themes.textGrey.withOpacity(0.5),
-                    width: 0.7,
-                  ),
+              color: Themes.textGrey.withOpacity(0.5),
+              width: 0.7,
+            ),
           ),
         ),
         padding: EdgeInsets.symmetric(vertical: 10),
@@ -1139,7 +1137,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
 
   _editFile(int index) async {
     FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: false);
+    await FilePicker.platform.pickFiles(allowMultiple: false);
 
     if (result != null) {
       io.File file = io.File(result.files.first.path!);
@@ -1217,14 +1215,14 @@ class _EditFileSecondState extends State<EditFileSecond> {
       builder: (_) {
         mediaTitleDialogContext = _;
         TextEditingController _controller =
-            TextEditingController(text: files[index]['title']);
+        TextEditingController(text: files[index]['title']);
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -1232,7 +1230,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                   children: [
                     Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       child: TextField2(
                         maxLines: 1,
                         controller: _controller,
@@ -1254,7 +1252,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                       ),
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -1262,10 +1260,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                             child: MaterialButton(
                               onPressed: () {
                                 setState(() {
-                                  files[index]["title"] =
-                                      _controller.text.trim().isNotEmpty
-                                          ? _controller.text.trim()
-                                          : null;
+                                  files[index]["title"] = _controller.text.trim().isNotEmpty ? _controller.text.trim() : null;
                                 });
 
                                 dismissMediaTitleDialog();
@@ -1278,7 +1273,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "تایید",
                                 style: TextStyle(

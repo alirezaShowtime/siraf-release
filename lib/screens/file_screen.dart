@@ -675,11 +675,11 @@ class _FileScreenState extends State<FileScreen> {
         TextEditingController _controller2 = TextEditingController();
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: App.theme.dialogBackgroundColor,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -747,7 +747,7 @@ class _FileScreenState extends State<FileScreen> {
                     ),
                     SizedBox(height: 5),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -777,7 +777,7 @@ class _FileScreenState extends State<FileScreen> {
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "تایید",
                                 style: TextStyle(

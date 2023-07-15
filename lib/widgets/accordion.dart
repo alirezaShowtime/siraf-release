@@ -1,13 +1,12 @@
-import 'package:siraf3/main.dart';
-import 'package:siraf3/themes.dart';
-import 'package:siraf3/widgets/icon_asset.dart';
-import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badge;
+import 'package:flutter/material.dart';
+import 'package:siraf3/main.dart';
+import 'package:siraf3/widgets/my_icon_button.dart';
 
 class Accordion extends StatefulWidget {
   final Widget title;
-  final Widget content;
-  bool open;
+  Widget? content;
+  bool? open;
   Function? onClick;
   Color? backgroundColor;
   bool hasBadge;
@@ -15,8 +14,8 @@ class Accordion extends StatefulWidget {
   Accordion({
     Key? key,
     required this.title,
-    required this.content,
-    this.open = false,
+    this.content,
+    this.open,
     this.onClick,
     this.hasBadge = false,
     this.backgroundColor,
@@ -29,11 +28,9 @@ class Accordion extends StatefulWidget {
 class _AccordionState extends State<Accordion> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        color: widget.backgroundColor ?? App.theme.dialogBackgroundColor,
-      ),
+    return Card(
+      color: widget.backgroundColor ?? App.theme.dialogBackgroundColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       margin: EdgeInsets.only(bottom: 5),
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -41,11 +38,10 @@ class _AccordionState extends State<Accordion> {
         children: [
           InkWell(
             onTap: _onClick,
+            borderRadius: BorderRadius.circular(5),
             child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                // color: widget.backgroundColor ?? App.theme.dialogBackgroundColor,
-              ),
+              constraints: BoxConstraints(minHeight: 50),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -53,13 +49,10 @@ class _AccordionState extends State<Accordion> {
                       ? badge.Badge(
                           badgeContent: Text(''),
                           showBadge: true,
-                          position:
-                              badge.BadgePosition.custom(top: -12, start: 1),
-                          badgeStyle:
-                              badge.BadgeStyle(badgeColor: App.theme.primaryColor),
+                          position: badge.BadgePosition.custom(top: -12, start: 1),
+                          badgeStyle: badge.BadgeStyle(badgeColor: App.theme.primaryColor),
                           child: Padding(
-                            padding:
-                                EdgeInsets.only(bottom: 7, top: 7, right: 12),
+                            padding: EdgeInsets.only(bottom: 7, top: 7, right: 12),
                             child: widget.title,
                           ),
                         )
@@ -67,25 +60,16 @@ class _AccordionState extends State<Accordion> {
                           padding: EdgeInsets.only(bottom: 7, top: 7, right: 7),
                           child: widget.title,
                         ),
-                  IconAsset(
-                    icon: widget.open
-                        ? "ic_arrow_top.png"
-                        : "ic_arrow_bottom.png",
-                    width: 14,
-                    height: 8,
-                    color: App.theme.iconTheme.color,
-                    fit: BoxFit.fill,
-                    onPressed: _onClick,
-                  ),
+                  if (widget.open != null)
+                    MyIconButton(
+                      onTap: _onClick,
+                      iconData: widget.open! ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                    ),
                 ],
               ),
             ),
           ),
-          widget.open
-              ? Padding(
-                  padding: const EdgeInsets.only(bottom: 9),
-                  child: widget.content)
-              : Container()
+          widget.open == true ? Padding(padding: const EdgeInsets.only(bottom: 9), child: widget.content) : Container()
         ],
       ),
     );
@@ -96,9 +80,11 @@ class _AccordionState extends State<Accordion> {
       widget.onClick!();
     }
 
-    setState(() {
-      widget.open = !widget.open;
-    });
+    if (widget.open != null) {
+      setState(() {
+        widget.open = !widget.open!;
+      });
+    }
   }
 }
 
@@ -118,20 +104,17 @@ class _AccordionItem extends State<AccordionItem> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: widget.onClick,
-      radius: 15,
-      child: badge.Badge(
-        badgeContent: Text(''),
-        showBadge: widget.hasBadge,
-        position: badge.BadgePosition.custom(top: -12, start: 5),
-        badgeStyle: badge.BadgeStyle(badgeColor: App.theme.primaryColor),
-        child: Padding(
-          padding: EdgeInsets.only(
-              top: 5, bottom: 5, right: (widget.hasBadge ? 18 : 10)),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.only(top: 12, bottom: 12, right: (widget.hasBadge ? 22 : 20)),
+        child: badge.Badge(
+          badgeContent: Text(''),
+          showBadge: widget.hasBadge,
+          position: badge.BadgePosition.custom(top: -15, start: -15),
+          badgeStyle: badge.BadgeStyle(badgeColor: App.theme.primaryColor),
           child: Text(
             widget.title,
-            style: TextStyle(
-              fontSize: 12,
-            ),
+            style: TextStyle(fontSize: 10, fontFamily: "IranSansMedium"),
           ),
         ),
       ),

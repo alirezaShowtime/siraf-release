@@ -4,11 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:siraf3/bloc/property_bloc.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/category.dart' as cat;
+import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/edit_file_form_data.dart';
 import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/models/property_insert.dart';
@@ -19,12 +21,9 @@ import 'package:siraf3/screens/mark_in_map_screen.dart';
 import 'package:siraf3/screens/select_category_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
-import 'package:siraf3/models/property.dart' as p;
-import 'package:siraf3/dialog.dart';
 
 class EditFileFirst extends StatefulWidget {
   MyFileDetail file;
@@ -847,11 +846,11 @@ class _EditFileFirstState extends State<EditFileFirst> {
             TextEditingController(text: address);
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -882,7 +881,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                       ),
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -890,8 +889,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                             child: MaterialButton(
                               onPressed: () {
                                 if (_controller.text.length < 10) {
-                                  return notify(
-                                      "آدرس باید حداقل 10 کاراکتر باشد");
+                                  return notify("آدرس باید حداقل 10 کاراکتر باشد");
                                 }
                                 setState(() {
                                   address = _controller.text.trim().isNotEmpty
@@ -909,7 +907,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                               ),
                               color: Themes.primary,
                               elevation: 1,
-                              height: 40,
+                              height: 50,
                               child: Text(
                                 "تایید",
                                 style: TextStyle(
@@ -965,11 +963,11 @@ class _EditFileFirstState extends State<EditFileFirst> {
         );
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -1149,11 +1147,11 @@ class _EditFileFirstState extends State<EditFileFirst> {
         listDialog = _;
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -1238,11 +1236,11 @@ class _EditFileFirstState extends State<EditFileFirst> {
         );
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
@@ -1423,11 +1421,11 @@ class _EditFileFirstState extends State<EditFileFirst> {
 
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Wrap(
               children: [
