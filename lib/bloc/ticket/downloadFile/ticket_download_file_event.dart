@@ -22,14 +22,6 @@ class TicketDownloadFileIsExist extends TicketDownloadFileEvent {
   TicketDownloadFileIsExist(super.fileMessage);
 }
 
-class TicketDownloadFileResume extends TicketDownloadFileEvent {
-  late String url;
-
-  TicketDownloadFileResume(super.fileMessage) {
-    this.url = fileMessage.path!;
-  }
-}
-
 class TicketDownloadFileRequest extends TicketDownloadFileEvent {
   late String url;
 

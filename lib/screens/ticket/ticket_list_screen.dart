@@ -168,7 +168,15 @@ class _TicketListScreen extends State<TicketListScreen> {
               ),
             ],
           ),
-          body: BlocBuilder<TicketListBloc, TicketListState>(builder: _listBlocBuilder),
+          body: BlocConsumer(
+            bloc: ticketsBloc,
+            builder: _listBlocBuilder,
+            listener: (context, state) {
+              if (state is! TicketListSuccess) return;
+
+              tickets = sortTickets(state.tickets);
+            },
+          ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               push(context, TicketCreationScreen());
@@ -199,7 +207,7 @@ class _TicketListScreen extends State<TicketListScreen> {
           }
         },
         onTap: () {
-          if (!isSelected && isSelectable) {
+          if (!isSelected && isSelectable && selectedTickets.length > 0) {
             setState(() {
               selectedTickets.add(ticket);
             });
@@ -335,10 +343,6 @@ class _TicketListScreen extends State<TicketListScreen> {
         ),
       );
     }
-
-    tickets = (state as TicketListSuccess).tickets;
-
-    tickets = sortTickets(tickets);
 
     if (!tickets.isFill()) {
       return Center(child: Empty(message: "تیکتی نساخته اید"));

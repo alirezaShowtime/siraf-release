@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -50,6 +51,7 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
 
   TicketMessagesState? nowTicketMessagesState;
   bool ticketIsClosed = false;
+  Timer? scrollDownButtonTimer;
 
   @override
   void initState() {
@@ -122,7 +124,6 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
     _chatController.removeListener(_scrollListener);
     _chatController.dispose();
     ticketMessagesBloc.close();
-    _scrollDownAnimationController.removeListener(_animationListener);
     _scrollDownAnimationController.dispose();
     super.dispose();
   }
@@ -190,9 +191,16 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
                   ],
                 ),
               ),
-              BlocBuilder<TicketMessagesBloc, TicketMessagesState>(
+              BlocConsumer(
                 bloc: ticketMessagesBloc,
                 builder: _blocBuilder,
+                listener: (context, state) {
+                  if (state is! TicketMessagesSuccess) return;
+
+                  ticketDetails = state.ticketDetails;
+
+                  messageWidgets = ticketDetails.messages!.map<Widget>((e) => MessageWidget(message: e)).toList();
+                },
               ),
               if (ticketIsClosed)
                 Container(
@@ -226,27 +234,29 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
       end: end_floatingActionButtonOffset,
       begin: begin_floatingActionButtonOffset,
     ).animate(_scrollDownAnimationController);
-
-    _scrollDownAnimationController.addListener(_animationListener);
   }
 
   void _scrollListener() {
+    if (_chatController.position.pixels < 150) {
+      _scrollDownAnimationController.reset();
+      _scrollDownAnimationController.reverse();
+      return;
+    }
+
     if (_chatController.position.userScrollDirection == ScrollDirection.forward) {
       if (_scrollDownAnimation.value != end_floatingActionButtonOffset) {
         _scrollDownAnimationController.reset();
-        _scrollDownAnimationController.forward();
       }
+      _scrollDownAnimationController.forward();
     }
 
     if (_chatController.position.userScrollDirection == ScrollDirection.reverse) {
       if (_scrollDownAnimation.value != begin_floatingActionButtonOffset) {
         _scrollDownAnimationController.reset();
-        _scrollDownAnimationController.reverse();
       }
+      _scrollDownAnimationController.reverse();
     }
   }
-
-  void _animationListener() => setState(() {});
 
   //event listeners
   void scrollDown({int milliseconds = 2000}) {
@@ -291,41 +301,39 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
       );
     }
 
-    ticketDetails = (state as TicketMessagesSuccess).ticketDetails;
-
-    if (nowTicketMessagesState != state) {
-      nowTicketMessagesState = state;
-      messageWidgets = ticketDetails.messages!.map<Widget>((e) => MessageWidget(message: e)).toList();
-    }
-
     return Expanded(
       child: Stack(
         children: [
-          ListView.builder(
-            controller: _chatController,
-            itemCount: messageWidgets.length + 2,
-            itemBuilder: (_, i) {
-              if (i == 0) {
-                return SizedBox(height: 60);
-              }
+          NotificationListener(
+            onNotification: onNotificationListView,
+            child: ListView.builder(
+              controller: _chatController,
+              itemCount: messageWidgets.length + 2,
+              itemBuilder: (_, i) {
+                if (i == 0) return SizedBox(height: 60);
 
-              if (i == messageWidgets.length + 1) {
-                return SizedBox(height: 20);
-              }
-              return messageWidgets[i - 1];
+                if (i == messageWidgets.length + 1) return SizedBox(height: 5);
+
+                return messageWidgets[i - 1];
+              },
+            ),
+          ),
+          AnimatedBuilder(
+            animation: _scrollDownAnimation,
+            builder: (_, __) {
+              return Positioned(
+                right: 10,
+                bottom: _scrollDownAnimation.value,
+                child: FloatingActionButton(
+                  onPressed: scrollDown,
+                  child: icon(Icons.expand_more_rounded),
+                  elevation: 10,
+                  mini: true,
+                  backgroundColor: Colors.grey.shade50,
+                ),
+              );
             },
           ),
-          Positioned(
-            right: 10,
-            bottom: _scrollDownAnimation.value,
-            child: FloatingActionButton(
-              onPressed: scrollDown,
-              child: icon(Icons.expand_more_rounded),
-              elevation: 10,
-              mini: true,
-              backgroundColor: Colors.grey.shade50,
-            ),
-          )
         ],
       ),
     );
@@ -358,5 +366,18 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
         widgetKey: sendingMessageWidget.key!,
       ),
     );
+  }
+
+  bool onNotificationListView(Notification notification) {
+    if (notification is ScrollUpdateNotification) {
+      scrollDownButtonTimer?.cancel();
+    }
+
+    if (notification is ScrollEndNotification) {
+      scrollDownButtonTimer = Timer(Duration(seconds: 3), () {
+        _scrollDownAnimationController.reverse();
+      });
+    }
+    return false;
   }
 }

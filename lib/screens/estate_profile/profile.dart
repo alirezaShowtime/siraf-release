@@ -89,9 +89,10 @@ extension Profile on _EstateProfileScreen {
                                 InkWell(
                                   onTap: () => setState(() {
                                     final bool previousValueOfMoreDetail = moreDetail;
-                                    showComment = !showComment;
+                                    moreDetail = !moreDetail;
+                                    // showComment = !showComment;
 
-                                    viewMoreDetail(force: false);
+                                    // viewMoreDetail(force: false);
 
                                     if (!previousValueOfMoreDetail && !showComment) {
                                       showSearchBarWidget = true;
