@@ -140,7 +140,7 @@ class _AppBarChat extends State<AppBarChat> {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 12,
-                    fontWeight: FontWeight.bold,
+                    fontFamily: "IranSansBold",
                     color: Themes.themeData().textTheme.bodyLarge?.color,
                   ),
                 ),
@@ -157,7 +157,6 @@ class _AppBarChat extends State<AppBarChat> {
                 color: Themes.text,
                 fontFamily: "IranSansBold",
                 fontSize: 15,
-                fontWeight: FontWeight.bold,
               ),
             ),
           ),

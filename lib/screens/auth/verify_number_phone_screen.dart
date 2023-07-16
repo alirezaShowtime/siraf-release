@@ -7,15 +7,13 @@ import 'package:siraf3/bloc/auth/Login/login_bloc.dart';
 import 'package:siraf3/bloc/auth/verifyNumber/verify_number_phone_bloc.dart';
 import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/screens/auth/login_screen.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/screens/home_screen.dart';
-import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/block_btn.dart';
 import 'package:siraf3/widgets/my_image.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:siraf3/widgets/my_text_icon_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
-import 'package:siraf3/main.dart';
 
 class VerifyNumberPhoneScreen extends StatefulWidget {
   @override
@@ -195,7 +193,7 @@ class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                          fontFamily: "IranSansBold",
                           color: App.theme.textTheme.bodyLarge?.color,
                         ),
                       ),

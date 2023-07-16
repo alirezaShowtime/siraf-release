@@ -67,7 +67,7 @@ class MyTextField extends TextField2 {
             labelText: null,
             counterStyle: TextStyle(
               fontSize: 9,
-              fontWeight: FontWeight.bold,
+              fontFamily: "IranSansBold",
             ),
             label: !isOptional
                 ? null

@@ -43,7 +43,7 @@ class _PreviewEstateRegistrationScreen extends State<PreviewEstateRegistrationSc
                             style: TextStyle(
                               color: Themes.text,
                               fontSize: 13,
-                              fontWeight: FontWeight.bold,
+                              fontFamily: "IranSansBold",
                             ),
                           ),
                         ),
@@ -107,7 +107,7 @@ class _PreviewEstateRegistrationScreen extends State<PreviewEstateRegistrationSc
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 11,
-                            fontWeight: FontWeight.bold,
+                            fontFamily: "IranSansBold",
                           ),
                         ),
                         icon(Icons.done_rounded, color: Colors.white),
@@ -134,7 +134,7 @@ class _PreviewEstateRegistrationScreen extends State<PreviewEstateRegistrationSc
             style: TextStyle(
               color: Themes.text,
               fontSize: 13,
-              fontWeight: FontWeight.bold,
+              fontFamily: "IranSansBold",
             ),
           ),
           Text(

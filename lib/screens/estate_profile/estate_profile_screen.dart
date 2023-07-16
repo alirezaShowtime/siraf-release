@@ -201,7 +201,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
             Text(
               title,
               style: TextStyle(
-                fontWeight: FontWeight.bold,
+                fontFamily: "IranSansBold",
                 color: App.theme.textTheme.bodyLarge?.color,
                 fontSize: 11,
               ),
@@ -275,7 +275,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
                   style: TextStyle(
                     color: Themes.textGrey,
                     fontSize: 9,
-                    fontWeight: FontWeight.bold,
+                    fontFamily: "IranSansBold",
                   ),
                 ),
                 StaticStar(rating: consultant.rate ?? 0.0),

@@ -94,8 +94,8 @@ class _FieldDialog extends State<FieldDialog> {
                   },
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(5),
-                      bottomRight: Radius.circular(5),
+                      bottomLeft: Radius.circular(15),
+                      bottomRight: Radius.circular(15),
                     ),
                   ),
                   color: Themes.primary,
@@ -106,7 +106,7 @@ class _FieldDialog extends State<FieldDialog> {
                     "تایید",
                     style: TextStyle(
                       color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                      fontFamily: "IranSansBold",
                       fontSize: 14,
                     ),
                   ),

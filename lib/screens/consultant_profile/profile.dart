@@ -31,7 +31,7 @@ extension Profile on _ConsultantProfileScreen {
                             style: TextStyle(
                               color: Themes.text,
                               fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                              fontFamily: "IranSansBold",
                             ),
                           ),
                           StaticStar(rating: consultantInfo.rate ?? 0),
@@ -85,7 +85,7 @@ extension Profile on _ConsultantProfileScreen {
                                   !showComment ? "نمایش نظرات (${comments.length})" : "فایل های مشاور",
                                   style: TextStyle(
                                     color: Themes.text,
-                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "IranSansBold",
                                     fontSize: 9,
                                   ),
                                 ),

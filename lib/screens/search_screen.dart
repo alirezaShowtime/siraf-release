@@ -1,8 +1,8 @@
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:siraf3/db/model/search_history.dart';
-import 'package:siraf3/main.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/screens/filter_screen.dart';
@@ -10,7 +10,6 @@ import 'package:siraf3/screens/search_result_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
-import 'package:badges/badges.dart' as badges;
 
 import '../helpers.dart';
 
@@ -128,9 +127,10 @@ class _SearchScreen extends State<SearchScreen> {
                     Text(
                       "سابقه جستجو",
                       style: TextStyle(
-                          fontSize: 12,
-                          color: Themes.blue,
-                          fontWeight: FontWeight.bold),
+                        fontSize: 12,
+                        color: Themes.blue,
+                        fontFamily: "IranSansBold",
+                      ),
                     ),
                     TextButton(
                       onPressed: () {

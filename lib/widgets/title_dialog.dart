@@ -17,7 +17,7 @@ class _TitleDialog extends State<TitleDialog> {
       widget.title,
       style: TextStyle(
         color: Themes.text,
-        fontWeight: FontWeight.bold,
+        fontFamily: "IranSansBold",
         fontSize: 15,
       ),
     );

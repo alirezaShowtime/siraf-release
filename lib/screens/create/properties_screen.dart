@@ -42,7 +42,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
     "price": "قیمت کل را به تومان وارد کنید",
     "age": "سال ساخت را وارد کنید",
     "prices": "مبلغ ودیعه را به تومان وارد کنید",
-    "rent": "مبلغ اجاره را به تومان وارد کنید"
+    "rent": "مبلغ اجاره را به تومان وارد کنید",
   };
 
   Map<String, String> helpTexts = {
@@ -116,9 +116,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                               fontFamily: "IranSansBold",
                             ),
                           ),
-                          SizedBox(
-                            height: 14,
-                          ),
+                          SizedBox(height: 14),
                         ] +
                         widget.properties.map<Widget>((e) {
                           String? text;
@@ -144,21 +142,15 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                                 text += " متر";
                               }
                             } else {
-                              var properties =
-                                  widget.properties.where((element) =>
-                                      element.value == e.value &&
-                                      (element.items ?? [])
-                                          .where(
-                                            (element) =>
-                                                element.value.toString() ==
-                                                selectedProps[e.value!],
-                                          )
-                                          .isNotEmpty);
+                              var properties = widget.properties.where((element) =>
+                                  element.value == e.value &&
+                                  (element.items ?? [])
+                                      .where(
+                                        (element) => element.value.toString() == selectedProps[e.value!],
+                                      )
+                                      .isNotEmpty);
                               if (properties.isNotEmpty) {
-                                var item = properties.first.items!.firstWhere(
-                                    (element) =>
-                                        element.value.toString() ==
-                                        selectedProps[e.value!]);
+                                var item = properties.first.items!.firstWhere((element) => element.value.toString() == selectedProps[e.value!]);
                                 text = item.name!;
                               }
                             }
@@ -218,21 +210,15 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                                 text += " متر";
                               }
                             } else {
-                              var properties =
-                                  widget.features.where((element) =>
-                                      element.value == e.value &&
-                                      (element.items ?? [])
-                                          .where(
-                                            (element) =>
-                                                element.value.toString() ==
-                                                selectedFeatures[e.value!],
-                                          )
-                                          .isNotEmpty);
+                              var properties = widget.features.where((element) =>
+                                  element.value == e.value &&
+                                  (element.items ?? [])
+                                      .where(
+                                        (element) => element.value.toString() == selectedFeatures[e.value!],
+                                      )
+                                      .isNotEmpty);
                               if (properties.isNotEmpty) {
-                                var item = properties.first.items!.firstWhere(
-                                    (element) =>
-                                        element.value.toString() ==
-                                        selectedFeatures[e.value!]);
+                                var item = properties.first.items!.firstWhere((element) => element.value.toString() == selectedFeatures[e.value!]);
                                 text = item.name!;
                               }
                             }
@@ -262,32 +248,17 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                     child: MaterialButton(
                       onPressed: () {
                         for (PropertyInsert pr in widget.properties) {
-                          if ((pr.require ?? false) &&
-                              !selectedProps.containsKey(pr.value!)) {
-                            return notify("لطفا " +
-                                pr.name! +
-                                " را " +
-                                (pr.type!.toLowerCase() == "list"
-                                    ? "انتخاب"
-                                    : "تعیین") +
-                                " کنید");
+                          if ((pr.require ?? false) && !selectedProps.containsKey(pr.value!)) {
+                            return notify("لطفا " + pr.name! + " را " + (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") + " کنید");
                           }
                         }
 
                         for (PropertyInsert pr in widget.features) {
-                          if ((pr.require ?? false) &&
-                              !selectedFeatures.containsKey(pr.value!)) {
-                            return notify("لطفا " +
-                                pr.name! +
-                                " را " +
-                                (pr.type!.toLowerCase() == "list"
-                                    ? "انتخاب"
-                                    : "تعیین") +
-                                " کنید");
+                          if ((pr.require ?? false) && !selectedFeatures.containsKey(pr.value!)) {
+                            return notify("لطفا " + pr.name! + " را " + (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") + " کنید");
                           }
                         }
-                        Navigator.pop(
-                            context, [selectedProps, selectedFeatures]);
+                        Navigator.pop(context, [selectedProps, selectedFeatures]);
                       },
                       color: Themes.primary,
                       child: Text(
@@ -312,11 +283,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
     );
   }
 
-  Widget section(
-      {required String title,
-      required String hint,
-      required String? value,
-      required Function() onTap}) {
+  Widget section({required String title, required String hint, required String? value, required Function() onTap}) {
     return Column(
       children: [
         Row(
@@ -379,9 +346,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
 
   showNumberDialog(PropertyInsert property) {
     StreamController<String> persianNumberText = StreamController();
-    persianNumberText.add(
-        ((selectedProps[property.value!] ?? '').replaceAll(',', '') as String)
-            .toWord());
+    persianNumberText.add(((selectedProps[property.value!] ?? '').replaceAll(',', '') as String).toWord());
 
     StreamController<String?> value = StreamController();
     value.add(selectedProps[property.value!]);
@@ -417,9 +382,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                           controller: _controller,
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: hints.containsKey(property.value)
-                                ? hints[property.value]
-                                : "${property.name!} را وارد کنید",
+                            hintText: hints.containsKey(property.value) ? hints[property.value] : "${property.name!} را وارد کنید",
                             hintStyle: TextStyle(
                               color: Themes.textGrey,
                               fontSize: 13,
@@ -431,8 +394,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                             value.add(v);
                           },
                           inputFormatters: [
-                            if (property.value != "age")
-                              MoneyInputFormatter(mantissaLength: 0),
+                            if (property.value != "age") MoneyInputFormatter(mantissaLength: 0),
                           ],
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
@@ -447,8 +409,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                     if (helpTexts.containsKey(property.value!))
                       StreamBuilder(
                         builder: ((context, snapshot) {
-                          if (!snapshot.hasData ||
-                              snapshot.data.toString().isEmpty) {
+                          if (!snapshot.hasData || snapshot.data.toString().isEmpty) {
                             return Container(
                               height: 20,
                               alignment: Alignment.center,
@@ -469,11 +430,9 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                       ),
                     StreamBuilder(
                       builder: ((context, snapshot) {
-                        if (!snapshot.hasData ||
-                            snapshot.data.toString().isEmpty) {
+                        if (!snapshot.hasData || snapshot.data.toString().isEmpty) {
                           return Container(
-                            height:
-                                helpTexts.containsKey(property.value!) ? 0 : 20,
+                            height: helpTexts.containsKey(property.value!) ? 0 : 20,
                           );
                         }
                         String text = snapshot.data.toString();
@@ -521,8 +480,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                               onPressed: () {
                                 setState(() {
                                   if (_controller.text.trim().isNotEmpty) {
-                                    selectedProps[property.value!] =
-                                        _controller.text.trim();
+                                    selectedProps[property.value!] = _controller.text.trim();
                                   } else {
                                     selectedProps.remove(property.value!);
                                   }
@@ -532,8 +490,8 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(16),
-                                  bottomRight: Radius.circular(16),
+                                  bottomLeft: Radius.circular(15),
+                                  bottomRight: Radius.circular(15),
                                 ),
                               ),
                               color: Themes.primary,
@@ -593,9 +551,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                       height: 200,
                       child: ListView(
                         physics: BouncingScrollPhysics(),
-                        children: property.items!
-                            .map<Widget>((e) => buildListItem(e, property))
-                            .toList(),
+                        children: property.items!.map<Widget>((e) => buildListItem(e, property)).toList(),
                       ),
                     ),
                     SizedBox(
@@ -610,8 +566,8 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(16),
-                                  bottomRight: Radius.circular(16),
+                                  bottomLeft: Radius.circular(15),
+                                  bottomRight: Radius.circular(15),
                                 ),
                               ),
                               color: Themes.primary,
@@ -651,9 +607,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
 
   showFeatureNumberDialog(PropertyInsert property) {
     StreamController<String> persianNumberText = StreamController();
-    persianNumberText.add(
-        ((selectedProps[property.value!] ?? '').replaceAll(',', '') as String)
-            .toWord());
+    persianNumberText.add(((selectedProps[property.value!] ?? '').replaceAll(',', '') as String).toWord());
 
     StreamController<String?> value = StreamController();
     value.add(selectedProps[property.value!]);
@@ -689,9 +643,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                           controller: _controller,
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: hints.containsKey(property.value)
-                                ? hints[property.value]
-                                : "${property.name!} را وارد کنید",
+                            hintText: hints.containsKey(property.value) ? hints[property.value] : "${property.name!} را وارد کنید",
                             hintStyle: TextStyle(
                               color: Themes.textGrey,
                               fontSize: 13,
@@ -703,8 +655,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                             value.add(v);
                           },
                           inputFormatters: [
-                            if (property.value != "age")
-                              MoneyInputFormatter(mantissaLength: 0),
+                            if (property.value != "age") MoneyInputFormatter(mantissaLength: 0),
                           ],
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
@@ -719,8 +670,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                     if (helpTexts.containsKey(property.value!))
                       StreamBuilder(
                         builder: ((context, snapshot) {
-                          if (!snapshot.hasData ||
-                              snapshot.data.toString().isEmpty) {
+                          if (!snapshot.hasData || snapshot.data.toString().isEmpty) {
                             return Container(
                               height: 20,
                               alignment: Alignment.center,
@@ -741,11 +691,9 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                       ),
                     StreamBuilder(
                       builder: ((context, snapshot) {
-                        if (!snapshot.hasData ||
-                            snapshot.data.toString().isEmpty) {
+                        if (!snapshot.hasData || snapshot.data.toString().isEmpty) {
                           return Container(
-                            height:
-                                helpTexts.containsKey(property.value!) ? 0 : 20,
+                            height: helpTexts.containsKey(property.value!) ? 0 : 20,
                           );
                         }
                         String text = snapshot.data.toString();
@@ -803,8 +751,8 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(5),
+                                  bottomLeft: Radius.circular(15),
+                                  bottomRight: Radius.circular(15),
                                 ),
                               ),
                               color: Themes.primary,
@@ -865,10 +813,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                       height: 200,
                       child: ListView(
                         physics: BouncingScrollPhysics(),
-                        children: property.items!
-                            .map<Widget>((e) =>
-                                buildListItem(e, property, isProp: false))
-                            .toList(),
+                        children: property.items!.map<Widget>((e) => buildListItem(e, property, isProp: false)).toList(),
                       ),
                     ),
                     SizedBox(
@@ -883,8 +828,8 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(5),
+                                  bottomLeft: Radius.circular(15),
+                                  bottomRight: Radius.circular(15),
                                 ),
                               ),
                               color: Themes.primary,
@@ -926,15 +871,9 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
     var color;
 
     if (isProp) {
-      color = (selectedProps.containsKey(property.value!) &&
-              selectedProps[property.value!] == e.value.toString())
-          ? Themes.secondary
-          : App.theme.textTheme.bodyLarge?.color;
+      color = (selectedProps.containsKey(property.value!) && selectedProps[property.value!] == e.value.toString()) ? Themes.secondary : App.theme.textTheme.bodyLarge?.color;
     } else {
-      color = (selectedFeatures.containsKey(property.value!) &&
-              selectedFeatures[property.value!] == e.value.toString())
-          ? Themes.secondary
-          : App.theme.textTheme.bodyLarge?.color;
+      color = (selectedFeatures.containsKey(property.value!) && selectedFeatures[property.value!] == e.value.toString()) ? Themes.secondary : App.theme.textTheme.bodyLarge?.color;
     }
 
     return GestureDetector(

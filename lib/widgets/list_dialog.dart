@@ -53,8 +53,8 @@ class _ListDialog extends State<ListDialog> {
                   onPressed: () => Navigator.pop(context),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(5),
-                      bottomRight: Radius.circular(5),
+                      bottomLeft: Radius.circular(15),
+                      bottomRight: Radius.circular(15),
                     ),
                   ),
                   color: Themes.primary,
@@ -63,10 +63,7 @@ class _ListDialog extends State<ListDialog> {
                   height: 50,
                   child: Text(
                     "تایید",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: "IranSansBold"),
                   ),
                   padding: EdgeInsets.symmetric(vertical: 9),
                 ),

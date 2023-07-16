@@ -333,7 +333,7 @@ class _RequestListScreen extends State<RequestListScreen> {
                   " | ${request.title}",
               style: TextStyle(
                 fontSize: 13,
-                fontWeight: FontWeight.bold,
+                fontFamily: "IranSansBold",
               ),
             ),
             SizedBox(height: 10),
@@ -535,7 +535,7 @@ class _RequestListScreen extends State<RequestListScreen> {
                       style: TextStyle(
                         color: Colors.red,
                         fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        fontFamily: "IranSansBold",
                       ),
                     ),
                   ),

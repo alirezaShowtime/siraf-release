@@ -166,7 +166,7 @@ class _ChatListScreen extends State<ChatListScreen> {
                           style: TextStyle(
                             fontSize: 12,
                             color: Themes.text,
-                            fontWeight: FontWeight.bold,
+                            fontFamily: "IranSansBold",
                           ),
                         ),
                         Expanded(
@@ -176,7 +176,7 @@ class _ChatListScreen extends State<ChatListScreen> {
                             style: TextStyle(
                               fontSize: 10,
                               color: Themes.textGrey,
-                              // fontWeight: FontWeight.bold,
+                              // fontFamily: "IranSansBold",
                             ),
                           ),
                         ),

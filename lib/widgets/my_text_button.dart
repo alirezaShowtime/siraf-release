@@ -65,7 +65,7 @@ class _MyTextButton extends State<MyTextButton> {
             widget.text!,
             style: TextStyle(
               fontSize: widget.fontSize ?? 12,
-              fontWeight: FontWeight.bold,
+              fontFamily: "IranSansBold",
               color: widget.disable ? widget.disableTextColor : (widget.textColor ?? widget.rippleColor),
             ),
           ),
@@ -90,7 +90,7 @@ class _MyTextButton extends State<MyTextButton> {
             widget.text!,
             style: TextStyle(
               fontSize: widget.fontSize ?? 12,
-              fontWeight: FontWeight.bold,
+              fontFamily: "IranSansBold",
               color: widget.disable ? widget.disableTextColor : (widget.textColor ?? widget.rippleColor),
             ),
           ),

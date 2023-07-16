@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/bloc/edit_file_bloc.dart';
 import 'package:siraf3/bloc/upload_file_media_bloc.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/edit_file_form_data.dart';
@@ -14,7 +15,6 @@ import 'package:siraf3/screens/my_files_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/loading.dart';
-import 'package:siraf3/dialog.dart';
 import 'package:siraf3/widgets/text_form_field_2.dart';
 
 class EditFileFinal extends StatefulWidget {
@@ -593,7 +593,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
                     style: TextStyle(
                       color: Colors.red,
                       fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      fontFamily: "IranSansBold",
                     ),
                   ),
                 ),

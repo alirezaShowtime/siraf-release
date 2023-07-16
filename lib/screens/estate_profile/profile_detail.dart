@@ -111,7 +111,7 @@ extension ProfileDetail on _EstateProfileScreen {
               child: Text(
                 "مشاورین ${estateProfile.name}",
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
+                  fontFamily: "IranSansBold",
                   fontSize: 13,
                   color: Themes.text,
                 ),

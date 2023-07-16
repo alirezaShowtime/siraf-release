@@ -20,7 +20,7 @@ class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
             "لطفا کد تاییدی که به شماره # ارسال شده را وارد نمایید.",
             style: TextStyle(
               fontSize: 13,
-              fontWeight: FontWeight.bold,
+              fontFamily: "IranSansBold",
               color: Themes.text,
             ),
           ),
@@ -70,7 +70,7 @@ class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
                       border: InputBorder.none,
                       hintText: "- - - - - -",
                       hintStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
+                        fontFamily: "IranSansBold",
                         color: Colors.grey.shade400,
                         fontSize: 13,
                       ),
@@ -92,7 +92,7 @@ class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
                       "تایید",
                       style: TextStyle(
                         fontSize: 13,
-                        fontWeight: FontWeight.bold,
+                        fontFamily: "IranSansBold",
                         color: Colors.white,
                       ),
                     ),

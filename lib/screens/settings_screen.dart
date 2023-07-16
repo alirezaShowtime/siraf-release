@@ -213,7 +213,7 @@ class _SettingsScreen extends State<SettingsScreen> {
           //     style: TextStyle(
           //       color: Themes.blue,
           //       fontSize: 11,
-          //       fontWeight: FontWeight.bold,
+          //       fontFamily: "IranSansBold",
           //     ),
           //   ),
           //   onTap: twoVerification,
@@ -225,7 +225,7 @@ class _SettingsScreen extends State<SettingsScreen> {
               style: TextStyle(
                 color: isLastVersion ? Themes.text : Themes.blue,
                 fontSize: 11,
-                fontWeight: FontWeight.bold,
+                fontFamily: "IranSansBold",
               ),
             ),
             onTap: isLastVersion ? () {} : checkUpdate,

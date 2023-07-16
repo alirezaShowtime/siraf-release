@@ -540,7 +540,7 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
                     style: TextStyle(
                       color: Colors.red,
                       fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      fontFamily: "IranSansBold",
                     ),
                   ),
                 ),

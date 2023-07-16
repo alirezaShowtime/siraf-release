@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/screens/webview_screen.dart';
-import 'package:siraf3/themes.dart';
 
 class InquiryScreen extends StatefulWidget {
   const InquiryScreen({super.key});
@@ -114,7 +113,8 @@ class _InquiryScreenState extends State<InquiryScreen> {
         child: Text(
           title,
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 13,
+            fontFamily: "IranSansBold",
           ),
         ),
       ),

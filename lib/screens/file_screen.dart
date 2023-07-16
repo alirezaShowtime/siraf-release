@@ -583,7 +583,7 @@ class _FileScreenState extends State<FileScreen> {
                         ),
                         Text(
                           file.getPrice()?.value != null ? number_format(int.parse(file.getPrice()!.value!)) : "توافقی",
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 14, fontFamily: "IranSansBold"),
                         ),
                       ],
                     )
@@ -601,7 +601,7 @@ class _FileScreenState extends State<FileScreen> {
                             ),
                             Text(
                               file.getVadie()?.value != null ? number_format(int.parse(file.getVadie()!.value!)) : "توافقی",
-                              style: TextStyle(color: Themes.text, fontSize: 12, height: 1, fontWeight: FontWeight.bold),
+                              style: TextStyle(color: Themes.text, fontSize: 12, height: 1, fontFamily: "IranSansBold"),
                             ),
                           ],
                         ),
@@ -652,7 +652,7 @@ class _FileScreenState extends State<FileScreen> {
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 15,
-                    fontWeight: FontWeight.bold,
+                    fontFamily: "IranSansBold",
                   ),
                 ),
               ),
@@ -771,8 +771,8 @@ class _FileScreenState extends State<FileScreen> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(5),
+                                  bottomLeft: Radius.circular(15),
+                                  bottomRight: Radius.circular(15),
                                 ),
                               ),
                               color: Themes.primary,

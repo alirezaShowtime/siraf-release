@@ -48,7 +48,7 @@ class _MyTextIconButton extends State<MyTextIconButton> {
                   widget.text!,
                   style: TextStyle(
                     color: widget.color ?? widget.rippleColor,
-                    fontWeight: FontWeight.bold,
+                    fontFamily: "IranSansBold",
                     fontSize: 11,
                   ),
                 ),

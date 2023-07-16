@@ -257,7 +257,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                                         : "توافقی",
                                     style: TextStyle(
                                       fontSize: 13,
-                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "IranSansBold",
                                     ),
                                   ),
                                 ],
@@ -307,15 +307,8 @@ class _MyFileScreenState extends State<MyFileScreen> {
                                     ),
                                   ),
                                   Text(
-                                    state.file.getPrice()?.value != null
-                                        ? number_format(
-                                            state.file.getPrice()?.value)
-                                        : "توافقی",
-                                    style: TextStyle(
-                                        color: Themes.text,
-                                        fontSize: 13,
-                                        height: 1,
-                                        fontWeight: FontWeight.bold),
+                                    state.file.getPrice()?.value != null ? number_format(state.file.getPrice()?.value) : "توافقی",
+                                    style: TextStyle(color: Themes.text, fontSize: 13, height: 1, fontFamily: "IranSansBold"),
                                   ),
                                 ],
                               ),

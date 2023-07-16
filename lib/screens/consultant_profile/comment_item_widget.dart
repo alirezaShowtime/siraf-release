@@ -169,7 +169,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
                     style: TextStyle(
                       color: Themes.text,
                       fontSize: 10,
-                      fontWeight: FontWeight.bold,
+                      fontFamily: "IranSansBold",
                     ),
                   ),
                 ),

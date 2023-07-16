@@ -492,7 +492,7 @@ class _FilesMapScreenState extends State<FilesMapScreen>
                         style: TextStyle(
                           color: Colors.red,
                           fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                          fontFamily: "IranSansBold",
                         ),
                       ),
                     ),

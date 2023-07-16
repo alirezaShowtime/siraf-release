@@ -63,7 +63,7 @@ class _BlockBtn extends State<BlockBtn> {
       style: TextStyle(
         fontSize: 15,
         color: Colors.white,
-        fontWeight: FontWeight.bold,
+        fontFamily: "IranSansBold",
       ),
     );
   }
