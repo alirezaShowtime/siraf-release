@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:siraf3/bookmark.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
@@ -9,7 +10,8 @@ import 'package:siraf3/models/file.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
-import 'package:siraf3/bookmark.dart';
+
+import 'my_icon_button.dart';
 
 class FileSlideItem extends StatefulWidget {
   File file;
@@ -48,8 +50,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
       }
     });
 
-    bookmark =
-        Bookmark(id: widget.file.id!, isFavorite: isFavorite, context: context);
+    bookmark = Bookmark(id: widget.file.id!, isFavorite: isFavorite, context: context);
 
     bookmark.favoriteStream.stream.listen((bool data) {
       setState(() {
@@ -73,9 +74,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                   height: 250,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(IMAGE_NOT_AVAILABLE),
-                        alignment: Alignment.center),
+                    image: DecorationImage(image: AssetImage(IMAGE_NOT_AVAILABLE), alignment: Alignment.center),
                   ),
                 ),
               if (widget.file.images != null && widget.file.images!.isNotEmpty)
@@ -94,15 +93,13 @@ class _FileSlideItemState extends State<FileSlideItem> {
                   indicatorsCenterAlign: true,
                   viewportFraction: 1.0,
                   itemMargin: EdgeInsets.only(bottom: 15),
-                  indicatorPosition:
-                      EdgeInsets.only(left: 0, right: 0, bottom: 0),
+                  indicatorPosition: EdgeInsets.only(left: 0, right: 0, bottom: 0),
                   itemBorderRadius: BorderRadius.zero,
                   imageFit: BoxFit.cover,
                   indicatorSelectedColor: Themes.blue,
                   indicatorColor: Colors.grey,
                 ),
-              if (widget.file.getFirstPrice().isNotEmpty ||
-                  widget.file.getSecondPrice().isNotEmpty)
+              if (widget.file.getFirstPrice().isNotEmpty || widget.file.getSecondPrice().isNotEmpty)
                 Positioned(
                   bottom: 22.5,
                   right: 7.5,
@@ -124,8 +121,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                               fontSize: 14,
                             ),
                           ),
-                        if (widget.file.getFirstPrice().isEmpty &&
-                            widget.file.getSecondPrice().isNotEmpty)
+                        if (widget.file.getFirstPrice().isEmpty && widget.file.getSecondPrice().isNotEmpty)
                           SizedBox(
                             height: 5,
                           ),
@@ -142,8 +138,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                     ),
                   ),
                 ),
-              if (widget.file.getFirstPrice().isEmpty &&
-                  widget.file.getSecondPrice().isEmpty)
+              if (widget.file.getFirstPrice().isEmpty && widget.file.getSecondPrice().isEmpty)
                 Positioned(
                   bottom: 22.5,
                   right: 7.5,
@@ -170,12 +165,8 @@ class _FileSlideItemState extends State<FileSlideItem> {
                 ),
             ],
           ),
-          SizedBox(
-            height: 4,
-          ),
-          SizedBox(
-            height: 4,
-          ),
+          SizedBox(height: 4),
+          SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -189,9 +180,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                       });
                     },
                     icon: Icon(
-                      isFavorite
-                          ? CupertinoIcons.bookmark_fill
-                          : CupertinoIcons.bookmark,
+                      isFavorite ? CupertinoIcons.bookmark_fill : CupertinoIcons.bookmark,
                       color: App.theme.iconTheme.color,
                     ),
                   ),
@@ -201,14 +190,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          (widget.file.fullCategory != null
-                                  ? widget.file.fullCategory!
-                                          .getMainCategoryName()
-                                          .toString()
-                                          .trim() +
-                                      " | "
-                                  : "") +
-                              widget.file.name!.trim(),
+                          (widget.file.fullCategory != null ? widget.file.fullCategory!.getMainCategoryName().toString().trim() + " | " : "") + widget.file.name!.trim(),
                           style: TextStyle(
                             color: App.theme.textTheme.bodyLarge?.color,
                             fontFamily: "IranSans",
@@ -217,9 +199,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                           maxLines: 2,
                         ),
                         Text(
-                          widget.file.publishedAgo! +
-                              ' | ' +
-                              (widget.file.city?.name ?? ""),
+                          widget.file.publishedAgo! + ' | ' + (widget.file.city?.name ?? ""),
                           style: TextStyle(
                             color: App.theme.tooltipTheme.textStyle?.color,
                             fontFamily: "IranSans",
@@ -231,8 +211,8 @@ class _FileSlideItemState extends State<FileSlideItem> {
                   )
                 ],
               ),
-              IconButton(
-                onPressed: () async {
+              MyIconButton(
+                onTap: () async {
                   await FlutterShare.share(
                     title: 'اشتراک گذاری فایل',
                     text: widget.file.name ?? '',
@@ -240,10 +220,8 @@ class _FileSlideItemState extends State<FileSlideItem> {
                     chooserTitle: 'اشتراک گذاری در',
                   );
                 },
-                icon: Image(
-                  image: AssetImage("assets/images/ic_share.png"),
-                  width: 16,
-                  height: 16,
+                icon: Icon(
+                  Icons.share_rounded,
                   color: App.theme.iconTheme.color,
                 ),
               ),
@@ -253,15 +231,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
             padding: const EdgeInsets.only(left: 15, right: 15, bottom: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: widget.file.propertys
-                      ?.where((element) =>
-                          element.weightList == 1 ||
-                          element.weightList == 2 ||
-                          element.weightList == 3 ||
-                          element.weightList == 4)
-                      .take(4)
-                      .toList()
-                      .map<Widget>((e) {
+              children: widget.file.propertys?.where((element) => element.weightList == 1 || element.weightList == 2 || element.weightList == 3 || element.weightList == 4).take(4).toList().map<Widget>((e) {
                     return Text(
                       "${e.name} ${nonIfZero(e.value)}",
                       style: TextStyle(

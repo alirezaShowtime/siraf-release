@@ -230,10 +230,8 @@ class _HomeScreenState extends State<HomeScreen> {
               showBadge: hasNewMessage,
               position: badges.BadgePosition.custom(top: -17, start: -4),
               badgeStyle: badges.BadgeStyle(badgeColor: Themes.primary),
-              child: Image(
-                image: AssetImage("assets/images/ic_menu.png"),
-                width: 25,
-                height: 25,
+              child: Icon(
+                Icons.menu_rounded,
                 color: App.theme.iconTheme.color,
               ),
             ),
@@ -345,7 +343,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget fileItem(File file) {
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         Navigator.push(
           context,

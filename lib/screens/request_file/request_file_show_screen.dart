@@ -237,7 +237,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                   fit: BoxFit.fill,
                   loadingBuilder: (context, child, eventProgress) {
                     return Image.asset(
-                      "assets/images/profile.png",
+                      "assets/images/profile.jpg",
                       width: 40,
                       height: 40,
                       fit: BoxFit.fill,

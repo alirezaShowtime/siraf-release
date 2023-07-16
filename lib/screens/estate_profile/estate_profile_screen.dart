@@ -264,8 +264,8 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
                 Avatar(
                   size: 45,
                   imagePath: consultant.avatar,
-                  errorImage: AssetImage("assets/images/profile.png"),
-                  loadingImage: AssetImage("assets/images/profile.png"),
+                  errorImage: AssetImage("assets/images/profile.jpg"),
+                  loadingImage: AssetImage("assets/images/profile.jpg"),
                 ),
                 SizedBox(height: 5),
                 Text(

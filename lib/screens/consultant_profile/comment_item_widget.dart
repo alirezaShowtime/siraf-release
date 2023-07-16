@@ -82,8 +82,8 @@ class _CommentItemWidget extends State<CommentItemWidget> {
                   Avatar(
                     size: 40,
                     imagePath: widget.comment.userId?.avatar ?? "",
-                    errorImage: AssetImage("assets/images/profile.png"),
-                    loadingImage: AssetImage("assets/images/profile.png"),
+                    errorImage: AssetImage("assets/images/profile.jpg"),
+                    loadingImage: AssetImage("assets/images/profile.jpg"),
                   ),
                   SizedBox(width: 10),
                   Text(

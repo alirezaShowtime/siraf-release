@@ -21,6 +21,7 @@ import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
@@ -346,12 +347,10 @@ class _FileScreenState extends State<FileScreen> {
             ],
           ),
         ),
-        IconButton(
-          onPressed: () => share(file),
-          icon: m.Image(
-            image: AssetImage("assets/images/ic_share.png"),
-            width: 16,
-            height: 16,
+        MyIconButton(
+          onTap: () => share(file),
+          icon: Icon(
+            Icons.share_rounded,
             color: App.theme.iconTheme.color,
           ),
         ),
@@ -871,14 +870,12 @@ class _FileScreenState extends State<FileScreen> {
             Row(
               children: [
                 if (titleShow)
-                  IconButton(
-                    onPressed: () => share(file),
+                  MyIconButton(
+                    onTap: () => share(file),
                     icon: Stack(
                       children: <Widget>[
-                        m.Image(
-                          image: AssetImage("assets/images/ic_share.png"),
-                          width: 16,
-                          height: 16,
+                        Icon(
+                          Icons.share_rounded,
                           color: App.theme.iconTheme.color,
                         ),
                       ],
