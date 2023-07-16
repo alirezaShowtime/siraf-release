@@ -23,11 +23,13 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
 
     messageConfig = getConfig();
 
-    if (widget.files.isFill()) {
-      player.setSource(DeviceFileSource(widget.files!.first.path));
-    } else {
-      player.setSource(UrlSource(widget.fileMessages[0].path!));
-    }
+    setSourcePlayer();
+
+    player.onPlayerStateChanged.listen((state) {
+      if (state == PlayerState.completed) {
+        setSourcePlayer();
+      }
+    });
 
     BlocProvider.of<VoiceMessagePlayBloc>(context).add(VoiceMessagePlayRegisterPlayerEvent(player));
   }
@@ -51,7 +53,7 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               SizedBox(height: 10),
-              StreamBuilder<Duration?>(
+              StreamBuilder<Duration>(
                 stream: player.onPositionChanged,
                 builder: (context, snapshot) {
                   if ((voiceDuration?.inSeconds ?? 0) == 0 || (snapshot.data?.inSeconds ?? 0) == 0) {
@@ -71,19 +73,15 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
               ),
               SizedBox(height: 5),
               StreamBuilder<Duration?>(
-                stream: player.onPositionChanged,
+                stream: getCurrentDurationVoice(),
                 builder: (context, snapshot) {
-                  var time = "00:00";
-                  if ((voiceDuration?.inSeconds ?? 0) != 0 && (snapshot.data?.inSeconds ?? 0) != 0) {
-                    time = timeFormatter(voiceDuration!.inSeconds - snapshot.data!.inSeconds);
-                  }
                   return Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(Icons.circle, size: 7, color: messageConfig.primaryColor),
                       SizedBox(width: 2),
                       Text(
-                        time,
+                        timeFormatter(snapshot.data?.inSeconds ?? 0),
                         style: TextStyle(
                           height: 1,
                           fontSize: 10,
@@ -127,10 +125,6 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
 
   void playVoice() async {
     BlocProvider.of<VoiceMessagePlayBloc>(context).add(VoiceMessagePlayPlayOrStop(player));
-
-    if (voiceDuration == null) {
-      voiceDuration = await player.getDuration();
-    }
   }
 
   @override
@@ -147,5 +141,24 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
         Positioned(bottom: 0, right: 0, child: footerWidget(widget.message.isSeen, widget.message.createTime!)),
       ],
     );
+  }
+
+  void setSourcePlayer() async {
+    if (widget.files.isFill()) {
+      player.setSource(DeviceFileSource(widget.files!.first.path));
+    } else {
+      player.setSource(UrlSource(widget.fileMessages[0].path!));
+    }
+    voiceDuration = await player.onDurationChanged.first;
+  }
+
+  Stream<Duration> getCurrentDurationVoice() async* {
+    var count = await player.onDurationChanged.first;
+
+    yield count;
+
+    yield* player.onPositionChanged.asyncExpand((position) async* {
+      yield Duration(seconds: count.inSeconds - position.inSeconds);
+    });
   }
 }

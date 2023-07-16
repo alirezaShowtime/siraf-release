@@ -1,6 +1,14 @@
 part of 'chat_screen.dart';
 
 extension BlocListeners on _ChatScreen {
+  void chatReplyBlocListener() {
+    chatReplyBloc.stream.listen((reply) {
+      if (reply != null) {
+        replyMessage = reply;
+      }
+    });
+  }
+
   void selectMessageBlocListener() {
     selectMessageBloc.stream.listen((state) {
       if (state is SelectMessageSelectState) {
@@ -23,14 +31,24 @@ extension BlocListeners on _ChatScreen {
   void recordingVoiceBlocListener() {
     recordingVoiceBloc.stream.listen((state) async {
       if (state == RecordingVoiceState.Cancel) {
+        await cancelRecording();
         endTimer();
       }
       if (state == RecordingVoiceState.Recording) {
+        print("status record! start");
+        await startRecording();
         startTimer();
       }
       if (state == RecordingVoiceState.Done) {
-        endTimer();
-        listViewSetState?.call(() {});
+        try {
+          print("status record! stop");
+          var path = await stopRecording();
+
+          if (recordTime < 1) return;
+
+          endTimer();
+          sendMessage(null, [File(path!)], replyMessage);
+        } catch (e) {}
       }
     });
   }
@@ -63,7 +81,7 @@ extension BlocListeners on _ChatScreen {
         lastMessage = state.message.message;
 
         listViewSetState?.call(
-          () => messageWidgets.replace(
+              () => messageWidgets.replace(
             i,
             ChatMessageWidget(
               key: Key(state.message.id!.toString()),

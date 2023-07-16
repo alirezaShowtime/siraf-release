@@ -90,6 +90,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
                           iconData: Icons.keyboard_voice_outlined,
                           onTapDown: (_) => BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Recording)),
                           onTapUp: (_) => BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Done)),
+                          onTap: () {},
                         ),
                       ),
                     if (!showSendButton)
