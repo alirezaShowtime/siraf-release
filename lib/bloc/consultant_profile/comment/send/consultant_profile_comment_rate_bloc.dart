@@ -6,6 +6,7 @@ import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/consultant_info.dart';
 
 part 'consultant_profile_comment_rate_event.dart';
+
 part 'consultant_profile_comment_rate_state.dart';
 
 class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRateEvent, ConsultantProfileCommentRateState> {
