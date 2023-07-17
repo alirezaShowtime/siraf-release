@@ -11,8 +11,10 @@ import 'package:siraf3/bloc/estate_bloc.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/map_utilities.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/estate.dart';
+import 'package:siraf3/screens/estate_profile/estate_profile_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
@@ -29,7 +31,7 @@ class EstateScreen extends StatefulWidget {
   State<EstateScreen> createState() => _EstateScreenState();
 }
 
-class _EstateScreenState extends State<EstateScreen> {
+class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMixin {
   List<City> cities = [];
 
   bool _showFileOnMyLocation = false;
@@ -43,7 +45,7 @@ class _EstateScreenState extends State<EstateScreen> {
     getCities();
     setEstates();
 
-    bloc.stream.listen((event) {
+    bloc.stream.listen((event) async {
       if (event is EstateLoadedState) {
         setState(() {
           currentSortType = event.sort_type;
@@ -56,6 +58,17 @@ class _EstateScreenState extends State<EstateScreen> {
               _controller.move(myLocationMarker!.point, getZoomLevel(3000));
             });
           });
+        } else {
+          if (event.search) {
+            if (event.estates.isNotEmpty) {
+              animatedMapMove(_controller, LatLng(double.parse(event.estates.first.lat!), double.parse(event.estates.first.long!)), 12, this);
+            }
+          } else {
+            var city = (await City.getList()).first;
+            Future.delayed(Duration(milliseconds: 100), () {
+              _controller.move(LatLng(double.parse(city.lat!), double.parse(city.long!)), 12);
+            });
+          }
         }
       }
     });
@@ -76,12 +89,8 @@ class _EstateScreenState extends State<EstateScreen> {
     bloc.add(
       EstateLoadEvent(
         city_ids: cities.map((e) => e.id!).toList(),
-        search: _searchController.text.trim().isEmpty
-            ? null
-            : _searchController.text.trim(),
-        latLng: (_showFileOnMyLocation && myLocationMarker != null)
-            ? myLocationMarker!.point
-            : null,
+        search: _searchController.text.trim().isEmpty ? null : _searchController.text.trim(),
+        latLng: (_showFileOnMyLocation && myLocationMarker != null) ? myLocationMarker!.point : null,
         sort: currentSortType,
       ),
     );
@@ -151,15 +160,16 @@ class _EstateScreenState extends State<EstateScreen> {
           elevation: 0.7,
           title: TextField2(
             decoration: InputDecoration(
-              hintText: "جستجو در دفاتر املاک | " +
-                  cities.map((e) => e.name).join(' و '),
+              hintText: "جستجو در دفاتر املاک | " + cities.map((e) => e.name).join(' و '),
               hintStyle: TextStyle(color: Themes.textGrey, fontSize: 13),
               border: InputBorder.none,
             ),
             controller: _searchController,
             style: TextStyle(color: Themes.text, fontSize: 13),
             textInputAction: TextInputAction.search,
-            onSubmitted: (value) {},
+            onSubmitted: (value) {
+              getEstates();
+            },
           ),
           automaticallyImplyLeading: false,
           titleSpacing: 0,
@@ -334,8 +344,7 @@ class _EstateScreenState extends State<EstateScreen> {
         body: Column(
           children: [
             Expanded(
-              child:
-                  BlocBuilder<EstateBloc, EstateState>(builder: _buildMainBloc),
+              child: BlocBuilder<EstateBloc, EstateState>(builder: _buildMainBloc),
             ),
             if (selectedEstates.isNotEmpty)
               Padding(
@@ -462,8 +471,7 @@ class _EstateScreenState extends State<EstateScreen> {
                 mapController: _controller,
                 options: MapOptions(
                   center: defaultLocation,
-                  interactiveFlags:
-                      InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                  interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                   zoom: 14.0,
                   onTap: (_, _1) {
                     // MapsLauncher.launchCoordinates(file.lat!, file.long!);
@@ -473,8 +481,7 @@ class _EstateScreenState extends State<EstateScreen> {
                 children: [
                   TileLayerWidget(
                     options: TileLayerOptions(
-                      urlTemplate:
-                          "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+                      urlTemplate: "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
                     ),
                   ),
                   CircleLayerWidget(
@@ -549,9 +556,7 @@ class _EstateScreenState extends State<EstateScreen> {
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: _showFileOnMyLocation
-                        ? Themes.primary
-                        : Themes.background,
+                    color: _showFileOnMyLocation ? Themes.primary : Themes.background,
                     borderRadius: BorderRadius.circular(100),
                     boxShadow: [
                       BoxShadow(
@@ -573,9 +578,7 @@ class _EstateScreenState extends State<EstateScreen> {
                     style: TextStyle(
                       fontSize: 15,
                       fontFamily: "IranSansMedium",
-                      color: _showFileOnMyLocation
-                          ? Themes.textLight
-                          : Themes.text,
+                      color: _showFileOnMyLocation ? Themes.textLight : Themes.text,
                     ),
                   ),
                 ),
@@ -623,10 +626,7 @@ class _EstateScreenState extends State<EstateScreen> {
 
     LocationData locationData = await _location.getLocation();
 
-    if (locationData.latitude == null ||
-        locationData.longitude == null ||
-        locationData.latitude == 0 ||
-        locationData.longitude == 0) {
+    if (locationData.latitude == null || locationData.longitude == null || locationData.latitude == 0 || locationData.longitude == 0) {
       notify("موقعیت مکانی دریافت نشد");
       return;
     }
@@ -701,7 +701,7 @@ class _EstateScreenState extends State<EstateScreen> {
                       size: 10,
                     );
                   },
-                  rating: 4.2,
+                  rating: estate.rate ?? 0.0,
                 ),
               ),
               Text(
@@ -783,8 +783,7 @@ class _EstateScreenState extends State<EstateScreen> {
                                 itemCount: 5,
                                 itemSize: 14,
                                 unratedColor: Colors.grey,
-                                itemPadding:
-                                    EdgeInsets.symmetric(horizontal: .2),
+                                itemPadding: EdgeInsets.symmetric(horizontal: .2),
                                 itemBuilder: (context, _) {
                                   return Icon(
                                     Icons.star,
@@ -864,8 +863,7 @@ class _EstateScreenState extends State<EstateScreen> {
                                       (element) => element.id == estate.id,
                                     );
                                   } else {
-                                    selectedEstates =
-                                        selectedEstates + [estate];
+                                    selectedEstates = selectedEstates + [estate];
                                   }
                                 });
 
@@ -895,7 +893,17 @@ class _EstateScreenState extends State<EstateScreen> {
                           ),
                           Expanded(
                             child: MaterialButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => EstateProfileScreen(
+                                      estateId: estate.id!,
+                                      estateName: estate.name,
+                                    ),
+                                  ),
+                                );
+                              },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(15),
@@ -983,8 +991,7 @@ class _EstateScreenState extends State<EstateScreen> {
                                 itemCount: 5,
                                 itemSize: 14,
                                 unratedColor: Colors.grey,
-                                itemPadding:
-                                    EdgeInsets.symmetric(horizontal: .2),
+                                itemPadding: EdgeInsets.symmetric(horizontal: .2),
                                 itemBuilder: (context, _) {
                                   return Icon(
                                     Icons.star,

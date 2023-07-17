@@ -13,18 +13,7 @@ class MyFile {
   Category? category;
   String? city;
 
-  MyFile(
-      {this.id,
-      this.progress,
-      this.viewCount,
-      this.name,
-      this.description,
-      this.images,
-      this.favorite,
-      this.publishedAgo,
-      this.propertys,
-      this.category,
-      this.city});
+  MyFile({this.id, this.progress, this.viewCount, this.name, this.description, this.images, this.favorite, this.publishedAgo, this.propertys, this.category, this.city});
 
   MyFile.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -43,9 +32,7 @@ class MyFile {
       description = json["description"];
     }
     if (json["images"] is List) {
-      images = json["images"] == null
-          ? null
-          : (json["images"] as List).map((e) => Images.fromJson(e)).toList();
+      images = json["images"] == null ? null : (json["images"] as List).map((e) => Images.fromJson(e)).toList();
     }
     if (json["favorite"] is bool) {
       favorite = json["favorite"];
@@ -54,15 +41,10 @@ class MyFile {
       publishedAgo = json["publishedAgo"];
     }
     if (json["propertys"] is List) {
-      propertys = json["propertys"] == null
-          ? null
-          : (json["propertys"] as List)
-              .map((e) => Propertys.fromJson(e))
-              .toList();
+      propertys = json["propertys"] == null ? null : (json["propertys"] as List).map((e) => Propertys.fromJson(e)).toList();
     }
     if (json["category"] is Map) {
-      category =
-          json["category"] == null ? null : Category.fromJson(json["category"]);
+      category = json["category"] == null ? null : Category.fromJson(json["category"]);
     }
     if (json["city"] is String) {
       city = json["city"];
@@ -100,6 +82,45 @@ class MyFile {
     return list2;
   }
 
+  String getPricePerMeter() {
+    if (getFirstPriceInt() == 0 || getMeter() == 0) {
+      return "توافقی";
+    }
+    var result = getFirstPriceInt() ~/ getMeter();
+
+    if (result == 0) {
+      return "توافقی";
+    }
+
+    result = (result / 100000).round() * 100000;
+
+    return number_format(result);
+  }
+
+  int getMeter() {
+    if (propertys!.where((element) => element.key == "meter").isNotEmpty) {
+      var prop = propertys!.firstWhere((element) => element.key == "meter");
+
+      if (prop.value == null || prop.name == null) return 0;
+
+      return int.parse(prop.value!);
+    } else {
+      return 0;
+    }
+  }
+  
+  int getFirstPriceInt() {
+    if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
+      var prop = propertys!.firstWhere((element) => element.weightList == 5);
+
+      if (prop.value == null || prop.name == null) return 0;
+
+      return int.parse(prop.value!);
+    } else {
+      return 0;
+    }
+  }
+
   String getFirstPrice() {
     if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 5);
@@ -131,13 +152,7 @@ class Category {
   bool? isAll;
   int? parentId;
 
-  Category(
-      {this.id,
-      this.name,
-      this.image,
-      this.fullCategory,
-      this.isAll,
-      this.parentId});
+  Category({this.id, this.name, this.image, this.fullCategory, this.isAll, this.parentId});
 
   Category.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -176,18 +191,25 @@ class Category {
 
 class Propertys {
   String? name;
-  int? value;
+  String? key;
+  String? value;
   bool? list;
   int? weightList;
 
-  Propertys({this.name, this.value, this.list, this.weightList});
+  Propertys({this.name, this.key, this.value, this.list, this.weightList});
 
   Propertys.fromJson(Map<String, dynamic> json) {
     if (json["name"] is String) {
       name = json["name"];
     }
     if (json["value"] is int) {
+      value = json["value"].toString();
+    }
+    if (json["value"] is String) {
       value = json["value"];
+    }
+    if (json["key"] is String) {
+      key = json["key"];
     }
     if (json["list"] is bool) {
       list = json["list"];
@@ -216,14 +238,7 @@ class Images {
   String? name;
   int? fileId;
 
-  Images(
-      {this.id,
-      this.createDate,
-      this.path,
-      this.status,
-      this.weight,
-      this.name,
-      this.fileId});
+  Images({this.id, this.createDate, this.path, this.status, this.weight, this.name, this.fileId});
 
   Images.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {

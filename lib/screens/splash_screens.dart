@@ -141,7 +141,7 @@ class _SplashScreenState extends State<SplashScreen>
                           child: Padding(
                             padding: const EdgeInsets.only(right: 2.0),
                             child: Text(
-                              "پایان جستجو اینجاست!",
+                              "پلتفرم دسترسی به املاک شهر",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 15,

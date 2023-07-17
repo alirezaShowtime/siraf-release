@@ -318,6 +318,11 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
         cities = result;
       });
 
+      print(cities);
+      cities.forEach((element) {
+        print(element.toJson());
+      });
+
       City.saveList(cities, key: "estates");
 
       await getCities();
@@ -329,7 +334,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
 
   BuildContext? errorDialogContext;
 
-  void listener(EstateState state) {
+  void listener(EstateState state) async {
     if (state is EstateLoadingState) {
       loadingDialog(context: context, showMessage: false);
     } else if (state is EstateErrorState) {
@@ -392,11 +397,17 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
           _firstTime = false;
         });
         _onMyLocationClicked();
-      } else {
-        _controller.move(defaultLocation, 14);
       }
 
-      if (estates.isNotEmpty) animatedMapMove(_controller, LatLng(double.parse(estates.elementAt(0).lat!), double.parse(estates.elementAt(0).long!)), _controller.zoom, this);
+      if (state.search) {
+        if (state.estates.isNotEmpty) {
+          animatedMapMove(_controller, LatLng(double.parse(state.estates.first.lat!), double.parse(state.estates.first.long!)), 12, this);
+        } else {
+          notify("موردی یافت نشد");
+        }
+      } else if (cities.isNotEmpty) {
+        animatedMapMove(_controller, LatLng(double.parse(cities.first.lat!), double.parse(cities.first.long!)), 12, this);
+      }
     }
   }
 
