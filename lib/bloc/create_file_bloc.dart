@@ -45,20 +45,15 @@ class CreateFileBloc extends Bloc<CreateFileEvent, CreateFileState> {
         "Authorization": await User.getBearerToken(),
       };
 
-      var videos = event.data.files
-          .where((element) =>
-              checkVideoExtension((element['file'] as io.File).path))
-          .toList();
+      var videos = event.data.files.where((element) => checkVideoExtension((element['file'] as io.File).path)).toList();
 
-      var images = event.data.files
-          .where((element) =>
-              checkImageExtension((element['file'] as io.File).path))
-          .toList();
+      var images = event.data.files.where((element) => checkImageExtension((element['file'] as io.File).path)).toList();
+      
+      
+      print("_________________________FILES_PURE____________________________");
+      print(event.data.files);
 
-      var tours = event.data.files
-          .where((element) =>
-              p.extension((element['file'] as io.File).path) == "zip")
-          .toList();
+      var tours = event.data.files.where((element) => (element['file'] as io.File).path.endsWith("zip")).toList();
       var tour = tours.isNotEmpty ? tours.first : null;
 
       var formData = FormData.fromMap({
@@ -81,24 +76,20 @@ class CreateFileBloc extends Bloc<CreateFileEvent, CreateFileState> {
       });
 
       formData.files.addAll([
-        for (Map<String, dynamic> item in images)
-          MapEntry<String, MultipartFile>("images",
-              await MultipartFile.fromFile((item['file'] as io.File).path)),
-        for (Map<String, dynamic> item in videos)
-          MapEntry<String, MultipartFile>("videos",
-              await MultipartFile.fromFile((item['file'] as io.File).path)),
-        if (tour != null)
-          MapEntry("virtualTour",
-              await MultipartFile.fromFile((tour['file'] as io.File).path)),
+        for (Map<String, dynamic> item in images) MapEntry<String, MultipartFile>("images", await MultipartFile.fromFile((item['file'] as io.File).path)),
+        for (Map<String, dynamic> item in videos) MapEntry<String, MultipartFile>("videos", await MultipartFile.fromFile((item['file'] as io.File).path)),
+        if (tour != null) MapEntry("virtualTour", await MultipartFile.fromFile((tour['file'] as io.File).path)),
       ]);
 
-      var url = event.data.estates.isEmpty
-          ? getFileUrl("file/addFileSiraf/").toString()
-          : getFileUrl("file/addFileEstate/").toString();
+      var url = event.data.estates.isEmpty ? getFileUrl("file/addFileSiraf/").toString() : getFileUrl("file/addFileEstate/").toString();
+
+      print("_________________________TOUR____________________________");
+      print(tour);
 
       print(url);
       print(headers);
       print(formData.fields);
+      print("_________________________FILES____________________________");
       print(formData.files);
 
       response = await Dio().post(

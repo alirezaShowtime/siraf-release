@@ -80,6 +80,9 @@ String number_format(number, {String? defaultValue}) {
   if (number == null) {
     return defaultValue ?? "";
   }
+  if (number is String) {
+    number = num.parse(number);
+  }
   return fr.NumberFormat.decimalPattern().format(number);
 }
 

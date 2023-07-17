@@ -25,8 +25,7 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   final Duration duration = const Duration(milliseconds: 500);
   late AnimationController _controller;
   bool isHidden = true;
@@ -131,10 +130,11 @@ class _SplashScreenState extends State<SplashScreen>
                 height: activeConnection ? 140 : 180,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Stack(
                       children: [
-                        SizedBox(height: 100, width: 120),
+                        SizedBox(height: 100, width: 140),
                         AnimatedPositioned(
                           duration: duration,
                           top: isHidden ? 0 : 35,
@@ -150,21 +150,26 @@ class _SplashScreenState extends State<SplashScreen>
                             ),
                           ),
                         ),
-                        Container(
-                          color: Themes.primary,
-                          child: Image(
-                            image:
-                                AssetImage('assets/images/siraf_logo_text.png'),
-                            width: 120,
+                        Positioned(
+                          right: 0,
+                          left: 0,
+                          top: 0,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                color: Themes.primary,
+                                child: Image(
+                                  image: AssetImage('assets/images/siraf_logo_text.png'),
+                                  width: 120,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                    if (activeConnection)
-                      SpinKitThreeBounce(
-                          size: 15,
-                          color: Colors.white,
-                          duration: Duration(milliseconds: 800)),
+                    if (activeConnection) SpinKitThreeBounce(size: 15, color: Colors.white, duration: Duration(milliseconds: 800)),
                     if (!activeConnection)
                       Text(
                         "خطا در اتصال به اینترنت!",
@@ -207,17 +212,15 @@ class _SplashScreenState extends State<SplashScreen>
   void dispose() {
     super.dispose();
 
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: SystemUiOverlay.values);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
   }
 
   Future refreshToken() async {
     var user = (await User.fromLocal());
-    var response =
-        await http2.post(Uri.parse("https://auth.siraf.app/api/token/refresh/"),
-            body: jsonEncode({
-              "refresh": user.refreshToken ?? "",
-            }));
+    var response = await http2.post(Uri.parse("https://auth.siraf.app/api/token/refresh/"),
+        body: jsonEncode({
+          "refresh": user.refreshToken ?? "",
+        }));
 
     if (isResponseOk(response)) {
       var body = jDecode(response.body);
@@ -233,8 +236,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (!((await sharedPreferences.getBool("IS_INTRO_SHOW")) ?? false)) {
       sharedPreferences.setBool("IS_INTRO_SHOW", true);
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (_) => IntroScreen()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => IntroScreen()));
       return;
     }
 
