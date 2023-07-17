@@ -32,6 +32,6 @@ class ChatDeleteMessageBloc extends Bloc<ChatDeleteMessageEvent, ChatDeleteMessa
       return emit(ChatDeleteMessageError(res));
     }
 
-    return emit(ChatDeleteMessageSuccess());
+    return emit(ChatDeleteMessageSuccess(event.ids));
   }
 }

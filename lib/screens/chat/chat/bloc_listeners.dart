@@ -14,8 +14,12 @@ extension BlocListeners on _ChatScreen {
         dismissDialog(loadingDialogContext);
         notify("با موفقیت حذف شد.");
 
-        //todo
-        // messageWidgets.removeWhere((e) => e.equalTo(state.));
+        selectMessageBloc.add(SelectMessageClearEvent());
+        listViewSetState?.call(() {
+          for (int messageId in state.ids) {
+            messageWidgets.removeWhere((e) => e.equalTo(messageId));
+          }
+        });
       }
     });
   }
@@ -81,7 +85,7 @@ extension BlocListeners on _ChatScreen {
         lastMessage = state.message.message;
 
         listViewSetState?.call(
-              () => messageWidgets.replace(
+          () => messageWidgets.replace(
             i,
             ChatMessageWidget(
               messageKey: MessageWidgetKey(state.message),

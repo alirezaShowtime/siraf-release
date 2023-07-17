@@ -3,14 +3,7 @@ part of 'chat_screen.dart';
 extension VoiceRecorder on _ChatScreen {
   Future<void> startRecording() async {
     print("status record start");
-    Map<Permission, PermissionStatus> permissions = await [
-      Permission.storage,
-      Permission.microphone,
-    ].request();
-
-    bool permissionsGranted = permissions[Permission.storage]!.isGranted && permissions[Permission.microphone]!.isGranted;
-
-    if (permissionsGranted) {
+    if (await recordPermissionsRequest()) {
       Directory appFolder = await getTemporaryDirectory();
       bool appFolderExists = await appFolder.exists();
       if (!appFolderExists) {
@@ -45,4 +38,13 @@ extension VoiceRecorder on _ChatScreen {
       }
     } catch (e) {}
   }
+}
+
+Future<bool> recordPermissionsRequest() async {
+  Map<Permission, PermissionStatus> permissions = await [
+    Permission.storage,
+    Permission.microphone,
+  ].request();
+
+  return permissions[Permission.storage]!.isGranted && permissions[Permission.microphone]!.isGranted;
 }

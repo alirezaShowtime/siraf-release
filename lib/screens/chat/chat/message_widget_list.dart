@@ -33,11 +33,18 @@ class MessageWidgetList {
   }
 
   List<Widget> getList() {
+
+    print("_list.last ${_list.last}");
+    if (_list.last.value is DateBadge) {
+      _list.removeLast();
+    }
+
     List<Widget> newList = [];
 
     for (MapEntry mapEntry in _list) {
       newList.add(mapEntry.value);
     }
+
     return newList.reversed.toList();
   }
 

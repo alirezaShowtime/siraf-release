@@ -84,12 +84,12 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
                       ),
                     if (!showSendButton)
                       GestureDetector(
-                        onHorizontalDragStart: (_) => BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Cancel)),
-                        onVerticalDragStart: (_) => BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Cancel)),
+                        onHorizontalDragStart: (_) => cancelRecord(),
+                        onVerticalDragStart: (_) => cancelRecord(),
                         child: btn(
                           iconData: Icons.keyboard_voice_outlined,
-                          onTapDown: (_) => BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Recording)),
-                          onTapUp: (_) => BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Done)),
+                          onTapDown: (_) => startRecord(),
+                          onTapUp: (_) => stopRecord(),
                           onTap: () {},
                         ),
                       ),
@@ -342,5 +342,19 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
       default:
         return replyMessage.message ?? "";
     }
+  }
+
+  void cancelRecord() {
+    BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Cancel));
+  }
+
+  Future<void> startRecord() async {
+    // if (await recordPermissionsRequest()) {
+    BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Recording));
+    // }
+  }
+
+  void stopRecord() {
+    BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Done));
   }
 }

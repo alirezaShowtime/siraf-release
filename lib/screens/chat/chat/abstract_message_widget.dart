@@ -22,8 +22,8 @@ class MessageWidgetKey {
     }
   }
 
-  bool equalTo(ChatMessage chatMessage) {
-    return key == Key(chatMessage.id!.toString());
+  bool equalTo(int messageId) {
+    return key == Key(messageId.toString());
   }
 }
 

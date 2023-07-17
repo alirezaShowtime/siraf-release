@@ -17,7 +17,11 @@ class ChatDeleteMessageError extends ChatDeleteMessageState {
   }
 }
 
-class ChatDeleteMessageSuccess extends ChatDeleteMessageState {}
+class ChatDeleteMessageSuccess extends ChatDeleteMessageState {
+  List<int> ids;
+
+  ChatDeleteMessageSuccess(this.ids);
+}
 
 class ChatDeleteMessageSending extends ChatDeleteMessageState {
   Key widgetKey;
