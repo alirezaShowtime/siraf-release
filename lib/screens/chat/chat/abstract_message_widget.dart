@@ -11,10 +11,26 @@ import 'package:siraf3/themes.dart';
 import 'chat_massage_action.dart';
 import 'chat_message_config.dart';
 
-abstract class MessageWidget extends StatefulWidget {
-  Key key;
+class MessageWidgetKey {
+  late Key key;
 
-  MessageWidget({required this.key}) : super(key: key);
+  MessageWidgetKey(ChatMessage? chatMessage) {
+    if (chatMessage != null) {
+      key = Key(chatMessage.id!.toString());
+    } else {
+      key = Key((DateTime.now().microsecondsSinceEpoch * DateTime.now().millisecond).toString());
+    }
+  }
+
+  bool equalTo(ChatMessage chatMessage) {
+    return key == Key(chatMessage.id!.toString());
+  }
+}
+
+abstract class MessageWidget extends StatefulWidget {
+  MessageWidgetKey messageKey;
+
+  MessageWidget({required this.messageKey}) : super(key: messageKey.key);
 }
 
 abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> with TickerProviderStateMixin {
@@ -30,6 +46,8 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
 
   ChatMessage? message();
 
+  bool onClickDeleteMessage(bool isForAll);
+
   bool isSelected = false;
   bool canSelectWithClick = false;
 
@@ -37,64 +55,90 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
   void initState() {
     super.initState();
 
-    BlocProvider.of<SelectMessageBloc>(context).stream.listen((state) {
-      if (state is SelectMessageCountSate) {
-        canSelectWithClick = state.count > 0;
-      }
+    isSelected = BlocProvider.of<SelectMessageBloc>(context).selectedMessages.where((e) => e.key == widget.key).toList().isNotEmpty;
 
-      if (state is SelectMessageClearState) {
-        isSelected = false;
-        try {
-          setState(() {});
-        } catch (e) {}
-      }
-    });
+    canSelectWithClick = BlocProvider.of<SelectMessageBloc>(context).selectedMessages.isNotEmpty;
   }
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTapUp: onTapUpMessage,
-      onTap: onClickMessage,
-      onLongPress: onLongClickMessage,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-        foregroundDecoration: !isSelected ? null : BoxDecoration(color: Themes.primary.withOpacity(0.08)),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.start,
-          textDirection: getConfig().direction,
-          children: [
-            Image.asset(
-              isForMe() ? "assets/images/chat-curve.png" : "assets/images/chat-curve-light.png",
-              width: 8,
-              height: 8,
-              alignment: Alignment.bottomCenter,
-              fit: BoxFit.fitWidth,
+    return Stack(
+      children: [
+        Positioned(
+          right: 0,
+          left: 0,
+          bottom: 0,
+          top: 0,
+          child: InkWell(
+            onTapUp: onTapUpMessage,
+            onTap: onClickMessage,
+            onLongPress: onLongClickMessage,
+            child: BlocConsumer(
+              bloc: BlocProvider.of<SelectMessageBloc>(context),
+              listener: (context, state) {
+                if (state is SelectMessageSelectState && state.widgetKey == widget.key) {
+                  isSelected = true;
+                }
+                if (state is SelectMessageDeselectState && state.widgetKey == widget.key) {
+                  isSelected = false;
+                }
+                if (state is SelectMessageClearState) {
+                  isSelected = false;
+                }
+
+                if (state is SelectMessageCountSate) {
+                  canSelectWithClick = state.count > 0;
+                }
+              },
+              builder: (context, state) {
+                return Container(color: !isSelected ? null : Themes.primary.withOpacity(0.08));
+              },
             ),
-            Transform.translate(
-              offset: Offset(isForMe() ? 0.3 : -0.3, -.3),
-              child: Container(
-                padding: EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  borderRadius: getConfig().borderRadius,
-                  color: getConfig().background,
-                ),
-                constraints: BoxConstraints(
-                  maxWidth: maxWidth(),
-                  minWidth: 100,
-                  maxHeight: maxHeight(),
-                  minHeight: 15,
-                ),
-                child: ClipRRect(
-                  borderRadius: getConfig().borderRadius,
-                  child: content(),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+        InkWell(
+          onTapUp: onTapUpMessage,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+            foregroundDecoration: !isSelected ? null : BoxDecoration(color: Themes.primary.withOpacity(0.08)),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              textDirection: getConfig().direction,
+              children: [
+                Image.asset(
+                  isForMe() ? "assets/images/chat-curve.png" : "assets/images/chat-curve-light.png",
+                  width: 8,
+                  height: 8,
+                  alignment: Alignment.bottomCenter,
+                  fit: BoxFit.fitWidth,
+                ),
+                Transform.translate(
+                  offset: Offset(isForMe() ? 0.3 : -0.3, -.3),
+                  child: Container(
+                    padding: EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      borderRadius: getConfig().borderRadius,
+                      color: getConfig().background,
+                    ),
+                    constraints: BoxConstraints(
+                      maxWidth: maxWidth(),
+                      minWidth: 100,
+                      maxHeight: maxHeight(),
+                      minHeight: 15,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: getConfig().borderRadius,
+                      child: content(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -278,32 +322,31 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
 
   void onClickMessage() {
     if (isSelected) {
-      setState(() => isSelected = false);
-      BlocProvider.of<SelectMessageBloc>(context).add(SelectMessageDeselectEvent(widget.key));
+      BlocProvider.of<SelectMessageBloc>(context).add(SelectMessageDeselectEvent(widget.messageKey.key));
     } else if (!isSelected && canSelectWithClick) {
-      setState(() => isSelected = true);
-      BlocProvider.of<SelectMessageBloc>(context).add(SelectMessageSelectEvent(widget.key, message()?.chatId));
+      BlocProvider.of<SelectMessageBloc>(context).add(SelectMessageSelectEvent(widget.messageKey.key, message()?.id));
     } else {}
   }
 
   void onLongClickMessage() {
     if (!isSelected) {
-      BlocProvider.of<SelectMessageBloc>(context).add(SelectMessageSelectEvent(widget.key, message()?.chatId));
-      setState(() => isSelected = true);
+      BlocProvider.of<SelectMessageBloc>(context).add(SelectMessageSelectEvent(widget.messageKey.key, message()?.id));
     }
   }
 
   void onTapUpMessage(TapUpDetails details) {
-    if (isSelected || canSelectWithClick) return;
+    if ((isSelected || canSelectWithClick)) return;
 
     showMessageActionMenu(
       context,
       details,
+      isForMe: isForMe(),
+      deletable: isForMe() || onClickDeleteMessage(false),
+      onClickDeleteItem: (bool isForAll) {
+        onClickDeleteMessage.call(isForAll);
+      },
       onClickAnswerItem: () {
         BlocProvider.of<ChatReplyBloc>(context).add(ChatReplyEvent(message()));
-      },
-      onClickDeleteItem: () {
-        //todo
       },
     );
   }

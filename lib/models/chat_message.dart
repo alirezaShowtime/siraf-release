@@ -143,7 +143,7 @@ class ChatFileMessage {
 
   bool get isImage => ["png", "jpg"].contains(extension);
 
-  bool get isVoice => ["wav"].contains(extension);
+  bool get isVoice => ["mp3"].contains(extension);
 
   ChatFileMessage.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
