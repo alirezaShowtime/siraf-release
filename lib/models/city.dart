@@ -8,8 +8,10 @@ class City {
   int? weight;
   int? countFile;
   int? parentId;
+  String? lat;
+  String? long;
 
-  City({this.id, this.name, this.weight, this.countFile, this.parentId});
+  City({this.id, this.name, this.weight, this.countFile, this.parentId, this.lat, this.long});
 
   City.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -27,6 +29,12 @@ class City {
     if (json["parent_id"] is int) {
       parentId = json["parent_id"];
     }
+    if (json["lat"] is String) {
+      lat = json["lat"];
+    }
+    if (json["long"] is String) {
+      long = json["long"];
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -36,6 +44,8 @@ class City {
     _data["weight"] = weight;
     _data["countFile"] = countFile;
     _data["parent_id"] = parentId;
+    _data["lat"] = lat;
+    _data["long"] = long;
     return _data;
   }
 

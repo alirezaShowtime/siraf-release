@@ -113,11 +113,13 @@ class _MenuScreenState extends State<MenuScreen> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           GestureDetector(
-                            onTap: () {
-                              doWithLogin(context, () async {
+                            onTap: () async {
+                              await doWithLogin(context, () async {
                                 await Navigator.push(context, MaterialPageRoute(builder: (_) => EditProfileScreen()));
                                 getUser();
                               });
+
+                              getUser();
                             },
                             child: ClipRRect(
                               child: Hero(
@@ -288,10 +290,6 @@ class _MenuScreenState extends State<MenuScreen> {
                               AccordionItem(
                                 title: "استعلامات ثبتی",
                                 onClick: () => push(context, InquiryScreen()),
-                              ),
-                              AccordionItem(
-                                title: "استعلامات قرارداد",
-                                onClick: () => push(context, InquiryContractScreen()),
                               ),
                             ],
                           ),

@@ -245,7 +245,7 @@ class _FileScreenState extends State<FileScreen> {
         if (file.media!.images.isNotNullOrEmpty() && file.media!.video.isNotNullOrEmpty() && file.media!.virtualTour.isNotNullOrEmpty())
           Container(
             padding: EdgeInsets.only(bottom: 15),
-            height: 250,
+            height: 290,
             width: double.infinity,
             decoration: BoxDecoration(
               color: App.theme.backgroundColor,
@@ -256,7 +256,7 @@ class _FileScreenState extends State<FileScreen> {
           CarouselSliderCustom(
             sliders: sliders,
             autoPlay: false,
-            height: 250,
+            height: 290,
             indicatorsCenterAlign: true,
             viewportFraction: 1.0,
             itemMargin: EdgeInsets.only(bottom: 15),
@@ -572,17 +572,35 @@ class _FileScreenState extends State<FileScreen> {
               child: !file.isRental()
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            "قیمت",
-                            style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
-                          ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "قیمت",
+                              style: TextStyle(color: greyColor, fontSize: 10, height: 1),
+                            ),
+                            Text(
+                              file.getPrice()?.value != null ? number_format(int.parse(file.getPrice()!.value!)) : "توافقی",
+                              style: TextStyle(color: Themes.text, fontSize: 12, height: 1, fontFamily: "IranSansBold"),
+                            ),
+                          ],
                         ),
-                        Text(
-                          file.getPrice()?.value != null ? number_format(int.parse(file.getPrice()!.value!)) : "توافقی",
-                          style: TextStyle(fontSize: 14, fontFamily: "IranSansBold"),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "قیمت هر متر",
+                              style: TextStyle(color: greyColor, fontSize: 13),
+                            ),
+                            Text(
+                              file.getPricePerMeter(),
+                              style: TextStyle(color: Colors.grey.shade500, fontSize: 11),
+                            ),
+                          ],
                         ),
                       ],
                     )
@@ -855,7 +873,7 @@ class _FileScreenState extends State<FileScreen> {
                   SizedBox(
                     width: 210,
                     child: Text(
-                      (file.name ?? "") + (file.name ?? "") + (file.name ?? "") + (file.name ?? "") + (file.name ?? ""),
+                      (file.name ?? ""),
                       style: TextStyle(
                         fontFamily: "IranSansMedium",
                         color: Themes.text,

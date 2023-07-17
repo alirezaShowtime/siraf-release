@@ -14,24 +14,18 @@ double getMapZoomLevel(double radius) {
   return zoomLevel;
 }
 
-void animatedMapMove(MapController mapController, LatLng destLocation,
-    double destZoom, TickerProvider tickerProvider) {
-  final latTween = Tween<double>(
-      begin: mapController.center.latitude, end: destLocation.latitude);
-  final lngTween = Tween<double>(
-      begin: mapController.center.longitude, end: destLocation.longitude);
+void animatedMapMove(MapController mapController, LatLng destLocation, double destZoom, TickerProvider tickerProvider) {
+  if (destLocation.latitude < -90 && destLocation.latitude > 90 && destLocation.longitude < -90 && destLocation.longitude > 90) return;
+  final latTween = Tween<double>(begin: mapController.center.latitude, end: destLocation.latitude);
+  final lngTween = Tween<double>(begin: mapController.center.longitude, end: destLocation.longitude);
   final zoomTween = Tween<double>(begin: mapController.zoom, end: destZoom);
 
-  final controller = AnimationController(
-      duration: const Duration(milliseconds: 500), vsync: tickerProvider);
+  final controller = AnimationController(duration: const Duration(milliseconds: 500), vsync: tickerProvider);
 
-  final Animation<double> animation =
-      CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
+  final Animation<double> animation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
 
   controller.addListener(() {
-    mapController.move(
-        LatLng(latTween.evaluate(animation), lngTween.evaluate(animation)),
-        zoomTween.evaluate(animation));
+    mapController.move(LatLng(latTween.evaluate(animation), lngTween.evaluate(animation)), zoomTween.evaluate(animation));
   });
 
   animation.addStatusListener((status) {

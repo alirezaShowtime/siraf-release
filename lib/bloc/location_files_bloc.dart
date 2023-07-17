@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/filter_data.dart';
@@ -22,8 +23,9 @@ class LocationFilesLoadingState extends LocationFilesState {}
 
 class LocationFilesLoadedState extends LocationFilesState {
   List<LocationFile> files;
+  bool search;
 
-  LocationFilesLoadedState({required this.files});
+  LocationFilesLoadedState({required this.files, this.search = false});
 }
 
 class LocationFilesErrorState extends LocationFilesState {
@@ -72,7 +74,7 @@ class LocationFilesBloc extends Bloc<LocationFilesEvent, LocationFilesState> {
         print(element.toJson());
       });
       emit(
-        LocationFilesLoadedState(files: files),
+        LocationFilesLoadedState(files: files, search: event.search.isFill()),
       );
     } else {
       emit(LocationFilesErrorState(response: response));

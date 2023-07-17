@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/estate.dart';
@@ -30,8 +31,9 @@ class EstateLoadingState extends EstateState {}
 class EstateLoadedState extends EstateState {
   List<Estate> estates;
   String? sort_type;
+  bool search;
 
-  EstateLoadedState({required this.estates, this.sort_type});
+  EstateLoadedState({required this.estates, this.sort_type, this.search = false});
 }
 
 class EstateErrorState extends EstateState {
@@ -74,6 +76,7 @@ class EstateBloc extends Bloc<EstateEvent, EstateState> {
           EstateLoadedState(
             estates: Estate.fromList(json['data']['estats']),
             sort_type: event.sort,
+            search: event.search.isFill(),
           ),
         );
       } else {

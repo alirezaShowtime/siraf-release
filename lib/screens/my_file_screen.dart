@@ -369,7 +369,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
         CarouselSliderCustom(
           sliders: sliders,
           autoPlay: false,
-          height: 250,
+          height: 290,
           indicatorsCenterAlign: true,
           viewportFraction: 1.0,
           itemMargin: EdgeInsets.only(bottom: 15),

@@ -3,6 +3,7 @@ import 'dart:io' as io;
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:siraf3/extensions/list_extension.dart';
+import 'package:siraf3/helpers.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
 import 'package:video_thumbnail/video_thumbnail.dart';
 
@@ -65,14 +66,14 @@ class FileDetail {
     if (json["propertys"] is List) {
       property = json["propertys"] == null ? null : (json["propertys"] as List).map((e) => Property.fromJson(e)).toList();
     }
-    if (json["fullCategory"] is Map) {
-      fullCategory = json["fullCategory"] == null ? null : FullCategory.fromJson(json["fullCategory"]);
+    if (json["category"] is Map) {
+      fullCategory = json["category"] == null ? null : FullCategory.fromJson(json["category"]);
     }
     if (json["publishedAgo"] is String) {
       publishedAgo = json["publishedAgo"];
     }
-    if (json["city"] is Map) {
-      city = json["city"] == null ? null : City.fromJson(json["city"]);
+    if (json["cityFull"] is Map) {
+      city = json["cityFull"] == null ? null : City.fromJson(json["cityFull"]);
     }
     if (json["media"] is Map) {
       media = json["media"] == null ? null : Media.fromJson(json["media"]);
@@ -124,6 +125,46 @@ class FileDetail {
     var prices = getPrices();
 
     return prices.asMap().containsKey(0) ? prices[0] : null;
+  }
+
+  String getPricePerMeter() {
+    print("METER : ${getMeter()}");
+    if (getFirstPriceInt() == 0 || getMeter() == 0) {
+      return "توافقی";
+    }
+    var result = getFirstPriceInt() ~/ getMeter();
+
+    if (result == 0) {
+      return "توافقی";
+    }
+
+    result = (result / 100000).round() * 100000;
+
+    return number_format(result);
+  }
+
+  int getMeter() {
+    if (property!.where((element) => element.key == "meter").isNotEmpty) {
+      var prop = property!.firstWhere((element) => element.key == "meter");
+
+      if (prop.value == null || prop.name == null) return 0;
+
+      return int.parse(prop.value!);
+    } else {
+      return 0;
+    }
+  }
+
+  int getFirstPriceInt() {
+    if (getPrices().isNotEmpty) {
+      var prop = getPrices().first;
+
+      if (prop.value == null || prop.name == null) return 0;
+
+      return int.parse(prop.value!);
+    } else {
+      return 0;
+    }
   }
 
   Property? getVadie() {
@@ -402,15 +443,19 @@ class FullCategory {
 
 class Property {
   String? name;
+  String? key;
   String? value;
   int? section;
   int? weightSection;
 
-  Property({this.name, this.value, this.section, this.weightSection});
+  Property({this.name, this.value, this.key, this.section, this.weightSection});
 
   Property.fromJson(Map<String, dynamic> json) {
     if (json["name"] is String) {
       name = json["name"];
+    }
+    if (json["key"] is String) {
+      key = json["key"];
     }
     if (json["value"] is int) {
       value = json["value"].toString();
