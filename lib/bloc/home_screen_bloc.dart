@@ -173,7 +173,7 @@ class HSBloc extends Bloc<HSEvent, HSState> {
     var contentLastId =
         event.contentLastId != null ? "&last_id=${event.contentLastId}" : "";
 
-    var url = getContentUrl('content/contents/?count=3' + contentLastId);
+    var url = getContentUrl('content/contents/?userType=1&count=3' + contentLastId);
 
     if (!withToken) {
       return await http2.get(url, timeout: Duration(seconds: 60));
