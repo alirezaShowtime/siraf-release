@@ -9,7 +9,6 @@ import 'package:siraf3/screens/auth/verify_number_phone_screen.dart';
 import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/block_btn.dart';
-import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/my_image.dart';
 import 'package:siraf3/widgets/text_form_field_2.dart';
 
@@ -130,30 +129,30 @@ class _LoginScreen extends State<LoginScreen> {
                             borderSide: BorderSide.none,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                          filled: true,
-                        ),
-                        textInputAction: TextInputAction.send,
-                        textDirection: TextDirection.ltr,
-                        autocorrect: false,
-                        maxLength: 11,
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: App.theme.textTheme.bodyLarge?.color,
-                        ),
-                        validator: (String? phone) {
-                          if (phone == null || phone.isEmpty) {
-                            return 'شماره موبایل را وارد کنید';
-                          }
-                          if (phone.length != 11) {
-                            return 'شماره موبایل باید 11 رقم باشد';
-                          }
-                          if (!phone.startsWith("09")) {
-                            return 'شماره موبایل باید با 09 شروع شود';
-                          }
-                        },
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        filled: true,
+                      ),
+                      textInputAction: TextInputAction.send,
+                      textDirection: TextDirection.ltr,
+                      autocorrect: false,
+                      maxLength: 11,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: "IranSansBold",
+                        color: App.theme.textTheme.bodyLarge?.color,
+                      ),
+                      validator: (String? phone) {
+                        if (phone == null || phone.isEmpty) {
+                          return 'شماره موبایل را وارد کنید';
+                        }
+                        if (phone.length != 11) {
+                          return 'شماره موبایل باید 11 رقم باشد';
+                        }
+                        if (!phone.startsWith("09")) {
+                          return 'شماره موبایل باید با 09 شروع شود';
+                        }
+                      },
                       ),
                     ],
                   ),

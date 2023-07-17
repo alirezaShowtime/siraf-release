@@ -26,7 +26,7 @@ class _MyBadge extends State<MyBadge> {
       child: Text(
         widget.text,
         style: TextStyle(
-          fontWeight: FontWeight.bold,
+          fontFamily: "IranSansBold",
           color: Themes.primary,
           fontSize: 11,
         ),

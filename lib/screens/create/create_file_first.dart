@@ -708,8 +708,8 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(16),
-                                  bottomRight: Radius.circular(16),
+                                  bottomLeft: Radius.circular(15),
+                                  bottomRight: Radius.circular(15),
                                 ),
                               ),
                               color: Themes.primary,
@@ -891,8 +891,8 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(16),
-                                  bottomRight: Radius.circular(16),
+                                  bottomLeft: Radius.circular(15),
+                                  bottomRight: Radius.circular(15),
                                 ),
                               ),
                               color: Themes.primary,
@@ -967,8 +967,8 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(16),
-                                  bottomRight: Radius.circular(16),
+                                  bottomLeft: Radius.circular(15),
+                                  bottomRight: Radius.circular(15),
                                 ),
                               ),
                               color: Themes.primary,
@@ -1152,8 +1152,8 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(16),
-                                  bottomRight: Radius.circular(16),
+                                  bottomLeft: Radius.circular(15),
+                                  bottomRight: Radius.circular(15),
                                 ),
                               ),
                               color: Themes.primary,
@@ -1229,8 +1229,8 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(16),
-                                  bottomRight: Radius.circular(16),
+                                  bottomLeft: Radius.circular(15),
+                                  bottomRight: Radius.circular(15),
                                 ),
                               ),
                               color: Themes.primary,

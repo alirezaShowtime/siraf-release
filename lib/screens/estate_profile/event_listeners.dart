@@ -65,7 +65,7 @@ extension EventListener on _EstateProfileScreen {
   }
 
   void retry(BuildContext context) {
-    BlocProvider.of<EstateProfileBloc>(context).add(EstateProfileLoadingEvent(widget.estateId));
+    bloc.add(EstateProfileRequestEvent(widget.estateId));
   }
 
   void report() {

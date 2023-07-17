@@ -360,7 +360,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                         style: TextStyle(
                           color: Colors.red,
                           fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                          fontFamily: "IranSansBold",
                         ),
                       ),
                     ),
@@ -627,7 +627,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(5),
+                                  bottomRight: Radius.circular(15),
                                 ),
                               ),
                               color: Themes.primary,
@@ -662,7 +662,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
+                                  bottomLeft: Radius.circular(15),
                                 ),
                               ),
                               color: Themes.primary,

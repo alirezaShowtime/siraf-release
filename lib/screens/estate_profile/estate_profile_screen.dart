@@ -94,6 +94,8 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
   void initState() {
     super.initState();
 
+    bloc.add(EstateProfileRequestEvent(widget.estateId));
+
     if (widget.estateName != null) {
       setState(() => title = widget.estateName!);
     }
@@ -138,26 +140,21 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
         resizeToAvoidBottomInset: true,
         appBar: appBar(),
         body: BlocConsumer<EstateProfileBloc, EstateProfileState>(
+          bloc: bloc,
           listener: (context, state) {
             if (state is EstateProfileSuccessState) {
               setState(() {
                 title = state.estateProfile.name!;
                 estateProfile = state.estateProfile;
+                comments = state.estateProfile.comments ?? [];
               });
             }
           },
-          bloc: bloc..add(EstateProfileLoadEvent(widget.estateId)),
           builder: (context, state) {
             scaffoldContext = context;
-            if (state is EstateProfileInitial) return Center(child: Loading());
+            if (state is EstateProfileLoading || state is EstateProfileInitial) return Center(child: Loading());
             if (state is EstateProfileErrorState) return retryWidget(context, state.message);
-            if (state is EstateProfileSuccessState) {
-              if (nowState == null) {
-                nowState = state;
-                comments = state.estateProfile.comments ?? [];
-              }
-              return profile(context, state.estateProfile);
-            }
+            if (state is EstateProfileSuccessState) return profile(context, state.estateProfile);
             return Container();
           },
         ),
@@ -204,7 +201,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
             Text(
               title,
               style: TextStyle(
-                fontWeight: FontWeight.bold,
+                fontFamily: "IranSansBold",
                 color: App.theme.textTheme.bodyLarge?.color,
                 fontSize: 11,
               ),
@@ -267,8 +264,8 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
                 Avatar(
                   size: 45,
                   imagePath: consultant.avatar,
-                  errorImage: AssetImage("assets/images/profile.png"),
-                  loadingImage: AssetImage("assets/images/profile.png"),
+                  errorImage: AssetImage("assets/images/profile.jpg"),
+                  loadingImage: AssetImage("assets/images/profile.jpg"),
                 ),
                 SizedBox(height: 5),
                 Text(
@@ -278,7 +275,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
                   style: TextStyle(
                     color: Themes.textGrey,
                     fontSize: 9,
-                    fontWeight: FontWeight.bold,
+                    fontFamily: "IranSansBold",
                   ),
                 ),
                 StaticStar(rating: consultant.rate ?? 0.0),

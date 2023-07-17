@@ -122,7 +122,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                   "مشخصات کلی",
                   style: TextStyle(
                     fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                    fontFamily: "IranSansBold",
                     color: Themes.blue,
                   ),
                 ),
@@ -314,7 +314,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
       text,
       style: TextStyle(
         fontSize: 11,
-        fontWeight: FontWeight.bold,
+        fontFamily: "IranSansBold",
         color: Themes.blue,
       ),
     );
@@ -477,7 +477,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                               onPressed: dismissResetDialog,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(5),
+                                  bottomRight: Radius.circular(15),
                                 ),
                               ),
                               color: Themes.primary,
@@ -505,7 +505,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
+                                  bottomLeft: Radius.circular(15),
                                 ),
                               ),
                               color: Themes.primary,
@@ -727,8 +727,8 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(5),
+                                  bottomLeft: Radius.circular(15),
+                                  bottomRight: Radius.circular(15),
                                 ),
                               ),
                               color: Themes.primary,

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/screens/file_screen.dart';
-import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
-import 'package:siraf3/helpers.dart';
 
 class CompareScreen extends StatefulWidget {
   @override
@@ -193,7 +191,7 @@ class _CompareItemState extends State<_CompareItem> {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 11,
-                        fontWeight: FontWeight.bold,
+                        fontFamily: "IranSansBold",
                       ),
                     ),
                   ),
@@ -224,7 +222,7 @@ class _CompareItemState extends State<_CompareItem> {
             child: Text(
               propertyName,
               style: TextStyle(
-                fontWeight: FontWeight.bold,
+                fontFamily: "IranSansBold",
                 fontSize: 12,
               ),
             ),

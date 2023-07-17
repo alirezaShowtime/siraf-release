@@ -187,8 +187,8 @@ class _SupportFileScreen extends State<SupportFileScreen> {
               children: [
                 Avatar(
                   imagePath: item.consultantId?.avatar ?? "",
-                  errorImage: AssetImage("assets/images/profile.png"),
-                  loadingImage: AssetImage("assets/images/profile.png"),
+                  errorImage: AssetImage("assets/images/profile.jpg"),
+                  loadingImage: AssetImage("assets/images/profile.jpg"),
                   size: 50,
                 ),
                 Padding(

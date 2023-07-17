@@ -34,7 +34,7 @@ class _DialogButton extends State<DialogButton> {
             style: TextStyle(
               color: Colors.white,
               fontSize: 12,
-              fontWeight: FontWeight.bold,
+              fontFamily: "IranSansBold",
             ),
           ),
         ),

@@ -11,7 +11,7 @@ extension AddCommentWidget on _ConsultantProfileScreen {
             "امتیاز شما",
             style: TextStyle(
               color: Themes.text,
-              fontWeight: FontWeight.bold,
+              fontFamily: "IranSansBold",
               fontSize: 12,
             ),
           ),
@@ -62,7 +62,7 @@ extension AddCommentWidget on _ConsultantProfileScreen {
                     "ثبت",
                     style: TextStyle(
                       fontSize: 12,
-                      fontWeight: FontWeight.bold,
+                      fontFamily: "IranSansBold",
                       color: Colors.white,
                     ),
                   );

@@ -32,7 +32,7 @@ extension Profile on _EstateProfileScreen {
                         children: [
                           Text(
                             estateProfile.name ?? "",
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 12, fontFamily: "IranSansBold"),
                           ),
                           Text(
                             estateProfile.guildCode ?? "",
@@ -83,7 +83,7 @@ extension Profile on _EstateProfileScreen {
                                   onTap: viewMoreDetail,
                                   child: Text(
                                     moreDetail ? "کمتر" : "بیشتر...",
-                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 9),
+                                    style: TextStyle(fontFamily: "IranSansBold", fontSize: 9),
                                   ),
                                 ),
                                 InkWell(
@@ -95,7 +95,7 @@ extension Profile on _EstateProfileScreen {
                                   }),
                                   child: Text(
                                     !showComment ? "نمایش نظرات (${comments.length})" : "فایل های دفتر املاک",
-                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 9),
+                                    style: TextStyle(fontFamily: "IranSansBold", fontSize: 9),
                                   ),
                                 ),
                               ],

@@ -91,24 +91,23 @@ class ChatMessage {
     if (fileMessages!.length > 1) return false;
 
     for (var file in fileMessages!) {
-      if (!["mp4", "mkv"].contains(file.extension)) {
-        return false;
-      }
+      if (!file.isVideo) return false;
     }
     return true;
   }
 
   bool _isImage() {
     for (var file in fileMessages!) {
-      if (!["png", "jpg"].contains(file.extension)) {
-        return false;
-      }
+      if (!file.isImage) return false;
     }
     return true;
   }
 
   bool _isVoice() {
-    return false;
+    for (var file in fileMessages!) {
+      if (!file.isVoice) return false;
+    }
+    return true;
   }
 
   TypeFile? getTypeFile() {
@@ -139,6 +138,12 @@ class ChatFileMessage {
   String get name => Uri.decodeFull(this.path!).replaceAll("\\", "/").split("/").last;
 
   String get extension => this.path!.split(".").last;
+
+  bool get isVideo => ["mp4", "mkv"].contains(extension);
+
+  bool get isImage => ["png", "jpg"].contains(extension);
+
+  bool get isVoice => ["wav"].contains(extension);
 
   ChatFileMessage.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {

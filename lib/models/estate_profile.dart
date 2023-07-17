@@ -143,7 +143,7 @@ class Image {
 
   Image(this.path);
 
-  fromJson(Map<String, dynamic> json) {
+  Image.fromJson(Map<String, dynamic> json) {
     if (json["path"] is String) {
       path = json["path"];
     }

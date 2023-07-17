@@ -135,7 +135,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                   "مشخصات کلی",
                   style: TextStyle(
                     fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                    fontFamily: "IranSansBold",
                     color: Themes.blue,
                   ),
                 ),
@@ -339,7 +339,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
       text,
       style: TextStyle(
         fontSize: 11,
-        fontWeight: FontWeight.bold,
+        fontFamily: "IranSansBold",
         color: Themes.blue,
       ),
     );
@@ -690,8 +690,8 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(16),
-                                  bottomRight: Radius.circular(16),
+                                  bottomLeft: Radius.circular(15),
+                                  bottomRight: Radius.circular(15),
                                 ),
                               ),
                               color: Themes.primary,

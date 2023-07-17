@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/themes.dart';
-import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/block_btn.dart';
-import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_card.dart';
 import 'package:siraf3/widgets/simple_app_bar.dart';
 
@@ -61,7 +59,7 @@ class _ReceiveScreen extends State<ReceiveScreen> {
             style: TextStyle(
               fontSize: 11,
               color: Themes.text,
-              fontWeight: FontWeight.bold,
+              fontFamily: "IranSansBold",
             ),
           ),
           Text(

@@ -45,6 +45,12 @@ class VoiceMessagePlayBloc extends Bloc<VoiceMessagePlayEvent, VoiceMessagePlayS
   }
 
   FutureOr<void> _playOrStop(VoiceMessagePlayPlayOrStop event, Emitter<VoiceMessagePlayState?> emit) async {
+    if (event.player.state == PlayerState.completed) {
+      event.player.resume();
+      event.player.state = PlayerState.playing;
+      return emit(VoiceMessagePlayState(PlayerState.playing, event.player.playerId));
+    }
+
     if (event.player.state == PlayerState.playing) {
       event.player.pause();
       event.player.state = PlayerState.paused;

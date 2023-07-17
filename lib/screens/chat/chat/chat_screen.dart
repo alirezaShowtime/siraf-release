@@ -4,8 +4,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:shamsi_date/shamsi_date.dart';
+import 'package:siraf3/bloc/chat/block/chat_block_bloc.dart';
+import 'package:siraf3/bloc/chat/delete/chat_delete_bloc.dart';
 import 'package:siraf3/bloc/chat/messages/messages_bloc.dart';
 import 'package:siraf3/bloc/chat/play/voice_message_play_bloc.dart';
 import 'package:siraf3/bloc/chat/recordingVoice/recording_voice_bloc.dart';
@@ -14,19 +18,24 @@ import 'package:siraf3/bloc/chat/seen/seen_message_bloc.dart';
 import 'package:siraf3/bloc/chat/select_message/select_message_bloc.dart';
 import 'package:siraf3/bloc/chat/sendMessage/send_message_bloc.dart';
 import 'package:siraf3/controller/chat_message_upload_controller.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/screens/chat/chat/app_bar_chat_widget.dart';
 import 'package:siraf3/screens/chat/chat/chat_message_editor_widget.dart';
+import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_image.dart';
+import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 import 'messageWidgets/chat_message_widget.dart';
 import 'message_widget_list.dart';
 import 'sendingMessageWidgets/chat_sending_message_widget.dart';
+
+part 'bloc_listeners.dart';
 
 class ChatScreen extends StatefulWidget {
   String? consultantName;
@@ -36,6 +45,9 @@ class ChatScreen extends StatefulWidget {
   String? fileImage;
   int? fileId;
   int chatId;
+  bool blockByMe;
+  bool blockByHer;
+  bool isDeleted;
 
   ChatScreen({
     required this.chatId,
@@ -45,6 +57,9 @@ class ChatScreen extends StatefulWidget {
     this.fileTitle,
     this.fileImage,
     this.fileId,
+    this.blockByMe = false,
+    this.blockByHer = false,
+    this.isDeleted = false,
   });
 
   @override
@@ -62,6 +77,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   RecordingVoiceBloc recordingVoiceBloc = RecordingVoiceBloc();
   VoiceMessagePlayBloc voiceMessagePlayBloc = VoiceMessagePlayBloc();
   SelectMessageBloc selectMessageBloc = SelectMessageBloc();
+  ChatBlockBloc chatBlockBloc = ChatBlockBloc();
+  ChatDeleteBloc chatDeleteBloc = ChatDeleteBloc();
 
   ScrollController _chatController = ScrollController();
 
@@ -81,25 +98,34 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   String? recorderVoicePath;
   MessageWidgetList messageWidgets = MessageWidgetList();
 
-  late Record record;
   bool isRecording = false;
   void Function(void Function())? listViewSetState = null;
   void Function(void Function())? fileListSetState = null;
 
-  late Timer timer;
+  Timer? timer;
   int recordTime = 0;
 
-  StreamController<int> recordTimeStream = StreamController();
+  StreamController<int> recordTimeStream = StreamController.broadcast();
 
   List<MapEntry<Key, int?>> selectedMessages = [];
 
   String? lastMessage = "";
 
+  late bool isBlockByMe;
+  late bool blockByHer;
+  late bool isDeleted;
+
+  Record _audioRecorder = Record();
+
+  ChatMessage? replyMessage;
+
   @override
   void initState() {
     super.initState();
 
-    record = Record();
+    isBlockByMe = widget.blockByMe;
+    blockByHer = widget.blockByHer;
+    isDeleted = widget.isDeleted;
 
     voiceAnimController = AnimationController(vsync: this, duration: Duration(milliseconds: 800));
 
@@ -111,85 +137,33 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
     _request();
 
-    selectMessageBloc.stream.listen((state) {
-      if (state is SelectMessageSelectState) {
-        selectedMessages.add(MapEntry(state.widgetKey, state.messageId));
-        selectMessageBloc.add(SelectMessageCountEvent(selectedMessages.length));
-      }
+    chatReplyBlocListener();
 
-      if (state is SelectMessageDeselectState) {
-        selectedMessages.removeWhere((e) => e.key == state.widgetKey);
-        selectMessageBloc.add(SelectMessageCountEvent(selectedMessages.length));
-      }
+    selectMessageBlocListener();
 
-      if (state is SelectMessageClearState) {
-        selectedMessages.clear();
-        selectMessageBloc.add(SelectMessageCountEvent(0));
-      }
-    });
+    recordingVoiceBlocListener();
 
-    recordingVoiceBloc.stream.listen((state) async {
-      if (state == RecordingVoiceState.Cancel) {
-        endTimer();
-      }
-      if (state == RecordingVoiceState.Recording) {
-        startTimer();
-      }
-      if (state == RecordingVoiceState.Done) {
-        endTimer();
-        listViewSetState?.call(() {});
-      }
-    });
+    chatMessagesBlocListener();
 
-    chatMessagesBloc.stream.listen((event) {
-      if (event is! MessagesSuccess) return;
+    sendMessageBlocListener();
 
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) => scrollDown());
-    });
+    chatBlockBlocListener();
 
-    sendMessageBloc.stream.listen((state) {
-      if (state is SendMessageCanceled) {
-        for (var i = 0; i < messageWidgets.length(); i++) {
-          if (messageWidgets.get(i).key != state.widgetKey) continue;
-
-          listViewSetState?.call(() => messageWidgets.removeAt(i));
-
-          break;
-        }
-      }
-
-      if (state is! SendMessageSuccess) return;
-      state.playSentSound();
-      for (var i = 0; i < messageWidgets.length(); i++) {
-        if (messageWidgets.get(i).key != state.widgetKey) continue;
-
-        lastMessage = state.message.message;
-
-        listViewSetState?.call(
-          () => messageWidgets.replace(
-            i,
-            ChatMessageWidget(
-              key: Key(state.message.id!.toString()),
-              message: state.message,
-              files: state.sentFiles,
-              onClickReplyMessage: scrollTo,
-            ),
-          ),
-        );
-        break;
-      }
-    });
+    chatDeleteBlocListener();
   }
 
   @override
   void dispose() {
-    record.dispose();
     recordingVoiceBloc.close();
     voiceMessagePlayBloc.close();
     selectMessageBloc.close();
     chatMessagesBloc.close();
     _chatController.dispose();
     voiceAnimController.dispose();
+    chatBlockBloc.close();
+    chatDeleteBloc.close();
+    recordTimeStream.close();
+    _audioRecorder.dispose();
     super.dispose();
   }
 
@@ -202,6 +176,9 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
         BlocProvider(create: (_) => chatReplyBloc),
         BlocProvider(create: (_) => voiceMessagePlayBloc),
         BlocProvider(create: (_) => selectMessageBloc),
+        BlocProvider(create: (_) => chatBlockBloc),
+        BlocProvider(create: (_) => chatDeleteBloc),
+        BlocProvider(create: (_) => recordingVoiceBloc),
       ],
       child: WillPopScope(
         onWillPop: () async {
@@ -226,6 +203,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
             consultantImage: widget.consultantImage,
             chatId: widget.chatId,
             lastMessage: lastMessage,
+            isDisable: blockByHer || isBlockByMe,
           ),
           body: Stack(
             children: [
@@ -262,9 +240,41 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                         ),
                         SizedBox(width: 10),
                         Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.fileTitle ?? "نامشخص",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontSize: 10, color: Colors.black, fontFamily: "IranSansBold"),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                widget.fileTitle ?? "نامشخص",
+                                // widget.fileAddress ?? "نامشخص",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontSize: 9, color: Colors.black, fontFamily: "IranSansMedium"),
+                              ),
+                            ],
+                          ),
+                        ),
+                        MyTextButton(
+                          onPressed: () {
+                            if (widget.fileId != null) {
+                              push(context, FileScreen(id: widget.fileId!));
+                            }
+                          },
+                          fontSize: 10,
                           child: Text(
-                            widget.fileTitle ?? "نامشخص",
-                            style: TextStyle(fontSize: 12, color: Colors.black),
+                            "نمایش",
+                            style: TextStyle(
+                              fontFamily: "IranSansBold",
+                              fontSize: 10,
+                              color: Themes.primary,
+                            ),
                           ),
                         ),
                       ],
@@ -280,7 +290,9 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                             if (state is! MessagesSuccess) return;
                             messages = state.messages;
 
-                            lastMessage = messages.last.message;
+                            try {
+                              lastMessage = messages.last.message;
+                            } catch (e) {}
 
                             for (ChatMessage message in messages) {
                               messageWidgets.add(
@@ -316,82 +328,92 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                       ],
                     ),
                   ),
-                  ChatMessageEditor(onClickSendMessage: sendMessage),
+                  if (isDeleted) notifChatWidget("حذف شده"),
+                  if (isBlockByMe) notifChatWidget("رفع مسدودیت", onTap: onClickUnblock),
+                  if (blockByHer && !isBlockByMe) notifChatWidget("شما مسدود شداید"),
+                  if (!isBlockByMe && !isDeleted && !blockByHer) ChatMessageEditor(onClickSendMessage: sendMessage),
                 ],
               ),
               BlocBuilder(
-                  bloc: recordingVoiceBloc,
-                  builder: ((context, state) {
-                    if (state != RecordingVoiceState.Recording) return Container();
-                    return Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: Container(
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border(top: BorderSide(color: Colors.grey.shade300, width: 0.7)),
-                          boxShadow: [
-                            BoxShadow(
-                              offset: const Offset(1, -3),
-                              spreadRadius: -3,
-                              blurRadius: 1,
-                              color: Colors.black12,
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            AnimatedBuilder(animation: voiceAnim, builder: (_, __) => SizedBox(width: 50 - voiceAnim.value * 3)),
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "برای لغو بکشید",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontFamily: "IranSansBold",
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.chevron_right_rounded,
+                bloc: recordingVoiceBloc,
+                builder: (context, state) {
+                  if (state != RecordingVoiceState.Recording) return Container();
+                  return Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(top: BorderSide(color: Colors.grey.shade300, width: 0.7)),
+                        boxShadow: [
+                          BoxShadow(
+                            offset: const Offset(1, -3),
+                            spreadRadius: -3,
+                            blurRadius: 1,
+                            color: Colors.black12,
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          AnimatedBuilder(animation: voiceAnim, builder: (_, __) => SizedBox(width: 50 - voiceAnim.value * 3)),
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "برای لغو بکشید",
+                                  style: TextStyle(
                                     color: Colors.grey,
-                                    size: 18,
+                                    fontFamily: "IranSansBold",
+                                    fontSize: 10,
                                   ),
-                                ],
-                              ),
+                                ),
+                                Icon(
+                                  Icons.chevron_right_rounded,
+                                  color: Colors.grey,
+                                  size: 18,
+                                ),
+                              ],
                             ),
-                            StreamBuilder<int>(
-                                stream: recordTimeStream.stream,
-                                builder: (context, snapshot) {
-                                  return Text(
-                                    timeFormatter(snapshot.data ?? 0),
+                          ),
+                          StreamBuilder<int>(
+                              initialData: 0,
+                              stream: recordTimeStream.stream,
+                              builder: (context, snapshot) {
+                                return SizedBox(
+                                  width: 50,
+                                  child: Text(
+                                    timeFormatter(snapshot.data!),
+                                    textAlign: TextAlign.left,
                                     style: TextStyle(
                                       color: Themes.text,
-                                      fontFamily: "IranSansBold",
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "sans-serif",
                                       fontSize: 11,
                                     ),
-                                  );
-                                }),
-                            SizedBox(width: 5),
-                            AnimatedBuilder(
-                              animation: recordIconAnim,
-                              builder: (_, __) {
-                                return Icon(Icons.circle, size: 8, color: Colors.red.withOpacity(recordIconAnim.value));
-                              },
-                            ),
-                            SizedBox(width: 15),
-                          ],
-                        ),
+                                  ),
+                                );
+                              }),
+                          SizedBox(width: 5),
+                          AnimatedBuilder(
+                            animation: recordIconAnim,
+                            builder: (_, __) {
+                              return Icon(Icons.circle, size: 8, color: Colors.red.withOpacity(recordIconAnim.value));
+                            },
+                          ),
+                          SizedBox(width: 15),
+                        ],
                       ),
-                    );
-                  })),
+                    ),
+                  );
+                },
+              ),
               BlocBuilder(
                 bloc: recordingVoiceBloc,
-                builder: ((context, state) {
+                builder: (context, state) {
                   if (state != RecordingVoiceState.Recording) return Container();
                   return Positioned(
                     bottom: -20 + (voiceAnim.value * 0),
@@ -412,7 +434,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                       },
                     ),
                   );
-                }),
+                },
               ),
               // BlocBuilder(
               //   bloc: recordingVoiceBloc,
@@ -423,6 +445,104 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
         ),
       ),
     );
+  }
+
+  Widget _blocBuilder(BuildContext context, MessagesState state) {
+    if (state is MessagesInitial) return Container();
+
+    if (state is MessagesLoading) return Align(alignment: Alignment.center, child: Container(alignment: Alignment.center, child: Loading()));
+
+    if (state is MessagesError) {
+      return Center(child: TryAgain(onPressed: _request, message: state.message));
+    }
+
+    if (messageWidgets.length() == 0) {
+      return Center(
+        child: Text(
+          "پیامی وجود ندارد",
+          style: TextStyle(
+            color: Colors.black,
+            fontFamily: "IranSansBold",
+            fontSize: 10,
+          ),
+        ),
+      );
+    }
+
+    return StatefulBuilder(builder: (context, setState) {
+      listViewSetState = setState;
+
+      return NotificationListener(
+        child: ListView(
+          reverse: true,
+          controller: _chatController,
+          children: generateList(),
+        ),
+        onNotification: onNotificationListView,
+      );
+    });
+  }
+
+  List<Widget> generateList() {
+    List<Widget> newList = [];
+    newList.add(SizedBox(height: 10));
+    newList.addAll(messageWidgets.getList());
+    return newList;
+  }
+
+  Widget defaultFileImage(double size) {
+    return Container(
+      padding: EdgeInsets.all(7),
+      height: size,
+      width: size,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: Themes.primary.withOpacity(0.1),
+      ),
+      child: Icon(Icons.home, color: Themes.primary),
+    );
+  }
+
+  bool onNotificationListView(Notification notification) {
+    if (notification is ScrollUpdateNotification) {
+      scrollDownButtonTimer?.cancel();
+    }
+
+    if (notification is ScrollEndNotification) {
+      scrollDownButtonTimer = Timer(Duration(seconds: 3), () {
+        _scrollDownAnimationController.reverse();
+      });
+    }
+    return false;
+  }
+
+  Widget notifChatWidget(String s, {void Function()? onTap}) {
+    return Material(
+      color: Colors.white,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          height: 55,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            border: Border(top: BorderSide(color: Colors.grey.shade300, width: 0.7)),
+          ),
+          child: Text(
+            s,
+            style: TextStyle(
+              color: Colors.red,
+              fontFamily: "IranSansBold",
+              fontSize: 12,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _request() {
+    chatMessagesBloc.add(MessagesRequestEvent(id: widget.chatId));
   }
 
   void _initScrollAnimation() {
@@ -465,46 +585,6 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
       );
       _scrollDownAnimationController.reverse();
     } catch (e) {}
-  }
-
-  Widget _blocBuilder(BuildContext context, MessagesState state) {
-    if (state is MessagesInitial) return Container();
-
-    if (state is MessagesLoading) return Align(alignment: Alignment.center, child: Container(alignment: Alignment.center, child: Loading()));
-
-    if (state is MessagesError) {
-      return Center(child: TryAgain(onPressed: _request, message: state.message));
-    }
-
-    if (!messages.isFill()) {
-      return Center(
-        child: Text(
-          "پیامی وجود ندارد",
-          style: TextStyle(
-            color: Colors.black,
-            fontFamily: "IranSansBold",
-            fontSize: 10,
-          ),
-        ),
-      );
-    }
-
-    return StatefulBuilder(builder: (context, setState) {
-      listViewSetState = setState;
-
-      return NotificationListener(
-        child: ListView(
-          reverse: true,
-          controller: _chatController,
-          children: generateList(),
-        ),
-        onNotification: onNotificationListView,
-      );
-    });
-  }
-
-  _request() {
-    chatMessagesBloc.add(MessagesRequestEvent(id: widget.chatId));
   }
 
   void sendMessage(String? text, List<File>? files, ChatMessage? reply) {
@@ -562,49 +642,67 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     }
   }
 
-  List<Widget> generateList() {
-    List<Widget> newList = [];
-    newList.add(SizedBox(height: 10));
-    newList.addAll(messageWidgets.getList());
-    return newList;
+  void onClickUnblock() {
+    chatBlockBloc.add(ChatBlockRequestEvent([widget.chatId], false));
   }
 
   void startTimer() {
-    recordTimeStream.add(0);
+    recordTime = 0;
+    recordTimeStream.add(recordTime++);
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       recordTimeStream.add(recordTime++);
     });
   }
 
   void endTimer() {
+    timer?.cancel();
+    timer = null;
     recordTime = 0;
     recordTimeStream.add(0);
   }
 
-  Widget defaultFileImage(double size) {
-    return Container(
-      padding: EdgeInsets.all(7),
-      height: size,
-      width: size,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        color: Themes.primary.withOpacity(0.1),
-      ),
-      child: Icon(Icons.home, color: Themes.primary),
-    );
+  Future<void> startRecording() async {
+    print("status record start");
+    Map<Permission, PermissionStatus> permissions = await [
+      Permission.storage,
+      Permission.microphone,
+    ].request();
+
+    bool permissionsGranted = permissions[Permission.storage]!.isGranted && permissions[Permission.microphone]!.isGranted;
+
+    if (permissionsGranted) {
+      Directory appFolder = await getTemporaryDirectory();
+      bool appFolderExists = await appFolder.exists();
+      if (!appFolderExists) {
+        await appFolder.create(recursive: true);
+      }
+
+      final filepath = appFolder.path + '/' + DateTime.now().millisecondsSinceEpoch.toString() + ".wav";
+
+      await _audioRecorder.start(path: filepath);
+      print(await _audioRecorder.isRecording());
+    } else {
+      print('Permissions not granted');
+    }
   }
 
-  bool onNotificationListView(Notification notification) {
-    if (notification is ScrollUpdateNotification) {
-      scrollDownButtonTimer?.cancel();
-    }
+  Future<String?> stopRecording() async {
+    if (!await _audioRecorder.isRecording()) return null;
+    print("status record stop");
+    String? path = await _audioRecorder.stop();
+    _audioRecorder.dispose();
 
-    if (notification is ScrollEndNotification) {
-      scrollDownButtonTimer = Timer(Duration(seconds: 3), () {
-        _scrollDownAnimationController.reverse();
-      });
-    }
-    return false;
+    return path;
+  }
+
+  Future<void> cancelRecording() async {
+    print("status record cancel");
+    try {
+      if (await _audioRecorder.isRecording()) {
+        String? path = await _audioRecorder.stop();
+
+        await File(path!).delete();
+      }
+    } catch (e) {}
   }
 }

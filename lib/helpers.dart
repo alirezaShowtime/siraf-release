@@ -217,9 +217,11 @@ doWithLogin(BuildContext context, void Function() onLoggedIn, {bool pop = true})
 }
 
 void back<T extends Object?>(BuildContext context, [T? result]) {
-  if (Navigator.canPop(context)) {
-    Navigator.pop(context, T);
-  }
+  try {
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context, T);
+    }
+  } catch (e) {}
 }
 
 FaIcon icon(IconData icon, {Color? color, double size = 24}) {
@@ -304,7 +306,7 @@ extension List2<E> on List<E>? {
   }
 }
 
-Divider divider({double height = 1}) => Divider(color: Colors.grey.shade200, height: height);
+Divider divider({double height = 1}) => Divider(color: Colors.grey.shade300, height: height);
 
 bool resetCreateFileForm = false;
 bool resetEditFileForm = false;

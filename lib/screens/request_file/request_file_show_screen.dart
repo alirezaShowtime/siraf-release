@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -111,7 +109,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                     " | ${widget.request.title}",
                 style: TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.bold,
+                  fontFamily: "IranSansBold",
                 ),
               ),
               SizedBox(height: 10),
@@ -186,10 +184,9 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
               Text(
                 "وضعیت : ${widget.request.statusString}",
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
+                  fontFamily: "IranSansBold",
                   fontSize: 12,
-                  backgroundColor:
-                      statusColors[widget.request.status]!.withOpacity(0.3),
+                  backgroundColor: statusColors[widget.request.status]!.withOpacity(0.3),
                 ),
               ),
               Padding(
@@ -240,7 +237,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                   fit: BoxFit.fill,
                   loadingBuilder: (context, child, eventProgress) {
                     return Image.asset(
-                      "assets/images/profile.png",
+                      "assets/images/profile.jpg",
                       width: 40,
                       height: 40,
                       fit: BoxFit.fill,
@@ -257,7 +254,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                     requestConsultant.consultantId!.name ?? "",
                     style: TextStyle(
                       fontSize: 12,
-                      fontWeight: FontWeight.bold,
+                      fontFamily: "IranSansBold",
                     ),
                   ),
                   Text(
@@ -362,7 +359,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                       style: TextStyle(
                         color: Colors.red,
                         fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        fontFamily: "IranSansBold",
                       ),
                     ),
                   ),

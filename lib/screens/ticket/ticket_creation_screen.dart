@@ -402,7 +402,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
                     style: TextStyle(
                       color: Colors.red,
                       fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      fontFamily: "IranSansBold",
                     ),
                   ),
                 ),

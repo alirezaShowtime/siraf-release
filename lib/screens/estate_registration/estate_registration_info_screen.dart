@@ -42,7 +42,7 @@ class _EstateRegistrationInfoScreen extends State<EstateRegistrationInfoScreen> 
                     style: TextStyle(
                       color: Themes.primary,
                       fontSize: 15,
-                      fontWeight: FontWeight.bold,
+                      fontFamily: "IranSansBold",
                     ),
                   ),
                 ),
@@ -97,7 +97,7 @@ class _EstateRegistrationInfoScreen extends State<EstateRegistrationInfoScreen> 
                           style: TextStyle(
                             color: Themes.primary,
                             fontSize: 12,
-                            fontWeight: FontWeight.bold,
+                            fontFamily: "IranSansBold",
                           ),
                         ),
                         icon(Icons.arrow_right_rounded, color: Themes.primary),
@@ -161,8 +161,7 @@ class _EstateRegistrationInfoScreen extends State<EstateRegistrationInfoScreen> 
         children: [
           Text(
             "${index}.${title}",
-            style: TextStyle(
-                color: Themes.text, fontSize: 12, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Themes.text, fontSize: 12, fontFamily: "IranSansBold"),
           ),
           if (subtitle != null)
             Padding(

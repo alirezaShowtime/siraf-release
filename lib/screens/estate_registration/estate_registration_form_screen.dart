@@ -139,7 +139,7 @@ class _EstateRegistrationFormScreen extends State<EstateRegistrationFormScreen> 
                     suffixText,
                     style: TextStyle(
                       color: Colors.black,
-                      fontWeight: FontWeight.bold,
+                      fontFamily: "IranSansBold",
                       fontSize: 10,
                     ),
                   ),

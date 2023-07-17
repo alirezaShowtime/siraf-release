@@ -11,7 +11,7 @@ extension AddCommentWidget on _EstateProfileScreen {
             "امتیاز شما",
             style: TextStyle(
               color: Themes.text,
-              fontWeight: FontWeight.bold,
+              fontFamily: "IranSansBold",
               fontSize: 12,
             ),
           ),
@@ -70,7 +70,7 @@ extension AddCommentWidget on _EstateProfileScreen {
                     "ثبت",
                     style: TextStyle(
                       fontSize: 12,
-                      fontWeight: FontWeight.bold,
+                      fontFamily: "IranSansBold",
                       color: Colors.white,
                     ),
                   );

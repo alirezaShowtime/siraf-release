@@ -18,7 +18,6 @@ class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
 
   late Future<Uint8List?> videoThumbnail;
   bool isSeen = false;
-  late Future<VideoPlayerValue> infoVideo;
 
   late File videoFile;
 
@@ -31,8 +30,6 @@ class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
     loadingController = AnimationController(vsync: this, duration: Duration(milliseconds: 1700))..repeat(reverse: false);
 
     videoThumbnail = getVideoThumbnail(videoFile.path);
-
-    infoVideo = getVideoInfo(videoFile);
   }
 
   @override
@@ -202,7 +199,7 @@ class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
                       },
                     ),
                     FutureBuilder<VideoPlayerValue>(
-                      future: infoVideo,
+                      future: getVideoInfo(videoFile),
                       builder: (context, snapshot) {
                         return Text(
                           timeFormatter(snapshot.data?.duration.inSeconds ?? 0, hasHour: true),

@@ -118,7 +118,7 @@ class _InquiryContractScreen extends State<InquiryContractScreen> {
                             style: TextStyle(
                               color: Themes.blue,
                               fontSize: 11,
-                              fontWeight: FontWeight.bold,
+                              fontFamily: "IranSansBold",
                             ),
                           ),
                         ),
