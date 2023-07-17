@@ -11,8 +11,6 @@ import '../my_audio_wave.dart';
 import 'chat_sending_message_widget.dart';
 
 class ChatSendingVoiceMessageWidgetState extends ChatSendingMessageWidgetState {
-  late AnimationController loadingController;
-
   AudioPlayer player = AudioPlayer();
   Duration? voiceDuration;
   late ChatMessageConfig messageConfig;
@@ -23,19 +21,19 @@ class ChatSendingVoiceMessageWidgetState extends ChatSendingMessageWidgetState {
 
     messageConfig = getConfig();
 
-    try {
-      setSourcePlayer();
-    } catch (e) {}
+    setSourcePlayer();
+
+    player.onPlayerComplete.listen((state) async {
+      await setSourcePlayer();
+    });
 
     BlocProvider.of<VoiceMessagePlayBloc>(context).add(VoiceMessagePlayRegisterPlayerEvent(player));
-
-    loadingController = AnimationController(vsync: this, duration: Duration(seconds: 3))..repeat();
   }
 
   @override
-  void dispose() {
-    loadingController.dispose();
-    player.stop();
+  void dispose() async {
+    await player.stop();
+    await player.dispose();
     super.dispose();
   }
 
@@ -189,13 +187,17 @@ class ChatSendingVoiceMessageWidgetState extends ChatSendingMessageWidgetState {
     );
   }
 
-  void setSourcePlayer() async {
-    player.setSource(DeviceFileSource(widget.files!.first.path));
+  Future<void> setSourcePlayer() async {
+    if (player.source != null) return;
+    try {
+      await player.setSource(DeviceFileSource(widget.files!.first.path));
 
-    voiceDuration = await player.onDurationChanged.first;
+      voiceDuration = await player.onDurationChanged.first;
+    } catch (e) {}
   }
 
   Stream<Duration> getCurrentDurationVoice() async* {
+    if (player.source == null) yield Duration(seconds: 0);
     var count = await player.onDurationChanged.first;
 
     yield count;
