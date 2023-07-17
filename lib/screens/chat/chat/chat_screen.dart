@@ -10,6 +10,7 @@ import 'package:record/record.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 import 'package:siraf3/bloc/chat/block/chat_block_bloc.dart';
 import 'package:siraf3/bloc/chat/delete/chat_delete_bloc.dart';
+import 'package:siraf3/bloc/chat/delete_message/chat_delete_message_bloc.dart';
 import 'package:siraf3/bloc/chat/messages/messages_bloc.dart';
 import 'package:siraf3/bloc/chat/play/voice_message_play_bloc.dart';
 import 'package:siraf3/bloc/chat/recordingVoice/recording_voice_bloc.dart';
@@ -22,6 +23,7 @@ import 'package:siraf3/dialog.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/chat_message.dart';
+import 'package:siraf3/screens/chat/chat/abstract_message_widget.dart';
 import 'package:siraf3/screens/chat/chat/app_bar_chat_widget.dart';
 import 'package:siraf3/screens/chat/chat/chat_message_editor_widget.dart';
 import 'package:siraf3/screens/file_screen.dart';
@@ -36,7 +38,6 @@ import 'message_widget_list.dart';
 import 'sendingMessageWidgets/chat_sending_message_widget.dart';
 
 part 'bloc_listeners.dart';
-
 part 'voice_recorder.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -81,6 +82,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   SelectMessageBloc selectMessageBloc = SelectMessageBloc();
   ChatBlockBloc chatBlockBloc = ChatBlockBloc();
   ChatDeleteBloc chatDeleteBloc = ChatDeleteBloc();
+  ChatDeleteMessageBloc chatDeleteMessageBloc = ChatDeleteMessageBloc();
 
   ScrollController _chatController = ScrollController();
 
@@ -107,8 +109,6 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   int recordTime = 0;
 
   StreamController<int> recordTimeStream = StreamController.broadcast();
-
-  List<MapEntry<Key, int?>> selectedMessages = [];
 
   String? lastMessage = "";
 
@@ -138,9 +138,9 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
     _request();
 
-    chatReplyBlocListener();
+    deleteMessageBlocListener();
 
-    selectMessageBlocListener();
+    chatReplyBlocListener();
 
     recordingVoiceBlocListener();
 
@@ -165,6 +165,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     chatDeleteBloc.close();
     recordTimeStream.close();
     _audioRecorder.dispose();
+    chatDeleteMessageBloc.close();
     super.dispose();
   }
 
@@ -180,10 +181,11 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
         BlocProvider(create: (_) => chatBlockBloc),
         BlocProvider(create: (_) => chatDeleteBloc),
         BlocProvider(create: (_) => recordingVoiceBloc),
+        BlocProvider(create: (_) => chatDeleteMessageBloc),
       ],
       child: WillPopScope(
         onWillPop: () async {
-          if (selectedMessages.isNotEmpty) {
+          if (selectMessageBloc.selectedMessages.isNotEmpty) {
             selectMessageBloc.add(SelectMessageClearEvent());
             return false;
           }
@@ -299,7 +301,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                               messageWidgets.add(
                                 createDate: message.createDate!,
                                 widget: ChatMessageWidget(
-                                  key: Key(message.id.toString()),
+                                  messageKey: MessageWidgetKey(message),
                                   message: message,
                                   onClickReplyMessage: scrollTo,
                                 ),
@@ -592,7 +594,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     ChatMessageUploadController messageUploadController = ChatMessageUploadController();
 
     ChatSendingMessageWidget sendingMessageWidget = ChatSendingMessageWidget(
-      key: Key("$text ${DateTime.now().microsecondsSinceEpoch}"),
+      messageKey: MessageWidgetKey(null),
       controller: messageUploadController,
       message: text,
       files: files,
@@ -615,7 +617,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
         message: text,
         files: files,
         controller: messageUploadController,
-        widgetKey: sendingMessageWidget.key,
+        widgetKey: sendingMessageWidget.messageKey.key,
         replyMessage: reply,
       ),
     );

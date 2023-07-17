@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:siraf3/bloc/chat/delete_message/chat_delete_message_bloc.dart';
 import 'package:siraf3/controller/chat_message_upload_controller.dart';
 import 'package:siraf3/extensions/file_extension.dart';
 import 'package:siraf3/extensions/list_extension.dart';
@@ -21,7 +23,7 @@ class ChatSendingMessageWidget extends MessageWidget {
   void Function(ChatMessage? replyMessage)? onClickReplyMessage;
 
   ChatSendingMessageWidget({
-    required super.key,
+    required super.messageKey,
     required this.controller,
     this.files,
     this.message,
@@ -82,4 +84,10 @@ abstract class ChatSendingMessageWidgetState extends AbstractMessageWidget<ChatS
 
   @override
   ChatMessage? message() => null;
+
+  bool onClickDeleteMessage(bool isForAll) {
+    BlocProvider.of<ChatDeleteMessageBloc>(context).add(ChatDeleteMessageSendingEvent(widget.messageKey.key));
+
+    return false;
+  }
 }

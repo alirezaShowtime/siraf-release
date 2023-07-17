@@ -6,6 +6,7 @@ import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/consultant_info.dart';
 
 part 'consultant_profile_comment_rate_event.dart';
+
 part 'consultant_profile_comment_rate_state.dart';
 
 class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRateEvent, ConsultantProfileCommentRateState> {
@@ -36,15 +37,13 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
   }
 
   _onSendRate(ConsultantProfileCommentRateSendRateEvent event, Emitter<ConsultantProfileCommentRateState> emit) async {
-    if (state is ConsultantProfileCommentRateSending) return;
-
     emit(ConsultantProfileCommentRateSending(false));
 
     var res = await http2.postJsonWithToken(
       Uri.parse("https://rate.siraf.app/api/rate/addRateConsultant/"),
       body: {
-        "rate": event.rate,
-        "consultantsId": event.consultantId,
+        "rate": event.rate.toInt(),
+        "consultants_id": event.consultantId,
       },
     );
 
@@ -56,15 +55,13 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
   }
 
   _onSendCommentAndRate(ConsultantProfileCommentRateSendCommentAndRateEvent event, Emitter<ConsultantProfileCommentRateState> emit) async {
-    if (state is ConsultantProfileCommentRateSending) return;
-
     emit(ConsultantProfileCommentRateSending(false));
 
     var rateRes = await http2.postJsonWithToken(
       Uri.parse("https://rate.siraf.app/api/rate/addRateConsultant/"),
       body: {
-        "rate": event.rate,
-        "consultantsId": event.consultantId,
+        "rate": event.rate.toInt(),
+        "consultants_id": event.consultantId,
       },
     );
     var commentRes = await http2.postJsonWithToken(

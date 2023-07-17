@@ -1,29 +1,29 @@
 part of 'chat_screen.dart';
 
 extension BlocListeners on _ChatScreen {
-  void chatReplyBlocListener() {
-    chatReplyBloc.stream.listen((reply) {
-      if (reply != null) {
-        replyMessage = reply;
+  void deleteMessageBlocListener() {
+    chatDeleteMessageBloc.stream.listen((state) {
+      if (state is ChatDeleteMessageLoading) {
+        loadingDialog(context: context);
+      }
+      if (state is ChatDeleteMessageError) {
+        dismissDialog(loadingDialogContext);
+        errorDialog(context: context);
+      }
+      if (state is ChatDeleteMessageSuccess) {
+        dismissDialog(loadingDialogContext);
+        notify("با موفقیت حذف شد.");
+
+        //todo
+        // messageWidgets.removeWhere((e) => e.equalTo(state.));
       }
     });
   }
 
-  void selectMessageBlocListener() {
-    selectMessageBloc.stream.listen((state) {
-      if (state is SelectMessageSelectState) {
-        selectedMessages.add(MapEntry(state.widgetKey, state.messageId));
-        selectMessageBloc.add(SelectMessageCountEvent(selectedMessages.length));
-      }
-
-      if (state is SelectMessageDeselectState) {
-        selectedMessages.removeWhere((e) => e.key == state.widgetKey);
-        selectMessageBloc.add(SelectMessageCountEvent(selectedMessages.length));
-      }
-
-      if (state is SelectMessageClearState) {
-        selectedMessages.clear();
-        selectMessageBloc.add(SelectMessageCountEvent(0));
+  void chatReplyBlocListener() {
+    chatReplyBloc.stream.listen((reply) {
+      if (reply != null) {
+        replyMessage = reply;
       }
     });
   }
@@ -84,7 +84,7 @@ extension BlocListeners on _ChatScreen {
               () => messageWidgets.replace(
             i,
             ChatMessageWidget(
-              key: Key(state.message.id!.toString()),
+              messageKey: MessageWidgetKey(state.message),
               message: state.message,
               files: state.sentFiles,
               onClickReplyMessage: scrollTo,
