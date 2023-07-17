@@ -18,7 +18,7 @@ extension ProfileDetail on _EstateProfileScreen {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (!estateProfile.description.isFill() && !estateProfile.video.isFill() && !estateProfile.images.isFill() && !estateProfile.consultants.isFill()) SizedBox(height: 15),
+          if (estateProfile.description.isFill() || estateProfile.video.isFill() || estateProfile.images.isFill() || estateProfile.consultants.isFill()) SizedBox(height: 15),
           if (!estateProfile.description.isFill() && !estateProfile.video.isFill() && !estateProfile.images.isFill() && !estateProfile.consultants.isFill())
             Padding(
               padding: const EdgeInsets.only(bottom: 20),

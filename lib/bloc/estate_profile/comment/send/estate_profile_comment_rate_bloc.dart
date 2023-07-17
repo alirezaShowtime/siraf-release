@@ -17,7 +17,7 @@ class EstateProfileCommentRateBloc extends Bloc<EstateProfileCommentRateEvent, E
 
   _onSendComment(EstateProfileCommentRateSendCommentEvent event, Emitter<EstateProfileCommentRateState> emit) async {
     if (state is EstateProfileCommentRateSending) return;
-    emit(EstateProfileCommentRateSending());
+    emit(EstateProfileCommentRateSending(event.commentId != null));
 
     var res = await http2.postJsonWithToken(
       Uri.parse("https://rate.siraf.app/api/comment/addCommentEstate/"),
@@ -37,7 +37,7 @@ class EstateProfileCommentRateBloc extends Bloc<EstateProfileCommentRateEvent, E
 
   _onSendRate(EstateProfileCommentRateSendRateEvent event, Emitter<EstateProfileCommentRateState> emit) async {
     if (state is EstateProfileCommentRateSending) return;
-    emit(EstateProfileCommentRateSending());
+    emit(EstateProfileCommentRateSending(false));
 
     var res = await http2.postJsonWithToken(
       Uri.parse("https://rate.siraf.app/api/rate/addRateEstate/"),
@@ -57,7 +57,7 @@ class EstateProfileCommentRateBloc extends Bloc<EstateProfileCommentRateEvent, E
   _onSendCommentAndRate(EstateProfileCommentRateSendCommentAndRateEvent event, Emitter<EstateProfileCommentRateState> emit) async {
     if (state is EstateProfileCommentRateSending) return;
 
-    emit(EstateProfileCommentRateSending());
+    emit(EstateProfileCommentRateSending(false));
 
     var commentRes = await http2.postJsonWithToken(
       Uri.parse("https://rate.siraf.app/api/comment/addCommentEstate/"),

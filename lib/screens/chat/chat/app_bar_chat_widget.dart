@@ -113,6 +113,7 @@ class _AppBarChat extends State<AppBarChat> {
   Widget title() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         InkWell(
           onTap: () {

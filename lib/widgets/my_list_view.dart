@@ -24,16 +24,21 @@ class _MyListView extends State<MyListView> {
         maxHeight: 160,
         maxWidth: 160,
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image.asset("assets/images/no-result.png"),
-          Text(
-            widget.emptyText,
-            style: TextStyle(color: Themes.text, fontSize: 11, fontFamily: "IranSansBold"),
+      child: Center(
+        child: SingleChildScrollView(
+          physics: NeverScrollableScrollPhysics(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset("assets/images/no-result.png"),
+              Text(
+                widget.emptyText,
+                style: TextStyle(color: Themes.text, fontSize: 11, fontFamily: "IranSansBold"),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

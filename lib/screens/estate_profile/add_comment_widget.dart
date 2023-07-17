@@ -59,7 +59,7 @@ extension AddCommentWidget on _EstateProfileScreen {
                   }
                 },
                 builder: (context, state) {
-                  if (state is EstateProfileCommentRateSending) {
+                  if (state is EstateProfileCommentRateSending && !state.isReply) {
                     return SizedBox(
                       width: 15,
                       height: 15,

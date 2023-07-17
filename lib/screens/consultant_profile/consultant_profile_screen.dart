@@ -91,6 +91,9 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> {
         notify(state.message ?? "خطایی در ثبت امتیاز/نظر پیش آمد.");
       }
 
+      if (state is ConsultantProfileCommentRateSuccess && state.comment == null && !state.isReply) {
+        notify("امتیاز شما ثبت شد");
+      }
       if (state is ConsultantProfileCommentRateSuccess && state.comment != null && !state.isReply) {
         commentController.clear();
         List<Comment> list = comments;

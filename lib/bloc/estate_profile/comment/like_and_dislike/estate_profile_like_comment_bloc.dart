@@ -16,6 +16,7 @@ class EstateProfileLikeCommentBloc extends Bloc<EstateProfileLikeCommentEvent, E
 
   FutureOr<void> _request(EstateProfileLikeCommentRequestEvent event, Emitter<EstateProfileLikeCommentState> emit) async {
     if (state is EstateProfileLikeCommentLoading) return;
+    if (state is EstateProfileLikeCommentSuccess && (state as EstateProfileLikeCommentSuccess).action == event.action) return;
     emit(EstateProfileLikeCommentLoading());
 
     var res = await http2.postJsonWithToken(

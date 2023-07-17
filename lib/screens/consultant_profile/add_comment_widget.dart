@@ -51,7 +51,7 @@ extension AddCommentWidget on _ConsultantProfileScreen {
               child: BlocBuilder(
                 bloc: sendCommentRateBloc,
                 builder: (context, state) {
-                  if (state is ConsultantProfileCommentRateSending) {
+                  if (state is ConsultantProfileCommentRateSending && !state.isReply) {
                     return SizedBox(
                       width: 15,
                       height: 15,

@@ -37,6 +37,8 @@ import 'sendingMessageWidgets/chat_sending_message_widget.dart';
 
 part 'bloc_listeners.dart';
 
+part 'voice_recorder.dart';
+
 class ChatScreen extends StatefulWidget {
   String? consultantName;
   String? consultantImage;
@@ -95,7 +97,6 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   late Animation<double> recordIconAnim;
   Timer? scrollDownButtonTimer;
 
-  String? recorderVoicePath;
   MessageWidgetList messageWidgets = MessageWidgetList();
 
   bool isRecording = false;
@@ -659,50 +660,5 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     timer = null;
     recordTime = 0;
     recordTimeStream.add(0);
-  }
-
-  Future<void> startRecording() async {
-    print("status record start");
-    Map<Permission, PermissionStatus> permissions = await [
-      Permission.storage,
-      Permission.microphone,
-    ].request();
-
-    bool permissionsGranted = permissions[Permission.storage]!.isGranted && permissions[Permission.microphone]!.isGranted;
-
-    if (permissionsGranted) {
-      Directory appFolder = await getTemporaryDirectory();
-      bool appFolderExists = await appFolder.exists();
-      if (!appFolderExists) {
-        await appFolder.create(recursive: true);
-      }
-
-      final filepath = appFolder.path + '/' + DateTime.now().millisecondsSinceEpoch.toString() + ".wav";
-
-      await _audioRecorder.start(path: filepath);
-      print(await _audioRecorder.isRecording());
-    } else {
-      print('Permissions not granted');
-    }
-  }
-
-  Future<String?> stopRecording() async {
-    if (!await _audioRecorder.isRecording()) return null;
-    print("status record stop");
-    String? path = await _audioRecorder.stop();
-    _audioRecorder.dispose();
-
-    return path;
-  }
-
-  Future<void> cancelRecording() async {
-    print("status record cancel");
-    try {
-      if (await _audioRecorder.isRecording()) {
-        String? path = await _audioRecorder.stop();
-
-        await File(path!).delete();
-      }
-    } catch (e) {}
   }
 }

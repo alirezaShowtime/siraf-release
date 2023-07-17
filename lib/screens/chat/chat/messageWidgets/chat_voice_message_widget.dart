@@ -25,18 +25,17 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
 
     setSourcePlayer();
 
-    player.onPlayerStateChanged.listen((state) {
-      if (state == PlayerState.completed) {
-        setSourcePlayer();
-      }
+    player.onPlayerComplete.listen((state) async {
+      await setSourcePlayer();
     });
 
     BlocProvider.of<VoiceMessagePlayBloc>(context).add(VoiceMessagePlayRegisterPlayerEvent(player));
   }
 
   @override
-  void dispose() {
-    player.stop();
+  void dispose() async {
+    await player.stop();
+    await player.dispose();
     super.dispose();
   }
 
@@ -143,16 +142,20 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
     );
   }
 
-  void setSourcePlayer() async {
-    if (widget.files.isFill()) {
-      player.setSource(DeviceFileSource(widget.files!.first.path));
-    } else {
-      player.setSource(UrlSource(widget.fileMessages[0].path!));
-    }
-    voiceDuration = await player.onDurationChanged.first;
+  Future<void> setSourcePlayer() async {
+    if (player.source != null) return;
+    try {
+      if (widget.files.isFill()) {
+        await player.setSourceDeviceFile(widget.files!.first.path);
+      } else {
+        await player.setSourceUrl(widget.fileMessages[0].path!);
+      }
+      voiceDuration = await player.onDurationChanged.first;
+    } catch (e) {}
   }
 
   Stream<Duration> getCurrentDurationVoice() async* {
+    if (player.source == null) yield Duration(seconds: 0);
     var count = await player.onDurationChanged.first;
 
     yield count;

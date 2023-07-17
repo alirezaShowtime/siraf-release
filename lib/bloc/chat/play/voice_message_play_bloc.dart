@@ -59,18 +59,16 @@ class VoiceMessagePlayBloc extends Bloc<VoiceMessagePlayEvent, VoiceMessagePlayS
 
     for (AudioPlayer player in players) {
       if (player.state == PlayerState.playing && player.playerId != event.player.playerId) {
-        // var source = player.source;
         player.pause();
-        // if (source != null) {
-        //   player.setSource(source);
-        // }
         emit(VoiceMessagePlayState(PlayerState.stopped, player.playerId));
         break;
       }
     }
 
-    event.player.resume();
-    event.player.state = PlayerState.playing;
-    emit(VoiceMessagePlayState(PlayerState.playing, event.player.playerId));
+    if (event.player.source != null) {
+      event.player.resume();
+      event.player.state = PlayerState.playing;
+      return emit(VoiceMessagePlayState(PlayerState.playing, event.player.playerId));
+    }
   }
 }
