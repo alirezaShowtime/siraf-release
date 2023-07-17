@@ -9,8 +9,6 @@ class SelectMessageCountEvent extends SelectMessageEvent {
   SelectMessageCountEvent(this.count);
 }
 
-class SelectMessageDeselectAllEvent extends SelectMessageEvent {}
-
 class SelectMessageClearEvent extends SelectMessageEvent {}
 
 class SelectMessageSelectEvent extends SelectMessageEvent {
@@ -27,8 +25,6 @@ class SelectMessageDeselectEvent extends SelectMessageEvent {
 }
 
 abstract class SelectMessageState {}
-
-class SelectMessageDeselectAllState extends SelectMessageState {}
 
 class SelectMessageClearState extends SelectMessageState {}
 
@@ -52,11 +48,30 @@ class SelectMessageDeselectState extends SelectMessageState {
 }
 
 class SelectMessageBloc extends Bloc<SelectMessageEvent, SelectMessageState?> {
+  List<MapEntry<Key, int?>> selectedMessages = [];
+
   SelectMessageBloc() : super(null) {
-    on<SelectMessageSelectEvent>((event, emit) => emit(SelectMessageSelectState(event.widgetKey, event.messageId)));
-    on<SelectMessageDeselectEvent>((event, emit) => emit(SelectMessageDeselectState(event.widgetKey)));
-    on<SelectMessageDeselectAllEvent>((event, emit) => emit(SelectMessageDeselectAllState()));
-    on<SelectMessageCountEvent>((event, emit) => emit(SelectMessageCountSate(event.count)));
-    on<SelectMessageClearEvent>((event, emit) => emit(SelectMessageClearState()));
+    on<SelectMessageSelectEvent>(_select);
+    on<SelectMessageDeselectEvent>(_deselect);
+    on<SelectMessageClearEvent>(_clear);
+    on<SelectMessageCountEvent>((event, emit) => emit(SelectMessageCountSate(selectedMessages.length)));
+  }
+
+  _select(event, emit) {
+    selectedMessages.add(MapEntry(event.widgetKey, event.messageId));
+    add(SelectMessageCountEvent(selectedMessages.length));
+    return emit(SelectMessageSelectState(event.widgetKey, event.messageId));
+  }
+
+  _deselect(event, emit) {
+    selectedMessages.removeWhere((e) => e.key == event.widgetKey);
+    add(SelectMessageCountEvent(selectedMessages.length));
+    return emit(SelectMessageDeselectState(event.widgetKey));
+  }
+
+  _clear(event, emit) {
+    selectedMessages.clear();
+    add(SelectMessageCountEvent(selectedMessages.length));
+    return emit(SelectMessageClearState());
   }
 }

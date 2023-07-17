@@ -23,11 +23,11 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
 
     messageConfig = getConfig();
 
-    setSourcePlayer();
-
-    player.onPlayerComplete.listen((state) async {
-      await setSourcePlayer();
-    });
+    // setSourcePlayer();
+    //
+    // player.onPlayerComplete.listen((state) async {
+    //   await setSourcePlayer();
+    // });
 
     BlocProvider.of<VoiceMessagePlayBloc>(context).add(VoiceMessagePlayRegisterPlayerEvent(player));
   }
@@ -36,7 +36,7 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
   void dispose() async {
     await player.stop();
     await player.dispose();
-    super.dispose();
+    return super.dispose();
   }
 
   Widget voiceWidget() {

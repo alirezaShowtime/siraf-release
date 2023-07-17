@@ -45,6 +45,14 @@ class MessageWidgetList {
     _list.removeAt(index);
   }
 
+  void removeWhere(bool Function(MessageWidgetKey) where) {
+    _list.removeWhere((e) {
+      if (e.value is! MessageWidget) return false;
+
+      return where((e.value as MessageWidget).messageKey);
+    });
+  }
+
   Widget get(int index) {
     return _list[index].value;
   }
