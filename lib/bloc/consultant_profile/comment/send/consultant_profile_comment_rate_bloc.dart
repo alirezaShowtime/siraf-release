@@ -18,7 +18,7 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
   _onSendComment(ConsultantProfileCommentRateSendCommentEvent event, Emitter<ConsultantProfileCommentRateState> emit) async {
     if (state is ConsultantProfileCommentRateSending) return;
 
-    emit(ConsultantProfileCommentRateSending());
+    emit(ConsultantProfileCommentRateSending(event.commentId != null));
 
     var res = await http2.postJsonWithToken(
       Uri.parse("https://rate.siraf.app/api/comment/addCommentConsultant/"),
@@ -38,13 +38,13 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
   _onSendRate(ConsultantProfileCommentRateSendRateEvent event, Emitter<ConsultantProfileCommentRateState> emit) async {
     if (state is ConsultantProfileCommentRateSending) return;
 
-    emit(ConsultantProfileCommentRateSending());
+    emit(ConsultantProfileCommentRateSending(false));
 
     var res = await http2.postJsonWithToken(
-      Uri.parse("https://rate.siraf.app/api/rate/consultantRate/"),
+      Uri.parse("https://rate.siraf.app/api/rate/addRateConsultant/"),
       body: {
         "rate": event.rate,
-        "consultants_id": event.consultantId,
+        "consultantsId": event.consultantId,
       },
     );
 
@@ -58,20 +58,20 @@ class ConsultantProfileCommentRateBloc extends Bloc<ConsultantProfileCommentRate
   _onSendCommentAndRate(ConsultantProfileCommentRateSendCommentAndRateEvent event, Emitter<ConsultantProfileCommentRateState> emit) async {
     if (state is ConsultantProfileCommentRateSending) return;
 
-    emit(ConsultantProfileCommentRateSending());
+    emit(ConsultantProfileCommentRateSending(false));
 
+    var rateRes = await http2.postJsonWithToken(
+      Uri.parse("https://rate.siraf.app/api/rate/addRateConsultant/"),
+      body: {
+        "rate": event.rate,
+        "consultantsId": event.consultantId,
+      },
+    );
     var commentRes = await http2.postJsonWithToken(
       Uri.parse("https://rate.siraf.app/api/comment/addCommentConsultant/"),
       body: {
         "comment": event.message,
         "consultant_id": event.consultantId,
-      },
-    );
-    var rateRes = await http2.postJsonWithToken(
-      Uri.parse("https://rate.siraf.app/api/rate/consultantRate/"),
-      body: {
-        "rate": event.rate,
-        "consultants_id": event.consultantId,
       },
     );
 

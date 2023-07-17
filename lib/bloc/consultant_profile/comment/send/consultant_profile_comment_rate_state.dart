@@ -5,7 +5,11 @@ abstract class ConsultantProfileCommentRateState {}
 
 class ConsultantProfileCommentRateInitial extends ConsultantProfileCommentRateState {}
 
-class ConsultantProfileCommentRateSending extends ConsultantProfileCommentRateState {}
+class ConsultantProfileCommentRateSending extends ConsultantProfileCommentRateState {
+  bool isReply;
+
+  ConsultantProfileCommentRateSending(this.isReply);
+}
 
 class ConsultantProfileCommentRateSuccess extends ConsultantProfileCommentRateState {
   Comment? comment;

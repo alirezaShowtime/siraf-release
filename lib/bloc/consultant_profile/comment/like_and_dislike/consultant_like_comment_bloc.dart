@@ -16,6 +16,7 @@ class ConsultantLikeCommentBloc extends Bloc<ConsultantLikeCommentEvent, Consult
 
   FutureOr<void> _request(ConsultantLikeCommentRequestEvent event, Emitter<ConsultantLikeCommentState> emit) async {
     if (state is ConsultantLikeCommentLoading) return;
+    if (state is ConsultantLikeCommentSuccess && (state as ConsultantLikeCommentSuccess).action == event.action) return;
     emit(ConsultantLikeCommentLoading());
 
     var res = await http2.postJsonWithToken(

@@ -36,9 +36,6 @@ class _CommentItemWidget extends State<CommentItemWidget> {
 
   FocusNode focusNode = FocusNode();
 
-  int like = 0;
-  int dislike = 0;
-
   @override
   void initState() {
     super.initState();
@@ -63,9 +60,6 @@ class _CommentItemWidget extends State<CommentItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    like = widget.comment.likeCount ?? 0;
-    dislike = widget.comment.dislikeCount ?? 0;
-
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       decoration: BoxDecoration(
@@ -131,12 +125,9 @@ class _CommentItemWidget extends State<CommentItemWidget> {
               BlocConsumer(
                 bloc: likeCommentBloc,
                 listener: (context, state) {
-                  like = widget.comment.likeCount ?? 0;
-                  dislike = widget.comment.dislikeCount ?? 0;
-
                   if (state is EstateProfileLikeCommentSuccess) {
-                    like = state.action == CommentAction.Like ? like + 1 : like;
-                    dislike = state.action == CommentAction.Dislike ? dislike + 1 : dislike;
+                    widget.comment.likeCount = state.action == CommentAction.Like ? widget.comment.previousLike + 1 : widget.comment.previousLike;
+                    widget.comment.dislikeCount = state.action == CommentAction.Dislike ? widget.comment.previousDislike + 1 : widget.comment.previousDislike;
                   }
                 },
                 builder: (context, state) {
@@ -145,13 +136,13 @@ class _CommentItemWidget extends State<CommentItemWidget> {
                       MyTextIconButton(
                         onPressed: onClickLike,
                         icon: icon(Icons.thumb_up_alt_outlined, size: 15),
-                        text: like.emptable(),
+                        text: widget.comment.likeCount.emptable(),
                         rippleColor: Themes.text,
                       ),
                       MyTextIconButton(
                         onPressed: onClickDislike,
                         icon: icon(Icons.thumb_down_alt_outlined, size: 15),
-                        text: dislike.emptable(),
+                        text: widget.comment.dislikeCount.emptable(),
                         rippleColor: Themes.text,
                       ),
                     ],

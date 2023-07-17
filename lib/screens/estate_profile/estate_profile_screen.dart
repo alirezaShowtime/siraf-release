@@ -106,6 +106,12 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
       if (state is EstateProfileCommentRateError) {
         notify(state.message ?? "خطایی در ثبت امتیاز/نظر پیش آمد.");
       }
+      //is only rate
+      if (state is EstateProfileCommentRateSuccess && state.comment == null && !state.isReply) {
+        notify("امتیاز شما ثبت شد");
+      }
+
+      // is new message
       if (state is EstateProfileCommentRateSuccess && state.comment != null && !state.isReply) {
         commentController.clear();
         List<Comment> list = comments;
@@ -225,7 +231,11 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 3),
       child: GestureDetector(
         onTap: () {
-          push(context, ImageViewScreen(imageUrl: image.image,));
+          push(
+              context,
+              ImageViewScreen(
+                imageUrl: image.image,
+              ));
         },
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),

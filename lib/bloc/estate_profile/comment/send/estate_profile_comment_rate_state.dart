@@ -5,7 +5,11 @@ abstract class EstateProfileCommentRateState {}
 
 class EstateProfileCommentRateInitial extends EstateProfileCommentRateState {}
 
-class EstateProfileCommentRateSending extends EstateProfileCommentRateState {}
+class EstateProfileCommentRateSending extends EstateProfileCommentRateState {
+  bool isReply;
+
+  EstateProfileCommentRateSending(this.isReply);
+}
 
 class EstateProfileCommentRateSuccess extends EstateProfileCommentRateState {
   Comment? comment;

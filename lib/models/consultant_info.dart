@@ -67,8 +67,10 @@ class ConsultantInfo {
 
 class Comment {
   int? id;
-  int? likeCount;
-  int? dislikeCount;
+  int likeCount = 0;
+  int dislikeCount = 0;
+  int previousLike = 0;
+  int previousDislike = 0;
   String? comment;
   int? consultantId;
   UserId? userId;
@@ -82,9 +84,11 @@ class Comment {
     }
     if (json["likeCount"] is int) {
       likeCount = json["likeCount"];
+      previousLike = json["likeCount"];
     }
     if (json["countDisLike"] is int) {
       dislikeCount = json["countDisLike"];
+      previousDislike = json["countDisLike"];
     }
     if (json["comment"] is String) {
       comment = json["comment"];

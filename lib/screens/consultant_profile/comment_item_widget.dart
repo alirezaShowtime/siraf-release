@@ -4,6 +4,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:siraf3/bloc/consultant_profile/comment/like_and_dislike/consultant_like_comment_bloc.dart';
 import 'package:siraf3/bloc/consultant_profile/comment/send/consultant_profile_comment_rate_bloc.dart';
 import 'package:siraf3/enums/comment_action.dart';
+import 'package:siraf3/extensions/int_extension.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
@@ -34,9 +35,6 @@ class _CommentItemWidget extends State<CommentItemWidget> {
 
   FocusNode focusNode = FocusNode();
 
-  int like = 0;
-  int dislike = 0;
-
   @override
   void initState() {
     super.initState();
@@ -61,9 +59,6 @@ class _CommentItemWidget extends State<CommentItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    like = widget.comment.likeCount ?? 0;
-    dislike = widget.comment.dislikeCount ?? 0;
-
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       decoration: BoxDecoration(
@@ -130,12 +125,9 @@ class _CommentItemWidget extends State<CommentItemWidget> {
               BlocConsumer(
                 bloc: likeCommentBloc,
                 listener: (context, state) {
-                  like = widget.comment.likeCount ?? 0;
-                  dislike = widget.comment.dislikeCount ?? 0;
-
                   if (state is ConsultantLikeCommentSuccess) {
-                    like = state.action == CommentAction.Like ? like + 1 : like;
-                    dislike = state.action == CommentAction.Dislike ? dislike + 1 : dislike;
+                    widget.comment.likeCount = state.action == CommentAction.Like ? widget.comment.previousLike + 1 : widget.comment.previousLike;
+                    widget.comment.dislikeCount = state.action == CommentAction.Dislike ? widget.comment.previousDislike + 1 : widget.comment.previousDislike;
                   }
                 },
                 builder: (context, state) {
@@ -144,13 +136,13 @@ class _CommentItemWidget extends State<CommentItemWidget> {
                       MyTextIconButton(
                         onPressed: onClickLike,
                         icon: icon(Icons.thumb_up_alt_outlined, size: 15),
-                        text: like.toString(),
+                        text: widget.comment.likeCount.emptable(),
                         rippleColor: Themes.text,
                       ),
                       MyTextIconButton(
                         onPressed: onClickDislike,
                         icon: icon(Icons.thumb_down_alt_outlined, size: 15),
-                        text: dislike.toString(),
+                        text: widget.comment.dislikeCount.emptable(),
                         rippleColor: Themes.text,
                       ),
                     ],
