@@ -15,11 +15,17 @@ extension BlocListeners on _ChatScreen {
         notify("با موفقیت حذف شد.");
 
         selectMessageBloc.add(SelectMessageClearEvent());
-        listViewSetState?.call(() {
-          for (int messageId in state.ids) {
-            messageWidgets.removeWhere((e) => e.equalTo(messageId));
-          }
-        });
+
+        for (int messageId in state.ids) {
+          messageWidgets.removeWhere((e) => e.equalTo(messageId));
+        }
+
+        if (messageWidgets.widgetLength() > 0) {
+          listViewSetState?.call(() {});
+        } else {
+          print("fdfsdfsdrkdpriwedrp[eor]");
+          setState(() {});
+        }
       }
     });
   }
@@ -84,17 +90,24 @@ extension BlocListeners on _ChatScreen {
 
         lastMessage = state.message.message;
 
-        listViewSetState?.call(
-          () => messageWidgets.replace(
-            i,
-            ChatMessageWidget(
-              messageKey: MessageWidgetKey(state.message),
-              message: state.message,
-              files: state.sentFiles,
-              onClickReplyMessage: scrollTo,
-            ),
+        messageWidgets.replace(
+          i,
+          ChatMessageWidget(
+            messageKey: MessageWidgetKey(state.message),
+            message: state.message,
+            files: state.sentFiles,
+            onClickReplyMessage: scrollTo,
           ),
         );
+
+        try {
+          if (messageWidgets.widgetLength() == 1) {
+            setState(() {});
+          } else {
+            listViewSetState?.call(() {});
+          }
+        } catch (e) {}
+
         break;
       }
     });

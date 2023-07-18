@@ -207,7 +207,17 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
             switch (v) {
               case "file":
                 {
-                  push(context, CreateFileFirst());
+                  push(
+                      context,
+                      CreateFileFirst(
+                        estates: [
+                          Estate(
+                            id: estateProfile?.id,
+                            name: estateProfile?.name,
+                            address: estateProfile?.address,
+                          ),
+                        ],
+                      ));
                   return;
                 }
               case "requestFile":

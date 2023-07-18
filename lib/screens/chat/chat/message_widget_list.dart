@@ -68,6 +68,11 @@ class MessageWidgetList {
     return _list.length;
   }
 
+
+  int widgetLength() {
+    return _list.where((e) => e.value is MessageWidget).length;
+  }
+
   void replace(int i, Widget newWidget) {
     _list[i] = MapEntry(_list[i].key, newWidget);
   }
@@ -79,4 +84,17 @@ class MessageWidgetList {
   int indexOfCreateDate(createDate) {
     return _list.indexOf(createDate);
   }
+
+  void clearList() {
+    _list.clear();
+  }
+
+void onRemovedMessage(){
+
+  if(length() > 0 && widgetLength() == 0){
+    _list.clear();
+  }
+
+}
+
 }

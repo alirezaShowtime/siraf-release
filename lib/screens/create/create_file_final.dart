@@ -43,6 +43,12 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
     resetCreateFileForm = false;
 
     bloc.stream.listen(_listenBloc);
+
+    if (widget.formData.estates.isNotEmpty) {
+      setState(() {
+        selectedEstates = widget.formData.estates;
+      });
+    }
   }
 
   String? securityDescription;

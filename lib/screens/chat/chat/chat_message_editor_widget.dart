@@ -107,7 +107,10 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
                         maxLines: 7,
                         minLines: 1,
                         onChanged: (text) {
-                          setState(() => showSendButton = text.length > 0 || selectedFiles.isNotEmpty);
+                          showSendButton = text.length > 0 || selectedFiles.isNotEmpty;
+                          try{
+                          setState((){});
+                          }catch(e){}
                         },
                         decoration: InputDecoration(
                           border: InputBorder.none,
@@ -221,7 +224,9 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
       selectedFileWidgets.add(attachedFileItem(File(platformFile.path!)));
     }
     showSendButton = true;
+    try{
     setState(() {});
+    }catch(e){}
   }
 
   void onClickSendMessage() {
@@ -231,7 +236,10 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
     widget.onClickSendMessage?.call(text.isEmpty ? null : text, selectedFiles, replyMessage);
     showSendButton = false;
     messageController.clear();
-    setState(selectedFileWidgets.clear);
+    selectedFileWidgets.clear();
+    try {
+      setState(() {});
+    } catch (e) {}
   }
 
   Widget fileList() {
@@ -320,8 +328,10 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
               selectedFiles.clear();
               selectedFileWidgets.clear();
               showSendButton = false;
-
+try{
               setState(() {});
+
+}catch(e){}
             },
           ),
         ],

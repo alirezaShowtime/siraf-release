@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -459,7 +460,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
       return Center(child: TryAgain(onPressed: _request, message: state.message));
     }
 
-    if (messageWidgets.length() == 0) {
+    if (messageWidgets.widgetLength() == 0) {
       return Center(
         child: Text(
           "پیامی وجود ندارد",
@@ -607,7 +608,11 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     messageWidgets.add(createDate: date, widget: sendingMessageWidget);
 
     scrollDown();
-    listViewSetState?.call(() {});
+    if (messageWidgets.widgetLength() == 1) {
+      setState(() {});
+    } else {
+      listViewSetState?.call(() {});
+    }
 
     chatReplyBloc.add(ChatReplyEvent(null));
 
