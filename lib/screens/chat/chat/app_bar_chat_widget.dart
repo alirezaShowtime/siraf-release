@@ -135,7 +135,7 @@ class _AppBarChat extends State<AppBarChat> {
               push(context, ConsultantProfileScreen(consultantId: widget.consultantId!, consultantName: widget.consultantName));
             }
           },
-          // borderRadius: BorderRadius.circular(100),
+          borderRadius: BorderRadius.circular(100),
           child: Container(
             padding: const EdgeInsets.all(4),
             // constraints: BoxConstraints(minWidth: 100),
