@@ -86,6 +86,8 @@ dependencies:
   intl: ^0.17.0
   image_size_getter: ^2.1.2
   flutter_sound: ^9.2.13
+  emoji_picker_flutter: ^1.6.1
+  flutter_keyboard_size: ^1.0.1
 
 
 dev_dependencies:

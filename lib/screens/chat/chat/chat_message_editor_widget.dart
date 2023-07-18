@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/chat/recordingVoice/recording_voice_bloc.dart';
@@ -20,7 +22,9 @@ class ChatMessageEditor extends StatefulWidget {
 
   void Function(String? text, List<File>? files, ChatMessage? replyMessage)? onClickSendMessage;
 
-  ChatMessageEditor({this.onClickSendMessage});
+  void Function(bool isOpenEmojiKeyboard)? onOpenEmojiKeyboard;
+
+  ChatMessageEditor({this.onClickSendMessage, this.onOpenEmojiKeyboard});
 }
 
 class _ChatMessageEditor extends State<ChatMessageEditor> {
@@ -32,6 +36,11 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
 
   ChatMessage? replyMessage;
 
+  bool openEmojiKeyboard = false;
+
+  FocusNode focusNode = FocusNode();
+  bool keyboardIsFocused = false;
+
   @override
   void initState() {
     super.initState();
@@ -40,93 +49,171 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
       replyMessage = reply;
       FocusManager.instance.primaryFocus?.requestFocus();
     });
+
+    messageController.addListener(() {
+      showSendButton = messageController.value.text.length > 0 || selectedFiles.isNotEmpty;
+      try {
+        setState(() {});
+      } catch (e) {}
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        fileList(),
-        BlocBuilder<ChatReplyBloc, ChatMessage?>(
-          builder: (_, reply) => replyMessageWidget(reply),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border(top: BorderSide(color: Colors.grey.shade300, width: 0.7)),
-            boxShadow: [
-              BoxShadow(
-                offset: const Offset(1, -3),
-                spreadRadius: -3,
-                blurRadius: 1,
-                color: Colors.black12,
-              ),
-            ],
+    return WillPopScope(
+      onWillPop: () async {
+        if (openEmojiKeyboard) {
+          setState(() => openEmojiKeyboard = false);
+          return false;
+        }
+        return true;
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          fileList(),
+          BlocBuilder<ChatReplyBloc, ChatMessage?>(
+            builder: (_, reply) => replyMessageWidget(reply),
           ),
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                decoration: BoxDecoration(color: Colors.white),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (showSendButton)
-                      Directionality(
-                        textDirection: TextDirection.ltr,
-                        child: btn(
-                          iconData: Icons.send,
-                          color: Themes.primary,
-                          onTap: onClickSendMessage,
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(top: BorderSide(color: Colors.grey.shade300, width: 0.7)),
+              boxShadow: [
+                BoxShadow(
+                  offset: const Offset(1, -3),
+                  spreadRadius: -3,
+                  blurRadius: 1,
+                  color: Colors.black12,
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                  decoration: BoxDecoration(color: Colors.white),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (showSendButton)
+                        Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: btn(
+                            iconData: Icons.send,
+                            color: Themes.primary,
+                            onTap: onClickSendMessage,
+                          ),
+                        ),
+                      if (!showSendButton)
+                        GestureDetector(
+                          onHorizontalDragStart: (_) => cancelRecord(),
+                          onVerticalDragStart: (_) => cancelRecord(),
+                          child: btn(
+                            iconData: Icons.keyboard_voice_outlined,
+                            onTapDown: (_) => startRecord(),
+                            onTapUp: (_) => stopRecord(),
+                            onTap: () {},
+                          ),
+                        ),
+                      if (!showSendButton)
+                        Transform.rotate(
+                          angle: 180,
+                          child: btn(
+                            iconData: Icons.attach_file_rounded,
+                            onTap: attachFile,
+                          ),
+                        ),
+                      Expanded(
+                        child: TextField2(
+                          controller: messageController,
+                          focusNode: focusNode,
+                          showCursor: openEmojiKeyboard ? true : null,
+                          readOnly: openEmojiKeyboard,
+                          maxLines: 7,
+                          minLines: 1,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "پیام...",
+                            hintStyle: TextStyle(color: Colors.grey.shade400),
+                          ),
+                          style: TextStyle(fontSize: 13),
                         ),
                       ),
-                    if (!showSendButton)
-                      GestureDetector(
-                        onHorizontalDragStart: (_) => cancelRecord(),
-                        onVerticalDragStart: (_) => cancelRecord(),
-                        child: btn(
-                          iconData: Icons.keyboard_voice_outlined,
-                          onTapDown: (_) => startRecord(),
-                          onTapUp: (_) => stopRecord(),
-                          onTap: () {},
-                        ),
-                      ),
-                    if (!showSendButton)
-                      Transform.rotate(
-                        angle: 180,
-                        child: btn(
-                          iconData: Icons.attach_file_rounded,
-                          onTap: attachFile,
-                        ),
-                      ),
-                    Expanded(
-                      child: TextField2(
-                        controller: messageController,
-                        maxLines: 7,
-                        minLines: 1,
-                        onChanged: (text) {
-                          showSendButton = text.length > 0 || selectedFiles.isNotEmpty;
-                          try{
-                          setState((){});
-                          }catch(e){}
+                      btn(
+                        iconData: Icons.mood_rounded,
+                        onTap: () {
+                          openEmojiKeyboard = !openEmojiKeyboard;
+                          widget.onOpenEmojiKeyboard?.call(openEmojiKeyboard);
+
+                          if (openEmojiKeyboard && keyboardIsFocused) {
+                            keyboardIsFocused = focusNode.hasFocus;
+                            focusNode.unfocus();
+                          } else if (keyboardIsFocused) {
+                            focusNode.requestFocus();
+                          }
+                          try {
+                            // Future.delayed(Duration(milliseconds: 500),(){
+
+                            setState(() {});
+                            // });
+                          } catch (e) {}
                         },
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "پیام...",
-                          hintStyle: TextStyle(color: Colors.grey.shade400),
-                        ),
-                        style: TextStyle(fontSize: 13),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (openEmojiKeyboard)
+            SizedBox(
+              height: 260,
+              child: EmojiPicker(
+                textEditingController: messageController,
+                config: Config(
+                  columns: 10,
+                  emojiSizeMax: 24 * (foundation.defaultTargetPlatform == TargetPlatform.iOS ? 1.30 : 1.0),
+                  verticalSpacing: 0,
+                  horizontalSpacing: 0,
+                  gridPadding: EdgeInsets.zero,
+                  initCategory: Category.RECENT,
+                  bgColor: Colors.white,
+                  indicatorColor: Themes.primary,
+                  iconColor: Colors.grey.shade400,
+                  iconColorSelected: Themes.primary,
+                  backspaceColor: Themes.primary,
+                  skinToneDialogBgColor: Colors.white,
+                  skinToneIndicatorColor: Colors.grey.shade300,
+                  enableSkinTones: true,
+                  recentTabBehavior: RecentTabBehavior.RECENT,
+                  recentsLimit: 28,
+                  replaceEmojiOnLimitExceed: true,
+                  noRecents: const Text(
+                    'No Recents',
+                    style: TextStyle(fontSize: 20, color: Colors.grey),
+                    textAlign: TextAlign.center,
+                  ),
+                  loadingIndicator: const SizedBox.shrink(),
+                  tabIndicatorAnimDuration: kTabScrollDuration,
+                  categoryIcons: const CategoryIcons(
+                    recentIcon: Icons.access_time_rounded,
+                    smileyIcon: Icons.tag_faces_outlined,
+                    animalIcon: Icons.pets_rounded,
+                    foodIcon: Icons.fastfood_rounded,
+                    activityIcon: Icons.directions_run_rounded,
+                    travelIcon: Icons.location_city_rounded,
+                    objectIcon: Icons.lightbulb_outline_rounded,
+                    symbolIcon: Icons.emoji_symbols_rounded,
+                    flagIcon: Icons.flag_rounded,
+                  ),
+                  buttonMode: ButtonMode.MATERIAL,
                 ),
               ),
-            ],
-          ),
-        ),
-      ],
+            )
+        ],
+      ),
     );
   }
 
@@ -224,9 +311,9 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
       selectedFileWidgets.add(attachedFileItem(File(platformFile.path!)));
     }
     showSendButton = true;
-    try{
-    setState(() {});
-    }catch(e){}
+    try {
+      setState(() {});
+    } catch (e) {}
   }
 
   void onClickSendMessage() {
@@ -328,10 +415,9 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
               selectedFiles.clear();
               selectedFileWidgets.clear();
               showSendButton = false;
-try{
-              setState(() {});
-
-}catch(e){}
+              try {
+                setState(() {});
+              } catch (e) {}
             },
           ),
         ],

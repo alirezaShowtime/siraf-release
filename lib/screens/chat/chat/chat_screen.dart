@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -120,6 +119,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   Record _audioRecorder = Record();
 
   ChatMessage? replyMessage;
+
+  bool isOpenEmojiKeyboard = false;
 
   @override
   void initState() {
@@ -335,7 +336,13 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                   if (isDeleted) notifChatWidget("حذف شده"),
                   if (isBlockByMe) notifChatWidget("رفع مسدودیت", onTap: onClickUnblock),
                   if (blockByHer && !isBlockByMe) notifChatWidget("شما مسدود شداید"),
-                  if (!isBlockByMe && !isDeleted && !blockByHer) ChatMessageEditor(onClickSendMessage: sendMessage),
+                  if (!isBlockByMe && !isDeleted && !blockByHer)
+                    ChatMessageEditor(
+                      onClickSendMessage: sendMessage,
+                      onOpenEmojiKeyboard: (isOpen) {
+                        isOpenEmojiKeyboard = isOpen;
+                      },
+                    ),
                 ],
               ),
               BlocBuilder(
