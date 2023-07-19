@@ -100,7 +100,6 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
           onTapUp: onTapUpMessage,
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-            foregroundDecoration: !isSelected ? null : BoxDecoration(color: Themes.primary.withOpacity(0.08)),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.start,

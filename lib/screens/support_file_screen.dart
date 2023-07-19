@@ -73,6 +73,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
             fileId: state.file.id,
             fileTitle: state.file.name,
             fileImage: state.file.firstImage?.path,
+            fileAddress: state.file.address,
           ),
         );
       }

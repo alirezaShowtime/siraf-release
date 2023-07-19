@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
@@ -46,6 +47,7 @@ class ChatScreen extends StatefulWidget {
   int? consultantId;
   String? fileTitle;
   String? fileImage;
+  String? fileAddress;
   int? fileId;
   int chatId;
   bool blockByMe;
@@ -59,6 +61,7 @@ class ChatScreen extends StatefulWidget {
     this.consultantId,
     this.fileTitle,
     this.fileImage,
+    this.fileAddress,
     this.fileId,
     this.blockByMe = false,
     this.blockByHer = false,
@@ -121,6 +124,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   ChatMessage? replyMessage;
 
   bool isOpenEmojiKeyboard = false;
+
+  StreamController<bool> changeEmojiKeyboardStatus = StreamController.broadcast();
 
   @override
   void initState() {
@@ -192,6 +197,12 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
             return false;
           }
 
+          if (isOpenEmojiKeyboard) {
+            changeEmojiKeyboardStatus.add(false);
+            setState(() => isOpenEmojiKeyboard = false);
+            return false;
+          }
+
           Navigator.pop(context, {
             "chatId": widget.chatId,
             "sentMessage": lastMessage,
@@ -199,169 +210,36 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
           return false;
         },
-        child: Scaffold(
-          resizeToAvoidBottomInset: true,
-          backgroundColor: Colors.white,
-          appBar: AppBarChat(
-            consultantId: widget.consultantId,
-            consultantName: widget.consultantName,
-            consultantImage: widget.consultantImage,
-            chatId: widget.chatId,
-            lastMessage: lastMessage,
-            isDisable: blockByHer || isBlockByMe,
-          ),
-          body: Stack(
-            children: [
-              Column(
-                children: [
-                  Container(
-                    height: 55,
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border(
-                        bottom: BorderSide(color: Colors.grey.shade300, width: 0.7),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          offset: const Offset(1, -3),
-                          spreadRadius: 3,
-                          blurRadius: 1,
-                          color: Colors.black12,
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        MyImage(
-                          borderRadius: BorderRadius.circular(5),
-                          image: NetworkImage(widget.fileImage ?? ""),
-                          errorWidget: defaultFileImage(40),
-                          loadingWidget: defaultFileImage(40),
-                          height: 40,
-                          width: 40,
-                          fit: BoxFit.cover,
-                        ),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.fileTitle ?? "نامشخص",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 10, color: Colors.black, fontFamily: "IranSansBold"),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                widget.fileTitle ?? "نامشخص",
-                                // widget.fileAddress ?? "نامشخص",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 9, color: Colors.black, fontFamily: "IranSansMedium"),
-                              ),
-                            ],
-                          ),
-                        ),
-                        MyTextButton(
-                          onPressed: () {
-                            if (widget.fileId != null) {
-                              push(context, FileScreen(id: widget.fileId!));
-                            }
-                          },
-                          fontSize: 10,
-                          child: Text(
-                            "نمایش",
-                            style: TextStyle(
-                              fontFamily: "IranSansBold",
-                              fontSize: 10,
-                              color: Themes.primary,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        BlocConsumer(
-                          bloc: chatMessagesBloc,
-                          builder: _blocBuilder,
-                          listener: (context, state) {
-                            if (state is! MessagesSuccess) return;
-                            messages = state.messages;
-
-                            try {
-                              lastMessage = messages.last.message;
-                            } catch (e) {}
-
-                            for (ChatMessage message in messages) {
-                              messageWidgets.add(
-                                createDate: message.createDate!,
-                                widget: ChatMessageWidget(
-                                  messageKey: MessageWidgetKey(message),
-                                  message: message,
-                                  onClickReplyMessage: scrollTo,
-                                ),
-                              );
-                            }
-                            if (messages.isFill() && !messages.last.forMe) {
-                              seenMessageBloc.add(SeenMessageRequestEvent(widget.chatId));
-                            }
-                          },
-                        ),
-                        AnimatedBuilder(
-                          animation: _scrollDownAnimation,
-                          builder: (_, __) {
-                            return Positioned(
-                              right: 10,
-                              bottom: _scrollDownAnimation.value,
-                              child: FloatingActionButton(
-                                onPressed: scrollDown,
-                                child: icon(Icons.expand_more_rounded),
-                                elevation: 10,
-                                mini: true,
-                                backgroundColor: Colors.grey.shade50,
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (isDeleted) notifChatWidget("حذف شده"),
-                  if (isBlockByMe) notifChatWidget("رفع مسدودیت", onTap: onClickUnblock),
-                  if (blockByHer && !isBlockByMe) notifChatWidget("شما مسدود شداید"),
-                  if (!isBlockByMe && !isDeleted && !blockByHer)
-                    ChatMessageEditor(
-                      onClickSendMessage: sendMessage,
-                      onOpenEmojiKeyboard: (isOpen) {
-                        isOpenEmojiKeyboard = isOpen;
-                      },
-                    ),
-                ],
-              ),
-              BlocBuilder(
-                bloc: recordingVoiceBloc,
-                builder: (context, state) {
-                  if (state != RecordingVoiceState.Recording) return Container();
-                  return Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: Container(
-                      height: 60,
+        child: KeyboardSizeProvider(
+          smallSize: 400,
+          child: Scaffold(
+            resizeToAvoidBottomInset: true,
+            backgroundColor: Colors.white,
+            appBar: AppBarChat(
+              consultantId: widget.consultantId,
+              consultantName: widget.consultantName,
+              consultantImage: widget.consultantImage,
+              chatId: widget.chatId,
+              lastMessage: lastMessage,
+              isDisable: blockByHer || isBlockByMe,
+            ),
+            body: Stack(
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      height: 55,
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        border: Border(top: BorderSide(color: Colors.grey.shade300, width: 0.7)),
+                        border: Border(
+                          bottom: BorderSide(color: Colors.grey.shade300, width: 0.7),
+                        ),
                         boxShadow: [
                           BoxShadow(
                             offset: const Offset(1, -3),
-                            spreadRadius: -3,
+                            spreadRadius: 3,
                             blurRadius: 1,
                             color: Colors.black12,
                           ),
@@ -369,89 +247,226 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                       ),
                       child: Row(
                         children: [
-                          AnimatedBuilder(animation: voiceAnim, builder: (_, __) => SizedBox(width: 50 - voiceAnim.value * 3)),
+                          MyImage(
+                            borderRadius: BorderRadius.circular(5),
+                            image: NetworkImage(widget.fileImage ?? ""),
+                            errorWidget: defaultFileImage(40),
+                            loadingWidget: defaultFileImage(40),
+                            height: 40,
+                            width: 40,
+                            fit: BoxFit.cover,
+                          ),
+                          SizedBox(width: 10),
                           Expanded(
-                            child: Row(
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "برای لغو بکشید",
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontFamily: "IranSansBold",
-                                    fontSize: 10,
-                                  ),
+                                  widget.fileTitle ?? "نامشخص",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: 10, color: Colors.black, fontFamily: "IranSansBold"),
                                 ),
-                                Icon(
-                                  Icons.chevron_right_rounded,
-                                  color: Colors.grey,
-                                  size: 18,
+                                SizedBox(height: 4),
+                                Text(
+                                  widget.fileAddress ?? "نامشخص",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: 9, color: Colors.black, fontFamily: "IranSansMedium"),
                                 ),
                               ],
                             ),
                           ),
-                          StreamBuilder<int>(
-                              initialData: 0,
-                              stream: recordTimeStream.stream,
-                              builder: (context, snapshot) {
-                                return SizedBox(
-                                  width: 50,
-                                  child: Text(
-                                    timeFormatter(snapshot.data!),
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                      color: Themes.text,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "sans-serif",
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                );
-                              }),
-                          SizedBox(width: 5),
-                          AnimatedBuilder(
-                            animation: recordIconAnim,
-                            builder: (_, __) {
-                              return Icon(Icons.circle, size: 8, color: Colors.red.withOpacity(recordIconAnim.value));
+                          MyTextButton(
+                            onPressed: () {
+                              if (widget.fileId != null) {
+                                push(context, FileScreen(id: widget.fileId!));
+                              }
                             },
+                            fontSize: 10,
+                            child: Text(
+                              "نمایش",
+                              style: TextStyle(
+                                fontFamily: "IranSansBold",
+                                fontSize: 10,
+                                color: Themes.primary,
+                              ),
+                            ),
                           ),
-                          SizedBox(width: 15),
                         ],
                       ),
                     ),
-                  );
-                },
-              ),
-              BlocBuilder(
-                bloc: recordingVoiceBloc,
-                builder: (context, state) {
-                  if (state != RecordingVoiceState.Recording) return Container();
-                  return Positioned(
-                    bottom: -20 + (voiceAnim.value * 0),
-                    right: -20 + (voiceAnim.value * 0),
-                    child: AnimatedBuilder(
-                      animation: voiceAnim,
-                      builder: (_, __) {
-                        return Material(
-                          color: Themes.primary,
-                          borderRadius: BorderRadius.circular(100),
-                          child: Container(
-                            height: 95,
-                            width: 95,
-                            margin: EdgeInsets.only(top: voiceAnim.value, left: voiceAnim.value),
-                            child: Icon(Icons.keyboard_voice_outlined, color: Colors.white),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-              // BlocBuilder(
-              //   bloc: recordingVoiceBloc,
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          BlocConsumer(
+                            bloc: chatMessagesBloc,
+                            builder: _blocBuilder,
+                            listener: (context, state) {
+                              if (state is! MessagesSuccess) return;
+                              messages = state.messages;
 
-              // ),
-            ],
+                              try {
+                                lastMessage = messages.last.message;
+                              } catch (e) {}
+
+                              for (ChatMessage message in messages) {
+                                messageWidgets.add(
+                                  createDate: message.createDate!,
+                                  widget: ChatMessageWidget(
+                                    messageKey: MessageWidgetKey(message),
+                                    message: message,
+                                    onClickReplyMessage: scrollTo,
+                                  ),
+                                );
+                              }
+                              if (messages.isFill() && !messages.last.forMe) {
+                                seenMessageBloc.add(SeenMessageRequestEvent(widget.chatId));
+                              }
+                            },
+                          ),
+                          AnimatedBuilder(
+                            animation: _scrollDownAnimation,
+                            builder: (_, __) {
+                              return Positioned(
+                                right: 10,
+                                bottom: _scrollDownAnimation.value,
+                                child: FloatingActionButton(
+                                  onPressed: scrollDown,
+                                  child: icon(Icons.expand_more_rounded),
+                                  elevation: 10,
+                                  mini: true,
+                                  backgroundColor: Colors.grey.shade50,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (isDeleted) notifChatWidget("حذف شده"),
+                    if (isBlockByMe) notifChatWidget("رفع مسدودیت", onTap: onClickUnblock),
+                    if (blockByHer && !isBlockByMe) notifChatWidget("شما مسدود شداید"),
+                    if (!isBlockByMe && !isDeleted && !blockByHer)
+                      ChatMessageEditor(
+                        onClickSendMessage: sendMessage,
+                        changeKeyboardStatus: changeEmojiKeyboardStatus,
+                        onOpenEmojiKeyboard: (isOpen) {
+                          print("isOpenEmojiKeyboard ${isOpen}");
+                          isOpenEmojiKeyboard = isOpen;
+                        },
+                      ),
+                  ],
+                ),
+                BlocBuilder(
+                  bloc: recordingVoiceBloc,
+                  builder: (context, state) {
+                    if (state != RecordingVoiceState.Recording) return Container();
+                    return Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border(top: BorderSide(color: Colors.grey.shade300, width: 0.7)),
+                          boxShadow: [
+                            BoxShadow(
+                              offset: const Offset(1, -3),
+                              spreadRadius: -3,
+                              blurRadius: 1,
+                              color: Colors.black12,
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            AnimatedBuilder(animation: voiceAnim, builder: (_, __) => SizedBox(width: 50 - voiceAnim.value * 3)),
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "برای لغو بکشید",
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontFamily: "IranSansBold",
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.chevron_right_rounded,
+                                    color: Colors.grey,
+                                    size: 18,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            StreamBuilder<int>(
+                                initialData: 0,
+                                stream: recordTimeStream.stream,
+                                builder: (context, snapshot) {
+                                  return SizedBox(
+                                    width: 50,
+                                    child: Text(
+                                      timeFormatter(snapshot.data!),
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        color: Themes.text,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: "sans-serif",
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  );
+                                }),
+                            SizedBox(width: 5),
+                            AnimatedBuilder(
+                              animation: recordIconAnim,
+                              builder: (_, __) {
+                                return Icon(Icons.circle, size: 8, color: Colors.red.withOpacity(recordIconAnim.value));
+                              },
+                            ),
+                            SizedBox(width: 15),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                BlocBuilder(
+                  bloc: recordingVoiceBloc,
+                  builder: (context, state) {
+                    if (state != RecordingVoiceState.Recording) return Container();
+                    return Positioned(
+                      bottom: -20 + (voiceAnim.value * 0),
+                      right: -20 + (voiceAnim.value * 0),
+                      child: AnimatedBuilder(
+                        animation: voiceAnim,
+                        builder: (_, __) {
+                          return Material(
+                            color: Themes.primary,
+                            borderRadius: BorderRadius.circular(100),
+                            child: Container(
+                              height: 95,
+                              width: 95,
+                              margin: EdgeInsets.only(top: voiceAnim.value, left: voiceAnim.value),
+                              child: Icon(Icons.keyboard_voice_outlined, color: Colors.white),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+                // BlocBuilder(
+                //   bloc: recordingVoiceBloc,
+
+                // ),
+              ],
+            ),
           ),
         ),
       ),

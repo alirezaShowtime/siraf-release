@@ -317,6 +317,7 @@ class _ChatListScreen extends State<ChatListScreen> {
           blockByHer: chatItem.isBlockByHer,
           blockByMe: chatItem.isBlockByMe,
           isDeleted: chatItem.isDeleted,
+          fileAddress: chatItem.fileAddress,
         ));
 
     if (result is! Map || !result.containsKey("chatId") || chatItem.id != result["chatId"]) return;

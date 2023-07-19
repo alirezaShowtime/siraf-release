@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
@@ -5,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/bloc/chat/recordingVoice/recording_voice_bloc.dart';
 import 'package:siraf3/bloc/chat/reply/chat_reply_bloc.dart';
 import 'package:siraf3/extensions/file_extension.dart';
@@ -24,7 +26,9 @@ class ChatMessageEditor extends StatefulWidget {
 
   void Function(bool isOpenEmojiKeyboard)? onOpenEmojiKeyboard;
 
-  ChatMessageEditor({this.onClickSendMessage, this.onOpenEmojiKeyboard});
+  StreamController<bool>? changeKeyboardStatus;
+
+  ChatMessageEditor({this.onClickSendMessage, this.onOpenEmojiKeyboard, this.changeKeyboardStatus});
 }
 
 class _ChatMessageEditor extends State<ChatMessageEditor> {
@@ -37,9 +41,12 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
   ChatMessage? replyMessage;
 
   bool openEmojiKeyboard = false;
+  bool keyboardIsHidden = true;
 
   FocusNode focusNode = FocusNode();
   bool keyboardIsFocused = false;
+  double keyboardHeight = 0.0;
+  bool hiddenKeyboardByEmoji = false;
 
   @override
   void initState() {
@@ -51,46 +58,52 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
     });
 
     messageController.addListener(() {
-      showSendButton = messageController.value.text.length > 0 || selectedFiles.isNotEmpty;
-      try {
-        setState(() {});
-      } catch (e) {}
+      var now = messageController.value.text.length > 0 || selectedFiles.isNotEmpty;
+      if (showSendButton != now) {
+        showSendButton = now;
+        try {
+          setState(() {});
+        } catch (e) {}
+      }
+    });
+
+    widget.changeKeyboardStatus?.stream.listen((status) {
+      if (openEmojiKeyboard != status) {
+        openEmojiKeyboard = status;
+        widget.onOpenEmojiKeyboard?.call(openEmojiKeyboard);
+        try {
+          setState(() {});
+        } catch (e) {}
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (openEmojiKeyboard) {
-          setState(() => openEmojiKeyboard = false);
-          return false;
-        }
-        return true;
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          fileList(),
-          BlocBuilder<ChatReplyBloc, ChatMessage?>(
-            builder: (_, reply) => replyMessageWidget(reply),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        fileList(),
+        BlocBuilder<ChatReplyBloc, ChatMessage?>(
+          builder: (_, reply) => replyMessageWidget(reply),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border(top: BorderSide(color: Colors.grey.shade300, width: 0.7)),
+            boxShadow: [
+              BoxShadow(
+                offset: const Offset(1, -3),
+                spreadRadius: -3,
+                blurRadius: 1,
+                color: Colors.black12,
+              ),
+            ],
           ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border(top: BorderSide(color: Colors.grey.shade300, width: 0.7)),
-              boxShadow: [
-                BoxShadow(
-                  offset: const Offset(1, -3),
-                  spreadRadius: -3,
-                  blurRadius: 1,
-                  color: Colors.black12,
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                Container(
+          child: Column(
+            children: [
+              StatefulBuilder(builder: (context, containerSetState) {
+                return Container(
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                   decoration: BoxDecoration(color: Colors.white),
@@ -127,10 +140,18 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
                         ),
                       Expanded(
                         child: TextField2(
+                          onTap: () {
+                            if (!openEmojiKeyboard) {
+                              keyboardIsHidden = false;
+                              openEmojiKeyboard = true;
+                              widget.onOpenEmojiKeyboard?.call(openEmojiKeyboard);
+                              setState(() {});
+                            }
+                          },
                           controller: messageController,
                           focusNode: focusNode,
-                          showCursor: openEmojiKeyboard ? true : null,
-                          readOnly: openEmojiKeyboard,
+                          showCursor: true,
+                          readOnly: keyboardIsHidden,
                           maxLines: 7,
                           minLines: 1,
                           decoration: InputDecoration(
@@ -141,79 +162,77 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
                           style: TextStyle(fontSize: 13),
                         ),
                       ),
-                      btn(
-                        iconData: Icons.mood_rounded,
-                        onTap: () {
-                          openEmojiKeyboard = !openEmojiKeyboard;
-                          widget.onOpenEmojiKeyboard?.call(openEmojiKeyboard);
-
-                          if (openEmojiKeyboard && keyboardIsFocused) {
-                            keyboardIsFocused = focusNode.hasFocus;
-                            focusNode.unfocus();
-                          } else if (keyboardIsFocused) {
-                            focusNode.requestFocus();
-                          }
-                          try {
-                            // Future.delayed(Duration(milliseconds: 500),(){
-
-                            setState(() {});
-                            // });
-                          } catch (e) {}
-                        },
-                      ),
+                      // btn(
+                      //   iconData: keyboardIsHidden && openEmojiKeyboard ? Icons.keyboard_outlined : Icons.mood_rounded,
+                      //   onTap: () {
+                      //     if (!openEmojiKeyboard) {
+                      //       openEmojiKeyboard = true;
+                      //       focusNode.requestFocus();
+                      //       widget.onOpenEmojiKeyboard?.call(openEmojiKeyboard);
+                      //       setState(() {});
+                      //     }
+                      //
+                      //     keyboardIsHidden = !keyboardIsHidden;
+                      //     if (keyboardIsHidden) {
+                      //       hiddenKeyboardByEmoji = true;
+                      //     }
+                      //     containerSetState(() {});
+                      //   },
+                      // ),
                     ],
                   ),
-                ),
-              ],
+                );
+              }),
+            ],
+          ),
+        ),
+        if (openEmojiKeyboard && false)
+          EmojiPicker(
+            textEditingController: messageController,
+            config: Config(
+              columns: 10,
+              emojiSizeMax: 24 * (foundation.defaultTargetPlatform == TargetPlatform.iOS ? 1.30 : 1.0),
+              verticalSpacing: 0,
+              horizontalSpacing: 0,
+              gridPadding: EdgeInsets.zero,
+              initCategory: Category.RECENT,
+              bgColor: Colors.white,
+              indicatorColor: Themes.primary,
+              iconColor: Colors.grey.shade400,
+              iconColorSelected: Themes.primary,
+              backspaceColor: Themes.primary,
+              skinToneDialogBgColor: Colors.white,
+              skinToneIndicatorColor: Colors.grey.shade300,
+              enableSkinTones: true,
+              recentTabBehavior: RecentTabBehavior.RECENT,
+              recentsLimit: 28,
+              replaceEmojiOnLimitExceed: true,
+              noRecents: const Text(
+                'No Recents',
+                style: TextStyle(fontSize: 20, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+              loadingIndicator: SpinKitRing(
+                color: Themes.primary,
+                size: 25,
+                lineWidth: 4,
+              ),
+              tabIndicatorAnimDuration: kTabScrollDuration,
+              categoryIcons: const CategoryIcons(
+                recentIcon: Icons.access_time_rounded,
+                smileyIcon: Icons.tag_faces_outlined,
+                animalIcon: Icons.pets_rounded,
+                foodIcon: Icons.fastfood_rounded,
+                activityIcon: Icons.directions_run_rounded,
+                travelIcon: Icons.location_city_rounded,
+                objectIcon: Icons.lightbulb_outline_rounded,
+                symbolIcon: Icons.emoji_symbols_rounded,
+                flagIcon: Icons.flag_rounded,
+              ),
+              buttonMode: ButtonMode.MATERIAL,
             ),
           ),
-          if (openEmojiKeyboard)
-            SizedBox(
-              height: 260,
-              child: EmojiPicker(
-                textEditingController: messageController,
-                config: Config(
-                  columns: 10,
-                  emojiSizeMax: 24 * (foundation.defaultTargetPlatform == TargetPlatform.iOS ? 1.30 : 1.0),
-                  verticalSpacing: 0,
-                  horizontalSpacing: 0,
-                  gridPadding: EdgeInsets.zero,
-                  initCategory: Category.RECENT,
-                  bgColor: Colors.white,
-                  indicatorColor: Themes.primary,
-                  iconColor: Colors.grey.shade400,
-                  iconColorSelected: Themes.primary,
-                  backspaceColor: Themes.primary,
-                  skinToneDialogBgColor: Colors.white,
-                  skinToneIndicatorColor: Colors.grey.shade300,
-                  enableSkinTones: true,
-                  recentTabBehavior: RecentTabBehavior.RECENT,
-                  recentsLimit: 28,
-                  replaceEmojiOnLimitExceed: true,
-                  noRecents: const Text(
-                    'No Recents',
-                    style: TextStyle(fontSize: 20, color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  ),
-                  loadingIndicator: const SizedBox.shrink(),
-                  tabIndicatorAnimDuration: kTabScrollDuration,
-                  categoryIcons: const CategoryIcons(
-                    recentIcon: Icons.access_time_rounded,
-                    smileyIcon: Icons.tag_faces_outlined,
-                    animalIcon: Icons.pets_rounded,
-                    foodIcon: Icons.fastfood_rounded,
-                    activityIcon: Icons.directions_run_rounded,
-                    travelIcon: Icons.location_city_rounded,
-                    objectIcon: Icons.lightbulb_outline_rounded,
-                    symbolIcon: Icons.emoji_symbols_rounded,
-                    flagIcon: Icons.flag_rounded,
-                  ),
-                  buttonMode: ButtonMode.MATERIAL,
-                ),
-              ),
-            )
-        ],
-      ),
+      ],
     );
   }
 
