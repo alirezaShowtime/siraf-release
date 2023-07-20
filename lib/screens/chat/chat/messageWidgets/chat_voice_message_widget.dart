@@ -133,7 +133,7 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            replyWidget(widget.message.replyMessage, widget.onClickReplyMessage!),
+            replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
             voiceWidget(),
           ],
         ),

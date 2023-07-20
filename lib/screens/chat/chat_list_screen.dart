@@ -6,7 +6,7 @@ import 'package:siraf3/bloc/chat/list/chat_list_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/chat_item.dart';
-import 'package:siraf3/screens/chat/chat/chat_screen.dart';
+import 'package:siraf3/screens/chat/chat/chatScreen/chat_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/avatar.dart';

@@ -1,8 +1,9 @@
 import 'package:auto_direction/auto_direction.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:linkwell/linkwell.dart';
 import 'package:siraf3/bloc/chat/reply/chat_reply_bloc.dart';
+import 'package:siraf3/bloc/chat/search/messages/request/chat_message_search_bloc.dart';
 import 'package:siraf3/bloc/chat/select_message/select_message_bloc.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/models/chat_message.dart';
@@ -118,8 +119,8 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
                   child: Container(
                     padding: EdgeInsets.all(2),
                     decoration: BoxDecoration(
-                      borderRadius: getConfig().borderRadius,
                       color: getConfig().background,
+                      borderRadius: getConfig().borderRadius,
                     ),
                     constraints: BoxConstraints(
                       maxWidth: maxWidth(),
@@ -220,27 +221,52 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
 
   Widget textWidget(String? message, {double? marginVertical}) {
     if (!message.isFill()) return Container();
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 7, vertical: marginVertical ?? 3.0),
-      child: Wrap(
-        children: [
-          AutoDirection(
-            text: message!,
-            child: LinkWell(
-              message,
-              style: TextStyle(color: getConfig().textColor, fontSize: 12, fontFamily: "IranSans"),
-              linkStyle: TextStyle(
-                color: !isForMe() ? getConfig().primaryColor : getConfig().textColor,
-                fontSize: 12,
-                decoration: TextDecoration.underline,
-                decorationColor: !isForMe() ? getConfig().primaryColor : getConfig().textColor,
-                decorationThickness: !isForMe() ? 1 : 1.3,
+
+    Widget widget(String? message, {double? marginVertical, String? searched}) {
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 7, vertical: marginVertical ?? 3.0),
+        child: Wrap(
+          children: [
+            AutoDirection(
+              text: message!,
+              child: highlightTextWidget(
+                message,
+                searched: searched,
+                style: TextStyle(color: getConfig().textColor, fontSize: 12, fontFamily: "IranSans"),
+                searchedStyle: TextStyle(
+                  color: getConfig().textColor,
+                  fontSize: 12,
+                  fontFamily: "IranSans",
+                  backgroundColor: isForMe() ? Color(0xff0f78b6) : Colors.grey.shade300.withOpacity(.9),
+                ),
+                linkStyle: TextStyle(
+                  color: !isForMe() ? getConfig().primaryColor : getConfig().textColor,
+                  fontSize: 12,
+                  decoration: TextDecoration.underline,
+                  decorationColor: !isForMe() ? getConfig().primaryColor : getConfig().textColor,
+                  decorationThickness: !isForMe() ? 1 : 1.3,
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    }
+
+    try {
+      var bloc = BlocProvider.of<ChatMessageSearchBloc>(context);
+
+      return BlocBuilder(
+        bloc: bloc,
+        builder: (context, state) {
+          String? q = state is! ChatMessageSearchSuccess ? null : state.searched;
+
+          return widget(message, marginVertical: marginVertical, searched: q);
+        },
+      );
+    } catch (e) {
+      return widget(message, marginVertical: marginVertical);
+    }
   }
 
   Widget footerWidget(bool isSeen, String createTime, {bool sending = false, bool error = false}) {
@@ -348,5 +374,52 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
         BlocProvider.of<ChatReplyBloc>(context).add(ChatReplyEvent(message()));
       },
     );
+  }
+
+  Text highlightTextWidget(
+    String rawString, {
+    String? searched,
+    required TextStyle linkStyle,
+    required TextStyle style,
+    TextStyle? searchedStyle,
+  }) {
+    List<TextSpan> textSpan = [];
+
+    final urlRegExp = RegExp(r"((https?:www\.)|(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9]{1,6}(\/[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)?");
+
+    getLink(String linkString) {
+      textSpan.add(
+        TextSpan(
+          text: linkString,
+          style: linkStyle,
+          recognizer: TapGestureRecognizer()..onTap = () {},
+        ),
+      );
+      return linkString;
+    }
+
+    getNormalText(String normalText) {
+      textSpan.add(TextSpan(text: normalText, style: style));
+      return normalText;
+    }
+
+    getSearchedText(String searched) {
+      textSpan.add(TextSpan(text: searched, style: searchedStyle));
+      return searched;
+    }
+
+    rawString.splitMapJoin(
+      urlRegExp,
+      onMatch: (m) => getLink("${m.group(0)}"),
+      onNonMatch: (n) {
+        if (searched != null && n.contains(searched)) {
+          return getSearchedText(searched);
+        } else {
+          return getNormalText("${n.substring(0)}");
+        }
+      },
+    );
+
+    return Text.rich(TextSpan(children: textSpan));
   }
 }

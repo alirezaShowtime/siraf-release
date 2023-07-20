@@ -23,7 +23,6 @@ extension BlocListeners on _ChatScreen {
         if (messageWidgets.widgetLength() > 0) {
           listViewSetState?.call(() {});
         } else {
-          print("fdfsdfsdrkdpriwedrp[eor]");
           setState(() {});
         }
       }
@@ -150,6 +149,39 @@ extension BlocListeners on _ChatScreen {
         try {
           setState(() => isBlockByMe = state.isBlock);
         } catch (e) {}
+      }
+    });
+  }
+
+  void chatMessageSearchBlocListener() {
+    chatMessageSearchBloc.stream.listen((state) {
+      if (state is! ChatMessageSearchSuccess) return;
+
+      if (!state.messages.isFill()) {
+        showSearchResult = false;
+        return;
+      } else {
+        showSearchResult = true;
+      }
+
+      messageWidgets = MessageWidgetList()..fromChatMessages(state.messages, onClickReplyMessage: scrollTo);
+
+      List<int> indexes = messageWidgets.indexesWhere((messageWidget) {
+        print("messageWidget is ChatMessageWidget ${messageWidget is ChatMessageWidget}");
+        if (messageWidget is ChatMessageWidget) {
+          print("messageWidget.message.message ${messageWidget.message.message}");
+          return messageWidget.message.message?.contains(state.searched) ?? false;
+        } else if (messageWidget is SendingMessageWidget) {
+          return (messageWidget as SendingMessageWidget).message?.contains(state.searched) ?? false;
+        } else {
+          return false;
+        }
+      });
+
+      listViewSetState?.call(() {});
+
+      if (indexes.isFill()) {
+        scrollToIndex(indexes[0]);
       }
     });
   }

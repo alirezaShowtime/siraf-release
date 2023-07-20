@@ -20,7 +20,7 @@ import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 import '../helpers.dart';
-import 'chat/chat/chat_screen.dart';
+import 'chat/chat/chatScreen/chat_screen.dart';
 
 class SupportFileScreen extends StatefulWidget {
   bool isFavorite;

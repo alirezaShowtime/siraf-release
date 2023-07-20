@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:siraf3/bloc/chat/recordingVoice/recording_voice_bloc.dart';
 import 'package:siraf3/bloc/chat/reply/chat_reply_bloc.dart';
 import 'package:siraf3/extensions/file_extension.dart';
@@ -47,6 +48,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
   bool keyboardIsFocused = false;
   double keyboardHeight = 0.0;
   bool hiddenKeyboardByEmoji = false;
+  bool isTextRtl = true;
 
   @override
   void initState() {
@@ -58,9 +60,17 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
     });
 
     messageController.addListener(() {
-      var now = messageController.value.text.length > 0 || selectedFiles.isNotEmpty;
+      var text = messageController.value.text;
+      var now = text.length > 0 || selectedFiles.isNotEmpty;
       if (showSendButton != now) {
         showSendButton = now;
+        try {
+          setState(() {});
+        } catch (e) {}
+      }
+
+      if (isRTL(text) != isTextRtl) {
+        isTextRtl = isRTL(text);
         try {
           setState(() {});
         } catch (e) {}
@@ -148,6 +158,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
                               setState(() {});
                             }
                           },
+                          textDirection: isTextRtl ? TextDirection.rtl : TextDirection.ltr,
                           controller: messageController,
                           focusNode: focusNode,
                           showCursor: true,
@@ -342,6 +353,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
     widget.onClickSendMessage?.call(text.isEmpty ? null : text, selectedFiles, replyMessage);
     showSendButton = false;
     messageController.clear();
+    selectedFiles.clear();
     selectedFileWidgets.clear();
     try {
       setState(() {});
@@ -471,5 +483,9 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
 
   void stopRecord() {
     BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Done));
+  }
+
+  bool isRTL(String text) {
+    return intl.Bidi.detectRtlDirectionality(text);
   }
 }
