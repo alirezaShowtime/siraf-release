@@ -8,10 +8,12 @@ class MyIconButton extends StatefulWidget {
   Widget? icon;
   IconData? iconData;
   double? size;
+  bool disable;
+  Color? iconColor;
 
   GestureTapCallback? onTap;
 
-  MyIconButton({this.iconData, this.icon, this.onTap, this.size = 40});
+  MyIconButton({this.iconData, this.icon, this.onTap, this.size = 40, this.disable = false, this.iconColor});
 }
 
 class _MyIconButton extends State<MyIconButton> {
@@ -21,12 +23,12 @@ class _MyIconButton extends State<MyIconButton> {
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(100),
-        onTap: widget.onTap,
+        onTap: !widget.disable ? widget.onTap : null,
         child: Container(
           height: widget.size,
           width: widget.size,
           alignment: Alignment.center,
-          child: widget.icon != null ? widget.icon : icon(widget.iconData!),
+          child: widget.icon != null ? widget.icon : icon(widget.iconData!, color: widget.disable ? Colors.grey.shade400 : widget.iconColor),
         ),
       ),
     );

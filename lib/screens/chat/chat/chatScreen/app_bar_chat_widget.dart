@@ -289,31 +289,29 @@ class _AppBarChat extends State<AppBarChat> {
   }
 
   Widget searchBoxWidget() {
-    return Expanded(
-      child: TextField2(
-        controller: searchController,
-        focusNode: focusNode,
-        maxLines: 1,
-        onChanged: (text) {
-          if (showClearButton != (text.length > 0)) {
-            showClearButton = text.length > 0;
-            setState(() {});
-          }
-        },
-        onSubmitted: (text) {
-          if (!text.isFill()) return;
-          searchRequest(text);
-        },
-        textInputAction: TextInputAction.search,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: "جستوجو...",
-          hintStyle: TextStyle(color: Colors.grey.shade400),
-        ),
-        style: TextStyle(
-          fontFamily: "IranSansMedium",
-          fontSize: 12,
-        ),
+    return TextField2(
+      controller: searchController,
+      focusNode: focusNode,
+      maxLines: 1,
+      onChanged: (text) {
+        if (showClearButton != (text.length > 0)) {
+          showClearButton = text.length > 0;
+          setState(() {});
+        }
+      },
+      onSubmitted: (text) {
+        if (!text.isFill()) return;
+        searchRequest(text);
+      },
+      textInputAction: TextInputAction.search,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        hintText: "جستوجو...",
+        hintStyle: TextStyle(color: Colors.grey.shade400),
+      ),
+      style: TextStyle(
+        fontFamily: "IranSansMedium",
+        fontSize: 12,
       ),
     );
   }

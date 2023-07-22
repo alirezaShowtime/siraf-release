@@ -30,8 +30,8 @@ import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/screens/chat/chat/abstract_message_widget.dart';
 import 'package:siraf3/screens/chat/chat/chatScreen/app_bar_chat_widget.dart';
 import 'package:siraf3/screens/chat/chat/chat_message_editor_widget.dart';
+import 'package:siraf3/screens/chat/chat/found_message_widget_index.dart';
 import 'package:siraf3/screens/file_screen.dart';
-import 'package:siraf3/screens/ticket/ticket_chat/sending_message_widget.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_icon_button.dart';
@@ -44,11 +44,8 @@ import '../message_widget_list.dart';
 import '../sendingMessageWidgets/chat_sending_message_widget.dart';
 
 part 'bloc_listeners.dart';
-
 part 'chat_scroll_controller.dart';
-
 part 'header_widget.dart';
-
 part 'voice_recorder.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -138,9 +135,18 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   bool isOpenEmojiKeyboard = false;
   bool showSearchResult = false;
 
+  int countSearch = 0;
+
   StreamController<bool> changeEmojiKeyboardStatus = StreamController.broadcast();
 
   final ItemScrollController chatItemScrollController = ItemScrollController();
+  final ScrollOffsetController scrollOffsetController = ScrollOffsetController();
+  final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
+  final ScrollOffsetListener scrollOffsetListener = ScrollOffsetListener.create();
+
+  FoundMessageWidgetIndexes foundMessageWidgetIndexes = FoundMessageWidgetIndexes();
+
+  int? currentFoundedIndex;
 
   @override
   void initState() {
@@ -292,6 +298,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                                       itemCount: list.length,
                                       itemBuilder: (_, i) => list[i],
                                       itemScrollController: chatItemScrollController,
+                                      itemPositionsListener: itemPositionsListener,
                                     ),
                                   );
                                 }),
@@ -334,7 +341,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     List<Widget> newList = [];
     newList.add(SizedBox(height: 10));
 
-    newList.addAll(messageWidgets.getList());
+    newList.addAll(messageWidgets.getList().reversed);
 
     return newList;
   }
@@ -380,40 +387,67 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
           ),
         ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              MyIconButton(
-                onTap: () {},
-                icon: Icon(Icons.keyboard_arrow_up_rounded, color: Themes.primary),
-              ),
-              MyIconButton(
-                onTap: () {},
-                icon: Icon(Icons.keyboard_arrow_down_rounded, color: Themes.primary),
-              ),
-            ],
-          ),
-          BlocBuilder(
-            bloc: chatMessageSearchBloc,
-            builder: (context, state) {
-              var count = state is ChatMessageSearchSuccess ? state.countSearch : 0;
+      child: StatefulBuilder(builder: (context, setState) {
+        return BlocConsumer(
+          bloc: chatMessageSearchBloc,
+          listener: (context, state) {
+            if (state is ChatMessageSearchSuccess && state.countSearch != null) {
+              countSearch = state.countSearch!;
 
-              var index = state is ChatMessageSearchSuccess ? 1 : 0;
+              if (currentFoundedIndex == null) {
+                currentFoundedIndex = foundMessageWidgetIndexes.currentIndex + 1;
+              }
+            }
+          },
+          builder: (context, state) {
+            var text = "";
+            if (state is ChatMessageSearchLoading) {
+              text = "درحال یافتن...";
+            }
 
-              return Text(
-                "${index} از ${count}",
-                style: TextStyle(
-                  fontSize: 12,
-                  fontFamily: "IranSansBold",
-                  color: Themes.text,
+            if (state is ChatMessageSearchError) {
+              text = "خطا";
+            }
+
+            if (state is ChatMessageSearchSuccess && countSearch == 0) {
+              text = "0 از 0";
+            }
+            if (state is ChatMessageSearchSuccess && countSearch > 0) {
+              text = "$currentFoundedIndex از ${countSearch}";
+            }
+
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    MyIconButton(
+                      onTap: () => nextSearched(setState),
+                      iconColor: Themes.primary,
+                      disable: currentFoundedIndex == null || currentFoundedIndex! >= countSearch,
+                      iconData: Icons.keyboard_arrow_up_rounded,
+                    ),
+                    MyIconButton(
+                      onTap: () => previousSearched(setState),
+                      iconColor: Themes.primary,
+                      disable: currentFoundedIndex == null || currentFoundedIndex! <= 1,
+                      iconData: Icons.keyboard_arrow_down_rounded,
+                    ),
+                  ],
                 ),
-              );
-            },
-          ),
-        ],
-      ),
+                Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontFamily: "IranSansBold",
+                    color: Themes.text,
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      }),
     );
   }
 
@@ -488,4 +522,36 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
         return false;
       };
+
+  void previousSearched(var setState) {
+    if (foundMessageWidgetIndexes.hasPrevious()) {
+      scrollToIndex(foundMessageWidgetIndexes.previous().key, true);
+      currentFoundedIndex = currentFoundedIndex! - 1;
+      setState(() {});
+    } else if (currentFoundedIndex != null && currentFoundedIndex! > 0) {
+      chatMessageSearchBloc.add(ChatMessageSearchRequestEvent(
+        chatId: widget.chatId,
+        lastId: foundMessageWidgetIndexes.current.value,
+        type: MessageSearchType.Previous,
+      ));
+      currentFoundedIndex = currentFoundedIndex! - 1;
+      setState(() {});
+    }
+  }
+
+  void nextSearched(var setState) {
+    if (foundMessageWidgetIndexes.hasNext()) {
+      scrollToIndex(foundMessageWidgetIndexes.next().key, true);
+      currentFoundedIndex = currentFoundedIndex! + 1;
+      setState(() {});
+    } else if (currentFoundedIndex != null && currentFoundedIndex! < countSearch) {
+      chatMessageSearchBloc.add(ChatMessageSearchRequestEvent(
+        chatId: widget.chatId,
+        lastId: foundMessageWidgetIndexes.current.value,
+        type: MessageSearchType.Next,
+      ));
+      currentFoundedIndex = currentFoundedIndex! + 1;
+      setState(() {});
+    }
+  }
 }

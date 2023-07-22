@@ -20,11 +20,15 @@ class ChatMessageSearchError extends ChatMessageSearchState {
 class ChatMessageSearchSuccess extends ChatMessageSearchState {
   late List<ChatMessage> messages;
   String searched;
-  late int countSearch;
+  int? countSearch;
+  MessageSearchType? type;
 
-  ChatMessageSearchSuccess(Response response, {required this.searched}) {
-    var data = jDecode(response.body)["data"];
+  ChatMessageSearchSuccess(Response response, {required this.searched, this.type}) {
+    Map data = jDecode(response.body)["data"];
     messages = ChatMessage.fromList(data["messages"]);
-    countSearch = data["countSearch"];
+
+    if (data.containsKey("countSearch")) {
+      countSearch = data["countSearch"];
+    }
   }
 }

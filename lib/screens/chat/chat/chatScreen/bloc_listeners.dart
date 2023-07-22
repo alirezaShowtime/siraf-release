@@ -164,24 +164,43 @@ extension BlocListeners on _ChatScreen {
         showSearchResult = true;
       }
 
-      messageWidgets = MessageWidgetList()..fromChatMessages(state.messages, onClickReplyMessage: scrollTo);
+      messageWidgets.clearList();
+      List<MapEntry<int, int>> found = [];
 
-      List<int> indexes = messageWidgets.indexesWhere((messageWidget) {
-        print("messageWidget is ChatMessageWidget ${messageWidget is ChatMessageWidget}");
-        if (messageWidget is ChatMessageWidget) {
-          print("messageWidget.message.message ${messageWidget.message.message}");
-          return messageWidget.message.message?.contains(state.searched) ?? false;
-        } else if (messageWidget is SendingMessageWidget) {
-          return (messageWidget as SendingMessageWidget).message?.contains(state.searched) ?? false;
-        } else {
-          return false;
+      for (var message in state.messages.reversed) {
+        var widget = ChatMessageWidget(
+          message: message,
+          onClickReplyMessage: scrollTo,
+          messageKey: MessageWidgetKey(message),
+        );
+        messageWidgets.add(createDate: message.createDate!, widget: widget);
+        if (message.message?.contains(state.searched) ?? false) {
+          found.add(MapEntry(messageWidgets.indexByKey(widget.key!), message.id!));
         }
-      });
+      }
+
+      if (state.countSearch != null) {
+        countSearch = state.countSearch!;
+      }
 
       listViewSetState?.call(() {});
 
-      if (indexes.isFill()) {
-        scrollToIndex(indexes[0]);
+      if (state.type == null) {
+        currentFoundedIndex = null;
+      }
+
+      if (found.isFill()) {
+        if (state.type == null) {
+          foundMessageWidgetIndexes.setList(found.reversed.toList());
+          scrollToIndex(found.last.key, true);
+          currentFoundedIndex = null;
+        } else if (state.type == MessageSearchType.Next) {
+          foundMessageWidgetIndexes.setList(found.reversed.toList());
+          scrollToIndex(found.last.key, true);
+        } else if (state.type == MessageSearchType.Previous) {
+          foundMessageWidgetIndexes.setList(found.reversed.toList(), true);
+          scrollToIndex(found.first.key, true);
+        }
       }
     });
   }

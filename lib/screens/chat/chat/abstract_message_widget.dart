@@ -8,6 +8,7 @@ import 'package:siraf3/bloc/chat/select_message/select_message_bloc.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/themes.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'chat_massage_action.dart';
 import 'chat_message_config.dart';
@@ -126,7 +127,7 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
                       maxWidth: maxWidth(),
                       minWidth: 100,
                       maxHeight: maxHeight(),
-                      minHeight: 15,
+                      minHeight: 28,
                     ),
                     child: ClipRRect(
                       borderRadius: getConfig().borderRadius,
@@ -385,17 +386,20 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
   }) {
     List<TextSpan> textSpan = [];
 
-    final urlRegExp = RegExp(r"((https?:www\.)|(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9]{1,6}(\/[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)?");
+    final urlRegExp = RegExp(r"[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)");
 
-    getLink(String linkString) {
+    getLink(String linkStringSplit, String link) {
       textSpan.add(
         TextSpan(
-          text: linkString,
+          text: linkStringSplit,
           style: linkStyle,
-          recognizer: TapGestureRecognizer()..onTap = () {},
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              launchUrl(Uri.parse(link));
+            },
         ),
       );
-      return linkString;
+      return link;
     }
 
     getNormalText(String normalText) {
@@ -410,13 +414,19 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
 
     rawString.splitMapJoin(
       urlRegExp,
-      onMatch: (m) => getLink("${m.group(0)}"),
-      onNonMatch: (n) {
-        if (searched != null && n.contains(searched)) {
-          return getSearchedText(searched);
-        } else {
-          return getNormalText("${n.substring(0)}");
+      onMatch: (m) {
+        if (searched != null) {
+          return m.group(0)!.splitMapJoin(searched, onMatch: (m2) => getSearchedText(searched), onNonMatch: (n) => getLink("$n", m.group(0)!));
         }
+
+        return getLink("${m.group(0)}", m.group(0)!);
+      },
+      onNonMatch: (n) {
+        if (searched != null) {
+          return n.splitMapJoin(searched, onMatch: (m2) => getSearchedText(searched), onNonMatch: (n) => getNormalText("$n"));
+        }
+
+        return getNormalText("${n.substring(0)}");
       },
     );
 

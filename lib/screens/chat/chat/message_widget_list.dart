@@ -14,7 +14,6 @@ class MessageWidgetList {
 
     try {
       var list = _list.where((e) => e is MessageWidget && where(e.value as MessageWidget));
-      print("ksdfoskdfodksfposkfposdfk ${list.length}");
       for (var item in list) indexes.add(_list.indexOf(item));
     } catch (e) {
       throw e;
@@ -40,18 +39,13 @@ class MessageWidgetList {
   }
 
   List<Widget> getList() {
-    print("_list.last ${_list.last}");
-    if (_list.last.value is DateBadge) {
-      _list.removeLast();
-    }
+    // if (_list.last.value is DateBadge) {
+    //   _list.removeLast();
+    // }
 
-    List<Widget> newList = [];
+    List<Widget> newList = [for (MapEntry e in _list) e.value];
 
-    for (MapEntry mapEntry in _list) {
-      newList.add(mapEntry.value);
-    }
-
-    return newList.reversed.toList();
+    return newList.toList();
   }
 
   void removeAt(int index) {
