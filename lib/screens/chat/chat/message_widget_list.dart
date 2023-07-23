@@ -9,6 +9,20 @@ import 'messageWidgets/chat_message_widget.dart';
 class MessageWidgetList {
   List<MapEntry<String, Widget>> _list = [];
 
+  MessageWidget? lastMessageWidget() {
+    for (var i = _list.length - 1; i >= 0; i--) {
+      if (_list[i].value is MessageWidget) return _list[i].value as MessageWidget;
+    }
+    return null;
+  }
+
+  MessageWidget? firstMessageWidget() {
+    for (var i = 0; i < _list.length; i++) {
+      if (_list[i].value is MessageWidget) return _list[i].value as MessageWidget;
+    }
+    return null;
+  }
+
   List<int> indexesWhere(bool Function(MessageWidget) where) {
     List<int> indexes = [];
 
@@ -22,29 +36,43 @@ class MessageWidgetList {
     return indexes;
   }
 
+  void shift({required String createDate, required MessageWidget widget}) {
+    if (_list.isNotEmpty && _list.first.key == createDate && _list.first.value is DateBadge) {
+      _list.removeAt(0);
+    }
+
+    _list.insert(0, MapEntry(createDate, widget));
+    _list.insert(
+      0,
+      MapEntry(
+        createDate,
+        DateBadge(
+          createDate: dateFormatter(createDate),
+          color: Colors.grey.shade100,
+          margin: EdgeInsets.symmetric(vertical: 10),
+        ),
+      ),
+    );
+  }
+
   void add({required String createDate, required MessageWidget widget}) {
     if (_list.isEmpty || _list.last.key != createDate) {
-      _list.add(
-        MapEntry(
-          createDate,
-          DateBadge(
-            createDate: dateFormatter(createDate),
-            color: Colors.grey.shade100,
-            margin: EdgeInsets.symmetric(vertical: 10),
-          ),
+      var w = MapEntry(
+        createDate,
+        DateBadge(
+          createDate: dateFormatter(createDate),
+          color: Colors.grey.shade100,
+          margin: EdgeInsets.symmetric(vertical: 10),
         ),
       );
+
+      _list.add(w);
     }
     _list.add(MapEntry(createDate, widget));
   }
 
   List<Widget> getList() {
-    // if (_list.last.value is DateBadge) {
-    //   _list.removeLast();
-    // }
-
     List<Widget> newList = [for (MapEntry e in _list) e.value];
-
     return newList.toList();
   }
 

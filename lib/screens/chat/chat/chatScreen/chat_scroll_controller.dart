@@ -30,6 +30,33 @@ extension ChatScrollController on _ChatScreen {
         _scrollDownAnimationController.reverse();
       });
     }
+
+    if (notification is ScrollUpdateNotification) {
+      if (notification.metrics.pixels == notification.metrics.minScrollExtent && hasNextMessage) {
+        MessageWidget? lastMessage = messageWidgets.lastMessageWidget();
+
+        if (lastMessage == null || lastMessage is! ChatMessageWidget) return false;
+
+        chatScreenPaginationBloc.add(ChatScreenPaginationRequestEvent(
+          chatId: widget.chatId,
+          messageId: lastMessage.messageKey.messageId!,
+          type: ChatScreenPaginationType.Next,
+        ));
+      }
+
+      if (notification.metrics.pixels == notification.metrics.maxScrollExtent && hasPreviousMessage) {
+        MessageWidget? firstMessage = messageWidgets.firstMessageWidget();
+
+        if (firstMessage == null || firstMessage is! ChatMessageWidget) return false;
+
+        chatScreenPaginationBloc.add(ChatScreenPaginationRequestEvent(
+          chatId: widget.chatId,
+          messageId: firstMessage.messageKey.messageId!,
+          type: ChatScreenPaginationType.Previous,
+        ));
+      }
+    }
+
     return false;
   }
 

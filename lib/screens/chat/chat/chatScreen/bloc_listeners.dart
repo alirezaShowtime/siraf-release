@@ -157,6 +157,8 @@ extension BlocListeners on _ChatScreen {
     chatMessageSearchBloc.stream.listen((state) {
       if (state is! ChatMessageSearchSuccess) return;
 
+      hasNextMessage = true;
+
       if (!state.messages.isFill()) {
         showSearchResult = false;
         return;
@@ -202,6 +204,39 @@ extension BlocListeners on _ChatScreen {
           scrollToIndex(found.first.key, true);
         }
       }
+    });
+  }
+
+  void paginationBlocListener() {
+    chatScreenPaginationBloc.stream.listen((state) {
+      if (state is! ChatScreenPaginationSuccess) return;
+
+      if (state.messages.isEmpty) {
+        if (state.type == ChatScreenPaginationType.Previous) {
+          hasPreviousMessage = false;
+        }
+        if (state.type == ChatScreenPaginationType.Next) {
+          hasNextMessage = false;
+        }
+        return;
+      }
+
+      for (var message in state.type == ChatScreenPaginationType.Next ? state.messages.reversed : state.messages) {
+        var widget = ChatMessageWidget(
+          messageKey: MessageWidgetKey(message),
+          message: message,
+          onClickReplyMessage: scrollTo,
+        );
+
+        if (state.type == ChatScreenPaginationType.Previous) {
+          messageWidgets.shift(createDate: message.createDate!, widget: widget);
+        }
+
+        if (state.type == ChatScreenPaginationType.Next) {
+          messageWidgets.add(createDate: message.createDate!, widget: widget);
+        }
+      }
+      listViewSetState?.call(() {});
     });
   }
 }

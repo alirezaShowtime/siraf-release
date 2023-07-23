@@ -280,7 +280,6 @@ class _AppBarChat extends State<AppBarChat> {
     List<int> list = [];
 
     var selecteds = BlocProvider.of<SelectMessageBloc>(context).selectedMessages;
-    print(selecteds);
 
     for (MapEntry selected in selecteds) {
       list.add(selected.value);

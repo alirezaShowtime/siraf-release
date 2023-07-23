@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
@@ -14,6 +15,7 @@ import 'package:siraf3/bloc/chat/block/chat_block_bloc.dart';
 import 'package:siraf3/bloc/chat/delete/chat_delete_bloc.dart';
 import 'package:siraf3/bloc/chat/delete_message/chat_delete_message_bloc.dart';
 import 'package:siraf3/bloc/chat/messages/messages_bloc.dart';
+import 'package:siraf3/bloc/chat/pagination/chat_screen_pagination_bloc.dart';
 import 'package:siraf3/bloc/chat/play/voice_message_play_bloc.dart';
 import 'package:siraf3/bloc/chat/recordingVoice/recording_voice_bloc.dart';
 import 'package:siraf3/bloc/chat/reply/chat_reply_bloc.dart';
@@ -44,6 +46,9 @@ import '../message_widget_list.dart';
 import '../sendingMessageWidgets/chat_sending_message_widget.dart';
 
 part 'bloc_listeners.dart';
+
+part 'chat_message_search.dart';
+
 part 'chat_scroll_controller.dart';
 part 'header_widget.dart';
 part 'voice_recorder.dart';
@@ -95,6 +100,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   final ChatDeleteMessageBloc chatDeleteMessageBloc = ChatDeleteMessageBloc();
   final ChatMessageBoxSearchStatusBloc chatSearchBoxMessageStatus = ChatMessageBoxSearchStatusBloc();
   final ChatMessageSearchBloc chatMessageSearchBloc = ChatMessageSearchBloc();
+  final ChatScreenPaginationBloc chatScreenPaginationBloc = ChatScreenPaginationBloc();
 
   final ScrollController _chatController = ScrollController();
 
@@ -137,12 +143,13 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
   int countSearch = 0;
 
+  bool hasPreviousMessage = true;
+  bool hasNextMessage = false;
+
   StreamController<bool> changeEmojiKeyboardStatus = StreamController.broadcast();
 
   final ItemScrollController chatItemScrollController = ItemScrollController();
-  final ScrollOffsetController scrollOffsetController = ScrollOffsetController();
-  final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
-  final ScrollOffsetListener scrollOffsetListener = ScrollOffsetListener.create();
+  final ScrollOffsetListener chatScrollOffsetListener = ScrollOffsetListener.create();
 
   FoundMessageWidgetIndexes foundMessageWidgetIndexes = FoundMessageWidgetIndexes();
 
@@ -181,6 +188,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     chatBlockBlocListener();
 
     chatDeleteBlocListener();
+
+    paginationBlocListener();
   }
 
   @override
@@ -297,8 +306,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                                       reverse: true,
                                       itemCount: list.length,
                                       itemBuilder: (_, i) => list[i],
+                                      addAutomaticKeepAlives: true,
                                       itemScrollController: chatItemScrollController,
-                                      itemPositionsListener: itemPositionsListener,
                                     ),
                                   );
                                 }),
@@ -338,10 +347,30 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   }
 
   List<Widget> generateList() {
-    List<Widget> newList = [];
+    List<Widget> newList = messageWidgets.getList().reversed.toList();
     newList.add(SizedBox(height: 10));
+    newList.insert(0, SizedBox(height: 10));
 
-    newList.addAll(messageWidgets.getList().reversed);
+    if (hasPreviousMessage) {
+      newList.add(BlocBuilder(
+        bloc: chatScreenPaginationBloc,
+        builder: (_, state) {
+          if (state is! ChatScreenPaginationLoading) return SizedBox();
+          return paginationLoadingWidget();
+        },
+      ));
+    }
+    if (hasNextMessage) {
+      newList.insert(
+          1,
+          BlocBuilder(
+            bloc: chatScreenPaginationBloc,
+            builder: (_, state) {
+              if (state is! ChatScreenPaginationLoading) return SizedBox();
+              return paginationLoadingWidget();
+            },
+          ));
+    }
 
     return newList;
   }
@@ -367,87 +396,6 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
           ),
         ),
       ),
-    );
-  }
-
-  Widget searchControllerWidget() {
-    return Container(
-      width: double.infinity,
-      height: 60,
-      padding: EdgeInsets.only(left: 20, right: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Colors.grey.shade300, width: 0.7)),
-        boxShadow: [
-          BoxShadow(
-            offset: const Offset(1, -3),
-            spreadRadius: -3,
-            blurRadius: 1,
-            color: Colors.black12,
-          ),
-        ],
-      ),
-      child: StatefulBuilder(builder: (context, setState) {
-        return BlocConsumer(
-          bloc: chatMessageSearchBloc,
-          listener: (context, state) {
-            if (state is ChatMessageSearchSuccess && state.countSearch != null) {
-              countSearch = state.countSearch!;
-
-              if (currentFoundedIndex == null) {
-                currentFoundedIndex = foundMessageWidgetIndexes.currentIndex + 1;
-              }
-            }
-          },
-          builder: (context, state) {
-            var text = "";
-            if (state is ChatMessageSearchLoading) {
-              text = "درحال یافتن...";
-            }
-
-            if (state is ChatMessageSearchError) {
-              text = "خطا";
-            }
-
-            if (state is ChatMessageSearchSuccess && countSearch == 0) {
-              text = "0 از 0";
-            }
-            if (state is ChatMessageSearchSuccess && countSearch > 0) {
-              text = "$currentFoundedIndex از ${countSearch}";
-            }
-
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    MyIconButton(
-                      onTap: () => nextSearched(setState),
-                      iconColor: Themes.primary,
-                      disable: currentFoundedIndex == null || currentFoundedIndex! >= countSearch,
-                      iconData: Icons.keyboard_arrow_up_rounded,
-                    ),
-                    MyIconButton(
-                      onTap: () => previousSearched(setState),
-                      iconColor: Themes.primary,
-                      disable: currentFoundedIndex == null || currentFoundedIndex! <= 1,
-                      iconData: Icons.keyboard_arrow_down_rounded,
-                    ),
-                  ],
-                ),
-                Text(
-                  text,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontFamily: "IranSansBold",
-                    color: Themes.text,
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      }),
     );
   }
 
@@ -523,35 +471,15 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
         return false;
       };
 
-  void previousSearched(var setState) {
-    if (foundMessageWidgetIndexes.hasPrevious()) {
-      scrollToIndex(foundMessageWidgetIndexes.previous().key, true);
-      currentFoundedIndex = currentFoundedIndex! - 1;
-      setState(() {});
-    } else if (currentFoundedIndex != null && currentFoundedIndex! > 0) {
-      chatMessageSearchBloc.add(ChatMessageSearchRequestEvent(
-        chatId: widget.chatId,
-        lastId: foundMessageWidgetIndexes.current.value,
-        type: MessageSearchType.Previous,
-      ));
-      currentFoundedIndex = currentFoundedIndex! - 1;
-      setState(() {});
-    }
-  }
-
-  void nextSearched(var setState) {
-    if (foundMessageWidgetIndexes.hasNext()) {
-      scrollToIndex(foundMessageWidgetIndexes.next().key, true);
-      currentFoundedIndex = currentFoundedIndex! + 1;
-      setState(() {});
-    } else if (currentFoundedIndex != null && currentFoundedIndex! < countSearch) {
-      chatMessageSearchBloc.add(ChatMessageSearchRequestEvent(
-        chatId: widget.chatId,
-        lastId: foundMessageWidgetIndexes.current.value,
-        type: MessageSearchType.Next,
-      ));
-      currentFoundedIndex = currentFoundedIndex! + 1;
-      setState(() {});
-    }
+  Widget paginationLoadingWidget() {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 7),
+      alignment: Alignment.center,
+      child: SpinKitRing(
+        color: Colors.black,
+        lineWidth: 3,
+        size: 20,
+      ),
+    );
   }
 }

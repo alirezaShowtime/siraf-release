@@ -15,9 +15,11 @@ import 'chat_message_config.dart';
 
 class MessageWidgetKey {
   late Key key;
+  int? messageId;
 
   MessageWidgetKey(ChatMessage? chatMessage) {
     if (chatMessage != null) {
+      messageId = chatMessage.id!;
       key = Key(chatMessage.id!.toString());
     } else {
       key = Key((DateTime.now().microsecondsSinceEpoch * DateTime.now().millisecond).toString());
