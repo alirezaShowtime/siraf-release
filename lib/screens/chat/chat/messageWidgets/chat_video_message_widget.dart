@@ -180,20 +180,22 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
                           );
                         },
                       ),
-                      FutureBuilder<VideoPlayerValue>(
-                        future: getVideoInfo(videoUrl),
-                        builder: (context, snapshot) {
-                          return Text(
-                            timeFormatter(snapshot.data?.duration.inSeconds ?? 0, hasHour: true),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "sans-serif",
-                              fontWeight: FontWeight.w500,
-                              fontSize: 8,
-                            ),
-                          );
-                        },
-                      ),
+                      //todo: showing video time is not working
+                      if (false)
+                        FutureBuilder<VideoPlayerValue>(
+                          future: getVideoInfo(videoUrl),
+                          builder: (context, snapshot) {
+                            return Text(
+                              timeFormatter(snapshot.data?.duration.inSeconds ?? 0, hasHour: true),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: "sans-serif",
+                                fontWeight: FontWeight.w500,
+                                fontSize: 8,
+                              ),
+                            );
+                          },
+                        ),
                     ],
                   ),
                   BlocBuilder(
