@@ -30,13 +30,6 @@ class ChatSendingVoiceMessageWidgetState extends ChatSendingMessageWidgetState {
     BlocProvider.of<VoiceMessagePlayBloc>(context).add(VoiceMessagePlayRegisterPlayerEvent(player));
   }
 
-  @override
-  void dispose() {
-    player.stop();
-    player.dispose();
-    super.dispose();
-  }
-
   void _playVoice() async {
     BlocProvider.of<VoiceMessagePlayBloc>(context).add(VoiceMessagePlayPlayOrStop(player));
   }
@@ -166,7 +159,7 @@ class ChatSendingVoiceMessageWidgetState extends ChatSendingMessageWidgetState {
               ),
             if (snapshot.data == MessageState.ErrorUpload)
               Icon(
-                Icons.error_outline_rounded,
+                Icons.error,
                 color: messageConfig.secondTextColor,
                 size: 13,
               ),
@@ -197,13 +190,15 @@ class ChatSendingVoiceMessageWidgetState extends ChatSendingMessageWidgetState {
   }
 
   Stream<Duration> getCurrentDurationVoice() async* {
-    if (player.source == null) yield Duration(seconds: 0);
-    var count = await player.onDurationChanged.first;
+    try {
+      if (player.source == null) yield Duration(seconds: 0);
+      var count = await player.onDurationChanged.first;
 
-    yield count;
+      yield count;
 
-    yield* player.onPositionChanged.asyncExpand((position) async* {
-      yield Duration(seconds: count.inSeconds - position.inSeconds);
-    });
+      yield* player.onPositionChanged.asyncExpand((position) async* {
+        yield Duration(seconds: count.inSeconds - position.inSeconds);
+      });
+    } catch (e) {}
   }
 }

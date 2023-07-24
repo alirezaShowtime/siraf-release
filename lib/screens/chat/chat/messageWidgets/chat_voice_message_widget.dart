@@ -32,13 +32,6 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
     BlocProvider.of<VoiceMessagePlayBloc>(context).add(VoiceMessagePlayRegisterPlayerEvent(player));
   }
 
-  @override
-  void dispose() {
-    player.stop();
-    player.dispose();
-    super.dispose();
-  }
-
   Widget voiceWidget() {
     return Container(
       padding: EdgeInsets.only(top: widget.message.replyMessage != null ? 0 : 9, left: 9, right: 9, bottom: 9),
@@ -155,13 +148,15 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
   }
 
   Stream<Duration> getCurrentDurationVoice() async* {
-    if (player.source == null) yield Duration(seconds: 0);
-    var count = await player.onDurationChanged.first;
+    try {
+      if (player.source == null) yield Duration(seconds: 0);
+      var count = await player.onDurationChanged.first;
 
-    yield count;
+      yield count;
 
-    yield* player.onPositionChanged.asyncExpand((position) async* {
-      yield Duration(seconds: count.inSeconds - position.inSeconds);
-    });
+      yield* player.onPositionChanged.asyncExpand((position) async* {
+        yield Duration(seconds: count.inSeconds - position.inSeconds);
+      });
+    } catch (e) {}
   }
 }
