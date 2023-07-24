@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:siraf3/bloc/chat/delete/chat_delete_bloc.dart';
 import 'package:siraf3/bloc/chat/list/chat_list_bloc.dart';
+import 'package:siraf3/bloc/chat/search/chat/chat_search_bloc.dart';
 import 'package:siraf3/dialog.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/chat_item.dart';
@@ -19,6 +22,7 @@ import 'package:siraf3/widgets/my_app_bar.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_item.dart';
+import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 class ChatListScreen extends StatefulWidget {
@@ -29,6 +33,7 @@ class ChatListScreen extends StatefulWidget {
 class _ChatListScreen extends State<ChatListScreen> {
   ChatListBloc chatListBloc = ChatListBloc();
   ChatDeleteBloc chatDeleteBloc = ChatDeleteBloc();
+  ChatSearchBloc chatSearchBloc = ChatSearchBloc();
 
   @override
   void initState() {
@@ -54,11 +59,22 @@ class _ChatListScreen extends State<ChatListScreen> {
         } catch (e) {}
       }
     });
+
+    chatSearchBloc.stream.listen((state) {
+      if (state is! ChatSearchSuccess) return;
+
+      chats = state.chatItems;
+      try {
+        setState(() {});
+      } catch (e) {}
+    });
   }
 
   List<ChatItem> chats = [];
   List<ChatItem> selectedChats = [];
   bool isSelectable = false;
+  bool showSearchBoxWidget = false;
+  TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -78,38 +94,78 @@ class _ChatListScreen extends State<ChatListScreen> {
                 }
               },
             ),
-            title: AppBarTitle("لیست پیام ها"),
+            title: showSearchBoxWidget ? searchBoxWidget() : AppBarTitle("لیست پیام ها"),
             actions: [
-              if (selectedChats.isEmpty) IconButton(onPressed: searchChat, icon: Icon(Icons.search_rounded)),
-              if (selectedChats.isNotEmpty)
+              if (!showSearchBoxWidget && selectedChats.isEmpty)
+                IconButton(
+                  onPressed: () {
+                    showSearchBoxWidget = !showSearchBoxWidget;
+                    setState(() {});
+                  },
+                  icon: Icon(Icons.search_rounded),
+                ),
+              BlocBuilder(
+                bloc: chatSearchBloc,
+                builder: (context, state) {
+                  if (!showSearchBoxWidget || state is ChatSearchCancel) return SizedBox();
+
+                  if (state is ChatSearchLoading) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      child: SpinKitRing(color: Themes.primary, size: 18, lineWidth: 3),
+                    );
+                  }
+
+                  if (state is ChatSearchError) {
+                    IconButton(
+                      onPressed: () => searchRequest(searchController.value.text),
+                      icon: Icon(Icons.refresh_rounded, color: Themes.text),
+                    );
+                  }
+
+                  if (showClearButton)
+                    return IconButton(
+                      onPressed: () {
+                        searchController.clear();
+                        showClearButton = false;
+                        setState(() {});
+                      },
+                      icon: Icon(Icons.close_rounded, color: Themes.text),
+                    );
+
+                  return SizedBox();
+                },
+              ),
+              if (selectedChats.isNotEmpty && !showSearchBoxWidget)
                 IconButton(
                   icon: Icon(CupertinoIcons.trash, size: 22),
                   onPressed: deleteChat,
                 ),
-              MyPopupMenuButton(
-                itemBuilder: (context) {
-                  return [
-                    MyPopupMenuItem<int>(enable: selectedChats.length < chats.length, value: 0, label: "انتخاب همه", icon: Icons.check_box_outlined),
-                    if (selectedChats.isNotEmpty) MyPopupMenuItem<int>(value: 1, label: "لغو انتخاب همه", icon: Icons.check_box_outline_blank_outlined),
-                  ];
-                },
-                onSelected: (value) {
-                  if (value == 0) {
-                    setState(() {
-                      selectedChats.clear();
-                      selectedChats.addAll(chats);
-                      isSelectable = true;
-                    });
-                  }
-                  if (value == 1) {
-                    setState(() {
-                      selectedChats.clear();
-                      isSelectable = false;
-                    });
-                  }
-                },
-                iconData: Icons.more_vert,
-              ),
+              if (!showSearchBoxWidget)
+                MyPopupMenuButton(
+                  itemBuilder: (context) {
+                    return [
+                      MyPopupMenuItem<int>(enable: selectedChats.length < chats.length, value: 0, label: "انتخاب همه", icon: Icons.check_box_outlined),
+                      if (selectedChats.isNotEmpty) MyPopupMenuItem<int>(value: 1, label: "لغو انتخاب همه", icon: Icons.check_box_outline_blank_outlined),
+                    ];
+                  },
+                  onSelected: (value) {
+                    if (value == 0) {
+                      setState(() {
+                        selectedChats.clear();
+                        selectedChats.addAll(chats);
+                        isSelectable = true;
+                      });
+                    }
+                    if (value == 1) {
+                      setState(() {
+                        selectedChats.clear();
+                        isSelectable = false;
+                      });
+                    }
+                  },
+                  iconData: Icons.more_vert,
+                ),
             ],
           ),
           body: BlocConsumer<ChatListBloc, ChatListState>(
@@ -298,6 +354,9 @@ class _ChatListScreen extends State<ChatListScreen> {
 
   BuildContext? deleteDialogContext;
 
+  FocusNode focusNode = FocusNode();
+  bool showClearButton = false;
+
   _handleBack() {
     if (isSelectable) {
       setState(() {
@@ -306,6 +365,14 @@ class _ChatListScreen extends State<ChatListScreen> {
       });
       return false;
     }
+
+    if (showSearchBoxWidget) {
+      chatSearchBloc.add(ChatSearchCancelEvent());
+      setState(() => showSearchBoxWidget = false);
+      searchController.clear();
+      return false;
+    }
+
     return true;
   }
 
@@ -365,6 +432,34 @@ class _ChatListScreen extends State<ChatListScreen> {
     setState(() {});
   }
 
+  Widget searchBoxWidget() {
+    return TextField2(
+      controller: searchController,
+      focusNode: focusNode,
+      maxLines: 1,
+      onChanged: (text) {
+        if (showClearButton != (text.length > 0)) {
+          showClearButton = text.length > 0;
+          setState(() {});
+        }
+      },
+      onSubmitted: (text) {
+        if (!text.isFill()) return;
+        searchRequest(text);
+      },
+      textInputAction: TextInputAction.search,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        hintText: "جستوجو...",
+        hintStyle: TextStyle(color: Colors.grey.shade400),
+      ),
+      style: TextStyle(
+        fontFamily: "IranSansMedium",
+        fontSize: 12,
+      ),
+    );
+  }
+
   void deleteChat() {
     animationDialog(
       context: context,
@@ -380,5 +475,7 @@ class _ChatListScreen extends State<ChatListScreen> {
     );
   }
 
-  void searchChat() {}
+  void searchRequest(String text) {
+    chatSearchBloc.add(ChatSearchRequestEvent(text));
+  }
 }
