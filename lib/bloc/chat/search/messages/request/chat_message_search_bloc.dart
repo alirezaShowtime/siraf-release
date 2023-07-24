@@ -12,21 +12,26 @@ part 'chat_message_search_state.dart';
 
 class ChatMessageSearchBloc extends Bloc<ChatMessageSearchEvent, ChatMessageSearchState> {
   String? q;
+  bool cancelRequest = false;
+  Uri? _uri;
 
   ChatMessageSearchBloc() : super(ChatMessageSearchInitial()) {
     on<ChatMessageSearchRequestEvent>(_request);
-    on<ChatMessageSearchCancelEvent>((event, emit) => emit(ChatMessageSearchCancel()));
+    on<ChatMessageSearchCancelEvent>((event, emit) {
+      cancelRequest = true;
+      emit(ChatMessageSearchCancel());
+    });
   }
 
   FutureOr<void> _request(ChatMessageSearchRequestEvent event, Emitter<ChatMessageSearchState> emit) async {
     if (state is ChatMessageSearchLoading) return;
     emit(ChatMessageSearchLoading());
 
-    var uri = Uri.parse("https://chat.siraf.app/api/message/messageSearchUser/");
-
     if (event.q != null) {
       q = event.q;
     }
+
+    var uri = Uri.parse("https://chat.siraf.app/api/message/messageSearchUser/");
 
     uri = uri.replace(
       queryParameters: {
@@ -37,12 +42,21 @@ class ChatMessageSearchBloc extends Bloc<ChatMessageSearchEvent, ChatMessageSear
       },
     );
 
+    if (_uri != null) {
+      uri = _uri!;
+    }
+
     var res = await http2.getWithToken(uri);
 
     if (!isResponseOk(res)) {
+      _uri = uri;
       return emit(ChatMessageSearchError(res));
     }
 
-    return emit(ChatMessageSearchSuccess(res, searched: q ?? "", type: event.type));
+    if (cancelRequest) {
+      _uri = null;
+      cancelRequest = false;
+      return emit(ChatMessageSearchSuccess(res, searched: q ?? "", type: event.type));
+    }
   }
 }
