@@ -247,7 +247,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
           radius: radius,
           backgroundColor: Colors.transparent,
           percent: progress,
-          animation: true,
+          animation: false,
           lineWidth: width,
           circularStrokeCap: CircularStrokeCap.round,
           progressColor: isForMe() ? Colors.white : Colors.black,
