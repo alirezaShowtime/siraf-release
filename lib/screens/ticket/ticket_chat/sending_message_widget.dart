@@ -186,21 +186,31 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
   }
 
   Widget _fileInitWidget(File file) {
-    return _baseFileWidget(
-      icon: Icon(Icons.arrow_downward_rounded, color: messageConfig.background, size: 30),
-      fileName: file.fileName,
-      fileInfo: "${file.lengthStr()}  ${file.extension}",
-      onTap: () => onClickUpload(file),
-    );
+    return FutureBuilder<String>(
+        initialData: "??",
+        future: file.lengthStr(),
+        builder: (context, snapshot) {
+          return _baseFileWidget(
+            icon: Icon(Icons.arrow_downward_rounded, color: messageConfig.background, size: 30),
+            fileName: file.fileName,
+            fileInfo: "${snapshot.data}  ${file.extension}",
+            onTap: () => onClickUpload(file),
+          );
+        });
   }
 
   Widget _fileUploadedWidget(File file) {
-    return _baseFileWidget(
-      icon: Icon(Icons.insert_drive_file_rounded, color: messageConfig.background, size: 24),
-      fileName: file.fileName,
-      fileInfo: "${file.lengthStr()} ${file.extension}",
-      onTap: () => onClickOpen(file),
-    );
+    return FutureBuilder<String>(
+        initialData: "??",
+        future: file.lengthStr(),
+        builder: (context, snapshot) {
+          return _baseFileWidget(
+            icon: Icon(Icons.insert_drive_file_rounded, color: messageConfig.background, size: 24),
+            fileName: file.fileName,
+            fileInfo: "${snapshot.data} ${file.extension}",
+            onTap: () => onClickOpen(file),
+          );
+        });
   }
 
   Widget _fileUploadingWidget(File file) {
