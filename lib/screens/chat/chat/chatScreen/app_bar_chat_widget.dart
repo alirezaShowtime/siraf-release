@@ -18,6 +18,7 @@ import 'package:siraf3/screens/consultant_profile/consultant_profile_screen.dart
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
+import 'package:siraf3/widgets/my_app_bar.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_item.dart';
@@ -80,7 +81,7 @@ class _AppBarChat extends State<AppBarChat> {
     return BlocBuilder(
       bloc: BlocProvider.of<ChatMessageBoxSearchStatusBloc>(context),
       builder: (_, bool isOpen) {
-        return AppBar(
+        return MyAppBar(
           automaticallyImplyLeading: false,
           elevation: defaultElevation,
           titleSpacing: 0,

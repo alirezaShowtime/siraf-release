@@ -12,6 +12,7 @@ import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/empty.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/widgets/my_app_bar.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
@@ -44,7 +45,7 @@ class _ChatListScreen extends State<ChatListScreen> {
       child: WillPopScope(
         onWillPop: () async => _handleBack(),
         child: Scaffold(
-          appBar: AppBar(
+          appBar: MyAppBar(
             automaticallyImplyLeading: false,
             elevation: 0.7,
             titleSpacing: 0,
