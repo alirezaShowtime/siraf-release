@@ -87,12 +87,12 @@ extension Profile on _EstateProfileScreen {
                                   ),
                                 ),
                                 InkWell(
-                                  onTap: () => setState(() {
-                                    moreDetail = !moreDetail;
-                                    showComment = !showComment;
-
-                                    viewMoreDetail(force: false);
-                                  }),
+                                  onTap: () =>
+                                      setState(() {
+                                        moreDetail = !moreDetail;
+                                        showComment = !showComment;
+                                        viewMoreDetail(force: false);
+                                      }),
                                   child: Text(
                                     !showComment ? "نمایش نظرات (${comments.length})" : "فایل های دفتر املاک",
                                     style: TextStyle(fontFamily: "IranSansBold", fontSize: 9),
@@ -109,23 +109,22 @@ extension Profile on _EstateProfileScreen {
               ],
             ),
           ),
-          if (moreDetail) profileDetail(estateProfile),
           if (!moreDetail && !showComment) searchBar(estateProfile.name ?? ""),
           if (showComment)
             Expanded(
-              child: ListView.builder(
-                itemCount: comments.length + 1,
-                itemBuilder: (context, i) {
-                  if (i == 0)
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      child: addCommentWidget(estateProfile.id!),
-                    );
-                  return CommentItemWidget(estateId: widget.estateId, comment: comments[i - 1]);
-                },
+              child: ListView(
+                controller: commentsListViewController,
+                children: [
+                  if (moreDetail) profileDetail(estateProfile),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    child: addCommentWidget(estateProfile.id!),
+                  ),
+                  for (var comment in comments) CommentItemWidget(estateId: widget.estateId, comment: comment),
+                ],
               ),
             ),
-          if (!showComment) Expanded(child: BlocBuilder<FilesBloc, FilesState>(builder: _buildEstateFilesBloc)),
+          if (!showComment) Expanded(child: BlocBuilder<FilesBloc, FilesState>(builder: (context, state) => _buildEstateFilesBloc(context, state, estateProfile))),
         ],
       ),
     );
@@ -141,7 +140,7 @@ extension Profile on _EstateProfileScreen {
     );
   }
 
-  Widget _buildEstateFilesBloc(BuildContext context, FilesState state) {
+  Widget _buildEstateFilesBloc(BuildContext context, FilesState state, var estateProfile) {
     if (state is FilesLoadingState || state is FilesInitState) return Center(child: Loading());
 
     if (state is FilesErrorState) {
@@ -155,17 +154,20 @@ extension Profile on _EstateProfileScreen {
     return MyListView(
       isEmpty: files.isEmpty,
       emptyText: "این املاک فایلی ندارد",
-      listView: ListView.builder(
-        itemCount: files.length + 1,
-        itemBuilder: (context, i) {
-          if (i == 0) return SizedBox(height: 10);
-          return GestureDetector(
-            onTap: () {
-              push(context, FileScreen(id: files[i - 1].id!));
-            },
-            child: FileHorizontalItem(file: files[i - 1]),
-          );
-        },
+      listView: ListView(
+        controller: filesListViewController,
+        children: [
+          if (moreDetail) profileDetail(estateProfile),
+          if (moreDetail) searchBar(estateProfile.name ?? ""),
+          SizedBox(height: 15),
+          for (var file in files)
+            GestureDetector(
+              onTap: () {
+                push(context, FileScreen(id: file.id!));
+              },
+              child: FileHorizontalItem(file: file),
+            ),
+        ],
       ),
     );
   }

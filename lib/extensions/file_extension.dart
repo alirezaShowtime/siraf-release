@@ -11,7 +11,7 @@ extension File2 on File {
 
   bool get isImage => ["png", "jpg"].contains(extension.toLowerCase());
 
-  bool get isVoice => ["wav"].contains(extension.toLowerCase());
+  bool get isVoice => ["mp3","wav"].contains(extension.toLowerCase());
 
   Future<String> lengthStr() async {
     return (await this.length()).toFileSize();

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/bloc/create_file_bloc.dart';
 import 'package:siraf3/dialog.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/create_file_form_data.dart';
@@ -42,6 +43,12 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
     resetCreateFileForm = false;
 
     bloc.stream.listen(_listenBloc);
+
+    if (widget.formData.estates.isNotEmpty) {
+      setState(() {
+        selectedEstates = widget.formData.estates;
+      });
+    }
   }
 
   String? securityDescription;
@@ -429,6 +436,14 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
   }
 
   _finalize() {
+    if (! description.isFill()) {
+      notify("لطفا توضیحات فایل را وارد کنید");
+      return;
+    }
+    if (description!.length < 40) {
+      notify("توضیحات حداقل باید 40 کاراکتر باشد");
+      return;
+    }
     widget.formData.estates = selectedEstates;
     widget.formData.secDescription = securityDescription;
     widget.formData.description = description!;
@@ -456,16 +471,16 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
     } else if (event is CreateFileLoadedState) {
       dissmisLoadingDialog();
       notify("فایل با موفقیت ایجاد شد");
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: (_) => HomeScreen(
-                    nextScreen: MaterialPageRoute(builder: (_) => MyFilesScreen()),
-                  )),
-          (Route<dynamic> route) => false,
-        );
-      });
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      //   Navigator.pushAndRemoveUntil(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (_) => HomeScreen(
+      //               nextScreen: MaterialPageRoute(builder: (_) => MyFilesScreen()),
+      //             )),
+      //     (Route<dynamic> route) => false,
+      //   );
+      // });
     }
   }
 

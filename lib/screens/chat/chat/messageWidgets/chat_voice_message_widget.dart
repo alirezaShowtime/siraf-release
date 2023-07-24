@@ -33,9 +33,9 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
   }
 
   @override
-  void dispose() async {
-    await player.stop();
-    await player.dispose();
+  void dispose() {
+    player.stop();
+    player.dispose();
     super.dispose();
   }
 

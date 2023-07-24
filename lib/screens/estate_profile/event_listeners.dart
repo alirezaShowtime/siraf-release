@@ -40,6 +40,22 @@ extension EventListener on _EstateProfileScreen {
         showCommentWidget = false;
         showSearchBarWidget = false;
       }
+
+      if (moreDetail && showComment) {
+        previousScrollPositionComment = commentsListViewController.position.pixels;
+        scrollTo(commentsListViewController, 0.0);
+      }
+      if (!moreDetail && showComment) {
+        scrollTo(commentsListViewController, previousScrollPositionComment);
+      }
+
+      if (moreDetail && !showComment) {
+        previousScrollPositionFiles = filesListViewController.position.pixels;
+        scrollTo(filesListViewController, 0.0);
+      }
+      if (!moreDetail && showComment) {
+        scrollTo(filesListViewController, previousScrollPositionFiles);
+      }
     });
   }
 
@@ -51,17 +67,15 @@ extension EventListener on _EstateProfileScreen {
 
     if (commentIsValid && rateIsValid) {
       sendCommentRateBloc.add(EstateProfileCommentRateSendCommentAndRateEvent(estateId, rate!, comment));
-    }
-
-    if (commentIsValid && !rateIsValid) {
+    } else if (commentIsValid && !rateIsValid) {
       sendCommentRateBloc.add(EstateProfileCommentRateSendCommentEvent(estateId, comment));
-    }
-
-    if (!commentIsValid && rateIsValid) {
+    } else if (!commentIsValid && rateIsValid) {
       sendCommentRateBloc.add(EstateProfileCommentRateSendRateEvent(estateId, rate!));
+    } else {
+      notify("امتیاز یا نظری وارد نکرده اید.");
     }
     focusNode.unfocus();
-    rate = null;
+    // rate = null;
   }
 
   void retry(BuildContext context) {

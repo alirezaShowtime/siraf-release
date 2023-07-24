@@ -33,16 +33,31 @@ class MessageWidgetList {
   }
 
   List<Widget> getList() {
+
+    print("_list.last ${_list.last}");
+    if (_list.last.value is DateBadge) {
+      _list.removeLast();
+    }
+
     List<Widget> newList = [];
 
     for (MapEntry mapEntry in _list) {
       newList.add(mapEntry.value);
     }
+
     return newList.reversed.toList();
   }
 
   void removeAt(int index) {
     _list.removeAt(index);
+  }
+
+  void removeWhere(bool Function(MessageWidgetKey) where) {
+    _list.removeWhere((e) {
+      if (e.value is! MessageWidget) return false;
+
+      return where((e.value as MessageWidget).messageKey);
+    });
   }
 
   Widget get(int index) {
@@ -51,6 +66,11 @@ class MessageWidgetList {
 
   int length() {
     return _list.length;
+  }
+
+
+  int widgetLength() {
+    return _list.where((e) => e.value is MessageWidget).length;
   }
 
   void replace(int i, Widget newWidget) {
@@ -64,4 +84,17 @@ class MessageWidgetList {
   int indexOfCreateDate(createDate) {
     return _list.indexOf(createDate);
   }
+
+  void clearList() {
+    _list.clear();
+  }
+
+void onRemovedMessage(){
+
+  if(length() > 0 && widgetLength() == 0){
+    _list.clear();
+  }
+
+}
+
 }

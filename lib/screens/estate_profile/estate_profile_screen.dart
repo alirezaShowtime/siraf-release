@@ -17,14 +17,17 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/city.dart' as city;
 import 'package:siraf3/models/consultant_info.dart';
+import 'package:siraf3/models/estate.dart';
 import 'package:siraf3/models/estate_profile.dart' as estateProfileModel;
 import 'package:siraf3/models/estate_profile.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/screens/consultant_profile/consultant_profile_screen.dart';
+import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
 import 'package:siraf3/screens/image_view_screen.dart';
+import 'package:siraf3/screens/request_file/request_file_screen.dart';
 import 'package:siraf3/screens/video_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
@@ -44,10 +47,15 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 import 'comment_item_widget.dart';
 
 part 'add_comment_widget.dart';
+
 part 'answer_item.dart';
+
 part 'event_listeners.dart';
+
 part 'profile.dart';
+
 part 'profile_detail.dart';
+
 part 'search_bar.dart';
 
 class EstateProfileScreen extends StatefulWidget {
@@ -90,6 +98,12 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
   EstateProfileCommentRateBloc sendCommentRateBloc = EstateProfileCommentRateBloc();
   FocusNode focusNode = FocusNode();
 
+  double previousScrollPositionFiles = 0.0;
+  double previousScrollPositionComment = 0.0;
+
+  ScrollController filesListViewController = ScrollController();
+  ScrollController commentsListViewController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -126,6 +140,8 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
       }
     });
   }
+
+  Widget? ratingWidget;
 
   @override
   void dispose() {
@@ -187,8 +203,49 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
           icon: icon(Icons.share_rounded, size: 22),
         ),
         MyPopupMenuButton(
-          onSelected: (v) => report(),
+          onSelected: (v) {
+            switch (v) {
+              case "file":
+                {
+                  push(
+                      context,
+                      CreateFileFirst(
+                        estates: [
+                          Estate(
+                            id: estateProfile?.id,
+                            name: estateProfile?.name,
+                            address: estateProfile?.address,
+                          ),
+                        ],
+                      ));
+                  return;
+                }
+              case "requestFile":
+                {
+                  push(
+                    context,
+                    RequestFileScreen(
+                      estates: [
+                        Estate(
+                          id: estateProfile?.id,
+                          name: estateProfile?.name,
+                          address: estateProfile?.address,
+                        ),
+                      ],
+                    ),
+                  );
+                  return;
+                }
+              case "report":
+                {
+                  report();
+                  return;
+                }
+            }
+          },
           itemBuilder: (_) => [
+            popupMenuItem(title: "سپردن فایل", value: "file"),
+            popupMenuItem(title: "درخواست فایل", value: "requestFile"),
             popupMenuItem(title: "گزارش تخلف", value: "report"),
           ],
           iconData: Icons.more_vert,
@@ -304,5 +361,12 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
 
     filterData = FilterData(cityIds: cities.map<int>((e) => e.id!).toList(), estateId: widget.estateId);
     getFiles();
+  }
+
+  void scrollTo(ScrollController controller, double position) {
+    try {
+      controller.jumpTo(position);
+    } catch (e) {}
+    // controller.animateTo(position, duration: Duration(milliseconds: 300), curve: Curves.ease);
   }
 }

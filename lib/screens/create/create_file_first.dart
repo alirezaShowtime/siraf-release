@@ -24,9 +24,11 @@ import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:siraf3/models/estate.dart';
 
 class CreateFileFirst extends StatefulWidget {
-  const CreateFileFirst({super.key});
+  List<Estate>? estates;
+  CreateFileFirst({this.estates, super.key});
 
   @override
   State<CreateFileFirst> createState() => _CreateFileFirstState();
@@ -561,7 +563,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
       ownerName: "",
       visitName: "",
       files: [],
-      estates: [],
+      estates: widget.estates ?? [],
     );
 
     push(formData);

@@ -175,7 +175,10 @@ class ChatSendingDocMessageWidgetState extends ChatSendingMessageWidgetState {
   void onClickCancel(File file) {
     widget.files!.remove(file);
     widget.controller.cancelUpload();
+    try{
     setState(() {});
+
+    }catch(e){}
   }
 
   @override

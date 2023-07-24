@@ -31,16 +31,14 @@ extension EventListener on _ConsultantProfileScreen {
 
     if (commentIsValid && rateIsValid) {
       sendCommentRateBloc.add(ConsultantProfileCommentRateSendCommentAndRateEvent(consultantId, rate!, comment));
-    }
-
-    if (commentIsValid && !rateIsValid) {
+    } else if (commentIsValid && !rateIsValid) {
       sendCommentRateBloc.add(ConsultantProfileCommentRateSendCommentEvent(consultantId, comment));
-    }
-
-    if (!commentIsValid && rateIsValid) {
+    } else if (!commentIsValid && rateIsValid) {
       sendCommentRateBloc.add(ConsultantProfileCommentRateSendRateEvent(consultantId, rate!));
+    } else {
+      notify("امتیاز یا نظری وارد نکرده اید.");
     }
-    rate =  null;
+    // rate =  null;
     focusNode.unfocus();
   }
 

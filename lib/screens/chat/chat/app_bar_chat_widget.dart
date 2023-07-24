@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/chat/block/chat_block_bloc.dart';
 import 'package:siraf3/bloc/chat/delete/chat_delete_bloc.dart';
+import 'package:siraf3/bloc/chat/delete_message/chat_delete_message_bloc.dart';
 import 'package:siraf3/bloc/chat/select_message/select_message_bloc.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/dialog.dart';
@@ -14,6 +15,8 @@ import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_item.dart';
+
+import 'chat_massage_action.dart';
 
 class AppBarChat extends AppBar {
   @override
@@ -83,6 +86,17 @@ class _AppBarChat extends State<AppBarChat> {
       title: title(),
       actions: [
         if (selectedCount > 0)
+          IconButton(
+            onPressed: deselectMessage,
+            icon: Text(
+              "لغو",
+              style: TextStyle(
+                fontSize: 11,
+                fontFamily: "IranSansBold",
+              ),
+            ),
+          ),
+        if (selectedCount > 0)
           Padding(
             padding: const EdgeInsets.only(left: 7),
             child: IconButton(
@@ -124,7 +138,7 @@ class _AppBarChat extends State<AppBarChat> {
           borderRadius: BorderRadius.circular(100),
           child: Container(
             padding: const EdgeInsets.all(4),
-            constraints: BoxConstraints(minWidth: 200),
+            // constraints: BoxConstraints(minWidth: 100),
             child: Row(
               children: [
                 Padding(
@@ -165,7 +179,20 @@ class _AppBarChat extends State<AppBarChat> {
     );
   }
 
-  void deleteMessages() {}
+  void deleteMessages() {
+    confirmDeleteMessageDialog(
+      context,
+      onClickDelete: (bool isForAll) {
+        BlocProvider.of<ChatDeleteMessageBloc>(context).add(
+          ChatDeleteMessageRequestEvent(
+            ids: getSelectedIds(),
+            isForAll: isForAll,
+            chatId: widget.chatId!,
+          ),
+        );
+      },
+    );
+  }
 
   void blockUser() {
     animationDialog(
@@ -190,7 +217,7 @@ class _AppBarChat extends State<AppBarChat> {
       builder: (dialogContext) {
         return ConfirmDialog(
           dialogContext: dialogContext,
-          title: "مسدود کردن",
+          title: "حذف کردن",
           content: "آیا واقعا قصد حذف کردن چت را دارید؟",
           onApply: () {
             dismissDialog(dialogContext);
@@ -199,5 +226,21 @@ class _AppBarChat extends State<AppBarChat> {
         );
       },
     );
+  }
+
+  void deselectMessage() {
+    BlocProvider.of<SelectMessageBloc>(context).add(SelectMessageClearEvent());
+  }
+
+  List<int> getSelectedIds() {
+    List<int> list = [];
+
+    var selecteds = BlocProvider.of<SelectMessageBloc>(context).selectedMessages;
+    print(selecteds);
+
+    for (MapEntry selected in selecteds) {
+      list.add(selected.value);
+    }
+    return list;
   }
 }

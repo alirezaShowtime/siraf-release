@@ -242,7 +242,7 @@ class _FileScreenState extends State<FileScreen> {
   Widget _buildSliders(FileDetail file) {
     return Stack(
       children: [
-        if (file.media!.images.isNotNullOrEmpty() && file.media!.video.isNotNullOrEmpty() && file.media!.virtualTour.isNotNullOrEmpty())
+        if (!file.media!.images.isNotNullOrEmpty() && !file.media!.video.isNotNullOrEmpty() && !file.media!.virtualTour.isNotNullOrEmpty())
           Container(
             padding: EdgeInsets.only(bottom: 15),
             height: 290,
@@ -252,7 +252,7 @@ class _FileScreenState extends State<FileScreen> {
               image: DecorationImage(image: AssetImage(IMAGE_NOT_AVAILABLE), alignment: Alignment.center),
             ),
           ),
-        if (!file.media!.images.isNotNullOrEmpty() || !file.media!.video.isNotNullOrEmpty() || !file.media!.virtualTour.isNotNullOrEmpty())
+        if (file.media!.images.isNotNullOrEmpty() || file.media!.video.isNotNullOrEmpty() || file.media!.virtualTour.isNotNullOrEmpty())
           CarouselSliderCustom(
             sliders: sliders,
             autoPlay: false,
