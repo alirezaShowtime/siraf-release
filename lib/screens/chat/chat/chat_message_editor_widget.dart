@@ -345,8 +345,8 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
     if (!text.isFill() && !selectedFiles.isFill()) return;
 
     widget.onClickSendMessage?.call(text.isEmpty ? null : text, selectedFiles, replyMessage);
-    showSendButton = false;
     messageController.clear();
+    showSendButton = false;
     selectedFiles = [];
     selectedFileWidgets = [];
     try {
