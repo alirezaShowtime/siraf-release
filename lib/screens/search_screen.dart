@@ -119,7 +119,7 @@ class _SearchScreen extends State<SearchScreen> {
           Visibility(
               visible: keywords.length > 0,
               child: Padding(
-                padding: EdgeInsets.only(left: 5, right: 10),
+                padding: EdgeInsets.only(left: 5, right: 15),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -164,42 +164,22 @@ class _SearchScreen extends State<SearchScreen> {
     return InkWell(
       onTap: () {},
       child: Container(
-        padding: EdgeInsets.all(10),
-        child: Row(
-          children: [
-            GestureDetector(
-              onTap: () {
-                searchController.text = searchHistory.keyword;
+        padding: EdgeInsets.only(left: 10, top: 0, bottom: 10, right: 20),
+        child: Expanded(
+          child: GestureDetector(
+            onTap: () {
+              searchController.text = searchHistory.keyword;
 
-                onSubmittedSearchField(searchController.text);
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: icon(Icons.history_rounded),
+              onSubmittedSearchField(searchController.text);
+            },
+            child: Text(
+              searchHistory.keyword,
+              style: TextStyle(
+                fontSize: 13,
+                // color: Themes.textGrey,
               ),
             ),
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  searchController.text = searchHistory.keyword;
-
-                  onSubmittedSearchField(searchController.text);
-                },
-                child: Text(
-                  searchHistory.keyword,
-                  style: TextStyle(
-                    fontSize: 13,
-                    // color: Themes.textGrey,
-                  ),
-                ),
-              ),
-            ),
-            GestureDetector(
-                onTap: () {
-                  searchController.text = searchHistory.keyword;
-                },
-                child: icon(CupertinoIcons.arrow_up_left)),
-          ],
+          ),
         ),
       ),
     );

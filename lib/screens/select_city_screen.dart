@@ -127,7 +127,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
           title: !onSearching
               ? TextTitle("انتخاب شهر")
               : TextField2(
-            decoration: InputDecoration(
+                  decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "جستجو در شهر ها",
                     hintStyle: TextStyle(
@@ -234,7 +234,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
       provinces = cities
           .where((element) => element.parentId == null)
           .map<Province>((City e) => Province(
-        id: e.id!,
+                id: e.id!,
                 name: e.name!,
                 countFile: e.countFile,
                 parentId: e.parentId,
@@ -285,42 +285,54 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
     if (state is GetCitiesLoadedState) {
       return Stack(
         children: [
-          ListView(
-            children: <Widget>[
-                  if (selectedCities.isNotEmpty)
-                    Container(
-                      margin: EdgeInsets.only(top: 10),
-                      width: double.infinity,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: selectedCities
-                              .map<Widget>(
-                                (e) => Padding(
-                                    padding: EdgeInsets.only(
-                                      right: selectedCities.first == e ? 10 : 5,
-                                      left: selectedCities.last == e ? 10 : 0,
-                                    ),
-                                    child: _createSelectedCityBadge(e)),
-                              )
-                              .toList(),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Card(
+                  color: App.theme.dialogBackgroundColor,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                  child: Column(children: [
+                    if (selectedCities.isNotEmpty)
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        width: double.infinity,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: selectedCities
+                                .map<Widget>(
+                                  (e) => Padding(
+                                      padding: EdgeInsets.only(
+                                        right: selectedCities.first == e ? 10 : 5,
+                                        left: selectedCities.last == e ? 10 : 0,
+                                      ),
+                                      child: _createSelectedCityBadge(e)),
+                                )
+                                .toList(),
+                          ),
                         ),
                       ),
+                    SizedBox(
+                      height: 10,
                     ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  _myLocationSection(),
-                  SizedBox(
-                    height: 5,
-                  ),
-                ] +
-                provinces.map<Widget>((e) {
-                  return _accordionItem(e);
-                }).toList() +
-                [
-                  SizedBox(height: 60),
-                ],
+                    _myLocationSection(),
+                    SizedBox(
+                      height: 10,
+                    ),
+                  ]),
+                ),
+              ),
+              Expanded(
+                  child: ListView(
+                children: provinces.map<Widget>((e) {
+                      return _accordionItem(e);
+                    }).toList() +
+                    [
+                      SizedBox(height: 60),
+                    ],
+              )),
+            ],
           ),
           Positioned(
             bottom: 0,
@@ -375,17 +387,17 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
     );
   }
 
-  Widget _accordionItem(Province e) {
+  Widget _accordionItem(Province province) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Accordion(
         title: TextNormal(
-          e.name,
+          province.name,
         ),
-        open: currentCityAccordion == e.id,
+        open: currentCityAccordion == province.id,
         onClick: () {
           setState(() {
-            currentCityAccordion = currentCityAccordion == e.id ? -1 : e.id;
+            currentCityAccordion = currentCityAccordion == province.id ? -1 : province.id;
           });
           print(currentCityAccordion);
         },
@@ -395,7 +407,13 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
           alignment: Alignment.centerRight,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: e.cities.map<Widget>((e) {
+            children: ([City(id: -3)] + province.cities).map<Widget>((e) {
+              if (widget.max == 1 && e.id == -3) {
+                return SizedBox();
+              }
+              if (e.id == -3) {
+                return _accordionProvinceItem(province);
+              }
               return _accordionCityItem(e);
             }).toList(),
           ),
@@ -427,6 +445,39 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
               e.name!,
               fontFamily: selectedCities.any((element) => element.id == e.id) ? "IranSansMedium" : "IranSans",
               color: selectedCities.any((element) => element.id == e.id) ? Themes.primary : App.theme.tooltipTheme.textStyle?.color,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _accordionProvinceItem(Province province) {
+    bool isFullSelected = selectedCities.where((element) => element.parentId == province.id).length == province.cities.length;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          if (isFullSelected) {
+            selectedCities.removeWhere((el) => el.parentId == province.id);
+          } else {
+            if (widget.max != null && selectedCities.length == widget.max) {
+              notify("حداکثر " + widget.max.toString() + " شهر میتوانید انتخاب کنید");
+            } else {
+              province.cities.forEach((city) {
+                if (!selectedCities.any((e) => e.id == city.id)) selectedCities.add(city);
+              });
+            }
+          }
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        child: Row(
+          children: [
+            TextNormal(
+              "همه شهر های  ${province.name}",
+              fontFamily: "IranSansMedium",
+              color: isFullSelected ? Themes.primary : App.theme.tooltipTheme.textStyle?.color,
             ),
           ],
         ),

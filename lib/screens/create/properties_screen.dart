@@ -105,18 +105,20 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            "سایر ویژگی ها",
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Themes.primary,
-                              fontFamily: "IranSansBold",
+                          if (widget.properties.isNotEmpty)
+                            SizedBox(
+                              height: 20,
                             ),
-                          ),
-                          SizedBox(height: 14),
+                          if (widget.properties.isNotEmpty)
+                            Text(
+                              "سایر ویژگی ها",
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Themes.primary,
+                                fontFamily: "IranSansBold",
+                              ),
+                            ),
+                          if (widget.properties.isNotEmpty) SizedBox(height: 14),
                         ] +
                         widget.properties.map<Widget>((e) {
                           String? text;
@@ -171,20 +173,23 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                           );
                         }).toList() +
                         [
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            "سایر امکانات",
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Themes.primary,
-                              fontFamily: "IranSansBold",
+                          if (widget.features.isNotEmpty)
+                            SizedBox(
+                              height: 20,
                             ),
-                          ),
-                          SizedBox(
-                            height: 14,
-                          ),
+                          if (widget.features.isNotEmpty)
+                            Text(
+                              "سایر امکانات",
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Themes.primary,
+                                fontFamily: "IranSansBold",
+                              ),
+                            ),
+                          if (widget.features.isNotEmpty)
+                            SizedBox(
+                              height: 14,
+                            ),
                         ] +
                         widget.features.map<Widget>((e) {
                           String? text;

@@ -40,7 +40,7 @@
                 <!-- Accepts URIs that begin with https://YOUR_HOST -->
                 <data
                 android:scheme="https"
-                android:host="siraf.biz" />
+                android:host="siraf.app" />
             </intent-filter>
             <!-- Deep Links --> 
             <intent-filter>
@@ -48,7 +48,7 @@
                 <category android:name="android.intent.category.DEFAULT" /> 
                 <category android:name="android.intent.category.BROWSABLE" /> 
                 <!-- Accepts URIs that begin with YOUR_SCHEME://YOUR_HOST --> 
-                <data android:scheme="logrckt" android:host="siraf.biz" /> 
+                <data android:scheme="logrckt" android:host="siraf.app" /> 
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

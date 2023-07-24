@@ -6,6 +6,7 @@ import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/screens/auth/verify_number_phone_screen.dart';
+import 'package:siraf3/screens/rules_screen.dart';
 import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/block_btn.dart';
@@ -52,83 +53,85 @@ class _LoginScreen extends State<LoginScreen> {
     _blocListener();
   }
 
+  bool _checkRules = false;
+
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion(
-        value: SystemUiOverlayStyle(
-          statusBarColor: App.theme.primaryColor,
-          statusBarBrightness: Brightness.light,
-          statusBarIconBrightness: Brightness.light,
-        ),
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          extendBody: true,
-          backgroundColor: App.theme.dialogBackgroundColor,
-          body: Column(
-            children: [
-              Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: CustomPaint(
-                      painter: _LogoBackground(),
-                      size: Size(MediaQuery.of(context).size.width, 250),
-                    ),
+      value: SystemUiOverlayStyle(
+        statusBarColor: App.theme.primaryColor,
+        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.light,
+      ),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        extendBody: true,
+        backgroundColor: App.theme.dialogBackgroundColor,
+        body: Column(
+          children: [
+            Stack(
+              children: [
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: CustomPaint(
+                    painter: _LogoBackground(),
+                    size: Size(MediaQuery.of(context).size.width, 250),
                   ),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(height: 70),
-                        MyImage(
-                          image: AssetImage("assets/images/siraf_logo.png"),
-                          width: 60,
-                          height: 60,
-                        ),
-                        SizedBox(height: 25),
-                        Text(
-                          "ورود|ثبت نام",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25,
-                            fontFamily: "KalamehBlack",
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 15, top: 30),
+                ),
+                Align(
+                  alignment: Alignment.topCenter,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Padding(
-                        padding: EdgeInsets.only(right: 5, bottom: 2),
-                        child: Text(
-                          "شماره موبایل",
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.grey,
-                            fontFamily: "IRANSansBold",
-                          ),
+                      SizedBox(height: 70),
+                      MyImage(
+                        image: AssetImage("assets/images/siraf_logo.png"),
+                        width: 60,
+                        height: 60,
+                      ),
+                      SizedBox(height: 25),
+                      Text(
+                        "ورود|ثبت نام",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 25,
+                          fontFamily: "KalamehBlack",
                         ),
                       ),
-                      TextFormField2(
-                        controller: numberPhoneFieldController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          counterText: "",
-                          enabled: numberPhoneFieldEnabled,
-                          fillColor: App.isDark ? DarkThemes.background : Colors.grey.shade50,
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15, top: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 5, bottom: 2),
+                      child: Text(
+                        "شماره موبایل",
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey,
+                          fontFamily: "IRANSansBold",
+                        ),
+                      ),
+                    ),
+                    TextFormField2(
+                      controller: numberPhoneFieldController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        counterText: "",
+                        enabled: numberPhoneFieldEnabled,
+                        fillColor: App.isDark ? DarkThemes.background : Colors.grey.shade50,
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                         filled: true,
                       ),
@@ -153,42 +156,70 @@ class _LoginScreen extends State<LoginScreen> {
                           return 'شماره موبایل باید با 09 شروع شود';
                         }
                       },
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              InkWell(
-                borderRadius: BorderRadius.circular(7),
-                onTap: () {
-                  push(context, WebViewScreen(title: 'قوانین مقررات', url: 'https://article.siraf.biz/api/v1/rules'));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: Text(
-                    "شرایط استفاده از خدمات، قوانین و حریم خصوصی",
-                    style: TextStyle(
-                      color: App.theme.primaryColor,
-                      fontFamily: "IRANSansBold",
-                      fontSize: 10,
+            ),
+            Column(
+              children: [
+                InkWell(
+                  borderRadius: BorderRadius.circular(7),
+                  onTap: () {
+                    push(context, RulesScreen());
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Text(
+                      "شرایط استفاده از خدمات، قوانین و حریم خصوصی",
+                      style: TextStyle(
+                        color: App.theme.primaryColor,
+                        fontFamily: "IRANSansBold",
+                        fontSize: 10,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              BlocBuilder<LoginBloc, LoginState>(
-                bloc: _bloc,
-                builder: (context, state) {
-                  return BlockBtn(
-                    onTap: _login,
-                    text: "ارسال کد",
-                    isLoading: state is LoginLoading,
-                  );
-                },
-              ),
-            ],
-          ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 25,
+                      width: 25,
+                      child: Checkbox(
+                          value: _checkRules,
+                          onChanged: (v) {
+                            setState(() {
+                              _checkRules = v ?? false;
+                            });
+                          }),
+                    ),
+                    Text(
+                      "موارد فوق را می پذیرم",
+                      style: TextStyle(
+                        color: App.theme.textTheme.bodyLarge?.color,
+                        fontFamily: "IRANSansBold",
+                        fontSize: 10,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            BlocBuilder<LoginBloc, LoginState>(
+              bloc: _bloc,
+              builder: (context, state) {
+                return BlockBtn(
+                  onTap: _login,
+                  text: "ارسال کد",
+                  isLoading: state is LoginLoading,
+                );
+              },
+            ),
+          ],
         ),
-      );
+      ),
+    );
   }
 
   void _login() {
@@ -196,6 +227,10 @@ class _LoginScreen extends State<LoginScreen> {
 
     if (!numberPhone.isNotNullOrEmpty()) {
       return notify("شماره وارد نشده است.");
+    }
+
+    if (!_checkRules) {
+      return notify("لطفا شرایط استفاده و قوانین و حریم خصوصی را قبول کنید");
     }
 
     _bloc.add(LoginRequestEvent(numberPhone));

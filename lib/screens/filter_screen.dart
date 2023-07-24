@@ -9,6 +9,7 @@ import 'package:siraf3/bloc/categories_bloc.dart';
 import 'package:siraf3/bloc/property_bloc.dart';
 import 'package:siraf3/bloc/total_file_bloc.dart';
 import 'package:siraf3/dark_themes.dart';
+import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/category.dart';
@@ -26,11 +27,7 @@ class FilterScreen extends StatefulWidget {
   FilterData filterData;
   String? total_url;
 
-  FilterScreen(
-      {required this.originalFilterData,
-      required this.filterData,
-      required this.total_url,
-      super.key});
+  FilterScreen({required this.originalFilterData, required this.filterData, required this.total_url, super.key});
 
   @override
   State<FilterScreen> createState() => _FilterScreenState();
@@ -50,6 +47,8 @@ class _FilterScreenState extends State<FilterScreen> {
 
   List<Category> categories = [];
 
+  int totalFilters = 0;
+
   @override
   void dispose() {
     super.dispose();
@@ -62,8 +61,7 @@ class _FilterScreenState extends State<FilterScreen> {
   void initState() {
     super.initState();
 
-    if (widget.total_url != null)
-      totalFileBloc = TotalFileBloc(url: widget.total_url!);
+    if (widget.total_url != null) totalFileBloc = TotalFileBloc(url: widget.total_url!);
 
     categoriesBloc.add(CategoriesFetchEvent());
     categoriesBloc.stream.listen((event) {
@@ -71,12 +69,10 @@ class _FilterScreenState extends State<FilterScreen> {
         categories = event.categories;
 
         if (widget.filterData.category != null) {
-          print("sets");
           setMainCat(widget.filterData.mainCategory);
           _subCategory = widget.filterData.category;
 
-          propertyBloc.add(PropertyInsertEvent(
-              category_id: _subCategory!.id!, type: "filter"));
+          propertyBloc.add(PropertyInsertEvent(category_id: _subCategory!.id!, type: "filter"));
 
           _hasImage = widget.filterData.hasImage ?? false;
           _hasVideo = widget.filterData.hasVideo ?? false;
@@ -84,29 +80,25 @@ class _FilterScreenState extends State<FilterScreen> {
 
           var filterNumeric = widget.filterData.filters ?? Filters();
 
-          if (filterNumeric.prices?.length == 2 &&
-              filterNumeric.prices![1] == 99999999999999999) {
+          if (filterNumeric.prices?.length == 2 && filterNumeric.prices![1] == 99999999999999999) {
             filterNumeric.prices = [
               filterNumeric.prices![0],
             ];
           }
 
-          if (filterNumeric.price?.length == 2 &&
-              filterNumeric.price![1] == 99999999999999999) {
+          if (filterNumeric.price?.length == 2 && filterNumeric.price![1] == 99999999999999999) {
             filterNumeric.price = [
               filterNumeric.price![0],
             ];
           }
 
-          if (filterNumeric.rent?.length == 2 &&
-              filterNumeric.rent![1] == 99999999999999999) {
+          if (filterNumeric.rent?.length == 2 && filterNumeric.rent![1] == 99999999999999999) {
             filterNumeric.rent = [
               filterNumeric.rent![0],
             ];
           }
 
-          if (filterNumeric.mater?.length == 2 &&
-              filterNumeric.mater![1] == 99999999999999999) {
+          if (filterNumeric.mater?.length == 2 && filterNumeric.mater![1] == 99999999999999999) {
             filterNumeric.mater = [
               filterNumeric.mater![0],
             ];
@@ -115,10 +107,34 @@ class _FilterScreenState extends State<FilterScreen> {
           filters = filterNumeric;
 
           onChangeFilter();
+
+          if (filterNumeric.prices?.length == 2 && filterNumeric.prices![1] == 99999999999999999) {
+            filterNumeric.prices = [
+              filterNumeric.prices![0],
+            ];
+          }
+
+          if (filterNumeric.price?.length == 2 && filterNumeric.price![1] == 99999999999999999) {
+            filterNumeric.price = [
+              filterNumeric.price![0],
+            ];
+          }
+
+          if (filterNumeric.rent?.length == 2 && filterNumeric.rent![1] == 99999999999999999) {
+            filterNumeric.rent = [
+              filterNumeric.rent![0],
+            ];
+          }
+
+          if (filterNumeric.mater?.length == 2 && filterNumeric.mater![1] == 99999999999999999) {
+            filterNumeric.mater = [
+              filterNumeric.mater![0],
+            ];
+          }
+
+          filters = filterNumeric;
         } else {
-          setMainCat(event.categories
-              .where((element) => element.parentId == null)
-              .first);
+          setMainCat(event.categories.where((element) => element.parentId == null).first);
 
           onChangeFilter();
         }
@@ -145,8 +161,7 @@ class _FilterScreenState extends State<FilterScreen> {
         ),
         child: Scaffold(
           resizeToAvoidBottomInset: true,
-          body: BlocBuilder<CategoriesBloc, CategoriesBlocState>(
-              builder: _buildMainWidgets),
+          body: BlocBuilder<CategoriesBloc, CategoriesBlocState>(builder: _buildMainWidgets),
         ),
       ),
     );
@@ -233,8 +248,7 @@ class _FilterScreenState extends State<FilterScreen> {
                             ),
                             child: Text(
                               "فیلتر",
-                              style: TextStyle(
-                                  color: Themes.textLight, fontSize: 16),
+                              style: TextStyle(color: Themes.textLight, fontSize: 16),
                             ),
                           ),
                         ],
@@ -247,8 +261,7 @@ class _FilterScreenState extends State<FilterScreen> {
                             _mainCategory = null;
                             _subCategory = null;
 
-                            propertyBloc.add(PropertyInsertEvent(
-                                category_id: null, type: "filter"));
+                            propertyBloc.add(PropertyInsertEvent(category_id: null, type: "filter"));
 
                             filters = Filters();
                             _hasImage = false;
@@ -265,9 +278,8 @@ class _FilterScreenState extends State<FilterScreen> {
                             bottom: 10,
                           ),
                           child: Text(
-                            "حذف همه",
-                            style: TextStyle(
-                                color: Themes.textLight, fontSize: 13),
+                            "حذف همه" + (totalFilters > 0 ? "($totalFilters)" : ""),
+                            style: TextStyle(color: Themes.textLight, fontSize: 13),
                           ),
                         ),
                       )
@@ -288,50 +300,43 @@ class _FilterScreenState extends State<FilterScreen> {
                     children: [
                       Container(
                         height: 60,
-                        decoration: BoxDecoration(
-                            color: App.theme.dialogBackgroundColor,
-                            borderRadius: BorderRadius.circular(60),
-                            boxShadow: [
-                              BoxShadow(
-                                offset: Offset(-1, 0),
-                                color: App.theme.shadowColor,
-                                blurRadius: 5,
-                                spreadRadius: 1,
-                              ),
-                              BoxShadow(
-                                offset: Offset(1, 0),
-                                color: App.theme.shadowColor,
-                                blurRadius: 5,
-                                spreadRadius: 1,
-                              ),
-                              BoxShadow(
-                                offset: Offset(0, 0),
-                                color: App.theme.shadowColor,
-                                blurRadius: 5,
-                                spreadRadius: 1,
-                              ),
-                              BoxShadow(
-                                offset: Offset(1, 1),
-                                color: App.theme.shadowColor,
-                                blurRadius: 5,
-                                spreadRadius: 1,
-                              ),
-                              BoxShadow(
-                                offset: Offset(-1, -1),
-                                color: App.theme.shadowColor,
-                                blurRadius: 5,
-                                spreadRadius: 1,
-                              ),
-                            ]),
+                        decoration: BoxDecoration(color: App.theme.dialogBackgroundColor, borderRadius: BorderRadius.circular(60), boxShadow: [
+                          BoxShadow(
+                            offset: Offset(-1, 0),
+                            color: App.theme.shadowColor,
+                            blurRadius: 5,
+                            spreadRadius: 1,
+                          ),
+                          BoxShadow(
+                            offset: Offset(1, 0),
+                            color: App.theme.shadowColor,
+                            blurRadius: 5,
+                            spreadRadius: 1,
+                          ),
+                          BoxShadow(
+                            offset: Offset(0, 0),
+                            color: App.theme.shadowColor,
+                            blurRadius: 5,
+                            spreadRadius: 1,
+                          ),
+                          BoxShadow(
+                            offset: Offset(1, 1),
+                            color: App.theme.shadowColor,
+                            blurRadius: 5,
+                            spreadRadius: 1,
+                          ),
+                          BoxShadow(
+                            offset: Offset(-1, -1),
+                            color: App.theme.shadowColor,
+                            blurRadius: 5,
+                            spreadRadius: 1,
+                          ),
+                        ]),
                         width: MediaQuery.of(context).size.width,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: Row(
-                            children: categories
-                                .where((element) => element.parentId == null)
-                                .map<Widget>(
-                                    (e) => _mainCategoryItem(categories, e))
-                                .toList(),
+                            children: categories.where((element) => element.parentId == null).map<Widget>((e) => _mainCategoryItem(categories, e)).toList(),
                           ),
                         ),
                       ),
@@ -385,18 +390,11 @@ class _FilterScreenState extends State<FilterScreen> {
                               height: 30,
                               child: StreamBuilder(
                                 builder: ((context, snapshot) {
-                                  if (snapshot.hasData &&
-                                      snapshot.data != null &&
-                                      (snapshot.data as List<Category>)
-                                          .isNotEmpty) {
-                                    var items = (snapshot.data
-                                            as List<Category>)
-                                        .map<Widget>((e) => _subCategoryItem(e))
-                                        .toList();
+                                  if (snapshot.hasData && snapshot.data != null && (snapshot.data as List<Category>).isNotEmpty) {
+                                    var items = (snapshot.data as List<Category>).map<Widget>((e) => _subCategoryItem(e)).toList();
                                     if (items.length <= 3) {
                                       return Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: items
                                             .map<Widget>((e) => Expanded(
                                                   child: e,
@@ -420,14 +418,11 @@ class _FilterScreenState extends State<FilterScreen> {
                               stream: propertyBloc.stream,
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15),
+                              padding: const EdgeInsets.symmetric(horizontal: 15),
                               child: Text(
                                 "امکانات تصویری فایل",
                                 style: TextStyle(
-                                  color: App.isDark
-                                      ? DarkThemes.textMediumLight
-                                      : Themes.secondary2,
+                                  color: App.isDark ? DarkThemes.textMediumLight : Themes.secondary2,
                                   fontSize: 13,
                                 ),
                               ),
@@ -436,8 +431,7 @@ class _FilterScreenState extends State<FilterScreen> {
                               height: 10,
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15),
+                              padding: const EdgeInsets.symmetric(horizontal: 15),
                               child: Row(
                                 children: [
                                   Expanded(
@@ -452,14 +446,9 @@ class _FilterScreenState extends State<FilterScreen> {
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                            color: _hasImage
-                                                ? Themes.secondary2
-                                                : Colors.transparent,
-                                            border: Border.all(
-                                                color: Themes.secondary2,
-                                                width: 1),
+                                            borderRadius: BorderRadius.circular(30),
+                                            color: _hasImage ? Themes.secondary2 : Colors.transparent,
+                                            border: Border.all(color: Themes.secondary2, width: 1),
                                           ),
                                           padding: EdgeInsets.symmetric(
                                             vertical: 12,
@@ -468,12 +457,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                           child: Text(
                                             "عکس دار",
                                             style: TextStyle(
-                                              color: _hasImage
-                                                  ? Themes.textLight
-                                                  : (App.isDark
-                                                      ? DarkThemes
-                                                          .textMediumLight
-                                                      : Themes.text),
+                                              color: _hasImage ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
                                               fontSize: 11,
                                             ),
                                           ),
@@ -493,14 +477,9 @@ class _FilterScreenState extends State<FilterScreen> {
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                            color: _hasVideo
-                                                ? Themes.secondary2
-                                                : Colors.transparent,
-                                            border: Border.all(
-                                                color: Themes.secondary2,
-                                                width: 1),
+                                            borderRadius: BorderRadius.circular(30),
+                                            color: _hasVideo ? Themes.secondary2 : Colors.transparent,
+                                            border: Border.all(color: Themes.secondary2, width: 1),
                                           ),
                                           padding: EdgeInsets.symmetric(
                                             vertical: 12,
@@ -509,12 +488,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                           child: Text(
                                             "ویدیو دار",
                                             style: TextStyle(
-                                              color: _hasVideo
-                                                  ? Themes.textLight
-                                                  : (App.isDark
-                                                      ? DarkThemes
-                                                          .textMediumLight
-                                                      : Themes.text),
+                                              color: _hasVideo ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
                                               fontSize: 11,
                                             ),
                                           ),
@@ -534,14 +508,9 @@ class _FilterScreenState extends State<FilterScreen> {
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                            color: _hasTour
-                                                ? Themes.secondary2
-                                                : Colors.transparent,
-                                            border: Border.all(
-                                                color: Themes.secondary2,
-                                                width: 1),
+                                            borderRadius: BorderRadius.circular(30),
+                                            color: _hasTour ? Themes.secondary2 : Colors.transparent,
+                                            border: Border.all(color: Themes.secondary2, width: 1),
                                           ),
                                           padding: EdgeInsets.symmetric(
                                             vertical: 12,
@@ -550,12 +519,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                           child: Text(
                                             "تور مجازی",
                                             style: TextStyle(
-                                              color: _hasTour
-                                                  ? Themes.textLight
-                                                  : (App.isDark
-                                                      ? DarkThemes
-                                                          .textMediumLight
-                                                      : Themes.text),
+                                              color: _hasTour ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
                                               fontSize: 11,
                                             ),
                                           ),
@@ -577,14 +541,11 @@ class _FilterScreenState extends State<FilterScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     TextNormalLight("اعمال فیلتر"),
-                                    BlocBuilder<TotalFileBloc, TotalFileState>(
-                                        builder: _buildTotalFileBloc),
+                                    BlocBuilder<TotalFileBloc, TotalFileState>(builder: _buildTotalFileBloc),
                                   ],
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(20),
-                                      bottomRight: Radius.circular(20)),
+                                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
                                 ),
                                 elevation: 0,
                                 constraints: BoxConstraints(
@@ -629,9 +590,7 @@ class _FilterScreenState extends State<FilterScreen> {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(40),
-              color: _mainCategory?.id == e.id
-                  ? Themes.primary
-                  : Colors.transparent,
+              color: _mainCategory?.id == e.id ? Themes.primary : Colors.transparent,
             ),
             padding: EdgeInsets.symmetric(
               vertical: 12,
@@ -669,8 +628,7 @@ class _FilterScreenState extends State<FilterScreen> {
         });
         onChangeFilter();
 
-        propertyBloc.add(PropertyInsertEvent(
-            category_id: _subCategory!.id!, type: "filter"));
+        propertyBloc.add(PropertyInsertEvent(category_id: _subCategory!.id!, type: "filter"));
       },
       child: Container(
         constraints: BoxConstraints(
@@ -679,9 +637,7 @@ class _FilterScreenState extends State<FilterScreen> {
         decoration: BoxDecoration(
           border: Border(
               bottom: BorderSide(
-            color: _subCategory?.id == e.id
-                ? Themes.primary
-                : Themes.secondary2.withOpacity(0.5),
+            color: _subCategory?.id == e.id ? Themes.primary : Themes.secondary2.withOpacity(0.5),
             width: 1,
           )),
         ),
@@ -713,9 +669,8 @@ class _FilterScreenState extends State<FilterScreen> {
 
   Filters filters = Filters();
 
-  Widget _buildFields(
-      BuildContext context, AsyncSnapshot<PropertyState> snapshot) {
-    if (!snapshot.hasData || snapshot.data is PropertyInitState) {
+  Widget _buildFields(BuildContext context, AsyncSnapshot<PropertyState> snapshot) {
+    if (!snapshot.hasData) {
       return Container(
         height: 160,
       );
@@ -724,13 +679,9 @@ class _FilterScreenState extends State<FilterScreen> {
     if (snapshot.data is PropertyLoadedState) {
       var props = (snapshot.data! as PropertyLoadedState).iproperties;
 
-      props = props
-          .where((element) => numberFieldsText.any((e) => e == element.value))
-          .toList();
+      props = props.where((element) => numberFieldsText.any((e) => e == element.value)).toList();
 
-      props.sort((a, b) => numberFieldsText
-          .indexOf(a.value!)
-          .compareTo(numberFieldsText.indexOf(b.value!)));
+      props.sort((a, b) => numberFieldsText.indexOf(a.value!).compareTo(numberFieldsText.indexOf(b.value!)));
 
       filters = filters;
 
@@ -753,8 +704,7 @@ class _FilterScreenState extends State<FilterScreen> {
             data = filters.prices ?? [];
         }
 
-        var minInitialValue =
-            data.asMap().containsKey(0) ? (data[0] == 0 ? "" : data[0]) : "";
+        var minInitialValue = data.asMap().containsKey(0) ? (data[0] == 0 ? "" : data[0]) : "";
         var maxInitialValue = data.asMap().containsKey(1)
             ? data[1] == 0
                 ? ""
@@ -769,9 +719,7 @@ class _FilterScreenState extends State<FilterScreen> {
               Text(
                 p.name!,
                 style: TextStyle(
-                  color: App.isDark
-                      ? DarkThemes.textMediumLight
-                      : Themes.secondary2,
+                  color: App.isDark ? DarkThemes.textMediumLight : Themes.secondary2,
                   fontSize: 13,
                 ),
               ),
@@ -780,9 +728,7 @@ class _FilterScreenState extends State<FilterScreen> {
                 Text(
                   "(تومان)",
                   style: TextStyle(
-                    color: App.isDark
-                        ? DarkThemes.textMediumLight
-                        : Themes.secondary2,
+                    color: App.isDark ? DarkThemes.textMediumLight : Themes.secondary2,
                     fontSize: 10,
                   ),
                 ),
@@ -979,7 +925,7 @@ class _FilterScreenState extends State<FilterScreen> {
     if (snapshot.data is PropertyErrorState) {
       return Expanded(child: TryAgain());
     }
-    if (snapshot.data is PropertyLoadingState) {
+    if (snapshot.data is PropertyLoadingState || snapshot.data is PropertyInitState) {
       return Align(
         alignment: Alignment.center,
         child: Container(
@@ -1006,14 +952,10 @@ class _FilterScreenState extends State<FilterScreen> {
       if (_mainCategory == null) {
         _subCategory = null;
 
-        propertyBloc
-            .add(PropertyInsertEvent(category_id: null, type: "filter"));
+        propertyBloc.add(PropertyInsertEvent(category_id: null, type: "filter"));
       }
 
-      var data = categories
-          .where((element) =>
-              element.parentId == _mainCategory?.id! && _mainCategory != null)
-          .toList();
+      var data = categories.where((element) => element.parentId == _mainCategory?.id! && _mainCategory != null).toList();
 
       data.sort((a, b) => a.isAllInt().compareTo(b.isAllInt()));
 
@@ -1023,8 +965,7 @@ class _FilterScreenState extends State<FilterScreen> {
 
       _subCategory = data.firstWhere((element) => element.isAll ?? false);
 
-      propertyBloc.add(
-          PropertyInsertEvent(category_id: _subCategory!.id!, type: "filter"));
+      propertyBloc.add(PropertyInsertEvent(category_id: _subCategory!.id!, type: "filter"));
     });
   }
 
@@ -1130,34 +1071,49 @@ class _FilterScreenState extends State<FilterScreen> {
     filterData.hasVideo = _hasVideo;
     filterData.hasTour = _hasTour;
 
-    if (filters.prices?.length == 1) {
-      filters.prices = [
-        filters.prices![0],
+    if (filterData.filters?.prices?.length == 1) {
+      filterData.filters!.prices = [
+        filterData.filters!.prices![0],
         99999999999999999,
       ];
     }
 
-    if (filters.price?.length == 1) {
-      filters.price = [
-        filters.price![0],
+    if (filterData.filters?.price?.length == 1) {
+      filterData.filters!.price = [
+        filterData.filters!.price![0],
         99999999999999999,
       ];
     }
 
-    if (filters.rent?.length == 1) {
-      filters.rent = [
-        filters.rent![0],
+    if (filterData.filters?.rent?.length == 1) {
+      filterData.filters!.rent = [
+        filterData.filters!.rent![0],
         99999999999999999,
       ];
     }
 
-    if (filters.mater?.length == 1) {
-      filters.mater = [
-        filters.mater![0],
+    if (filterData.filters?.mater?.length == 1) {
+      filterData.filters!.mater = [
+        filterData.filters!.mater![0],
         99999999999999999,
       ];
     }
 
     totalFileBloc.add(TotalFileGetEvent(filterData: filterData));
+
+    var conditions = <bool>[
+      filterData.mainCategory != null && filterData.category != null,
+      filterData.hasImage ?? false,
+      filterData.hasVideo ?? false,
+      filterData.hasTour ?? false,
+      filterData.filters?.mater?.isFill() ?? false,
+      filterData.filters?.price?.isFill() ?? false,
+      filterData.filters?.prices?.isFill() ?? false,
+      filterData.filters?.rent?.isFill() ?? false,
+    ];
+
+    setState(() {
+      totalFilters = conditions.where((element) => element).length;
+    });
   }
 }

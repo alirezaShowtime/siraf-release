@@ -166,11 +166,21 @@ class FileDetail {
       return 0;
     }
   }
-
+  
   Property? getVadie() {
-    var prices = getPrices();
-
-    return prices.asMap().containsKey(1) ? prices[1] : null;
+    if (property!.where((element) => element.key == "prices").isNotEmpty) {
+      return property!.firstWhere((element) => element.key == "prices");
+    }
+    
+    return null;
+  }
+  
+  Property? getRent() {
+    if (property!.where((element) => element.key == "rent").isNotEmpty) {
+      return property!.firstWhere((element) => element.key == "rent");
+    }
+    
+    return null;
   }
 
   List<Property> getPrices() => property?.where((element) => element.section == 3).toList() ?? <Property>[];

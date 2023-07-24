@@ -111,7 +111,7 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
 
       if (state is CloseTicketSuccess) {
         dismissDialog(loadingDialogContext);
-        notify(" تیک با بسته شد.");
+        notify(" تیکت با بسته شد.");
         setState(() {
           ticketIsClosed = true;
         });
@@ -275,7 +275,7 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
           builder: (dialogContext) {
             return ConfirmDialog(
               title: "بستن تیکت",
-              content: "آیا واقعا قصد بستن تیک را دارید؟",
+              content: "آیا واقعا قصد بستن تیکت را دارید؟",
               dialogContext: dialogContext,
               onApply: () {
                 closeTicketBloc.add(CloseTicketRequestEvent([widget.ticket.id!]));

@@ -316,7 +316,19 @@ class _MenuScreenState extends State<MenuScreen> {
                           title: _accordionTitle("پشتیبانی"),
                           onClick: () => _onClickAccordion(4),
                           open: openedItem == 4,
-                          content: BlocBuilder<GetGroupsBloc, GetGroupsState>(builder: _buildTicketAccordionContent),
+                          content: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              AccordionItem(
+                                title: "تیکت های من",
+                                onClick: () async {
+                                  await doWithLogin(context, () => push(context, TicketListScreen()));
+                                  getUser();
+                                },
+                              ),
+                            ],
+                          ),
+                          // content: BlocBuilder<GetGroupsBloc, GetGroupsState>(builder: _buildTicketAccordionContent),
                         ),
                         Accordion(
                           title: _accordionTitle("درباره سیراف و قوانین استفاده"),

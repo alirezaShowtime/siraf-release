@@ -207,97 +207,97 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         }),
                         controller: nameController,
                       ),
-                      SizedBox(height: 14),
-                      Text(
-                        "بیوگرافی",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Themes.text,
-                          fontFamily: "IranSansBold",
-                        ),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      Text(
-                        "بیو گرافی مختضری از خودتان بنویسید",
-                        style: TextStyle(
-                          fontSize: 11.5,
-                          fontFamily: "IranSansMedium",
-                        ),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      TextFormField2(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.icon,
-                              width: 0.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.primary,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.textGrey,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          hintStyle:
-                              TextStyle(fontSize: 14, color: Themes.textGrey),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                        ),
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: App.theme.textTheme.bodyLarge?.color,
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            description = value;
-                          });
-                        },
-                        cursorColor: Themes.primary,
-                        maxLines: 50,
-                        minLines: 6,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "توضیحات فایل را وارد کنید";
-                          }
-                          if (value.length <= 40) {
-                            return "حداقل باید 40 کاراکتر بنویسید";
-                          }
-                        },
-                        onSaved: ((newValue) {
-                          setState(() {
-                            description = newValue;
-                          });
-                        }),
-                        controller: descriptionController,
-                      ),
+                      // SizedBox(height: 14),
+                      // Text(
+                      //   "بیوگرافی",
+                      //   style: TextStyle(
+                      //     fontSize: 14,
+                      //     color: Themes.text,
+                      //     fontFamily: "IranSansBold",
+                      //   ),
+                      // ),
+                      // SizedBox(
+                      //   height: 4,
+                      // ),
+                      // Text(
+                      //   "بیو گرافی مختضری از خودتان بنویسید",
+                      //   style: TextStyle(
+                      //     fontSize: 11.5,
+                      //     fontFamily: "IranSansMedium",
+                      //   ),
+                      // ),
+                      // SizedBox(
+                      //   height: 4,
+                      // ),
+                      // TextFormField2(
+                      //   decoration: InputDecoration(
+                      //     border: OutlineInputBorder(
+                      //       borderSide: BorderSide(
+                      //         color: Themes.icon,
+                      //         width: 0.5,
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(5),
+                      //     ),
+                      //     errorBorder: OutlineInputBorder(
+                      //       borderSide: BorderSide(
+                      //         color: Colors.red,
+                      //         width: 1.5,
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(5),
+                      //     ),
+                      //     focusedBorder: OutlineInputBorder(
+                      //       borderSide: BorderSide(
+                      //         color: Themes.primary,
+                      //         width: 1.5,
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(5),
+                      //     ),
+                      //     disabledBorder: OutlineInputBorder(
+                      //       borderSide: BorderSide(
+                      //         color: Themes.textGrey,
+                      //         width: 1.5,
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(5),
+                      //     ),
+                      //     focusedErrorBorder: OutlineInputBorder(
+                      //       borderSide: BorderSide(
+                      //         color: Colors.red,
+                      //         width: 1.5,
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(5),
+                      //     ),
+                      //     hintStyle:
+                      //         TextStyle(fontSize: 14, color: Themes.textGrey),
+                      //     contentPadding: EdgeInsets.symmetric(
+                      //         horizontal: 10, vertical: 10),
+                      //   ),
+                      //   style: TextStyle(
+                      //     fontSize: 14,
+                      //     color: App.theme.textTheme.bodyLarge?.color,
+                      //   ),
+                      //   onChanged: (value) {
+                      //     setState(() {
+                      //       description = value;
+                      //     });
+                      //   },
+                      //   cursorColor: Themes.primary,
+                      //   maxLines: 50,
+                      //   minLines: 6,
+                      //   validator: (value) {
+                      //     if (value == null || value.isEmpty) {
+                      //       return "توضیحات فایل را وارد کنید";
+                      //     }
+                      //     if (value.length <= 40) {
+                      //       return "حداقل باید 40 کاراکتر بنویسید";
+                      //     }
+                      //   },
+                      //   onSaved: ((newValue) {
+                      //     setState(() {
+                      //       description = newValue;
+                      //     });
+                      //   }),
+                      //   controller: descriptionController,
+                      // ),
                     ],
                   ),
                 ),

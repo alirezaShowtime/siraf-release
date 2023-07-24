@@ -369,14 +369,14 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
             );
           }).toList() +
           [
-            if (otherProps.isNotEmpty)
+            if (otherProps.isNotEmpty || otherFeature.isNotEmpty)
               section(
                 title: "سایر امکانات و ویژگی ها",
                 hint: "انتخاب",
                 value: (selectedOtherProps.isNotEmpty || selectedOtherFeatures.isNotEmpty) ? (selectedOtherProps.length + selectedOtherFeatures.length).toString() + " مورد" : null,
                 onTap: _goPropertiesScreen,
               ),
-            if (otherProps.isNotEmpty)
+            if (otherProps.isNotEmpty || otherFeature.isNotEmpty)
               SizedBox(
                 height: 14,
               ),
@@ -476,6 +476,9 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
   }
 
   _chooseLocation() async {
+    if (city == null) {
+      await _selectCity();
+    }
     var result = await Navigator.push(
       context,
       MaterialPageRoute(

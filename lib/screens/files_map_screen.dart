@@ -611,14 +611,14 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
           borderColor: Colors.white,
         ),
       ];
-      animatedMapMove(_controller, position, getMapZoomLevel(3000), this);
+      animatedMapMove(_controller, position, getMapZoomLevel(2500), this);
     });
 
     if (_showFileOnMyLocation) {
       setState(() {
         circles.add(CircleMarker(
           point: position,
-          radius: 3000,
+          radius: 2500, 
           useRadiusInMeter: true,
           color: Colors.blue.withOpacity(0.15),
           borderStrokeWidth: 0,

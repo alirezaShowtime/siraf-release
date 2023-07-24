@@ -132,7 +132,7 @@ class _PostItemState extends State<PostItem> {
               itemMargin: EdgeInsets.only(bottom: 5),
               indicatorPosition: EdgeInsets.only(left: 0, right: 0, bottom: 20),
               itemBorderRadius: BorderRadius.zero,
-              imageFit: BoxFit.cover,
+              imageFit: BoxFit.fitHeight,
               indicatorSelectedColor: Themes.blue,
               indicatorColor: Colors.grey,
             ),

@@ -83,7 +83,7 @@ class MyFile {
   }
 
   String getPricePerMeter() {
-    if (getFirstPriceInt() == 0 || getMeter() == 0) {
+    if ((getFirstPriceInt() == -1 || getFirstPriceInt() == 0) || getMeter() == 0) {
       return "توافقی";
     }
     var result = getFirstPriceInt() ~/ getMeter();
@@ -113,11 +113,23 @@ class MyFile {
     if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 5);
 
-      if (prop.value == null || prop.name == null) return 0;
+      if (prop.value == null || prop.name == null) return -1;
 
       return int.parse(prop.value!);
     } else {
-      return 0;
+      return -1;
+    }
+  }
+  
+  int getSecondPriceInt() {
+    if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
+      var prop = propertys!.firstWhere((element) => element.weightList == 6);
+
+      if (prop.value == null || prop.name == null) return -1;
+
+      return int.parse(prop.value!);
+    } else {
+      return -1;
     }
   }
 
@@ -125,22 +137,45 @@ class MyFile {
     if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 5);
 
-      if (prop.value == null || prop.name == null) return "";
+      if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
 
-      return number_format(prop.value!) + " " + prop.name!;
+      return toPrice(prop.value!, prop.name!);
     } else {
-      return "";
+      return adaptivePrice("");
     }
   }
 
   String getSecondPrice() {
+    if (fullAdaptive()) return "";
+    
     if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 6);
+      
+      if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
 
-      return number_format(prop.value!) + " " + prop.name!;
+      return toPrice(prop.value!, prop.name!);
     } else {
-      return "";
+      return adaptivePrice("");
     }
+  }
+
+  String adaptivePrice(value, {String? name}) {
+    if (value.toString() == "0") {
+      return "رایگان";
+    }
+    return (name != null && !fullAdaptive() ? "$name " : "") + "توافقی";
+  }
+  
+  String toPrice(dynamic value, String name) {
+    if (value.toString() == "0") {
+      return "$name رایگان";
+    }
+
+    return "$name ${number_format(value)}";
+  }
+
+  bool fullAdaptive() {
+    return (getFirstPriceInt() == -1 && getSecondPriceInt() == -1);
   }
 }
 

@@ -99,7 +99,7 @@ class _TicketListScreen extends State<TicketListScreen> {
             ),
             title: Row(
               children: [
-                AppBarTitle("تیک های پشتیبانی"),
+                AppBarTitle("تیکت های پشتیبانی"),
                 if (totalNoSeen > 0)
                   badges.Badge(
                     showBadge: true,

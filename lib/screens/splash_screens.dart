@@ -217,7 +217,10 @@ class _SplashScreenState extends State<SplashScreen>
         await http2.post(Uri.parse("https://auth.siraf.app/api/token/refresh/"),
             body: jsonEncode({
               "refresh": user.refreshToken ?? "",
-            }));
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            });
 
     if (isResponseOk(response)) {
       var body = jDecode(response.body);

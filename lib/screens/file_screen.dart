@@ -631,7 +631,7 @@ class _FileScreenState extends State<FileScreen> {
                               style: TextStyle(color: greyColor, fontSize: 13),
                             ),
                             Text(
-                              file.rent != null ? number_format(file.rent) : "توافقی",
+                              file.getRent()?.value != null ? number_format(int.parse(file.getRent()!.value!)) : "توافقی",
                               style: TextStyle(color: Colors.grey.shade500, fontSize: 11),
                             ),
                           ],

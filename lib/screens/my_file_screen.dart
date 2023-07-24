@@ -13,6 +13,7 @@ import 'package:siraf3/bloc/delete_file_bloc.dart';
 import 'package:siraf3/bloc/my_file_bloc.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/dialog.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file_consulant.dart';
@@ -202,6 +203,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
                   SizedBox(height: 15),
                   if (state.file.getMainProperties().isNotEmpty) _buildMainProps(state.file),
                   if (state.file.getMainProperties().isNotEmpty) SizedBox(height: 15),
+                  _buildAdminComment(state.file),
                   _buildDescription(state.file),
                   SizedBox(height: 15),
                   if (state.file.getOtherProperties().isNotEmpty)
@@ -523,6 +525,42 @@ class _MyFileScreenState extends State<MyFileScreen> {
 
   bool showSummary = true;
 
+  Widget _buildAdminComment(MyFileDetail file) {
+    if (!file.comment.isFill() || !(file.progress == 2 || file.progress == 3)) {
+      return Container();
+    }
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "علت رد",
+            style: TextStyle(fontSize: 12.5, fontFamily: 'IranSansMedium', color: Colors.red),
+          ),
+          Text(
+            file.comment!,
+            style: TextStyle(
+              fontSize: 11.5,
+              fontFamily: 'IranSans',
+              height: 1.5,
+            ),
+          ),
+          SizedBox(
+            height: 3,
+          ),
+          Divider(
+            height: 0.5,
+            color: Themes.textGrey.withOpacity(0.3),
+          ),
+          SizedBox(
+            height: 3,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildDescription(MyFileDetail file) {
     if (file.description == null) {
       return Container();
@@ -649,6 +687,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: file
                     .getOtherProperties()
                     .map<Widget>(

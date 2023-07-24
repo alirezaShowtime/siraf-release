@@ -51,23 +51,25 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
           currentSortType = event.sort_type;
         });
 
-        if (_firstTime) {
-          setState(() {
-            _firstTime = false;
-            Future.delayed(Duration(milliseconds: 100), () {
-              _controller.move(myLocationMarker!.point, getZoomLevel(3000));
+        if (mapEnabled) {
+          if (_firstTime) {
+            setState(() {
+              _firstTime = false;
+              Future.delayed(Duration(milliseconds: 500), () {
+                _controller.move(myLocationMarker!.point, getZoomLevel(3000));
+              });
             });
-          });
-        } else {
-          if (event.search) {
-            if (event.estates.isNotEmpty) {
-              animatedMapMove(_controller, LatLng(double.parse(event.estates.first.lat!), double.parse(event.estates.first.long!)), 12, this);
-            }
           } else {
-            var city = (await City.getList()).first;
-            Future.delayed(Duration(milliseconds: 100), () {
-              _controller.move(LatLng(double.parse(city.lat!), double.parse(city.long!)), 12);
-            });
+            if (event.search) {
+              if (event.estates.isNotEmpty) {
+                animatedMapMove(_controller, LatLng(double.parse(event.estates.first.lat!), double.parse(event.estates.first.long!)), 12, this);
+              }
+            } else {
+              var city = (await City.getList()).first;
+              Future.delayed(Duration(milliseconds: 500), () {
+                _controller.move(LatLng(double.parse(city.lat!), double.parse(city.long!)), 12);
+              });
+            }
           }
         }
       }
@@ -174,18 +176,6 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
           automaticallyImplyLeading: false,
           titleSpacing: 0,
           actions: [
-            GestureDetector(
-              onTap: () {
-                getEstates();
-              },
-              child: Icon(
-                CupertinoIcons.search,
-                color: Themes.icon,
-              ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
             if (!mapEnabled)
               MyPopupMenuButton(
                 itemBuilder: (context) {
@@ -461,6 +451,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
         ),
       );
     } else {
+      _controller = MapController();
       return Padding(
         padding: EdgeInsets.only(bottom: 10),
         child: Stack(
@@ -548,11 +539,20 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                     return;
                   }
 
-                  if (myLocationMarker == null) {
-                    await _onMyLocationClicked();
-                  }
+                  await _onMyLocationClicked(move: false);
 
-                  getEstatesFirstTime();
+                  if (await checkLocationEnabled()) {
+                    setState(() {
+                      _showFileOnMyLocation = true;
+                      _firstTime = true;
+                    });
+
+                    getEstates();
+                  } else {
+                    setState(() {
+                      _showFileOnMyLocation = !_showFileOnMyLocation;
+                    });
+                  }
                 },
                 child: Container(
                   decoration: BoxDecoration(

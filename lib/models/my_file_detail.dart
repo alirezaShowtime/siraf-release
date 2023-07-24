@@ -30,6 +30,7 @@ class MyFileDetail {
   Category? category;
   CityFull? cityFull;
   List<Estate>? estates;
+  String? comment;
 
   MyFileDetail({
     this.id,
@@ -49,6 +50,7 @@ class MyFileDetail {
     this.fullCategory,
     this.city,
     this.estates,
+    this.comment,
   });
 
   MyFileDetail.fromJson(Map<String, dynamic> json) {
@@ -125,6 +127,9 @@ class MyFileDetail {
       estates =
           json['esates'] == null ? null : Estate.fromList(json['estates']);
     }
+    if (json["comment"] is String) {
+      comment = json["comment"];
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -154,6 +159,7 @@ class MyFileDetail {
       _data["category"] = category?.toJson();
     }
     _data["city"] = city;
+    _data["comment"] = comment;
     if (cityFull != null) {
       _data["cityFull"] = cityFull?.toJson();
     }
@@ -271,7 +277,7 @@ class MyFileDetail {
       return "متراژ نامشخص";
     }
 
-    return number_format(getPrice()!.value! / mater);
+    return number_format(int.parse(getPrice()!.value!) / int.parse(mater.toString()));
   }
 }
 
@@ -279,7 +285,7 @@ class Propertys {
   int? id;
   String? key;
   String? name;
-  int? value;
+  String? value;
   int? section;
   int? weightSection;
 
@@ -301,8 +307,11 @@ class Propertys {
     if (json["name"] is String) {
       name = json["name"];
     }
-    if (json["value"] is int) {
+    if (json["value"] is String) {
       value = json["value"];
+    }
+    if (json["value"] is int) {
+      value = json["value"].toString();
     }
     if (json["section"] is int) {
       section = json["section"];

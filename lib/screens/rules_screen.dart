@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/widgets/my_app_bar.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 
 class RulesScreen extends StatefulWidget {
@@ -12,9 +13,10 @@ class _RulesScreenState extends State<RulesScreen> {
   List<String> titles = [
     "درباره سیراف",
     "قوانین و شرایط استفاده",
-    "ثبت فایل : ",
+    "ثبت فایل و درخواست : ",
     "حریم خصوصی کاربران : ",
     "دفاتر املاک : ",
+    "گفتگو ها : ",
     "اطلاع رسانی :‌",
     "نظرات و امتیاز ها : ",
     "حقوق معنوی : ",
@@ -40,7 +42,7 @@ class _RulesScreenState extends State<RulesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: MyAppBar(
         title: Text(
           "درباره سیراف و قوانین",
           style: TextStyle(

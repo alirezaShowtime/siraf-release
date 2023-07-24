@@ -393,40 +393,39 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void listenLink() {
-    if (!kIsWeb) {
-      uriLinkStream.listen((Uri? uri) {
-        if (!mounted) {
-          return;
-        }
-        debugPrint('Received URI: $uri');
-        RegExp reg = new RegExp(r'https://siraf.biz/([0-9]+)');
+    uriLinkStream.listen((Uri? uri) {
+      debugPrint('Received URI: $uri');
+      if (!mounted) {
+        return;
+      }
+      debugPrint('Received URI: $uri');
+      RegExp reg = new RegExp(r'https://siraf.app/file/([0-9]+)');
 
-        if (!reg.hasMatch(uri.toString())) {
-          return notify("صفحه ای برای نمایش پیدا نشد");
-        }
+      if (!reg.hasMatch(uri.toString())) {
+        return notify("صفحه ای برای نمایش پیدا نشد");
+      }
 
-        var match = reg.firstMatch(uri.toString());
-        var id = match!.group(1);
+      var match = reg.firstMatch(uri.toString());
+      var id = match!.group(1);
 
-        if (id == null) {
-          return notify("صفحه ای برای نمایش پیدا نشد");
-        }
+      if (id == null) {
+        return notify("صفحه ای برای نمایش پیدا نشد");
+      }
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => FileScreen(
-              id: int.parse(id),
-            ),
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => FileScreen(
+            id: int.parse(id),
           ),
-        );
-      }, onError: (Object err) {
-        if (!mounted) {
-          return;
-        }
-        notify("لینک قابل پردازش نیست");
-      });
-    }
+        ),
+      );
+    }, onError: (Object err) {
+      if (!mounted) {
+        return;
+      }
+      notify("لینک قابل پردازش نیست");
+    });
   }
 
   void listenRabbitData() {

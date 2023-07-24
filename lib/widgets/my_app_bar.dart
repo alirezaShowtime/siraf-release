@@ -39,6 +39,7 @@ class MyAppBar extends AppBar {
       statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.dark,
       systemNavigationBarColor: Themes.appBar,
+      systemNavigationBarDividerColor: Themes.appBar,
     ),
   });
 }

@@ -36,9 +36,7 @@ class File {
       description = json["description"];
     }
     if (json["images"] is List) {
-      images = json["images"] == null
-          ? null
-          : (json["images"] as List).map((e) => Images.fromJson(e)).toList();
+      images = json["images"] == null ? null : (json["images"] as List).map((e) => Images.fromJson(e)).toList();
     }
     if (json["favorite"] is bool) {
       favorite = json["favorite"];
@@ -57,9 +55,7 @@ class File {
               .toList();
     }
     if (json["category"] is Map) {
-      fullCategory = json["category"] == null
-          ? null
-          : FullCategory.fromJson(json["category"]);
+      fullCategory = json["category"] == null ? null : FullCategory.fromJson(json["category"]);
     }
     if (json["city"] is Map) {
       city = json["city"] != null ? City.fromJson(json["city"]) : null;
@@ -68,7 +64,7 @@ class File {
     if (propertys != null) {
       propertys!.sort((a, b) => a.weightList!.compareTo(b.weightList!));
     }
-    
+
     if (json["shareLink"] is String) {
       shareLink = json["shareLink"];
     }
@@ -105,26 +101,102 @@ class File {
     return list2;
   }
 
+  String getPricePerMeter() {
+    if ((getFirstPriceInt() == -1 || getFirstPriceInt() == 0) || getMeter() == 0) {
+      return "توافقی";
+    }
+    var result = getFirstPriceInt() ~/ getMeter();
+
+    if (result == 0) {
+      return "توافقی";
+    }
+
+    result = (result / 100000).round() * 100000;
+
+    return number_format(result);
+  }
+
+  int getMeter() {
+    if (propertys!.where((element) => element.key == "meter").isNotEmpty) {
+      var prop = propertys!.firstWhere((element) => element.key == "meter");
+
+      if (prop.value == null || prop.name == null) return 0;
+
+      return int.parse(prop.value!);
+    } else {
+      return 0;
+    }
+  }
+
+  int getFirstPriceInt() {
+    if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
+      var prop = propertys!.firstWhere((element) => element.weightList == 5);
+
+      if (prop.value == null || prop.name == null) return -1;
+
+      return int.parse(prop.value!);
+    } else {
+      return -1;
+    }
+  }
+
+  int getSecondPriceInt() {
+    if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
+      var prop = propertys!.firstWhere((element) => element.weightList == 6);
+
+      if (prop.value == null || prop.name == null) return -1;
+
+      return int.parse(prop.value!);
+    } else {
+      return -1;
+    }
+  }
+
   String getFirstPrice() {
     if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 5);
 
-      if (prop.value == null || prop.name == null) return "";
+      if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
 
-      return number_format(int.parse(prop.value!)) + " " + prop.name!;
+      return toPrice(prop.value!, prop.name!);
     } else {
-      return "";
+      return adaptivePrice("");
     }
   }
 
   String getSecondPrice() {
+    if (fullAdaptive()) return "";
+
     if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 6);
 
-      return number_format(int.parse(prop.value!)) + " " + prop.name!;
+      if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
+
+      return toPrice(prop.value!, prop.name!);
     } else {
-      return "";
+      return adaptivePrice("");
     }
+  }
+
+  String adaptivePrice(value, {String? name}) {
+    if (value.toString() == "0") {
+      return "رایگان";
+    }
+    return (name != null && !fullAdaptive() ? "$name " : "") + "توافقی";
+  }
+
+  String toPrice(dynamic value, String name) {
+    if (value.toString() == "0") {
+      return "$name رایگان";
+    }
+
+    var v = int.parse(value.toString());
+
+    return "$name ${number_format(v)}";
+  }
+
+  bool fullAdaptive() {
+    return (getFirstPriceInt() == -1 && getSecondPriceInt() == -1);
   }
 }
 
@@ -136,13 +208,7 @@ class FullCategory {
   bool? isAll;
   int? parentId;
 
-  FullCategory(
-      {this.id,
-      this.name,
-      this.image,
-      this.fullCategory,
-      this.isAll,
-      this.parentId});
+  FullCategory({this.id, this.name, this.image, this.fullCategory, this.isAll, this.parentId});
 
   FullCategory.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -180,6 +246,7 @@ class FullCategory {
 }
 
 class Property {
+  String? key;
   String? name;
   String? value;
   bool? list;
@@ -188,6 +255,9 @@ class Property {
   Property({this.name, this.value, this.list, this.weightList});
 
   Property.fromJson(Map<String, dynamic> json) {
+    if (json["key"] is String) {
+      key = json["key"];
+    }
     if (json["name"] is String) {
       name = json["name"];
     }
@@ -204,6 +274,7 @@ class Property {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["key"] = key;
     _data["name"] = name;
     _data["value"] = value;
     _data["list"] = list;
@@ -254,14 +325,7 @@ class Images {
   String? name;
   int? fileId;
 
-  Images(
-      {this.id,
-      this.createDate,
-      this.path,
-      this.status,
-      this.weight,
-      this.name,
-      this.fileId});
+  Images({this.id, this.createDate, this.path, this.status, this.weight, this.name, this.fileId});
 
   Images.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
