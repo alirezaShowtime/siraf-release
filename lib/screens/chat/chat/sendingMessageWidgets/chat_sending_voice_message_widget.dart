@@ -159,8 +159,8 @@ class ChatSendingVoiceMessageWidgetState extends ChatSendingMessageWidgetState {
               ),
             if (snapshot.data == MessageState.ErrorUpload)
               Icon(
-                Icons.error,
-                color: messageConfig.secondTextColor,
+                Icons.error_rounded,
+                color: Colors.red,
                 size: 13,
               ),
             SizedBox(width: 2),
