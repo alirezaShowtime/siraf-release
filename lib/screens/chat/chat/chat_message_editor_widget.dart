@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:intl/intl.dart' as intl;
 import 'package:siraf3/bloc/chat/recordingVoice/recording_voice_bloc.dart';
 import 'package:siraf3/bloc/chat/reply/chat_reply_bloc.dart';
 import 'package:siraf3/extensions/file_extension.dart';
@@ -49,6 +48,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
   double keyboardHeight = 0.0;
   bool hiddenKeyboardByEmoji = false;
   bool isTextRtl = true;
+  Timer? timer;
 
   @override
   void initState() {
@@ -64,13 +64,6 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
       var now = text.length > 0 || selectedFiles.isNotEmpty;
       if (showSendButton != now) {
         showSendButton = now;
-        try {
-          setState(() {});
-        } catch (e) {}
-      }
-
-      if (isRTL(text) != isTextRtl) {
-        isTextRtl = isRTL(text);
         try {
           setState(() {});
         } catch (e) {}
@@ -134,10 +127,10 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
                           onHorizontalDragStart: (_) => cancelRecord(),
                           onVerticalDragStart: (_) => cancelRecord(),
                           child: btn(
-                            iconData: Icons.keyboard_voice_outlined,
                             onTapDown: (_) => startRecord(),
                             onTapUp: (_) => stopRecord(),
-                            onTap: () {},
+                            onTapCancel: () => stopRecord(),
+                            iconData: Icons.keyboard_voice_outlined,
                           ),
                         ),
                       if (!showSendButton)
@@ -158,7 +151,6 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
                               setState(() {});
                             }
                           },
-                          textDirection: isTextRtl ? TextDirection.rtl : TextDirection.ltr,
                           controller: messageController,
                           focusNode: focusNode,
                           showCursor: true,
@@ -314,6 +306,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
     Color? color,
     void Function(TapDownDetails)? onTapDown,
     void Function(TapUpDetails)? onTapUp,
+    void Function()? onTapCancel,
   }) {
     return Material(
       color: Colors.transparent,
@@ -322,6 +315,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
         onTap: onTap,
         onTapDown: onTapDown,
         onTapUp: onTapUp,
+        onTapCancel: onTapCancel,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 7),
           child: icon(iconData, color: color ?? Colors.grey.shade400),
@@ -472,20 +466,24 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
   }
 
   void cancelRecord() {
-    BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Cancel));
+    timer?.cancel();
+    if (BlocProvider.of<RecordingVoiceBloc>(context).state == RecordingVoiceState.Recording) {
+      BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Cancel));
+    }
   }
 
   Future<void> startRecord() async {
-    // if (await recordPermissionsRequest()) {
-    BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Recording));
-    // }
+    timer = Timer(Duration(milliseconds: 800), () {
+      if (BlocProvider.of<RecordingVoiceBloc>(context).state != RecordingVoiceState.Recording) {
+        BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Recording));
+      }
+    });
   }
 
   void stopRecord() {
-    BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Done));
-  }
-
-  bool isRTL(String text) {
-    return intl.Bidi.detectRtlDirectionality(text);
+    timer?.cancel();
+    if (BlocProvider.of<RecordingVoiceBloc>(context).state == RecordingVoiceState.Recording) {
+      BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Done));
+    }
   }
 }
