@@ -72,6 +72,10 @@ class MessageWidgetList {
   }
 
   List<Widget> getList() {
+    if (_list.isNotEmpty && _list.last is! MessageWidget) {
+      _list.removeLast();
+    }
+
     List<Widget> newList = [for (MapEntry e in _list) e.value];
     return newList.toList();
   }
