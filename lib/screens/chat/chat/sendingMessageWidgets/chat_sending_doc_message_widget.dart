@@ -31,7 +31,7 @@ class ChatSendingDocMessageWidgetState extends ChatSendingMessageWidgetState {
 
   Widget _getFileWidget(File file) {
     return StreamBuilder<MessageState>(
-      initialData: MessageState.Init,
+      initialData: MessageState.Uploading,
       stream: widget.controller.messageSate.stream,
       builder: (_, snapshot) {
         switch (snapshot.data) {
