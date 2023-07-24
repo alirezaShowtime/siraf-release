@@ -7,7 +7,6 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/chat_item.dart';
 
 part 'chat_search_event.dart';
-
 part 'chat_search_state.dart';
 
 class ChatSearchBloc extends Bloc<ChatSearchEvent, ChatSearchState> {
@@ -31,7 +30,7 @@ class ChatSearchBloc extends Bloc<ChatSearchEvent, ChatSearchState> {
     //   return emit(ChatSearchError(res));
     // }
     //
-    // if (!cancelRequest) {
+    // if (cancelRequest) {
     //   cancelRequest = false;
     //   return emit(ChatSearchSuccess(res));
     // }
