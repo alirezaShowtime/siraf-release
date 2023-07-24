@@ -34,7 +34,7 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
 
   Widget voiceWidget() {
     return Container(
-      padding: EdgeInsets.only(top: widget.message.replyMessage != null ? 0 : 9, left: 9, right: 9, bottom: 9),
+      padding: EdgeInsets.only(top: widget.message.reply != null ? 0 : 9, left: 9, right: 9, bottom: 9),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.end,
@@ -126,7 +126,7 @@ class ChatVoiceMessageWidgetState extends ChatMessageWidgetState {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
+            replyWidget(widget.message.reply, widget.onClickReplyMessage),
             voiceWidget(),
           ],
         ),

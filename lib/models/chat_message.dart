@@ -11,12 +11,11 @@ class ChatMessage {
   List<ChatFileMessage>? fileMessages;
   int? userId;
   int? replyId;
-  ChatMessage? reply;
   int? chatId;
   bool isSearch = false;
   bool? isConsultant;
   int? consultantFileId;
-  ChatMessage? replyMessage;
+  ChatMessage? reply;
   String? createTime;
   bool isSeenByUser = false;
   bool isSeenByConsultant = false;
@@ -58,6 +57,7 @@ class ChatMessage {
     if (json["reply_id"] is int) {
       replyId = json["reply_id"];
     }
+
     if (json["chat_id"] is int) {
       chatId = json["chat_id"];
     }

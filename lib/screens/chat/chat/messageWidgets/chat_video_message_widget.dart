@@ -61,7 +61,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
+        replyWidget(widget.message.reply, widget.onClickReplyMessage),
         Stack(
           children: [
             videoWidget(),
@@ -101,7 +101,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
+        replyWidget(widget.message.reply, widget.onClickReplyMessage),
         videoWidget(),
         textWidget(widget.message.message),
         footerWidget(false, widget.message.createTime!),

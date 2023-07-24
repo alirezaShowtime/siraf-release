@@ -35,7 +35,7 @@ class SendMessageSuccess extends SendMessageState {
     message = ChatMessage.fromJson(response.data['data']);
 
     message.replyId = replyMessage?.id;
-    message.replyMessage = replyMessage;
+    message.reply = replyMessage;
 
     if (message.fileMessages.isFill() && sentFiles.isFill()) {
       message.fileMessages!.first.uploadedPath = sentFiles!.first.path;

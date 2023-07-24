@@ -38,7 +38,7 @@ class ChatImageMessageWidgetState extends ChatMessageWidgetState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
+        replyWidget(widget.message.reply, widget.onClickReplyMessage),
         _imageView(),
         textWidget(widget.message.message),
         footerWidget(false, widget.message.createTime!),
@@ -50,7 +50,7 @@ class ChatImageMessageWidgetState extends ChatMessageWidgetState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
+        replyWidget(widget.message.reply, widget.onClickReplyMessage),
         Stack(
           children: [
             _imageView(),
