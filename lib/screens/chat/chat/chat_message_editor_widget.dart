@@ -325,7 +325,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
   }
 
   Future<void> attachFile() async {
-    selectedFiles.clear();
+    selectedFiles = [];
     FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false);
 
     if (result == null) return;
@@ -347,8 +347,8 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
     widget.onClickSendMessage?.call(text.isEmpty ? null : text, selectedFiles, replyMessage);
     showSendButton = false;
     messageController.clear();
-    // selectedFiles.clear();
-    selectedFileWidgets.clear();
+    selectedFiles = [];
+    selectedFileWidgets = [];
     try {
       setState(() {});
     } catch (e) {}
@@ -437,8 +437,8 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
           MyIconButton(
             iconData: Icons.close_rounded,
             onTap: () {
-              selectedFiles.clear();
-              selectedFileWidgets.clear();
+              selectedFiles = [];
+              selectedFileWidgets = [];
               showSendButton = false;
               try {
                 setState(() {});
