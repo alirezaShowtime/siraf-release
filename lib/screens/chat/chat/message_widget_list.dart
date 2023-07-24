@@ -72,7 +72,7 @@ class MessageWidgetList {
   }
 
   List<Widget> getList() {
-    if (_list.isNotEmpty && _list.last is! MessageWidget) {
+    if (_list.isNotEmpty && _list.last.value is! MessageWidget) {
       _list.removeLast();
     }
 
