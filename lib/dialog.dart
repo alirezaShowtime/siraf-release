@@ -40,7 +40,7 @@ Future<T?> showDialog2<T>({
 
 BuildContext? loadingDialogContext;
 
-loadingDialog({required BuildContext context, String? message, bool showMessage = true}) async {
+loadingDialog({required BuildContext context, String? message, bool showMessage = true, void Function()? onClickCancel}) async {
   showDialog2(
     context: context,
     barrierDismissible: false,
@@ -49,6 +49,7 @@ loadingDialog({required BuildContext context, String? message, bool showMessage 
       return LoadingDialog(
         message: message,
         showMessage: showMessage,
+        onClickCancel: onClickCancel,
       );
     },
   );
