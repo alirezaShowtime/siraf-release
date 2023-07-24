@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
+import 'package:siraf3/bloc/chat/delete/chat_delete_bloc.dart';
 import 'package:siraf3/bloc/chat/list/chat_list_bloc.dart';
+import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/chat_item.dart';
@@ -10,11 +12,11 @@ import 'package:siraf3/screens/chat/chat/chatScreen/chat_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/avatar.dart';
+import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/empty.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_app_bar.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
-import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_item.dart';
 import 'package:siraf3/widgets/try_again.dart';
@@ -26,12 +28,32 @@ class ChatListScreen extends StatefulWidget {
 
 class _ChatListScreen extends State<ChatListScreen> {
   ChatListBloc chatListBloc = ChatListBloc();
+  ChatDeleteBloc chatDeleteBloc = ChatDeleteBloc();
 
   @override
   void initState() {
     super.initState();
 
     chatListBloc.add(ChatListRequestEvent());
+
+    chatDeleteBloc.stream.listen((state) {
+      if (state is ChatDeleteLoading) {
+        loadingDialog(context: context);
+        return;
+      }
+      if (state is ChatDeleteError) {
+        dismissDialog(loadingDialogContext);
+        errorDialog(context: context);
+        return;
+      }
+      if (state is ChatDeleteSuccess) {
+        dismissDialog(loadingDialogContext);
+        selectedChats = [];
+        try {
+          setState(() {});
+        } catch (e) {}
+      }
+    });
   }
 
   List<ChatItem> chats = [];
@@ -58,16 +80,17 @@ class _ChatListScreen extends State<ChatListScreen> {
             ),
             title: AppBarTitle("لیست پیام ها"),
             actions: [
+              if (selectedChats.isEmpty) IconButton(onPressed: searchChat, icon: Icon(Icons.search_rounded)),
               if (selectedChats.isNotEmpty)
-                MyIconButton(
-                  iconData: CupertinoIcons.trash,
-                  onTap: () {},
+                IconButton(
+                  icon: Icon(CupertinoIcons.trash, size: 22),
+                  onPressed: deleteChat,
                 ),
               MyPopupMenuButton(
                 itemBuilder: (context) {
                   return [
-                    MyPopupMenuItem<int>(enable: selectedChats.length < chats.length, value: 0, label: "انتخاب همه"),
-                    if (selectedChats.isNotEmpty) MyPopupMenuItem<int>(value: 1, label: "لغو انتخاب همه"),
+                    MyPopupMenuItem<int>(enable: selectedChats.length < chats.length, value: 0, label: "انتخاب همه", icon: Icons.check_box_outlined),
+                    if (selectedChats.isNotEmpty) MyPopupMenuItem<int>(value: 1, label: "لغو انتخاب همه", icon: Icons.check_box_outline_blank_outlined),
                   ];
                 },
                 onSelected: (value) {
@@ -341,4 +364,21 @@ class _ChatListScreen extends State<ChatListScreen> {
 
     setState(() {});
   }
+
+  void deleteChat() {
+    animationDialog(
+      context: context,
+      builder: (dialogContext) => ConfirmDialog(
+        dialogContext: dialogContext,
+        title: "حذف چت",
+        content: "آیا واقعا می خواهید چت را حذف کنید؟",
+        onApply: () {
+          dismissDialog(dialogContext);
+          chatDeleteBloc.add(ChatDeleteRequestEvent(selectedChats.map((e) => e.id!).toList(), true));
+        },
+      ),
+    );
+  }
+
+  void searchChat() {}
 }
