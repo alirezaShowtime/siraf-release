@@ -63,17 +63,20 @@ class _SupportFileScreen extends State<SupportFileScreen> {
 
       if (state is CreateChatSuccess) {
         dismissDialog(loadingDialogContext);
-        push(
+        doWithLogin(
           context,
-          ChatScreen(
-            chatId: state.chatId,
-            consultantId: state.fileConsultant.consultantId?.id,
-            consultantImage: state.fileConsultant.consultantId?.avatar,
-            consultantName: state.fileConsultant.consultantId?.name,
-            fileId: state.file.id,
-            fileTitle: state.file.name,
-            fileImage: state.file.firstImage?.path,
-            fileAddress: state.file.address,
+          () => push(
+            context,
+            ChatScreen(
+              chatId: state.chatId,
+              consultantId: state.fileConsultant.consultantId?.id,
+              consultantImage: state.fileConsultant.consultantId?.avatar,
+              consultantName: state.fileConsultant.consultantId?.name,
+              fileId: state.file.id,
+              fileTitle: state.file.name,
+              fileImage: state.file.firstImage?.path,
+              fileAddress: state.file.address,
+            ),
           ),
         );
       }

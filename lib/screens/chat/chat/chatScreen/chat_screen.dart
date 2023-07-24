@@ -46,9 +46,7 @@ import '../message_widget_list.dart';
 import '../sendingMessageWidgets/chat_sending_message_widget.dart';
 
 part 'bloc_listeners.dart';
-
 part 'chat_message_search.dart';
-
 part 'chat_scroll_controller.dart';
 part 'header_widget.dart';
 part 'voice_recorder.dart';
