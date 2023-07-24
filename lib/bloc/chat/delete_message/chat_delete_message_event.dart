@@ -4,7 +4,7 @@ part of 'chat_delete_message_bloc.dart';
 abstract class ChatDeleteMessageEvent {}
 
 class ChatDeleteMessageSendingEvent extends ChatDeleteMessageEvent {
-  Key widgetKey;
+  List<Key> widgetKey;
 
   ChatDeleteMessageSendingEvent(this.widgetKey);
 }

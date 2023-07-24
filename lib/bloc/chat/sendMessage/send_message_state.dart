@@ -6,9 +6,9 @@ abstract class SendMessageState {}
 class SendMessageInitial extends SendMessageState {}
 
 class SendMessageCanceled extends SendMessageState {
-  Key widgetKey;
+  List<Key> widgetKeys;
 
-  SendMessageCanceled(this.widgetKey);
+  SendMessageCanceled(this.widgetKeys);
 }
 
 class SendMessageLoading extends SendMessageState {

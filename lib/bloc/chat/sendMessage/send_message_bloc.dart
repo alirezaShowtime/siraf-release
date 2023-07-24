@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/controller/chat_message_upload_controller.dart';
 import 'package:siraf3/enums/message_state.dart';
@@ -17,10 +18,12 @@ part 'send_message_state.dart';
 
 class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
   List<SendMessageRequestModel> _requestQueue = [];
+  Map<Key, CancelToken> cancelTokens = {};
 
   SendMessageBloc() : super(SendMessageInitial()) {
     on<AddToSendQueueEvent>(_addToQueue);
     on<SendMessageRequestEvent>(_request);
+    on<SendMessageCancelEvent>(_cancel);
   }
 
   FutureOr<void> _addToQueue(AddToSendQueueEvent event, Emitter<SendMessageState> emit) async {
@@ -44,6 +47,7 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
 
   FutureOr<void> _request(SendMessageRequestEvent event, Emitter<SendMessageState> emit) async {
     dio.CancelToken cancelToken = dio.CancelToken();
+    cancelTokens[event.requestModel.widgetKey] = cancelToken;
     event.requestModel.controller.setOnCancelUpload(cancelToken.cancel);
 
     var url = "https://chat.siraf.app/api/message/addMessageUser/";
@@ -62,7 +66,7 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
       },
     );
 
-    cancelToken.whenCancel.then((value) => emit(SendMessageCanceled(event.requestModel.widgetKey)));
+    cancelToken.whenCancel.then((value) => emit(SendMessageCanceled([event.requestModel.widgetKey])));
 
     if (event.requestModel.files != null) {
       formData.files.addAll(event.requestModel.files!);
@@ -105,5 +109,15 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
       add(SendMessageRequestEvent(_requestQueue[i]));
       _requestQueue.remove(_requestQueue[i]);
     }
+  }
+
+  FutureOr<void> _cancel(SendMessageCancelEvent event, Emitter<SendMessageState> emit) async {
+    if (cancelTokens.containsKey(event.widgetKeys)) {
+      for (Key key in event.widgetKeys) {
+        cancelTokens.remove(key);
+      }
+    }
+
+    return emit(SendMessageCanceled(event.widgetKeys));
   }
 }

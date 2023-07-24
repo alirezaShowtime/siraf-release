@@ -3,6 +3,18 @@ part of 'chat_screen.dart';
 extension BlocListeners on _ChatScreen {
   void deleteMessageBlocListener() {
     chatDeleteMessageBloc.stream.listen((state) {
+      if (state is ChatDeleteMessageSending) {
+        for (Key wKey in state.widgetKeys) {
+          messageWidgets.removeWhere((e) => e.key == wKey);
+        }
+        if (messageWidgets.widgetLength() > 0) {
+          listViewSetState?.call(() {});
+        } else {
+          setState(() {});
+        }
+        return;
+      }
+
       if (state is ChatDeleteMessageLoading) {
         loadingDialog(context: context);
       }
@@ -73,13 +85,12 @@ extension BlocListeners on _ChatScreen {
   void sendMessageBlocListener() {
     sendMessageBloc.stream.listen((state) {
       if (state is SendMessageCanceled) {
-        for (var i = 0; i < messageWidgets.length(); i++) {
-          if (messageWidgets.get(i).key != state.widgetKey) continue;
-
-          listViewSetState?.call(() => messageWidgets.removeAt(i));
-
-          break;
+        for (var w in messageWidgets.getList()) {
+          if (state.widgetKeys.contains(w.key)) {
+            messageWidgets.removeWhere((e) => e.key == w.key);
+          }
         }
+        listViewSetState?.call(() {});
       }
 
       if (state is! SendMessageSuccess) return;

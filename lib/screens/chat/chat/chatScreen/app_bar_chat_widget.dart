@@ -9,6 +9,7 @@ import 'package:siraf3/bloc/chat/messages/messages_bloc.dart';
 import 'package:siraf3/bloc/chat/search/messages/chat_message_box_search_status_bloc.dart';
 import 'package:siraf3/bloc/chat/search/messages/request/chat_message_search_bloc.dart';
 import 'package:siraf3/bloc/chat/select_message/select_message_bloc.dart';
+import 'package:siraf3/bloc/chat/sendMessage/send_message_bloc.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/extensions/string_extension.dart';
@@ -224,12 +225,15 @@ class _AppBarChat extends State<AppBarChat> {
   }
 
   void deleteMessages() {
+    var ids = getSelectedIds();
+    if (ids.isEmpty) return;
+
     confirmDeleteMessageDialog(
       context,
       onClickDelete: (bool isForAll) {
         BlocProvider.of<ChatDeleteMessageBloc>(context).add(
           ChatDeleteMessageRequestEvent(
-            ids: getSelectedIds(),
+            ids: ids,
             isForAll: isForAll,
             chatId: widget.chatId!,
           ),
@@ -281,8 +285,20 @@ class _AppBarChat extends State<AppBarChat> {
 
     var selecteds = BlocProvider.of<SelectMessageBloc>(context).selectedMessages;
 
+    if (selecteds.where((e) => e.value == null).isNotEmpty) {
+      var keys = selecteds.map((e) => e.key).toList();
+      BlocProvider.of<ChatDeleteMessageBloc>(context).add(ChatDeleteMessageSendingEvent(keys));
+      BlocProvider.of<SendMessageBloc>(context).add(SendMessageCancelEvent(keys));
+      if (selecteds.where((e) => e.value != null).isEmpty) {
+        BlocProvider.of<SelectMessageBloc>(context).add(SelectMessageClearEvent());
+        return [];
+      }
+    }
+
     for (MapEntry selected in selecteds) {
-      list.add(selected.value);
+      if (selected.value != null) {
+        list.add(selected.value);
+      }
     }
     return list;
   }

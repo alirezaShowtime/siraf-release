@@ -24,7 +24,7 @@ class ChatDeleteMessageSuccess extends ChatDeleteMessageState {
 }
 
 class ChatDeleteMessageSending extends ChatDeleteMessageState {
-  Key widgetKey;
+  List<Key> widgetKeys;
 
-  ChatDeleteMessageSending(this.widgetKey);
+  ChatDeleteMessageSending(this.widgetKeys);
 }
