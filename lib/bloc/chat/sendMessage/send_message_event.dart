@@ -3,6 +3,12 @@ part of 'send_message_bloc.dart';
 @immutable
 abstract class SendMessageEvent {}
 
+class SendMessageCancelEvent extends SendMessageEvent {
+  List<Key> widgetKeys;
+
+  SendMessageCancelEvent(this.widgetKeys);
+}
+
 class SendMessageRequestModel {
   int chatId;
   List<MapEntry<String, dio.MultipartFile>>? files;

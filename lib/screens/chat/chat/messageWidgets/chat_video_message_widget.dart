@@ -61,7 +61,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
+        replyWidget(widget.message.reply, widget.onClickReplyMessage),
         Stack(
           children: [
             videoWidget(),
@@ -101,7 +101,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
+        replyWidget(widget.message.reply, widget.onClickReplyMessage),
         videoWidget(),
         textWidget(widget.message.message),
         footerWidget(false, widget.message.createTime!),
@@ -180,20 +180,22 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
                           );
                         },
                       ),
-                      FutureBuilder<VideoPlayerValue>(
-                        future: getVideoInfo(videoUrl),
-                        builder: (context, snapshot) {
-                          return Text(
-                            timeFormatter(snapshot.data?.duration.inSeconds ?? 0, hasHour: true),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "sans-serif",
-                              fontWeight: FontWeight.w500,
-                              fontSize: 8,
-                            ),
-                          );
-                        },
-                      ),
+                      //todo: showing video time is not working
+                      if (false)
+                        FutureBuilder<VideoPlayerValue>(
+                          future: getVideoInfo(videoUrl),
+                          builder: (context, snapshot) {
+                            return Text(
+                              timeFormatter(snapshot.data?.duration.inSeconds ?? 0, hasHour: true),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: "sans-serif",
+                                fontWeight: FontWeight.w500,
+                                fontSize: 8,
+                              ),
+                            );
+                          },
+                        ),
                     ],
                   ),
                   BlocBuilder(
@@ -247,7 +249,7 @@ class ChatVideoMessageWidgetState extends ChatMessageWidgetState {
           radius: radius,
           backgroundColor: Colors.transparent,
           percent: progress,
-          animation: true,
+          animation: false,
           lineWidth: width,
           circularStrokeCap: CircularStrokeCap.round,
           progressColor: isForMe() ? Colors.white : Colors.black,

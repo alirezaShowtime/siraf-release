@@ -7,22 +7,18 @@ class ChatMessage {
   int? id;
   String? message;
   String? createDate;
-  String? modifyDate;
   int? type;
   List<ChatFileMessage>? fileMessages;
   int? userId;
   int? replyId;
   int? chatId;
+  bool isSearch = false;
   bool? isConsultant;
   int? consultantFileId;
-  String? timeAgo;
-  ChatMessage? replyMessage;
-  String? messageCreateDate;
+  ChatMessage? reply;
   String? createTime;
   bool isSeenByUser = false;
   bool isSeenByConsultant = false;
-
-  ChatMessage(this.fileMessages, this.createDate, this.message);
 
   MessageOwner get owner => isConsultant != true ? MessageOwner.ForMe : MessageOwner.ForHer;
 
@@ -46,8 +42,8 @@ class ChatMessage {
     if (json["message"] is String) {
       message = json["message"];
     }
-    if (json["modifyDate"] is String) {
-      modifyDate = json["modifyDate"];
+    if (json["isSearch"] is bool) {
+      isSearch = json["isSearch"];
     }
     if (json["type"] is int) {
       type = json["type"];
@@ -61,6 +57,7 @@ class ChatMessage {
     if (json["reply_id"] is int) {
       replyId = json["reply_id"];
     }
+
     if (json["chat_id"] is int) {
       chatId = json["chat_id"];
     }
@@ -76,14 +73,15 @@ class ChatMessage {
     if (json["consultantFile_id"] is int) {
       consultantFileId = json["consultantFile_id"];
     }
-    if (json["timeAgo"] is String) {
-      timeAgo = json["timeAgo"];
-    }
+
     if (json["messageCreateTime"] is String) {
       createTime = json["messageCreateTime"];
     }
     if (json["messageCreateDate"] is String) {
       createDate = json["messageCreateDate"];
+    }
+    if (json["reply"] is Map) {
+      reply = ChatMessage.fromJson(json["reply"]);
     }
   }
 
@@ -143,7 +141,7 @@ class ChatFileMessage {
 
   bool get isImage => ["png", "jpg"].contains(extension);
 
-  bool get isVoice => ["mp3","wav"].contains(extension);
+  bool get isVoice => ["mp3", "wav"].contains(extension);
 
   ChatFileMessage.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {

@@ -15,25 +15,7 @@ class MessagesSuccess extends MessagesState {
   MessagesSuccess({required this.response}) {
     try {
       var data = jDecode(response.body)["data"];
-
       messages = ChatMessage.fromList(data["messages"]);
-
-      for (int i = 0; i < messages.length; i++) {
-        ChatMessage message = messages[i];
-
-        if (!message.message.isFill() && !message.fileMessages.isFill()) {
-          messages.remove(message);
-          continue;
-        }
-
-        try {
-          var reply = messages.singleWhere((e) => e.id == message.replyId);
-
-          message.replyMessage = reply;
-        } catch (e) {}
-
-        messages[i] = message;
-      }
       messages = messages.reversed.toList();
     } catch (e) {
       return;

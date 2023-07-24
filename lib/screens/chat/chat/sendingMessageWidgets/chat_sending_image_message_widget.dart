@@ -123,6 +123,7 @@ class ChatSendingImageMessageWidgetState extends ChatSendingMessageWidgetState {
           borderRadius: BorderRadius.circular(7),
           image: FileImage(widget.files![0]),
           fit: BoxFit.fitWidth,
+          loadingBuilder: loadingBuilder,
           errorWidget: Container(
             color: isForMe() ? Colors.white12 : Colors.grey.shade100,
             alignment: Alignment.center,
@@ -218,10 +219,38 @@ class ChatSendingImageMessageWidgetState extends ChatSendingMessageWidgetState {
           radius: radius,
           backgroundColor: Colors.transparent,
           percent: progress,
-          animation: true,
+          animation: false,
           lineWidth: width,
           circularStrokeCap: CircularStrokeCap.round,
           progressColor: isForMe() ? Colors.white : Colors.black,
+        ),
+      ),
+    );
+  }
+
+  Widget loadingBuilder(BuildContext _, Widget child, ImageChunkEvent? loading) {
+    if (loading == null) return child;
+    return Container(
+      height: 120,
+      color: isForMe() ? Colors.white12 : Colors.grey.shade100,
+      alignment: Alignment.center,
+      child: RotationTransition(
+        turns: Tween(begin: 0.0, end: 1.0).animate(loadingController),
+        child: Container(
+          padding: EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100),
+            color: Colors.white24,
+          ),
+          child: CircularPercentIndicator(
+            radius: 15,
+            backgroundColor: Colors.transparent,
+            percent: loading.expectedTotalBytes == null ? 0.6 : loading.cumulativeBytesLoaded / loading.expectedTotalBytes!,
+            animation: false,
+            lineWidth: 3.5,
+            circularStrokeCap: CircularStrokeCap.round,
+            progressColor: isForMe() ? Colors.white : Colors.black,
+          ),
         ),
       ),
     );

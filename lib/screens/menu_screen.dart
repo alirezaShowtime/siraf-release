@@ -28,7 +28,6 @@ import 'package:siraf3/screens/rules_screen.dart';
 import 'package:siraf3/screens/settings_screen.dart';
 import 'package:siraf3/screens/ticket/ticket_creation_screen.dart';
 import 'package:siraf3/screens/ticket/ticket_list_screen.dart';
-import 'package:siraf3/screens/verify_contract/inquiry_contract_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/accordion.dart';
 import 'package:siraf3/widgets/avatar.dart';
@@ -199,7 +198,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                         setState(() => hasNewMessage = false);
                                         hasNewMessageStream.add(hasNewMessage);
                                       }
-                                      push(context, ChatListScreen());
+                                      doWithLogin(context, () => push(context, ChatListScreen()));
                                     },
                                   ),
                                   _item(

@@ -6,12 +6,13 @@ import 'package:siraf3/bloc/chat/list/chat_list_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/chat_item.dart';
-import 'package:siraf3/screens/chat/chat/chat_screen.dart';
+import 'package:siraf3/screens/chat/chat/chatScreen/chat_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/empty.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/widgets/my_app_bar.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
@@ -44,7 +45,7 @@ class _ChatListScreen extends State<ChatListScreen> {
       child: WillPopScope(
         onWillPop: () async => _handleBack(),
         child: Scaffold(
-          appBar: AppBar(
+          appBar: MyAppBar(
             automaticallyImplyLeading: false,
             elevation: 0.7,
             titleSpacing: 0,
@@ -317,6 +318,7 @@ class _ChatListScreen extends State<ChatListScreen> {
           blockByHer: chatItem.isBlockByHer,
           blockByMe: chatItem.isBlockByMe,
           isDeleted: chatItem.isDeleted,
+          fileAddress: chatItem.fileAddress,
         ));
 
     if (result is! Map || !result.containsKey("chatId") || chatItem.id != result["chatId"]) return;

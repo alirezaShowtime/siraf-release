@@ -31,7 +31,7 @@ class ChatSendingDocMessageWidgetState extends ChatSendingMessageWidgetState {
 
   Widget _getFileWidget(File file) {
     return StreamBuilder<MessageState>(
-      initialData: MessageState.Init,
+      initialData: MessageState.Uploading,
       stream: widget.controller.messageSate.stream,
       builder: (_, snapshot) {
         switch (snapshot.data) {
@@ -51,19 +51,29 @@ class ChatSendingDocMessageWidgetState extends ChatSendingMessageWidgetState {
   }
 
   Widget _fileInitWidget(File file) {
-    return _baseFileWidget(
-      icon: Icon(Icons.arrow_downward_rounded, color: messageConfig.background, size: 24),
-      fileName: file.fileName,
-      fileInfo: "${file.lengthStr()}  ${file.extension}",
-    );
+    return FutureBuilder<String>(
+        initialData: "??",
+        future: file.lengthStr(),
+        builder: (context, snapshot) {
+          return _baseFileWidget(
+            icon: Icon(Icons.arrow_downward_rounded, color: messageConfig.background, size: 24),
+            fileName: file.fileName,
+            fileInfo: "${snapshot.data}  ${file.extension}",
+          );
+        });
   }
 
   Widget _fileUploadedWidget(File file) {
-    return _baseFileWidget(
-      icon: Icon(Icons.insert_drive_file_rounded, color: messageConfig.background, size: 24),
-      fileName: file.fileName,
-      fileInfo: "${file.lengthStr()} ${file.extension}",
-    );
+    return FutureBuilder<String>(
+        initialData: "??",
+        future: file.lengthStr(),
+        builder: (context, snapshot) {
+          return _baseFileWidget(
+            icon: Icon(Icons.insert_drive_file_rounded, color: messageConfig.background, size: 24),
+            fileName: file.fileName,
+            fileInfo: "${snapshot.data} ${file.extension}",
+          );
+        });
   }
 
   Widget _fileUploadingWidget(File file) {
@@ -175,10 +185,9 @@ class ChatSendingDocMessageWidgetState extends ChatSendingMessageWidgetState {
   void onClickCancel(File file) {
     widget.files!.remove(file);
     widget.controller.cancelUpload();
-    try{
-    setState(() {});
-
-    }catch(e){}
+    try {
+      setState(() {});
+    } catch (e) {}
   }
 
   @override

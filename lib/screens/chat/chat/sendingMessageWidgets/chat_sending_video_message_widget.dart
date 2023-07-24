@@ -189,6 +189,7 @@ class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
                         var detail = snapshot.data!;
                         return Text(
                           "${detail.uploaded.toFileSize(unit: false)}/${detail.count.toFileSize()}",
+                          textDirection: TextDirection.ltr,
                           style: TextStyle(
                             color: Colors.white,
                             fontFamily: "sans-serif",
@@ -198,19 +199,23 @@ class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
                         );
                       },
                     ),
-                    FutureBuilder<VideoPlayerValue>(
-                      future: getVideoInfo(videoFile),
-                      builder: (context, snapshot) {
-                        return Text(
-                          timeFormatter(snapshot.data?.duration.inSeconds ?? 0, hasHour: true),
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: "sans-serif",
-                            fontWeight: FontWeight.w500,
-                            fontSize: 8,
-                          ),
-                        );
-                      },
+                    //todo: showing video time is not working
+                    if (false)
+                      FutureBuilder<VideoPlayerValue>(
+                        future: getVideoInfo(videoFile),
+                        builder: (context, snapshot) {
+                          print("snapshot.data?.duration.inSeconds ${snapshot.data?.duration.inSeconds}");
+
+                          return Text(
+                            timeFormatter(snapshot.data?.duration.inSeconds ?? 0, hasHour: true),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "sans-serif",
+                              fontWeight: FontWeight.w500,
+                              fontSize: 8,
+                            ),
+                          );
+                        },
                     ),
                   ],
                 ),
@@ -222,19 +227,19 @@ class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
                         return Icon(
                           Icons.play_arrow_rounded,
                           color: isForMe() ? Colors.white : Colors.white,
-                          size: 20,
+                          size: 16,
                         );
                       case MessageState.ErrorUpload:
                         return Icon(
                           Icons.warning_amber_rounded,
                           color: isForMe() ? Colors.white : Colors.white,
-                          size: 20,
+                          size: 16,
                         );
                       default:
                         return Icon(
                           Icons.arrow_upward_rounded,
                           color: isForMe() ? Colors.white : Colors.white,
-                          size: 18,
+                          size: 16,
                         );
                     }
                   },
@@ -270,7 +275,7 @@ class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
           radius: radius,
           backgroundColor: Colors.transparent,
           percent: progress,
-          animation: true,
+          animation: false,
           lineWidth: width,
           circularStrokeCap: CircularStrokeCap.round,
           progressColor: isForMe() ? Colors.white : Colors.black,

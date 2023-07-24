@@ -3,6 +3,18 @@ part of 'chat_screen.dart';
 extension BlocListeners on _ChatScreen {
   void deleteMessageBlocListener() {
     chatDeleteMessageBloc.stream.listen((state) {
+      if (state is ChatDeleteMessageSending) {
+        for (Key wKey in state.widgetKeys) {
+          messageWidgets.removeWhere((e) => e.key == wKey);
+        }
+        if (messageWidgets.widgetLength() > 0) {
+          listViewSetState?.call(() {});
+        } else {
+          setState(() {});
+        }
+        return;
+      }
+
       if (state is ChatDeleteMessageLoading) {
         loadingDialog(context: context);
       }
@@ -23,7 +35,6 @@ extension BlocListeners on _ChatScreen {
         if (messageWidgets.widgetLength() > 0) {
           listViewSetState?.call(() {});
         } else {
-          print("fdfsdfsdrkdpriwedrp[eor]");
           setState(() {});
         }
       }
@@ -74,13 +85,12 @@ extension BlocListeners on _ChatScreen {
   void sendMessageBlocListener() {
     sendMessageBloc.stream.listen((state) {
       if (state is SendMessageCanceled) {
-        for (var i = 0; i < messageWidgets.length(); i++) {
-          if (messageWidgets.get(i).key != state.widgetKey) continue;
-
-          listViewSetState?.call(() => messageWidgets.removeAt(i));
-
-          break;
+        for (var w in messageWidgets.getList()) {
+          if (state.widgetKeys.contains(w.key)) {
+            messageWidgets.removeWhere((e) => e.key == w.key);
+          }
         }
+        listViewSetState?.call(() {});
       }
 
       if (state is! SendMessageSuccess) return;
@@ -151,6 +161,93 @@ extension BlocListeners on _ChatScreen {
           setState(() => isBlockByMe = state.isBlock);
         } catch (e) {}
       }
+    });
+  }
+
+  void chatMessageSearchBlocListener() {
+    chatMessageSearchBloc.stream.listen((state) {
+      if (state is! ChatMessageSearchSuccess) return;
+
+      hasNextMessage = true;
+
+      if (!state.messages.isFill()) {
+        showSearchResult = false;
+        return;
+      } else {
+        showSearchResult = true;
+      }
+
+      messageWidgets.clearList();
+      List<MapEntry<int, int>> found = [];
+
+      for (var message in state.messages.reversed) {
+        var widget = ChatMessageWidget(
+          message: message,
+          onClickReplyMessage: scrollTo,
+          messageKey: MessageWidgetKey(message),
+        );
+        messageWidgets.add(createDate: message.createDate!, widget: widget);
+        if (message.message?.contains(state.searched) ?? false) {
+          found.add(MapEntry(messageWidgets.indexByKey(widget.key!), message.id!));
+        }
+      }
+
+      if (state.countSearch != null) {
+        countSearch = state.countSearch!;
+      }
+
+      listViewSetState?.call(() {});
+
+      if (state.type == null) {
+        currentFoundedIndex = null;
+      }
+
+      if (found.isFill()) {
+        if (state.type == null) {
+          foundMessageWidgetIndexes.setList(found.reversed.toList());
+          scrollToIndex(found.last.key, true);
+          currentFoundedIndex = null;
+        } else if (state.type == MessageSearchType.Next) {
+          foundMessageWidgetIndexes.setList(found.reversed.toList());
+          scrollToIndex(found.last.key, true);
+        } else if (state.type == MessageSearchType.Previous) {
+          foundMessageWidgetIndexes.setList(found.reversed.toList(), true);
+          scrollToIndex(found.first.key, true);
+        }
+      }
+    });
+  }
+
+  void paginationBlocListener() {
+    chatScreenPaginationBloc.stream.listen((state) {
+      if (state is! ChatScreenPaginationSuccess) return;
+
+      if (state.messages.isEmpty) {
+        if (state.type == ChatScreenPaginationType.Previous) {
+          hasPreviousMessage = false;
+        }
+        if (state.type == ChatScreenPaginationType.Next) {
+          hasNextMessage = false;
+        }
+        return;
+      }
+
+      for (var message in state.type == ChatScreenPaginationType.Next ? state.messages.reversed : state.messages) {
+        var widget = ChatMessageWidget(
+          messageKey: MessageWidgetKey(message),
+          message: message,
+          onClickReplyMessage: scrollTo,
+        );
+
+        if (state.type == ChatScreenPaginationType.Previous) {
+          messageWidgets.shift(createDate: message.createDate!, widget: widget);
+        }
+
+        if (state.type == ChatScreenPaginationType.Next) {
+          messageWidgets.add(createDate: message.createDate!, widget: widget);
+        }
+      }
+      listViewSetState?.call(() {});
     });
   }
 }

@@ -38,7 +38,7 @@ class ChatImageMessageWidgetState extends ChatMessageWidgetState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
+        replyWidget(widget.message.reply, widget.onClickReplyMessage),
         _imageView(),
         textWidget(widget.message.message),
         footerWidget(false, widget.message.createTime!),
@@ -50,7 +50,7 @@ class ChatImageMessageWidgetState extends ChatMessageWidgetState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
+        replyWidget(widget.message.reply, widget.onClickReplyMessage),
         Stack(
           children: [
             _imageView(),
@@ -140,7 +140,7 @@ class ChatImageMessageWidgetState extends ChatMessageWidgetState {
                         radius: 15,
                         backgroundColor: Colors.transparent,
                         percent: loading.expectedTotalBytes == null ? 0.6 : loading.cumulativeBytesLoaded / loading.expectedTotalBytes!,
-                        animation: true,
+                        animation: false,
                         lineWidth: 3.5,
                         circularStrokeCap: CircularStrokeCap.round,
                         progressColor: isForMe() ? Colors.white : Colors.black,
@@ -197,7 +197,7 @@ class ChatImageMessageWidgetState extends ChatMessageWidgetState {
                           radius: 15,
                           backgroundColor: Colors.transparent,
                           percent: loading.expectedTotalBytes == null ? 0.6 : loading.cumulativeBytesLoaded / loading.expectedTotalBytes!,
-                          animation: true,
+                          animation: false,
                           lineWidth: 3.5,
                           circularStrokeCap: CircularStrokeCap.round,
                           progressColor: isForMe() ? Colors.white : Colors.black,

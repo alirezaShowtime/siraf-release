@@ -1,8 +1,12 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/bloc/chat/recordingVoice/recording_voice_bloc.dart';
 import 'package:siraf3/bloc/chat/reply/chat_reply_bloc.dart';
 import 'package:siraf3/extensions/file_extension.dart';
@@ -20,7 +24,11 @@ class ChatMessageEditor extends StatefulWidget {
 
   void Function(String? text, List<File>? files, ChatMessage? replyMessage)? onClickSendMessage;
 
-  ChatMessageEditor({this.onClickSendMessage});
+  void Function(bool isOpenEmojiKeyboard)? onOpenEmojiKeyboard;
+
+  StreamController<bool>? changeKeyboardStatus;
+
+  ChatMessageEditor({this.onClickSendMessage, this.onOpenEmojiKeyboard, this.changeKeyboardStatus});
 }
 
 class _ChatMessageEditor extends State<ChatMessageEditor> {
@@ -32,6 +40,16 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
 
   ChatMessage? replyMessage;
 
+  bool openEmojiKeyboard = false;
+  bool keyboardIsHidden = true;
+
+  FocusNode focusNode = FocusNode();
+  bool keyboardIsFocused = false;
+  double keyboardHeight = 0.0;
+  bool hiddenKeyboardByEmoji = false;
+  bool isTextRtl = true;
+  Timer? timer;
+
   @override
   void initState() {
     super.initState();
@@ -39,6 +57,27 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
     BlocProvider.of<ChatReplyBloc>(context).stream.listen((ChatMessage? reply) {
       replyMessage = reply;
       FocusManager.instance.primaryFocus?.requestFocus();
+    });
+
+    messageController.addListener(() {
+      var text = messageController.value.text;
+      var now = text.length > 0 || selectedFiles.isNotEmpty;
+      if (showSendButton != now) {
+        showSendButton = now;
+        try {
+          setState(() {});
+        } catch (e) {}
+      }
+    });
+
+    widget.changeKeyboardStatus?.stream.listen((status) {
+      if (openEmojiKeyboard != status) {
+        openEmojiKeyboard = status;
+        widget.onOpenEmojiKeyboard?.call(openEmojiKeyboard);
+        try {
+          setState(() {});
+        } catch (e) {}
+      }
     });
   }
 
@@ -66,66 +105,136 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
           ),
           child: Column(
             children: [
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                decoration: BoxDecoration(color: Colors.white),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (showSendButton)
-                      Directionality(
-                        textDirection: TextDirection.ltr,
-                        child: btn(
-                          iconData: Icons.send,
-                          color: Themes.primary,
-                          onTap: onClickSendMessage,
+              StatefulBuilder(builder: (context, containerSetState) {
+                return Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                  decoration: BoxDecoration(color: Colors.white),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (showSendButton)
+                        Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: btn(
+                            iconData: Icons.send,
+                            color: Themes.primary,
+                            onTap: onClickSendMessage,
+                          ),
+                        ),
+                      if (!showSendButton)
+                        GestureDetector(
+                          onHorizontalDragStart: (_) => cancelRecord(),
+                          onVerticalDragStart: (_) => cancelRecord(),
+                          child: btn(
+                            onTapDown: (_) => startRecord(),
+                            onTapUp: (_) => stopRecord(),
+                            onTapCancel: () => stopRecord(),
+                            iconData: Icons.keyboard_voice_outlined,
+                          ),
+                        ),
+                      if (!showSendButton)
+                        Transform.rotate(
+                          angle: 180,
+                          child: btn(
+                            iconData: Icons.attach_file_rounded,
+                            onTap: attachFile,
+                          ),
+                        ),
+                      Expanded(
+                        child: TextField2(
+                          onTap: () {
+                            if (!openEmojiKeyboard) {
+                              keyboardIsHidden = false;
+                              openEmojiKeyboard = true;
+                              widget.onOpenEmojiKeyboard?.call(openEmojiKeyboard);
+                              setState(() {});
+                            }
+                          },
+                          controller: messageController,
+                          focusNode: focusNode,
+                          showCursor: true,
+                          readOnly: keyboardIsHidden,
+                          maxLines: 7,
+                          minLines: 1,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "پیام...",
+                            hintStyle: TextStyle(color: Colors.grey.shade400),
+                          ),
+                          style: TextStyle(fontSize: 13),
                         ),
                       ),
-                    if (!showSendButton)
-                      GestureDetector(
-                        onHorizontalDragStart: (_) => cancelRecord(),
-                        onVerticalDragStart: (_) => cancelRecord(),
-                        child: btn(
-                          iconData: Icons.keyboard_voice_outlined,
-                          onTapDown: (_) => startRecord(),
-                          onTapUp: (_) => stopRecord(),
-                          onTap: () {},
-                        ),
-                      ),
-                    if (!showSendButton)
-                      Transform.rotate(
-                        angle: 180,
-                        child: btn(
-                          iconData: Icons.attach_file_rounded,
-                          onTap: attachFile,
-                        ),
-                      ),
-                    Expanded(
-                      child: TextField2(
-                        controller: messageController,
-                        maxLines: 7,
-                        minLines: 1,
-                        onChanged: (text) {
-                          showSendButton = text.length > 0 || selectedFiles.isNotEmpty;
-                          try{
-                          setState((){});
-                          }catch(e){}
-                        },
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "پیام...",
-                          hintStyle: TextStyle(color: Colors.grey.shade400),
-                        ),
-                        style: TextStyle(fontSize: 13),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                      // btn(
+                      //   iconData: keyboardIsHidden && openEmojiKeyboard ? Icons.keyboard_outlined : Icons.mood_rounded,
+                      //   onTap: () {
+                      //     if (!openEmojiKeyboard) {
+                      //       openEmojiKeyboard = true;
+                      //       focusNode.requestFocus();
+                      //       widget.onOpenEmojiKeyboard?.call(openEmojiKeyboard);
+                      //       setState(() {});
+                      //     }
+                      //
+                      //     keyboardIsHidden = !keyboardIsHidden;
+                      //     if (keyboardIsHidden) {
+                      //       hiddenKeyboardByEmoji = true;
+                      //     }
+                      //     containerSetState(() {});
+                      //   },
+                      // ),
+                    ],
+                  ),
+                );
+              }),
             ],
           ),
         ),
+        if (openEmojiKeyboard && false)
+          EmojiPicker(
+            textEditingController: messageController,
+            config: Config(
+              columns: 10,
+              emojiSizeMax: 24 * (foundation.defaultTargetPlatform == TargetPlatform.iOS ? 1.30 : 1.0),
+              verticalSpacing: 0,
+              horizontalSpacing: 0,
+              gridPadding: EdgeInsets.zero,
+              initCategory: Category.RECENT,
+              bgColor: Colors.white,
+              indicatorColor: Themes.primary,
+              iconColor: Colors.grey.shade400,
+              iconColorSelected: Themes.primary,
+              backspaceColor: Themes.primary,
+              skinToneDialogBgColor: Colors.white,
+              skinToneIndicatorColor: Colors.grey.shade300,
+              enableSkinTones: true,
+              recentTabBehavior: RecentTabBehavior.RECENT,
+              recentsLimit: 28,
+              replaceEmojiOnLimitExceed: true,
+              noRecents: const Text(
+                'No Recents',
+                style: TextStyle(fontSize: 20, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+              loadingIndicator: SpinKitRing(
+                color: Themes.primary,
+                size: 25,
+                lineWidth: 4,
+              ),
+              tabIndicatorAnimDuration: kTabScrollDuration,
+              categoryIcons: const CategoryIcons(
+                recentIcon: Icons.access_time_rounded,
+                smileyIcon: Icons.tag_faces_outlined,
+                animalIcon: Icons.pets_rounded,
+                foodIcon: Icons.fastfood_rounded,
+                activityIcon: Icons.directions_run_rounded,
+                travelIcon: Icons.location_city_rounded,
+                objectIcon: Icons.lightbulb_outline_rounded,
+                symbolIcon: Icons.emoji_symbols_rounded,
+                flagIcon: Icons.flag_rounded,
+              ),
+              buttonMode: ButtonMode.MATERIAL,
+            ),
+          ),
       ],
     );
   }
@@ -197,6 +306,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
     Color? color,
     void Function(TapDownDetails)? onTapDown,
     void Function(TapUpDetails)? onTapUp,
+    void Function()? onTapCancel,
   }) {
     return Material(
       color: Colors.transparent,
@@ -205,6 +315,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
         onTap: onTap,
         onTapDown: onTapDown,
         onTapUp: onTapUp,
+        onTapCancel: onTapCancel,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 7),
           child: icon(iconData, color: color ?? Colors.grey.shade400),
@@ -214,7 +325,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
   }
 
   Future<void> attachFile() async {
-    selectedFiles.clear();
+    selectedFiles = [];
     FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false);
 
     if (result == null) return;
@@ -224,9 +335,9 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
       selectedFileWidgets.add(attachedFileItem(File(platformFile.path!)));
     }
     showSendButton = true;
-    try{
-    setState(() {});
-    }catch(e){}
+    try {
+      setState(() {});
+    } catch (e) {}
   }
 
   void onClickSendMessage() {
@@ -234,9 +345,10 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
     if (!text.isFill() && !selectedFiles.isFill()) return;
 
     widget.onClickSendMessage?.call(text.isEmpty ? null : text, selectedFiles, replyMessage);
-    showSendButton = false;
     messageController.clear();
-    selectedFileWidgets.clear();
+    showSendButton = false;
+    selectedFiles = [];
+    selectedFileWidgets = [];
     try {
       setState(() {});
     } catch (e) {}
@@ -325,13 +437,12 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
           MyIconButton(
             iconData: Icons.close_rounded,
             onTap: () {
-              selectedFiles.clear();
-              selectedFileWidgets.clear();
+              selectedFiles = [];
+              selectedFileWidgets = [];
               showSendButton = false;
-try{
-              setState(() {});
-
-}catch(e){}
+              try {
+                setState(() {});
+              } catch (e) {}
             },
           ),
         ],
@@ -355,16 +466,24 @@ try{
   }
 
   void cancelRecord() {
-    BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Cancel));
+    timer?.cancel();
+    if (BlocProvider.of<RecordingVoiceBloc>(context).state == RecordingVoiceState.Recording) {
+      BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Cancel));
+    }
   }
 
   Future<void> startRecord() async {
-    // if (await recordPermissionsRequest()) {
-    BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Recording));
-    // }
+    timer = Timer(Duration(milliseconds: 800), () {
+      if (BlocProvider.of<RecordingVoiceBloc>(context).state != RecordingVoiceState.Recording) {
+        BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Recording));
+      }
+    });
   }
 
   void stopRecord() {
-    BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Done));
+    timer?.cancel();
+    if (BlocProvider.of<RecordingVoiceBloc>(context).state == RecordingVoiceState.Recording) {
+      BlocProvider.of<RecordingVoiceBloc>(context).add(RecordingVoiceEvent(RecordingVoiceState.Done));
+    }
   }
 }

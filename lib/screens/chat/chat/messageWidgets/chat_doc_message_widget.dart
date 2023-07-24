@@ -40,7 +40,7 @@ class ChatDocMessageWidgetState extends ChatMessageWidgetState {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
+        replyWidget(widget.message.reply, widget.onClickReplyMessage),
         for (ChatFileMessage fileMessage in widget.fileMessages)
           ChatMessageFileWidget(
             fileMessage: fileMessage,
@@ -69,7 +69,7 @@ class ChatDocMessageWidgetState extends ChatMessageWidgetState {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            replyWidget(widget.message.replyMessage, widget.onClickReplyMessage),
+            replyWidget(widget.message.reply, widget.onClickReplyMessage),
             for (ChatFileMessage fileMessage in widget.fileMessages)
               ChatMessageFileWidget(
                 fileMessage: fileMessage,

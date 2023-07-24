@@ -20,7 +20,7 @@ import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 import '../helpers.dart';
-import 'chat/chat/chat_screen.dart';
+import 'chat/chat/chatScreen/chat_screen.dart';
 
 class SupportFileScreen extends StatefulWidget {
   bool isFavorite;
@@ -63,16 +63,20 @@ class _SupportFileScreen extends State<SupportFileScreen> {
 
       if (state is CreateChatSuccess) {
         dismissDialog(loadingDialogContext);
-        push(
+        doWithLogin(
           context,
-          ChatScreen(
-            chatId: state.chatId,
-            consultantId: state.fileConsultant.consultantId?.id,
-            consultantImage: state.fileConsultant.consultantId?.avatar,
-            consultantName: state.fileConsultant.consultantId?.name,
-            fileId: state.file.id,
-            fileTitle: state.file.name,
-            fileImage: state.file.firstImage?.path,
+          () => push(
+            context,
+            ChatScreen(
+              chatId: state.chatId,
+              consultantId: state.fileConsultant.consultantId?.id,
+              consultantImage: state.fileConsultant.consultantId?.avatar,
+              consultantName: state.fileConsultant.consultantId?.name,
+              fileId: state.file.id,
+              fileTitle: state.file.name,
+              fileImage: state.file.firstImage?.path,
+              fileAddress: state.file.address,
+            ),
           ),
         );
       }
