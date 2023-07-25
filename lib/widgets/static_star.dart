@@ -24,6 +24,7 @@ class _StaticStar extends State<StaticStar> {
       itemSize: 10,
       onRatingUpdate: (double value) {},
       updateOnDrag: false,
+      allowHalfRating: true,
       ignoreGestures: true,
       unratedColor: Colors.grey.shade300,
     );

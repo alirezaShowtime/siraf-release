@@ -77,14 +77,11 @@ class _EditRequestScreen extends State<EditRequestScreen> {
 
     if (widget.request.maxPrice != null) maxPrice = widget.request.maxPrice;
 
-    if (widget.request.title != null)
-      _titleController.text = widget.request.title!;
+    if (widget.request.title != null) _titleController.text = widget.request.title!;
 
-    if (widget.request.description != null)
-      _descriptionController.text = widget.request.description!;
+    if (widget.request.description != null) _descriptionController.text = widget.request.description!;
 
-    if (widget.request.estates != null)
-      selectedEstates = widget.request.estates!;
+    if (widget.request.estates != null) selectedEstates = widget.request.estates!;
 
     setState(() {});
   }
@@ -129,9 +126,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                 Section(
                   title: "دسته بندی",
                   hint: "انتخاب",
-                  value: category != null
-                      ? categories.map((e) => e.name).join(' > ')
-                      : null,
+                  value: category != null ? categories.map((e) => e.name).join(' > ') : null,
                   onTap: onClickCategoryItem,
                 ),
                 Section(
@@ -194,10 +189,8 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                           ),
                           borderRadius: BorderRadius.circular(2),
                         ),
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                        hintText:
-                            "در این قسمت به موارد مهم ملک مانند نوع ملک و محله اشاره کنید",
+                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                        hintText: "در این قسمت به موارد مهم ملک مانند نوع ملک و محله اشاره کنید",
                         hintStyle: TextStyle(fontSize: 13),
                         labelStyle: TextStyle(fontSize: 14),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -255,8 +248,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                       floatingLabelStyle: TextStyle(color: Themes.primary),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       labelStyle: TextStyle(fontSize: 14),
-                      hintText:
-                          "در این قسمت به جزئیات ملک مانند امکانات ، ویژگی ها و ... که برای شمااهمیت دارد اشاره کنید",
+                      hintText: "در این قسمت به جزئیات ملک مانند امکانات ، ویژگی ها و ... که برای شمااهمیت دارد اشاره کنید",
                       hintStyle: TextStyle(fontSize: 13),
                     ),
                     controller: _descriptionController,
@@ -267,9 +259,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                 Section(
                   title: "دفتر/دفاتر املاک(اختیاری)",
                   hint: "انتخاب",
-                  value: selectedEstates.isNotEmpty
-                      ? "${selectedEstates.length} مورد"
-                      : null,
+                  value: selectedEstates.isNotEmpty ? "${selectedEstates.length} مورد" : null,
                   onTap: onClickSelectEstate,
                 ),
                 SizedBox(height: 10),
@@ -294,11 +284,16 @@ class _EditRequestScreen extends State<EditRequestScreen> {
   }
 
   void onClickSelectEstate() async {
+    if (city == null) {
+      return notify("ابتدا شهر را انتخاب کنید");
+    }
+
     var result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => EstateScreen(
           estates: selectedEstates,
+          city: city!,
         ),
       ),
     );
@@ -545,8 +540,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
 
   BuildContext? numberDialog;
 
-  showNumberDialog(String minVal, String maxVal, String label, String labelP,
-      void Function(String, String) onTap) {
+  showNumberDialog(String minVal, String maxVal, String label, String labelP, void Function(String, String) onTap) {
     StreamController<String> persianNumberTextMin = StreamController();
     persianNumberTextMin.add(minVal.replaceAll(',', '').toWord());
 
@@ -614,8 +608,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                     ),
                     StreamBuilder(
                       builder: ((context, snapshot) {
-                        if (!snapshot.hasData ||
-                            snapshot.data.toString().isEmpty) {
+                        if (!snapshot.hasData || snapshot.data.toString().isEmpty) {
                           return Container(
                             alignment: Alignment.center,
                             height: 20,
@@ -683,8 +676,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                     ),
                     StreamBuilder(
                       builder: ((context, snapshot) {
-                        if (!snapshot.hasData ||
-                            snapshot.data.toString().isEmpty) {
+                        if (!snapshot.hasData || snapshot.data.toString().isEmpty) {
                           return Container(
                             alignment: Alignment.center,
                             height: 20,

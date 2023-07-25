@@ -450,6 +450,9 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                           if (value == null || value.isEmpty) {
                             return "شماره تماس مالک را وارد کنید";
                           }
+                          if (!value.startsWith("09")) {
+                            return "شماره تماس باید با 09 شروع شود";
+                          }
                           if (value.length != 11) {
                             return "شماره تماس باید 11 کاراکتر باشد";
                           }
@@ -527,11 +530,6 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                         textInputAction: TextInputAction.next,
                         cursorColor: Themes.primary,
                         maxLines: 1,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "نام و نام خانوادگی جهت هماهنگی بازدید را وارد کنید";
-                          }
-                        },
                         onSaved: ((newValue) {
                           setState(() {
                             visitName = newValue;
@@ -608,8 +606,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                         cursorColor: Themes.primary,
                         maxLines: 1,
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "لطفا شماره تماسی جهت همماهنگی برای بازدید وارد نمایید";
+                          if (value == null || value.trim().isEmpty) {
+                            return null;
                           }
                           if (!value.startsWith("09")) {
                             return "شماره تماس باید با 09 شروع شود";
@@ -706,9 +704,9 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
     widget.formData.files = files;
     widget.formData.title = title!;
     widget.formData.ownerPhone = ownerPhone!;
-    widget.formData.visitPhone = visitPhone!;
+    widget.formData.visitPhone = visitPhone ?? "";
     widget.formData.ownerName = ownerName!;
-    widget.formData.visitName = visitName!;
+    widget.formData.visitName = visitName ?? "";
 
     await Navigator.push(
       context,

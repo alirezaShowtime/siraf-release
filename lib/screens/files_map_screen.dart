@@ -499,8 +499,6 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
       setState(() {
         files = state.files;
         markers = _buildFileMarkers(files);
-
-        print(markers.length);
       });
       if (_firstTime) {
         setState(() {
@@ -509,9 +507,11 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
         _onMyLocationClicked();
       }
 
-      if (state.search) {
-        if (files.isNotEmpty) animatedMapMove(_controller, LatLng(double.parse(files.elementAt(0).lat!), double.parse(files.elementAt(0).long!)), _controller.zoom, this);
-      } else if (cities.isNotEmpty) animatedMapMove(_controller, LatLng(double.parse(cities.first.lat!), double.parse(cities.first.long!)), 12, this);
+      if (files.isEmpty) {
+        notify("فایلی یافت نشد");
+      }
+
+      move(state);
     }
   }
 
@@ -751,5 +751,81 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
         : cities.length == 1
             ? cities.first.name ?? "${cities.length} شهر"
             : "${cities.length} شهر";
+  }
+
+  void move(LocationFilesLoadedState state) {
+    if (state.search) {
+      if (files.isNotEmpty) {
+        animatedMapMove(_controller, toLatLng(files[0].lat!, files[0].long!), _controller.zoom, this);
+      } else if (cities.isNotEmpty) {
+        var averageLat = average(
+          cities.map<num>(
+            (e) => num.parse(e.lat!),
+          ),
+        );
+        var averageLng = average(
+          cities.map<num>(
+            (e) => num.parse(e.long!),
+          ),
+        );
+        animatedMapMove(_controller, toLatLng(averageLat, averageLng), 11, this);
+      }
+    } else if (files.isNotEmpty) {
+      var averageLat = average(
+        files.map<num>(
+          (e) => num.parse(e.lat!),
+        ),
+      );
+      var averageLng = average(
+        files.map<num>(
+          (e) => num.parse(e.long!),
+        ),
+      );
+
+      animatedMapMove(_controller, toLatLng(averageLat, averageLng), 12, this);
+    } else if (cities.isNotEmpty) {
+      var averageLat = average(
+        cities.map<num>(
+          (e) => num.parse(e.lat!),
+        ),
+      );
+      var averageLng = average(
+        cities.map<num>(
+          (e) => num.parse(e.long!),
+        ),
+      );
+      animatedMapMove(_controller, toLatLng(averageLat, averageLng), 11, this);
+    }
+  }
+
+  LatLng toLatLng(lat, long) {
+    return LatLng(toDouble(lat), toDouble(long));
+  }
+
+  double toDouble(value) {
+    if (value is String) {
+      return double.parse(value);
+    }
+    if (value is int) {
+      return value.toDouble();
+    }
+    if (value is num) {
+      return value.toDouble();
+    }
+    if (value is double) {
+      return value;
+    }
+
+    return -1;
+  }
+
+  num average(Iterable<num> map) {
+    num total = 0;
+
+    map.forEach((element) {
+      total += element;
+    });
+
+    return total / map.length;
   }
 }

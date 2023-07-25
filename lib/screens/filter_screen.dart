@@ -911,11 +911,18 @@ class _FilterScreenState extends State<FilterScreen> {
         ));
       }
 
-      // if (widgets.isEmpty) {
-      //   return Container(
-      //     height: 160,
-      //   );
-      // }
+      if (widgets.isEmpty) {
+        return Align(
+          alignment: Alignment.center,
+          child: Container(
+            height: 160,
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Loading(
+              backgroundColor: Colors.transparent,
+            ),
+          ),
+        );
+      }
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
