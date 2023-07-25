@@ -151,7 +151,7 @@ class _LocationFileItemState extends State<LocationFileItem> {
                     ),
                     Column(
                       children: [
-                        Text(
+                        if (! widget.locationFile.isRent()) Text(
                           '',
                           style: TextStyle(
                             color: App.theme.textTheme.bodyLarge?.color,

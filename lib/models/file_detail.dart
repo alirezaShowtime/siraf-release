@@ -116,6 +116,8 @@ class FileDetail {
   }
 
   bool isRental() {
+    return fullCategory?.getMainCategoryName().toString().contains("اجاره") ?? false;
+
     var prices = getPrices();
 
     return prices.length >= 2;
@@ -166,20 +168,20 @@ class FileDetail {
       return 0;
     }
   }
-  
+
   Property? getVadie() {
     if (property!.where((element) => element.key == "prices").isNotEmpty) {
       return property!.firstWhere((element) => element.key == "prices");
     }
-    
+
     return null;
   }
-  
+
   Property? getRent() {
     if (property!.where((element) => element.key == "rent").isNotEmpty) {
       return property!.firstWhere((element) => element.key == "rent");
     }
-    
+
     return null;
   }
 

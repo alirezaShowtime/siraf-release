@@ -201,9 +201,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                         value: address != null ? "تغییر" : "تعیین",
                         onTap: showAddressDialog,
                       ),
-                      if (category != null)
-                        BlocBuilder<PropertyBloc, PropertyState>(
-                            builder: _buildPropertiesBloc),
+                      if (category != null) BlocBuilder<PropertyBloc, PropertyState>(builder: _buildPropertiesBloc),
                     ],
                   ),
                 ),
@@ -264,9 +262,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
 
     state = state as PropertyLoadedState;
 
-
-    var props = state.iproperties
-      ..sort((a, b) => a.weightInsert!.compareTo(b.weightInsert!));
+    var props = state.iproperties..sort((a, b) => a.weightInsert!.compareTo(b.weightInsert!));
 
     mainProps = props.where((element) => element.insert == 1).toList();
 
@@ -285,59 +281,31 @@ class _EditFileFirstState extends State<EditFileFirst> {
               false)
           .toList();
 
-      selectedMainProps = selectedProps
-          .where((element) => element.insert == 1)
-          .toList()
-          .asMap()
-          .map(
+      selectedMainProps = selectedProps.where((element) => element.insert == 1).toList().asMap().map(
             (key, value) => MapEntry(
               value.value ?? "",
-              widget.file.propertys!
-                  .firstWhere((element) => element.key! == (value.value??""))
-                  .value
-                  .toString(),
+              widget.file.propertys!.firstWhere((element) => element.key! == (value.value ?? "")).value.toString(),
             ),
           );
 
-      selectedMainFeatures = selectedProps
-          .where((element) => element.insert == 2)
-          .toList()
-          .asMap()
-          .map(
+      selectedMainFeatures = selectedProps.where((element) => element.insert == 2).toList().asMap().map(
             (key, value) => MapEntry(
               value.value ?? "",
-              widget.file.propertys!
-                  .firstWhere((element) => element.key! == (value.value??""))
-                  .value
-                  .toString(),
+              widget.file.propertys!.firstWhere((element) => element.key! == (value.value ?? "")).value.toString(),
             ),
           );
 
-      selectedOtherProps = selectedProps
-          .where((element) => element.insert == 3)
-          .toList()
-          .asMap()
-          .map(
+      selectedOtherProps = selectedProps.where((element) => element.insert == 3).toList().asMap().map(
             (key, value) => MapEntry(
               value.value ?? "",
-              widget.file.propertys!
-                  .firstWhere((element) => element.key! == (value.value??""))
-                  .value
-                  .toString(),
+              widget.file.propertys!.firstWhere((element) => element.key! == (value.value ?? "")).value.toString(),
             ),
           );
 
-      selectedOtherFeatures = selectedProps
-          .where((element) => element.insert == 4)
-          .toList()
-          .asMap()
-          .map(
+      selectedOtherFeatures = selectedProps.where((element) => element.insert == 4).toList().asMap().map(
             (key, value) => MapEntry(
               value.value ?? "",
-              widget.file.propertys!
-                  .firstWhere((element) => element.key! == (value.value??""))
-                  .value
-                  .toString(),
+              widget.file.propertys!.firstWhere((element) => element.key! == (value.value ?? "")).value.toString(),
             ),
           );
 
@@ -376,13 +344,13 @@ class _EditFileFirstState extends State<EditFileFirst> {
               : <Widget>[]) +
           mainProps.map<Widget>((e) {
             String? text;
-            if (selectedMainProps.containsKey(e.value!)) {
+            if (selectedMainProps.containsKey(e.value!) && selectedMainProps[e.value!] != null) {
               if (e.type!.toLowerCase() == "number") {
                 text = selectedMainProps[e.value!] as String;
 
                 if (priceFields.contains(e.value!)) {
-                  text = number_format(int.parse(text));
-                  text += " تومان";
+                  text = text == "null" ? "توافقی" : number_format(int.parse(text)) + " تومان";
+                  notify("TEXT : " + text);
                 }
 
                 if (e.value == "prices") {
@@ -403,14 +371,11 @@ class _EditFileFirstState extends State<EditFileFirst> {
                     element.value == e.value &&
                     (element.items ?? [])
                         .where(
-                          (element) =>
-                              element.value.toString() ==
-                              selectedMainProps[e.value!],
+                          (element) => element.value.toString() == selectedMainProps[e.value!],
                         )
                         .isNotEmpty);
                 if (properties.isNotEmpty) {
-                  var item = properties.first.items!.firstWhere((element) =>
-                      element.value.toString() == selectedMainProps[e.value!]);
+                  var item = properties.first.items!.firstWhere((element) => element.value.toString() == selectedMainProps[e.value!]);
                   text = item.name!;
                 }
               }
@@ -477,15 +442,11 @@ class _EditFileFirstState extends State<EditFileFirst> {
                     element.value == e.value &&
                     (element.items ?? [])
                         .where(
-                          (element) =>
-                              element.value.toString() ==
-                              selectedMainFeatures[e.value!],
+                          (element) => element.value.toString() == selectedMainFeatures[e.value!],
                         )
                         .isNotEmpty);
                 if (properties.isNotEmpty) {
-                  var item = properties.first.items!.firstWhere((element) =>
-                      element.value.toString() ==
-                      selectedMainFeatures[e.value!]);
+                  var item = properties.first.items!.firstWhere((element) => element.value.toString() == selectedMainFeatures[e.value!]);
                   text = item.name!;
                 }
               }
@@ -510,12 +471,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
               section(
                 title: "سایر امکانات و ویژگی ها",
                 hint: "انتخاب",
-                value: (selectedOtherProps.isNotEmpty ||
-                        selectedOtherFeatures.isNotEmpty)
-                    ? (selectedOtherProps.length + selectedOtherFeatures.length)
-                            .toString() +
-                        " مورد"
-                    : null,
+                value: (selectedOtherProps.isNotEmpty || selectedOtherFeatures.isNotEmpty) ? (selectedOtherProps.length + selectedOtherFeatures.length).toString() + " مورد" : null,
                 onTap: _goPropertiesScreen,
               ),
             if (otherProps.isNotEmpty)
@@ -634,17 +590,14 @@ class _EditFileFirstState extends State<EditFileFirst> {
       context,
       MaterialPageRoute(
         builder: (_) => MarkInMapScreen(
-          position: location != null
-              ? LatLng(location!.latitude, location!.longitude)
-              : null,
+          position: location != null ? LatLng(location!.latitude, location!.longitude) : null,
         ),
       ),
     );
 
     if (result is LatLng?) {
       setState(() {
-        location =
-            result != null ? LatLng(result.latitude, result.longitude) : null;
+        location = result != null ? LatLng(result.latitude, result.longitude) : null;
       });
     }
   }
@@ -671,47 +624,25 @@ class _EditFileFirstState extends State<EditFileFirst> {
 
     for (PropertyInsert pr in mainProps) {
       if ((pr.require ?? false) && !selectedMainProps.containsKey(pr.value!)) {
-        return notify("لطفا " +
-            pr.name! +
-            " را " +
-            (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") +
-            " کنید");
+        return notify("لطفا " + pr.name! + " را " + (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") + " کنید");
       }
     }
 
     for (PropertyInsert pr in mainFeature) {
-      if ((pr.require ?? false) &&
-          !selectedMainFeatures.containsKey(pr.value!)) {
-        return notify("لطفا " +
-            pr.name! +
-            " را " +
-            (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") +
-            " کنید");
+      if ((pr.require ?? false) && !selectedMainFeatures.containsKey(pr.value!)) {
+        return notify("لطفا " + pr.name! + " را " + (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") + " کنید");
       }
     }
 
     for (PropertyInsert pr in otherProps) {
       if ((pr.require ?? false) && !selectedOtherProps.containsKey(pr.value!)) {
-        return notify(
-            "لطفا وارد سایر امکانات و ویژگی ها شوید و " +
-                pr.name! +
-                " را " +
-                (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") +
-                " کنید",
-            duration: Duration(seconds: 4));
+        return notify("لطفا وارد سایر امکانات و ویژگی ها شوید و " + pr.name! + " را " + (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") + " کنید", duration: Duration(seconds: 4));
       }
     }
 
     for (PropertyInsert pr in otherFeature) {
-      if ((pr.require ?? false) &&
-          !selectedOtherFeatures.containsKey(pr.value!)) {
-        return notify(
-            "لطفا وارد سایر امکانات و ویژگی ها شوید و " +
-                pr.name! +
-                " را " +
-                (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") +
-                " کنید",
-            duration: Duration(seconds: 4));
+      if ((pr.require ?? false) && !selectedOtherFeatures.containsKey(pr.value!)) {
+        return notify("لطفا وارد سایر امکانات و ویژگی ها شوید و " + pr.name! + " را " + (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") + " کنید", duration: Duration(seconds: 4));
       }
     }
 
@@ -755,11 +686,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
     }
   }
 
-  Widget section(
-      {required String title,
-      required String hint,
-      required String? value,
-      required Function() onTap}) {
+  Widget section({required String title, required String hint, required String? value, required Function() onTap}) {
     return Column(
       children: [
         Row(
@@ -806,7 +733,6 @@ class _EditFileFirstState extends State<EditFileFirst> {
 
   BuildContext? resetDialogContext;
 
-
   showResetDialog() {
     showDialog2(
       context: context,
@@ -827,7 +753,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
       },
     );
   }
-  
+
   dismissResetDialog() {
     if (resetDialogContext != null) {
       Navigator.pop(resetDialogContext!);
@@ -842,8 +768,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
       barrierDismissible: true,
       builder: (_) {
         addressDialogContext = _;
-        TextEditingController _controller =
-            TextEditingController(text: address);
+        TextEditingController _controller = TextEditingController(text: address);
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -857,15 +782,14 @@ class _EditFileFirstState extends State<EditFileFirst> {
                 Column(
                   children: [
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       child: TextField2(
                         minLines: 6,
                         maxLines: 10,
                         controller: _controller,
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: "آدرس را بصورت دقیق وارد کنید",
+                          hintText: "آدرس را بصورت دقیق وارد کنید. (آدرس به صورت عمومی نمایش داده نمی شود)",
                           hintStyle: TextStyle(
                             color: Themes.textGrey,
                             fontSize: 13,
@@ -892,9 +816,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                                   return notify("آدرس باید حداقل 10 کاراکتر باشد");
                                 }
                                 setState(() {
-                                  address = _controller.text.trim().isNotEmpty
-                                      ? _controller.text.trim()
-                                      : null;
+                                  address = _controller.text.trim().isNotEmpty ? _controller.text.trim() : null;
                                 });
 
                                 dismissAddressDialog();
@@ -942,9 +864,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
 
   showNumberDialog(PropertyInsert property) {
     StreamController<String> persianNumberText = StreamController();
-    persianNumberText.add(
-        ((selectedMainProps[property.value!] ?? '').replaceAll(',', ''))
-            .toWord());
+    persianNumberText.add(((selectedMainProps[property.value!] ?? '').replaceAll(',', '')).toWord());
 
     StreamController<String?> value = StreamController();
     value.add(selectedMainProps[property.value!]);
@@ -955,11 +875,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
       builder: (_) {
         numberDialog = _;
         TextEditingController _controller = TextEditingController(
-          text: property.value != "age" &&
-                  selectedMainProps[property.value!] != null
-              ? number_format(
-                  int.parse(selectedMainProps[property.value!].toString()))
-              : selectedMainProps[property.value!],
+          text: property.value != "age" && selectedMainProps[property.value!] != null ? number_format(int.parse(selectedMainProps[property.value!].toString())) : selectedMainProps[property.value!],
         );
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
@@ -983,9 +899,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                           controller: _controller,
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: hints.containsKey(property.value)
-                                ? hints[property.value]
-                                : "${property.name!} را وارد کنید",
+                            hintText: hints.containsKey(property.value) ? hints[property.value] : "${property.name!} را وارد کنید",
                             hintStyle: TextStyle(
                               color: Themes.textGrey,
                               fontSize: 13,
@@ -997,8 +911,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                             value.add(v);
                           },
                           inputFormatters: [
-                            if (property.value != "age")
-                              MoneyInputFormatter(mantissaLength: 0),
+                            if (property.value != "age") MoneyInputFormatter(mantissaLength: 0),
                           ],
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
@@ -1013,8 +926,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                     if (helpTexts.containsKey(property.value!))
                       StreamBuilder(
                         builder: ((context, snapshot) {
-                          if (!snapshot.hasData ||
-                              snapshot.data.toString().isEmpty) {
+                          if (!snapshot.hasData || snapshot.data.toString().isEmpty) {
                             return Container(
                               height: 20,
                               alignment: Alignment.center,
@@ -1035,11 +947,9 @@ class _EditFileFirstState extends State<EditFileFirst> {
                       ),
                     StreamBuilder(
                       builder: ((context, snapshot) {
-                        if (!snapshot.hasData ||
-                            snapshot.data.toString().isEmpty) {
+                        if (!snapshot.hasData || snapshot.data.toString().isEmpty) {
                           return Container(
-                            height:
-                                helpTexts.containsKey(property.value!) ? 0 : 20,
+                            height: helpTexts.containsKey(property.value!) ? 0 : 20,
                           );
                         }
                         String text = snapshot.data.toString();
@@ -1087,10 +997,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                               onPressed: () {
                                 setState(() {
                                   if (_controller.text.trim().isNotEmpty) {
-                                    selectedMainProps[property.value!] =
-                                        _controller.text
-                                            .trim()
-                                            .replaceAll(',', '');
+                                    selectedMainProps[property.value!] = _controller.text.trim().replaceAll(',', '');
                                   } else {
                                     selectedMainProps.remove(property.value!);
                                   }
@@ -1161,9 +1068,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                       height: 200,
                       child: ListView(
                         physics: BouncingScrollPhysics(),
-                        children: property.items!
-                            .map<Widget>((e) => buildListItem(e, property))
-                            .toList(),
+                        children: property.items!.map<Widget>((e) => buildListItem(e, property)).toList(),
                       ),
                     ),
                     SizedBox(
@@ -1219,9 +1124,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
 
   showFeatureNumberDialog(PropertyInsert property) {
     StreamController<String> persianNumberText = StreamController();
-    persianNumberText.add(
-        ((selectedMainProps[property.value!] ?? '').replaceAll(',', ''))
-            .toWord());
+    persianNumberText.add(((selectedMainProps[property.value!] ?? '').replaceAll(',', '')).toWord());
 
     StreamController<String?> value = StreamController();
     value.add(selectedMainProps[property.value!]);
@@ -1257,9 +1160,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                           controller: _controller,
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: hints.containsKey(property.value)
-                                ? hints[property.value]
-                                : "${property.name!} را وارد کنید",
+                            hintText: hints.containsKey(property.value) ? hints[property.value] : "${property.name!} را وارد کنید",
                             hintStyle: TextStyle(
                               color: Themes.textGrey,
                               fontSize: 13,
@@ -1271,8 +1172,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                             value.add(v);
                           },
                           inputFormatters: [
-                            if (property.value != "age")
-                              MoneyInputFormatter(mantissaLength: 0),
+                            if (property.value != "age") MoneyInputFormatter(mantissaLength: 0),
                           ],
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
@@ -1287,8 +1187,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                     if (helpTexts.containsKey(property.value!))
                       StreamBuilder(
                         builder: ((context, snapshot) {
-                          if (!snapshot.hasData ||
-                              snapshot.data.toString().isEmpty) {
+                          if (!snapshot.hasData || snapshot.data.toString().isEmpty) {
                             return Container(
                               height: 20,
                               alignment: Alignment.center,
@@ -1309,11 +1208,9 @@ class _EditFileFirstState extends State<EditFileFirst> {
                       ),
                     StreamBuilder(
                       builder: ((context, snapshot) {
-                        if (!snapshot.hasData ||
-                            snapshot.data.toString().isEmpty) {
+                        if (!snapshot.hasData || snapshot.data.toString().isEmpty) {
                           return Container(
-                            height:
-                                helpTexts.containsKey(property.value!) ? 0 : 20,
+                            height: helpTexts.containsKey(property.value!) ? 0 : 20,
                           );
                         }
                         String text = snapshot.data.toString();
@@ -1361,11 +1258,9 @@ class _EditFileFirstState extends State<EditFileFirst> {
                               onPressed: () {
                                 setState(() {
                                   if (_controller.text.trim().isNotEmpty) {
-                                    selectedMainFeatures[property.value!] =
-                                        _controller.text.trim();
+                                    selectedMainFeatures[property.value!] = _controller.text.trim();
                                   } else {
-                                    selectedMainFeatures
-                                        .remove(property.value!);
+                                    selectedMainFeatures.remove(property.value!);
                                   }
                                 });
 
@@ -1435,10 +1330,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                       height: 200,
                       child: ListView(
                         physics: BouncingScrollPhysics(),
-                        children: property.items!
-                            .map<Widget>((e) =>
-                                buildListItem(e, property, isProp: false))
-                            .toList(),
+                        children: property.items!.map<Widget>((e) => buildListItem(e, property, isProp: false)).toList(),
                       ),
                     ),
                     SizedBox(
@@ -1496,15 +1388,9 @@ class _EditFileFirstState extends State<EditFileFirst> {
     var color;
 
     if (isProp) {
-      color = (selectedMainProps.containsKey(property.value!) &&
-              selectedMainProps[property.value!] == e.value.toString())
-          ? Themes.secondary
-          : Themes.text;
+      color = (selectedMainProps.containsKey(property.value!) && selectedMainProps[property.value!] == e.value.toString()) ? Themes.secondary : Themes.text;
     } else {
-      color = (selectedMainFeatures.containsKey(property.value!) &&
-              selectedMainFeatures[property.value!] == e.value.toString())
-          ? Themes.secondary
-          : Themes.text;
+      color = (selectedMainFeatures.containsKey(property.value!) && selectedMainFeatures[property.value!] == e.value.toString()) ? Themes.secondary : Themes.text;
     }
 
     return GestureDetector(

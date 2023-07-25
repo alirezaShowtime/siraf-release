@@ -147,7 +147,7 @@ class Bookmark {
                               elevation: 1,
                               height: 50,
                               child: Text(
-                                "ثبت با یادداشت",
+                                "ذخیره با یادداشت",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,

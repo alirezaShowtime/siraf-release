@@ -165,7 +165,7 @@ class File {
   }
 
   String getSecondPrice() {
-    if (fullAdaptive()) return "";
+    if (fullAdaptive() || !isRent()) return "";
 
     if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 6);
@@ -197,6 +197,10 @@ class File {
 
   bool fullAdaptive() {
     return (getFirstPriceInt() == -1 && getSecondPriceInt() == -1);
+  }
+
+  bool isRent() {
+    return fullCategory?.getMainCategoryName().toString().contains("اجاره") ?? false;
   }
 }
 
