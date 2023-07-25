@@ -10,7 +10,6 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/chat_message.dart';
 
 part 'download_file_event.dart';
-
 part 'download_file_state.dart';
 
 class DownloadFileBloc extends RequestBloc<DownloadFileEvent, DownloadFileState> {
@@ -88,7 +87,7 @@ class DownloadFileBloc extends RequestBloc<DownloadFileEvent, DownloadFileState>
   }
 
   FutureOr<void> _isExistFile(DownloadFileIsExist event, Emitter<DownloadFileState> emit) async {
-    var fileInDownload = File(await event.savingPath());
+    var fileInDownload = File(await event.savingPath(replace: false));
 
     if (await fileInDownload.exists()) {
       return emit(DownloadFileSuccess(fileInDownload));

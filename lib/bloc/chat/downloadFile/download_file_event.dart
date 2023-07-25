@@ -6,10 +6,15 @@ abstract class DownloadFileEvent {
 
   DownloadFileEvent(this.fileMessage);
 
-  Future<String> savingPath() async {
+  Future<String> savingPath({bool replace = true}) async {
     Directory directory = await chatDownloadPath();
 
-    return "${directory.path}/${generateMd5(fileMessage.name)}.${fileMessage.extension}";
+    var path = "${directory.path}/${generateMd5(fileMessage.name)}.${fileMessage.extension}";
+    if (replace && await File(path).exists()) {
+      return generateUniquePath(path);
+    }
+
+    return path;
   }
 }
 
