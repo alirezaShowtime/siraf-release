@@ -12,8 +12,9 @@ import 'package:typicons_flutter/typicons_flutter.dart';
 
 class MarkInMapScreen extends StatefulWidget {
   LatLng? position;
+  LatLng? center;
 
-  MarkInMapScreen({this.position, Key? key}) : super(key: key);
+  MarkInMapScreen({this.position, this.center, Key? key}) : super(key: key);
 
   @override
   State<MarkInMapScreen> createState() => _MarkInMapScreenState();
@@ -32,6 +33,12 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
     super.initState();
 
     _controller = MapController();
+
+    if (widget.center != null) {
+      setState(() {
+        defaultLocation = widget.center!;
+      });
+    }
 
     setLocation();
   }

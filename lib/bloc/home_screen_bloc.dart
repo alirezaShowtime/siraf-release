@@ -121,9 +121,12 @@ class HSBloc extends Bloc<HSEvent, HSState> {
     var count = files.length ~/ pCount;
 
     if (count == 0)
-      return files.map((e) => HomeItem(type: Type.File, file: e)).toList();
+      return files.map((e) => HomeItem(type: Type.File, file: e)).toList() + posts.map((e) => HomeItem(type: Type.Post, post: e)).toList();
 
     if (count == 1)
+      return files.map((e) => HomeItem(type: Type.File, file: e)).toList() + posts.map((e) => HomeItem(type: Type.Post, post: e)).toList();
+      
+    if (count == 2)
       return files.map((e) => HomeItem(type: Type.File, file: e)).toList() + posts.map((e) => HomeItem(type: Type.Post, post: e)).toList();
 
     var random = Random();

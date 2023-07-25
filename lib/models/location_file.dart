@@ -112,7 +112,7 @@ class LocationFile {
   }
 
   bool isRent() {
-    return category?.getMainCategoryName() == "اجاره ای";
+    return category?.getMainCategoryName()?.contains("اجاره") ?? false;
   }
 }
 

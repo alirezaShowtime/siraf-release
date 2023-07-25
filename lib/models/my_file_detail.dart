@@ -235,6 +235,8 @@ class MyFileDetail {
   }
 
   bool isRental() {
+    return category?.getMainCategoryName().toString().contains("اجاره") ?? false;
+
     var prices = getPrices();
 
     return prices.length >= 2;

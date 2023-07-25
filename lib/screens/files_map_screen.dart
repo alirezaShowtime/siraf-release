@@ -618,7 +618,7 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
       setState(() {
         circles.add(CircleMarker(
           point: position,
-          radius: 2500, 
+          radius: 2500,
           useRadiusInMeter: true,
           color: Colors.blue.withOpacity(0.15),
           borderStrokeWidth: 0,
@@ -652,7 +652,9 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
 
               print(files.indexOf(e));
 
-              carouselController.jumpToPage(files.indexOf(e));
+              Future.delayed(Duration(milliseconds: 200), () {
+                carouselController.jumpToPage(files.indexOf(e));
+              });
             },
             child: Stack(
               children: [
