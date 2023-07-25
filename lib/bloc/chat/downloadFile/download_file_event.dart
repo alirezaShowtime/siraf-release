@@ -22,14 +22,6 @@ class DownloadFileIsExist extends DownloadFileEvent {
   DownloadFileIsExist(super.fileMessage);
 }
 
-class DownloadFileResume extends DownloadFileEvent {
-  late String url;
-
-  DownloadFileResume(super.fileMessage) {
-    this.url = fileMessage.path!;
-  }
-}
-
 class DownloadFileRequest extends DownloadFileEvent {
   late String url;
 

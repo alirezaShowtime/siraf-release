@@ -16,7 +16,6 @@ class DownloadFileBloc extends RequestBloc<DownloadFileEvent, DownloadFileState>
   DownloadFileBloc() : super(DownloadFileInitial()) {
     on<DownloadFileRequest>(_download);
     on<DownloadFileIsExist>(_isExistFile);
-    on<DownloadFileResume>(_downloadResume);
   }
 
   Future<File> _downloadWithHandler({
@@ -91,67 +90,6 @@ class DownloadFileBloc extends RequestBloc<DownloadFileEvent, DownloadFileState>
 
     if (await fileInDownload.exists()) {
       return emit(DownloadFileSuccess(fileInDownload));
-    }
-  }
-
-  FutureOr<void> _downloadResume(DownloadFileResume event, Emitter<DownloadFileState> emit) async {
-    add(DownloadFileRequest(event.fileMessage));
-    return;
-
-    int downloaded;
-    File file;
-
-    try {
-      file = File(await event.savingPath());
-
-      downloaded = await file.length();
-    } on PathNotFoundException catch (e) {
-      add(DownloadFileRequest(event.fileMessage));
-
-      return;
-    }
-
-    int? count = await getFileSizeFromUrl(event.fileMessage);
-
-    if (count == null) {
-      return emit(DownloadFileError(0, 0));
-    }
-
-    dio.Options options = dio.Options(
-      responseType: dio.ResponseType.bytes,
-      followRedirects: false,
-      validateStatus: (_) => true,
-      headers: {
-        "Range": "bytes=${count - downloaded}-",
-      },
-    );
-
-    dio.CancelToken cancelToken = dio.CancelToken();
-
-    int nowDownload = 0;
-    int countDownload = 0;
-
-    var onReceiveProgress = (int now, int count) {
-      nowDownload = now;
-      countDownload = count;
-      emit(DownloadFileLoading(cancelToken, now, count));
-    };
-
-    try {
-      dio.Response response = await dio.Dio().get(
-        event.url,
-        options: options,
-        cancelToken: cancelToken,
-        onReceiveProgress: onReceiveProgress,
-      );
-
-      var ref = await file.open(mode: FileMode.append);
-      await ref.writeFrom(response.data);
-      await ref.close();
-
-      emit(DownloadFileSuccess(file));
-    } on Exception catch (e) {
-      emit(DownloadFileError(nowDownload, countDownload));
     }
   }
 
