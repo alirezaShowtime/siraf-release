@@ -420,7 +420,9 @@ class _ChatListScreen extends State<ChatListScreen> {
       return;
     }
 
-    chatItem.countNotSeen = 0;
+    if (result.containsKey("newMessageCount")) {
+      chatItem.countNotSeen = result["newMessageCount"];
+    }
 
     if (!result.containsKey("sentMessage")) {
       chatItem.isConsultant = false;

@@ -464,6 +464,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
         Navigator.pop(context, {
           "chatId": widget.chatId,
           "sentMessage": lastMessage?.message,
+          "newMessageCount": newMessageCount,
         });
 
         return false;
