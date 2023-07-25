@@ -198,7 +198,7 @@ class _ChatMessageFileWidget extends State<ChatMessageFileWidget> with SingleTic
   }
 
   void onClickTryAgain() {
-    downloadFileBloc.add(DownloadFileResume(widget.fileMessage));
+    downloadFileBloc.add(DownloadFileRequest(widget.fileMessage));
   }
 
   void onClickCancel() {

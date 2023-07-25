@@ -10,7 +10,6 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/ticket_details.dart';
 
 part 'ticket_download_file_event.dart';
-
 part 'ticket_download_file_state.dart';
 
 class TicketDownloadFileBloc extends RequestBloc<TicketDownloadFileEvent, TicketDownloadFileState> {
@@ -87,7 +86,7 @@ class TicketDownloadFileBloc extends RequestBloc<TicketDownloadFileEvent, Ticket
   }
 
   FutureOr<void> _isExistFile(TicketDownloadFileIsExist event, Emitter<TicketDownloadFileState> emit) async {
-    var fileInDownload = File(await event.savingPath());
+    var fileInDownload = File(await event.savingPath(replace: false));
 
     if (await fileInDownload.exists()) {
       return emit(TicketDownloadFileSuccess(fileInDownload));
