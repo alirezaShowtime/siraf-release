@@ -425,6 +425,7 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
       MaterialPageRoute(
         builder: (_) => EstateScreen(
           estates: selectedEstates,
+          city: widget.formData.city,
         ),
       ),
     );

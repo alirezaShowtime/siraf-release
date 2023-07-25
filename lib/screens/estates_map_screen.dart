@@ -399,15 +399,11 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
         _onMyLocationClicked();
       }
 
-      if (state.search) {
-        if (state.estates.isNotEmpty) {
-          animatedMapMove(_controller, LatLng(double.parse(state.estates.first.lat!), double.parse(state.estates.first.long!)), 12, this);
-        } else {
-          notify("موردی یافت نشد");
-        }
-      } else if (cities.isNotEmpty) {
-        animatedMapMove(_controller, LatLng(double.parse(cities.first.lat!), double.parse(cities.first.long!)), 12, this);
+      if (estates.isEmpty) {
+        notify("موردی یافت نشد");
       }
+
+      move(state);
     }
   }
 
@@ -753,7 +749,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                                   fontSize: 8,
                                 ),
                               ),
-                              RatingBarIndicator(
+                              RatingBar.builder(
                                 direction: Axis.horizontal,
                                 itemCount: 5,
                                 itemSize: 14,
@@ -766,7 +762,9 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                                     size: 6,
                                   );
                                 },
-                                rating: e.rate ?? 0.0,
+                                initialRating: e.rate ?? 0.0,
+                                allowHalfRating: true,
+                                onRatingUpdate: (v) {},
                               ),
                             ],
                           ),
@@ -814,5 +812,81 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
         : cities.length == 1
             ? cities.first.name ?? "${cities.length} شهر"
             : "${cities.length} شهر";
+  }
+
+  void move(EstateLoadedState state) {
+    if (state.search) {
+      if (estates.isNotEmpty) {
+        animatedMapMove(_controller, toLatLng(estates[0].lat!, estates[0].long!), _controller.zoom, this);
+      } else if (cities.isNotEmpty) {
+        var averageLat = average(
+          cities.map<num>(
+            (e) => num.parse(e.lat!),
+          ),
+        );
+        var averageLng = average(
+          cities.map<num>(
+            (e) => num.parse(e.long!),
+          ),
+        );
+        animatedMapMove(_controller, toLatLng(averageLat, averageLng), 11, this);
+      }
+    } else if (estates.isNotEmpty) {
+      var averageLat = average(
+        estates.map<num>(
+          (e) => num.parse(e.lat!),
+        ),
+      );
+      var averageLng = average(
+        estates.map<num>(
+          (e) => num.parse(e.long!),
+        ),
+      );
+
+      animatedMapMove(_controller, toLatLng(averageLat, averageLng), 12, this);
+    } else if (cities.isNotEmpty) {
+      var averageLat = average(
+        cities.map<num>(
+          (e) => num.parse(e.lat!),
+        ),
+      );
+      var averageLng = average(
+        cities.map<num>(
+          (e) => num.parse(e.long!),
+        ),
+      );
+      animatedMapMove(_controller, toLatLng(averageLat, averageLng), 11, this);
+    }
+  }
+
+  LatLng toLatLng(lat, long) {
+    return LatLng(toDouble(lat), toDouble(long));
+  }
+
+  double toDouble(value) {
+    if (value is String) {
+      return double.parse(value);
+    }
+    if (value is int) {
+      return value.toDouble();
+    }
+    if (value is num) {
+      return value.toDouble();
+    }
+    if (value is double) {
+      return value;
+    }
+
+    return -1;
+  }
+
+  num average(Iterable<num> map) {
+    num total = 0;
+
+    map.forEach((element) {
+      total += element;
+    });
+
+    return total / map.length;
   }
 }

@@ -22,6 +22,7 @@ extension AddCommentWidget on _EstateProfileScreen {
               minRating: 0,
               direction: Axis.horizontal,
               itemCount: 5,
+              allowHalfRating: true,
               itemPadding: EdgeInsets.symmetric(horizontal: 10),
               itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
               itemSize: 35,

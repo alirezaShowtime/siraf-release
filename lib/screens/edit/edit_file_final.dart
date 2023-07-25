@@ -464,6 +464,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
       MaterialPageRoute(
         builder: (_) => EstateScreen(
           estates: selectedEstates,
+          city: widget.formData.city,
         ),
       ),
     );

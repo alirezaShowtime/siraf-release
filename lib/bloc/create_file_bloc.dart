@@ -5,6 +5,7 @@ import 'dart:io' as io;
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:path/path.dart' as p;
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/create_file_form_data.dart';
 import 'package:siraf3/models/user.dart';
@@ -48,8 +49,7 @@ class CreateFileBloc extends Bloc<CreateFileEvent, CreateFileState> {
       var videos = event.data.files.where((element) => checkVideoExtension((element['file'] as io.File).path)).toList();
 
       var images = event.data.files.where((element) => checkImageExtension((element['file'] as io.File).path)).toList();
-      
-      
+
       print("_________________________FILES_PURE____________________________");
       print(event.data.files);
 
@@ -68,10 +68,10 @@ class CreateFileBloc extends Bloc<CreateFileEvent, CreateFileState> {
         if (images.isNotEmpty) 'imagesName': jsonEncode(images.map((e) => (e['title'] as String?) ?? "").toList()),
         'description': event.data.description,
         'securityDescription': event.data.secDescription,
-        'visitPhoneNumber': event.data.visitPhone,
+        if (event.data.visitPhone.isFill()) 'visitPhoneNumber': event.data.visitPhone,
         'ownerPhoneNumber': event.data.ownerPhone,
         'ownerName': event.data.ownerName,
-        'visitName': event.data.visitName,
+        if (event.data.visitName.isFill()) 'visitName': event.data.visitName,
         if (event.data.estates.isNotEmpty) 'estateIds': jsonEncode(event.data.estates.map((e) => e.id!).toList()),
       });
 

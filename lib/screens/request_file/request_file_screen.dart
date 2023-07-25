@@ -104,8 +104,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                     padding: EdgeInsets.only(bottom: 10),
                     decoration: BoxDecoration(
                       border: Border(
-                        bottom: BorderSide(
-                            color: Themes.textGrey.withOpacity(0.5), width: 1),
+                        bottom: BorderSide(color: Themes.textGrey.withOpacity(0.5), width: 1),
                       ),
                     ),
                     child: Row(
@@ -142,9 +141,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                 Section(
                   title: "دسته بندی",
                   hint: "انتخاب",
-                  value: category != null
-                      ? categories.map((e) => e.name).join(' > ')
-                      : null,
+                  value: category != null ? categories.map((e) => e.name).join(' > ') : null,
                   onTap: onClickCategoryItem,
                 ),
                 Section(
@@ -174,8 +171,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                         labelText: 'عنوان',
                         border: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: App.theme.tooltipTheme.textStyle?.color ??
-                                Themes.textGrey,
+                            color: App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey,
                             width: 0.5,
                           ),
                           borderRadius: BorderRadius.circular(2),
@@ -208,23 +204,15 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                           ),
                           borderRadius: BorderRadius.circular(2),
                         ),
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                        hintText:
-                            "در این قسمت به موارد مهم ملک مانند نوع ملک و محله اشاره کنید",
-                        hintStyle: TextStyle(
-                            fontSize: 13,
-                            color: App.theme.tooltipTheme.textStyle?.color),
-                        labelStyle: TextStyle(
-                            fontSize: 14,
-                            color: App.theme.tooltipTheme.textStyle?.color),
+                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                        hintText: "در این قسمت به موارد مهم ملک مانند نوع ملک و محله اشاره کنید",
+                        hintStyle: TextStyle(fontSize: 13, color: App.theme.tooltipTheme.textStyle?.color),
+                        labelStyle: TextStyle(fontSize: 14, color: App.theme.tooltipTheme.textStyle?.color),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         floatingLabelStyle: TextStyle(color: Themes.primary),
                       ),
                       controller: _titleController,
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: App.theme.textTheme.bodyLarge?.color),
+                      style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color),
                       maxLines: 1,
                       cursorColor: Themes.primary,
                     ),
@@ -274,28 +262,19 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                       ),
                       floatingLabelStyle: TextStyle(color: Themes.primary),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      hintStyle: TextStyle(
-                          fontSize: 13,
-                          color: App.theme.tooltipTheme.textStyle?.color),
-                      labelStyle: TextStyle(
-                          fontSize: 14,
-                          color: App.theme.tooltipTheme.textStyle?.color),
-                      hintText:
-                          "در این قسمت به جزئیات ملک مانند امکانات ، ویژگی ها و ... که برای شمااهمیت دارد اشاره کنید",
+                      hintStyle: TextStyle(fontSize: 13, color: App.theme.tooltipTheme.textStyle?.color),
+                      labelStyle: TextStyle(fontSize: 14, color: App.theme.tooltipTheme.textStyle?.color),
+                      hintText: "در این قسمت به جزئیات ملک مانند امکانات ، ویژگی ها و ... که برای شمااهمیت دارد اشاره کنید",
                     ),
                     controller: _descriptionController,
                     cursorColor: Themes.primary,
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: App.theme.textTheme.bodyLarge?.color),
+                    style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color),
                   ),
                 ),
                 Section(
                   title: "دفتر/دفاتر املاک(اختیاری)",
                   hint: "انتخاب",
-                  value: selectedEstates.isNotEmpty
-                      ? "${selectedEstates.length} مورد"
-                      : null,
+                  value: selectedEstates.isNotEmpty ? "${selectedEstates.length} مورد" : null,
                   onTap: onClickSelectEstate,
                 ),
                 SizedBox(height: 80),
@@ -462,11 +441,15 @@ class _RequestFileScreen extends State<RequestFileScreen> {
   }
 
   void onClickSelectEstate() async {
+    if (city == null) {
+      return notify("ابتدا شهر را انتخاب کنید");
+    }
     var result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => EstateScreen(
           estates: selectedEstates,
+          city: city!,
         ),
       ),
     );
@@ -508,8 +491,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
 
   BuildContext? numberDialog;
 
-  showNumberDialog(String minVal, String maxVal, String label, String labelP,
-      void Function(String, String) onTap) {
+  showNumberDialog(String minVal, String maxVal, String label, String labelP, void Function(String, String) onTap) {
     StreamController<String> persianNumberTextMin = StreamController();
     persianNumberTextMin.add(minVal.replaceAll(',', '').toWord());
 
@@ -577,8 +559,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                     ),
                     StreamBuilder(
                       builder: ((context, snapshot) {
-                        if (!snapshot.hasData ||
-                            snapshot.data.toString().isEmpty) {
+                        if (!snapshot.hasData || snapshot.data.toString().isEmpty) {
                           return Container(
                             alignment: Alignment.center,
                             height: 20,
@@ -646,8 +627,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                     ),
                     StreamBuilder(
                       builder: ((context, snapshot) {
-                        if (!snapshot.hasData ||
-                            snapshot.data.toString().isEmpty) {
+                        if (!snapshot.hasData || snapshot.data.toString().isEmpty) {
                           return Container(
                             alignment: Alignment.center,
                             height: 20,
@@ -807,8 +787,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
       dismissDialog(loadingDialogContext);
       notify("درخواست فایل با موفقیت ثبت شد");
 
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (_) => RequestListScreen()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => RequestListScreen()));
     }
   }
 

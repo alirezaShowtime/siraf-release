@@ -25,6 +25,7 @@ extension AddCommentWidget on _ConsultantProfileScreen {
               itemPadding: EdgeInsets.symmetric(horizontal: 10),
               itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
               itemSize: 35,
+              allowHalfRating: true,
               onRatingUpdate: (double value) => rate = value,
               glow: false,
               unratedColor: Colors.grey.shade200,

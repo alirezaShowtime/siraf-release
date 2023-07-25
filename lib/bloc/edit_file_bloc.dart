@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'dart:io' as io;
 import 'package:path/path.dart' as p;
@@ -53,9 +54,9 @@ class EditFileBloc extends Bloc<EditFileEvent, EditFileState> {
         'category_id': event.data.category.id!.toString(),
         'fetcher': jsonEncode(event.data.properties),
         'description': event.data.description,
-        'visitPhoneNumber': event.data.visitPhone,
+        if (event.data.visitPhone.isFill()) 'visitPhoneNumber': event.data.visitPhone,
         'ownerPhoneNumber': event.data.ownerPhone,
-        'visitName': event.data.visitPhone,
+        if (event.data.visitName.isFill()) 'visitName': event.data.visitPhone,
         'ownerName': event.data.ownerName,
         if (event.data.estates.isNotEmpty)
           'estateIds':

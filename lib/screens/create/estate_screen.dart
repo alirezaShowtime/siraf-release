@@ -24,16 +24,15 @@ import 'package:typicons_flutter/typicons_flutter.dart';
 
 class EstateScreen extends StatefulWidget {
   List<Estate> estates;
+  City city;
 
-  EstateScreen({required this.estates, super.key});
+  EstateScreen({required this.estates, required this.city, super.key});
 
   @override
   State<EstateScreen> createState() => _EstateScreenState();
 }
 
 class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMixin {
-  List<City> cities = [];
-
   bool _showFileOnMyLocation = false;
 
   bool _firstTime = false;
@@ -42,7 +41,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
   void initState() {
     super.initState();
 
-    getCities();
+    getEstates();
     setEstates();
 
     bloc.stream.listen((event) async {
@@ -50,6 +49,8 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
         setState(() {
           currentSortType = event.sort_type;
         });
+
+        estates = event.estates;
 
         if (mapEnabled) {
           if (_firstTime) {
@@ -60,37 +61,21 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
               });
             });
           } else {
-            if (event.search) {
-              if (event.estates.isNotEmpty) {
-                animatedMapMove(_controller, LatLng(double.parse(event.estates.first.lat!), double.parse(event.estates.first.long!)), 12, this);
-              }
-            } else {
-              var city = (await City.getList()).first;
-              Future.delayed(Duration(milliseconds: 500), () {
-                _controller.move(LatLng(double.parse(city.lat!), double.parse(city.long!)), 12);
-              });
-            }
+            move(event);
           }
         }
       }
     });
   }
 
+  List<Estate> estates = [];
+
   List<CircleMarker> circles = [];
-
-  getCities() async {
-    var mCities = await City.getList();
-    setState(() {
-      cities = mCities;
-    });
-
-    getEstates();
-  }
 
   getEstates() {
     bloc.add(
       EstateLoadEvent(
-        city_ids: cities.map((e) => e.id!).toList(),
+        city_ids: [widget.city.id!],
         search: _searchController.text.trim().isEmpty ? null : _searchController.text.trim(),
         latLng: (_showFileOnMyLocation && myLocationMarker != null) ? myLocationMarker!.point : null,
         sort: currentSortType,
@@ -124,7 +109,6 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
   }
 
   getEstatesFirstTime() async {
-    await getCities();
     if (await checkLocationEnabled()) {
       setState(() {
         _showFileOnMyLocation = true;
@@ -162,7 +146,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
           elevation: 0.7,
           title: TextField2(
             decoration: InputDecoration(
-              hintText: "جستجو در دفاتر املاک | " + cities.map((e) => e.name).join(' و '),
+              hintText: "جستجو در دفاتر املاک | " + widget.city.name!,
               hintStyle: TextStyle(color: Themes.textGrey, fontSize: 13),
               border: InputBorder.none,
             ),
@@ -688,7 +672,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
             children: [
               Align(
                 alignment: Alignment.topLeft,
-                child: RatingBarIndicator(
+                child: RatingBar.builder(
                   direction: Axis.horizontal,
                   itemCount: 5,
                   itemSize: 14,
@@ -701,7 +685,9 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                       size: 10,
                     );
                   },
-                  rating: estate.rate ?? 0.0,
+                  initialRating: estate.rate ?? 0.0,
+                  allowHalfRating: true,
+                  onRatingUpdate: (v) {},
                 ),
               ),
               Text(
@@ -778,7 +764,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                                   fontSize: 14,
                                 ),
                               ),
-                              RatingBarIndicator(
+                              RatingBar.builder(
                                 direction: Axis.horizontal,
                                 itemCount: 5,
                                 itemSize: 14,
@@ -791,7 +777,9 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                                     size: 10,
                                   );
                                 },
-                                rating: 4.2,
+                                initialRating: estate.rate ?? 0,
+                                allowHalfRating: true,
+                                onRatingUpdate: (v) {},
                               ),
                             ],
                           ),
@@ -986,7 +974,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                                   fontSize: 8,
                                 ),
                               ),
-                              RatingBarIndicator(
+                              RatingBar.builder(
                                 direction: Axis.horizontal,
                                 itemCount: 5,
                                 itemSize: 14,
@@ -999,7 +987,9 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                                     size: 6,
                                   );
                                 },
-                                rating: e.rate ?? 5.0,
+                                allowHalfRating: true,
+                                initialRating: e.rate ?? 0,
+                                onRatingUpdate: (double value) {},
                               ),
                             ],
                           ),
@@ -1039,6 +1029,62 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
               },
             ))
         .toList();
+  }
+
+  void move(EstateLoadedState state) {
+    if (state.search) {
+      if (estates.isNotEmpty) {
+        animatedMapMove(_controller, toLatLng(estates[0].lat!, estates[0].long!), _controller.zoom, this);
+      } else {
+        animatedMapMove(_controller, toLatLng(widget.city.lat, widget.city.long!), 11, this);
+      }
+    } else if (estates.isNotEmpty) {
+      var averageLat = average(
+        estates.map<num>(
+          (e) => num.parse(e.lat!),
+        ),
+      );
+      var averageLng = average(
+        estates.map<num>(
+          (e) => num.parse(e.long!),
+        ),
+      );
+
+      animatedMapMove(_controller, toLatLng(averageLat, averageLng), 12, this);
+    } else {
+      animatedMapMove(_controller, toLatLng(widget.city.lat, widget.city.long!), 11, this);
+    }
+  }
+
+  LatLng toLatLng(lat, long) {
+    return LatLng(toDouble(lat), toDouble(long));
+  }
+
+  double toDouble(value) {
+    if (value is String) {
+      return double.parse(value);
+    }
+    if (value is int) {
+      return value.toDouble();
+    }
+    if (value is num) {
+      return value.toDouble();
+    }
+    if (value is double) {
+      return value;
+    }
+
+    return -1;
+  }
+
+  num average(Iterable<num> map) {
+    num total = 0;
+
+    map.forEach((element) {
+      total += element;
+    });
+
+    return total / map.length;
   }
 }
 

@@ -268,6 +268,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                     minRating: 1,
                     direction: Axis.horizontal,
                     itemCount: 5,
+                    allowHalfRating: true,
                     itemPadding: EdgeInsets.symmetric(horizontal: 0.25),
                     itemBuilder: (context, _) =>
                         icon(Icons.star, color: Colors.amber),
