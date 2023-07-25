@@ -200,7 +200,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                               ] +
                               mediaBoxes
                                   .map<Widget>(
-                                    (e) => GestureDetector(
+                                    (e) => InkWell(
                                       onTap: () {
                                         showOptionsDialog(
                                             mediaBoxes.indexOf(e));
@@ -370,7 +370,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                         maxLines: 1,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "لطفا نام و نام خانوادگی را بنویسید";
+                            return "لطفا نام و نام خانوادگی مالک را وارد نمایید";
                           }
                         },
                         onSaved: ((newValue) {
@@ -609,7 +609,10 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                         maxLines: 1,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "شماره تماس بازدید را وارد کنید";
+                            return "لطفا شماره تماسی جهت همماهنگی برای بازدید وارد نمایید";
+                          }
+                          if (!value.startsWith("09")) {
+                            return "شماره تماس باید با 09 شروع شود";
                           }
                           if (value.length != 11) {
                             return "شماره تماس باید 11 کاراکتر باشد";

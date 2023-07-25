@@ -179,7 +179,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   goSelectCity({showSelected = false}) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => SelectCityScreen(showSelected: showSelected)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => SelectCityScreen(
+                  showSelected: showSelected,
+                  force: true,
+                )));
   }
 
   openMenu() async {
@@ -315,6 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
+                  filterData.search = null;
                   getFiles();
                 },
                 color: Themes.primary,

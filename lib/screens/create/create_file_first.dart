@@ -426,7 +426,13 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
     }
   }
 
-  Map<String, String> hints = {"meter": "متراژ را به متر وارد کنید", "price": "قیمت کل را به تومان وارد کنید", "age": "سال ساخت را وارد کنید", "prices": "مبلغ ودیعه را به تومان وارد کنید", "rent": "مبلغ اجاره را به تومان وارد کنید"};
+  Map<String, String> hints = {
+    "meter": "متراژ را به متر وارد کنید",
+    "price": "قیمت کل را به تومان وارد کنید",
+    "age": "سال ساخت را وارد کنید",
+    "prices": "مبلغ ودیعه را به تومان وارد کنید",
+    "rent": "مبلغ اجاره را به تومان وارد کنید"
+  };
 
   Map<String, String> helpTexts = {
     "age": "مثال : 1401",
@@ -481,12 +487,23 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
     if (city == null) {
       await _selectCity();
     }
+    var marker = null;
+    var center = null;
+
+    if (location != null) {
+      marker = LatLng(location!.latitude, location!.longitude);
+    }
+
+    if (marker != null) {
+      center = marker;
+    } else if (city != null) {
+      center = LatLng(double.parse(city!.lat!), double.parse(city!.long!));
+    }
+
     var result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => MarkInMapScreen(
-          position: location != null ? LatLng(location!.latitude, location!.longitude) : null,
-        ),
+        builder: (_) => MarkInMapScreen(position: marker, center: center),
       ),
     );
 
@@ -678,7 +695,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                         controller: _controller,
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: "آدرس را بصورت دقیق وارد کنید",
+                          hintText: "آدرس را بصورت دقیق وارد کنید. (آدرس به صورت عمومی نمایش داده نمی شود)",
                           hintStyle: TextStyle(
                             color: Themes.textGrey,
                             fontSize: 13,

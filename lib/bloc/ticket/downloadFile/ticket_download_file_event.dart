@@ -6,11 +6,11 @@ abstract class TicketDownloadFileEvent {
 
   TicketDownloadFileEvent(this.fileMessage);
 
-  Future<String> savingPath() async {
+  Future<String> savingPath({bool replace = true}) async {
     Directory directory = await ticketDownloadPath();
 
     var path = "${directory.path}/${generateMd5(fileMessage.name)}.${fileMessage.extension}";
-    if (await File(path).exists()) {
+    if (replace && await File(path).exists()) {
       return generateUniquePath(path);
     }
 

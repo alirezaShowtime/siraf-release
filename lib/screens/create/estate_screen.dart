@@ -236,7 +236,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                               color: Themes.text,
                             ),
                           ),
-                          if (currentSortType == "new")
+                          if (currentSortType == "newest")
                             Icon(
                               Icons.check,
                               color: Themes.icon,
@@ -258,7 +258,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                               color: Themes.text,
                             ),
                           ),
-                          if (currentSortType == "old")
+                          if (currentSortType == "oldest")
                             Icon(
                               Icons.check,
                               color: Themes.icon,

@@ -198,7 +198,7 @@ class _SearchScreen extends State<SearchScreen> {
       widget.filterData.search = searchedText;
     });
 
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (_) => SearchResultScreen(

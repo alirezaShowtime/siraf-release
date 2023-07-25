@@ -152,7 +152,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
           actions: [
             IconButton(
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (_) => SearchScreen(

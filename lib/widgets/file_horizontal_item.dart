@@ -17,31 +17,12 @@ class FileHorizontalItem extends StatefulWidget {
 }
 
 class _FileHorizontalItemState extends State<FileHorizontalItem> {
-  late Bookmark bookmark;
-
-  @override
-  void initState() {
-    super.initState();
-
-    bookmark = Bookmark(
-        id: widget.file.id!,
-        isFavorite: widget.file.favorite ?? false,
-        context: context);
-
-    bookmark.favoriteStream.stream.listen((isFavorite) {
-      setState(() {
-        widget.file.favorite = isFavorite;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     double imageSize = (MediaQuery.of(context).size.width - 20) / 3.5;
     if (imageSize > 140) imageSize = 140;
     return Container(
-      decoration:
-          BoxDecoration(color: App.theme.dialogBackgroundColor, boxShadow: [
+      decoration: BoxDecoration(color: App.theme.dialogBackgroundColor, boxShadow: [
         BoxShadow(
           color: App.theme.backgroundColor,
           blurRadius: 1,
@@ -57,38 +38,17 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Stack(
-              children: [
-                Image(
-                  image: NetworkImage(widget.file.images?.first.path ?? ""),
-                  width: imageSize,
-                  height: imageSize,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Image(
-                    image: AssetImage(IMAGE_NOT_AVAILABLE),
-                    width: imageSize,
-                    height: imageSize,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Positioned(
-                  right: 6,
-                  top: -1,
-                  child: GestureDetector(
-                    onTap: () {
-                      doWithLogin(context, () {
-                        bookmark.addOrRemoveFavorite();
-                      });
-                    },
-                    child: Icon(
-                      CupertinoIcons.bookmark_fill,
-                      color: (widget.file.favorite ?? false)
-                          ? Themes.primary
-                          : Colors.grey.withOpacity(0.5),
-                    ),
-                  ),
-                ),
-              ],
+            child: Image(
+              image: NetworkImage(widget.file.images?.first.path ?? ""),
+              width: imageSize,
+              height: imageSize,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Image(
+                image: AssetImage(IMAGE_NOT_AVAILABLE),
+                width: imageSize,
+                height: imageSize,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           SizedBox(
@@ -132,9 +92,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                           ],
                         ),
                         Text(
-                          (widget.file.publishedAgo ?? "") +
-                              ' | ' +
-                              (widget.file.city?.name ?? ""),
+                          (widget.file.publishedAgo ?? "") + ' | ' + (widget.file.city?.name ?? ""),
                           style: TextStyle(
                             color: App.theme.textTheme.bodyLarge?.color,
                             fontSize: 9,
@@ -170,18 +128,13 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: widget.file.propertys
-                                  ?.where((element) =>
-                                      element.weightList == 1 ||
-                                      element.weightList == 2 ||
-                                      element.weightList == 3 ||
-                                      element.weightList == 4)
+                                  ?.where((element) => element.weightList == 1 || element.weightList == 2 || element.weightList == 3 || element.weightList == 4)
                                   .toList()
                                   .take(4)
                                   .map<Widget>((e) => Text(
                                         "${e.name} ${nonIfZero(e.value)}",
                                         style: TextStyle(
-                                          color: App
-                                              .theme.textTheme.bodyLarge?.color,
+                                          color: App.theme.textTheme.bodyLarge?.color,
                                           fontSize: 10.5,
                                           fontWeight: FontWeight.w400,
                                           fontFamily: 'IranSans',
