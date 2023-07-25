@@ -9,6 +9,7 @@ class MessagesLoading extends MessagesState {}
 
 class MessagesSuccess extends MessagesState {
   List<ChatMessage> messages = [];
+  int newMessageCount = 0;
 
   Response response;
 
@@ -17,6 +18,7 @@ class MessagesSuccess extends MessagesState {
       var data = jDecode(response.body)["data"];
       messages = ChatMessage.fromList(data["messages"]);
       messages = messages.reversed.toList();
+      newMessageCount = data["chat"]["message"]["countNotSeen"];
     } catch (e) {
       return;
     }
