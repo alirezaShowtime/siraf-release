@@ -467,14 +467,14 @@ class _EditFileFirstState extends State<EditFileFirst> {
             );
           }).toList() +
           [
-            if (otherProps.isNotEmpty)
+            if (otherProps.isNotEmpty || otherFeature.isNotEmpty)
               section(
                 title: "سایر امکانات و ویژگی ها",
                 hint: "انتخاب",
                 value: (selectedOtherProps.isNotEmpty || selectedOtherFeatures.isNotEmpty) ? (selectedOtherProps.length + selectedOtherFeatures.length).toString() + " مورد" : null,
                 onTap: _goPropertiesScreen,
               ),
-            if (otherProps.isNotEmpty)
+            if (otherProps.isNotEmpty || otherFeature.isNotEmpty)
               SizedBox(
                 height: 14,
               ),

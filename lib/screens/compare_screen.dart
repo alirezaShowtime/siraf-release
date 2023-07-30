@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:siraf3/bloc/compare_bloc.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/extensions/list_extension.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file.dart';
+import 'package:siraf3/models/file_compare.dart';
+import 'package:siraf3/models/file_compare.dart' as fc;
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
+import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
+import 'package:siraf3/widgets/try_again.dart';
 
 class CompareScreen extends StatefulWidget {
   @override
@@ -17,15 +25,66 @@ class CompareScreen extends StatefulWidget {
 }
 
 class _CompareScreen extends State<CompareScreen> {
+  CompareBloc compareBloc = CompareBloc();
+
+  @override
+  void initState() {
+    super.initState();
+
+    requestComparision();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: MyBackButton(),
-        title: AppBarTitle("مقایسه"),
+    return BlocProvider(
+      create: (_) => compareBloc,
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: MyBackButton(),
+          title: AppBarTitle("مقایسه"),
+        ),
+        body: BlocBuilder<CompareBloc, CompareState>(builder: _compareBuilder),
       ),
-      body: ListView(
+    );
+  }
+
+  List<String> getPropertiesName(List<FileCompare> files) {
+    List<fc.Property> largestProperties = [];
+
+    files.forEach((file) {
+      if (file.property.isFill()) {
+        file.property!.forEach((prop) {
+          if (prop.name.isFill() && !largestProperties.any((e) => e.name!.trim() == prop.name!.trim())) {
+            largestProperties.add(prop);
+          }
+        });
+      }
+    });
+
+    largestProperties.sort((a, b) => (a.section ?? 0).compareTo(b.section ?? 0));
+
+    return largestProperties.where((e) => e.name != null).map((e) => e.name!).toList();
+  }
+
+  Widget _compareBuilder(BuildContext context, CompareState state) {
+    if (state is CompareInitState) return Container();
+    if (state is CompareLoadingState) return Center(child: Loading());
+
+    if (state is CompareErrorState) {
+      var message = jDecode(state.response.body)['message'] as String?;
+
+      return Center(
+        child: TryAgain(
+          message: message,
+          onPressed: requestComparision,
+        ),
+      );
+    }
+
+    if (state is CompareLoadedState) {
+      var propertiesName = getPropertiesName(state.files);
+      return ListView(
         children: [
           SizedBox(
             height: MediaQuery.of(context).size.height,
@@ -33,46 +92,40 @@ class _CompareScreen extends State<CompareScreen> {
               children: [
                 ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: widget.files.length + 1,
+                  itemCount: state.files.length + 1,
                   itemBuilder: (BuildContext context, int i) {
                     if (i == 0) return SizedBox(width: 40);
                     return _CompareItem(
-                      file: widget.files[i - 1],
+                      file: state.files[i - 1],
                       onClickCloseButton: () {
-                        if (widget.files.length <= 2) {
+                        if (state.files.length <= 2) {
                           notify("برای مقاسیه حداقل 2 فایل لازم است.");
                           return;
                         }
                         widget.files.remove(widget.files[i - 1]);
                         setState(() {});
                       },
+                      propertiesName: propertiesName,
                     );
                   },
                 ),
                 Positioned(
                   top: 0,
                   right: 0,
-                  child: _CompareItem(propertiesName: getPropertiesName()),
+                  child: _CompareItem(propertiesName: propertiesName),
                 ),
               ],
             ),
           ),
         ],
-      ),
-    );
+      );
+    }
+
+    return Container();
   }
 
-  List<String> getPropertiesName() {
-    List<String> largestPropertiesName = [];
-
-    widget.files.forEach((file) {
-      if ((file.propertys?.length ?? 0) > largestPropertiesName.length) {
-        largestPropertiesName =
-            file.propertys!.map((e) => e.name ?? "").toList();
-      }
-    });
-
-    return largestPropertiesName;
+  requestComparision() {
+    compareBloc.add(CompareEvent(files: widget.files));
   }
 }
 
@@ -81,7 +134,7 @@ class _CompareItem extends StatefulWidget {
   State<StatefulWidget> createState() => _CompareItemState();
 
   List<String>? propertiesName;
-  File? file;
+  FileCompare? file;
   Function? onClickCloseButton;
 
   _CompareItem({this.file, this.propertiesName, this.onClickCloseButton});
@@ -93,39 +146,73 @@ class _CompareItemState extends State<_CompareItem> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.propertiesName != null) {
+    if (widget.propertiesName != null && widget.file == null) {
       return _getPropertyColumns();
     }
 
     return Container(
-      width: 110,
+      width: widget.propertiesName.isNotNullOrEmpty() && widget.file == null ? null : 110,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: _propertyWidgets(),
+        children: _propertyWidgets(widget.file!, widget.propertiesName!),
       ),
     );
   }
 
-  List<Widget> _propertyWidgets() {
+  List<Widget> _propertyWidgets(FileCompare file, List<String> names) {
+    file.property!.sort((a, b) => (a.section ?? 0).compareTo(b.section ?? 0));
     // if (_widgets.isNotEmpty) return _widgets;
     _widgets.clear();
     _widgets.add(
-      Align(
-          alignment: Alignment.center, child: imageAndNameWidget(widget.file!)),
+      Align(alignment: Alignment.center, child: imageAndNameWidget(file.file!)),
     );
 
-    _widgets.addAll(widget.file!.propertys!.map((property) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 7.5),
-        child: Text(
-          property.value ?? '-',
-          style: TextStyle(
-            color: App.theme.tooltipTheme.textStyle?.color,
-            fontSize: 12,
+    names.forEach((name) {
+      Widget widget;
+
+      if (file.property!.any((element) => element.name == name)) {
+        var property = file.property!.firstWhere((element) => element.name == name);
+        widget = Padding(
+          padding: const EdgeInsets.symmetric(vertical: 7.5),
+          child: Text(
+            property.value ?? '-',
+            style: TextStyle(
+              color: App.theme.tooltipTheme.textStyle?.color,
+              fontSize: 12,
+            ),
           ),
-        ),
-      );
-    }));
+        );
+      } else {
+        widget = Padding(
+          padding: const EdgeInsets.symmetric(vertical: 7.5),
+          child: Text(
+            '-',
+            style: TextStyle(
+              color: App.theme.tooltipTheme.textStyle?.color,
+              fontSize: 12,
+            ),
+          ),
+        );
+      }
+
+      _widgets.add(Stack(
+        children: [
+          Container(
+            width: 70,
+            padding: const EdgeInsets.symmetric(vertical: 7.5, horizontal: 6),
+            child: Text(
+              name,
+              style: TextStyle(
+                fontFamily: "IranSansBold",
+                fontSize: 12,
+                color: App.theme.backgroundColor,
+              ),
+            ),
+          ),
+          Align(alignment: Alignment.center, child: widget),
+        ],
+      ));
+    });
 
     return _widgets;
   }
@@ -153,8 +240,7 @@ class _CompareItemState extends State<_CompareItem> {
           ),
           InkWell(
             onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => FileScreen(id: file.id!)));
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => FileScreen(id: file.id!)));
             },
             borderRadius: BorderRadius.circular(10),
             child: Padding(
@@ -165,10 +251,7 @@ class _CompareItemState extends State<_CompareItem> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image(
-                      image: NetworkImage(
-                          (file.images != null && file.images!.isNotEmpty)
-                              ? file.images!.first.path ?? ""
-                              : ""),
+                      image: NetworkImage((file.images != null && file.images!.isNotEmpty) ? file.images!.first.path ?? "" : ""),
                       width: 100,
                       height: 100,
                       fit: BoxFit.cover,
