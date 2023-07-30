@@ -158,7 +158,7 @@ class File {
 
       if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
 
-      return toPrice(prop.value!, prop.name!);
+      return toPrice(prop.value!, isRent() ? prop.name! : "");
     } else {
       return adaptivePrice("");
     }

@@ -193,11 +193,11 @@ class Bookmark {
     }
 
     if (note != null) {
-      var url = getFileUrl('note/addNoteFile/${id}/');
+      var url = getFileUrl('note/addNoteFile/');
 
       var response = await http2.postJsonWithToken(
         url,
-        body: {'note': note},
+        body: {'note': note, 'fileId': id},
       );
 
       if (!isResponseOk(response)) {
