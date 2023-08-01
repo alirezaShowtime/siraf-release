@@ -14,6 +14,7 @@ class FilterData {
   String? search;
   int? estateId;
   int? consultantId;
+  Map<String, String> propFilters = {};
 
   FilterData({
     this.category,
@@ -25,6 +26,7 @@ class FilterData {
     this.search,
     this.estateId,
     this.consultantId,
+    this.propFilters = const {},
   });
 
   String toQueryString() {
@@ -66,35 +68,79 @@ class FilterData {
       str += getDelimiter(str) + "title=" + search;
     }
 
-    if (canConvert(filters)) {
-      str += "&filters={";
-      if (filters!.mater != null && filters!.mater!.isNotEmpty) {
-        str +=
-            "\"mater\":" + jsonEncode(filters!.mater).replaceAll(' ', '') + ",";
-      }
+    // if (canConvert(filters)) {
+    //   str += "&filters={";
+    //   if (filters!.mater != null && filters!.mater!.isNotEmpty) {
+    //     str +=
+    //         "\"mater\":" + jsonEncode(filters!.mater).replaceAll(' ', '') + ",";
+    //   }
 
-      if (filters!.price != null && filters!.price!.isNotEmpty) {
-        str +=
-            "\"price\":" + jsonEncode(filters!.price).replaceAll(' ', '') + ",";
-      }
+    //   if (filters!.price != null && filters!.price!.isNotEmpty) {
+    //     str +=
+    //         "\"price\":" + jsonEncode(filters!.price).replaceAll(' ', '') + ",";
+    //   }
 
-      if (filters!.rent != null && filters!.rent!.isNotEmpty) {
-        str +=
-            "\"rent\":" + jsonEncode(filters!.rent).replaceAll(' ', '') + ",";
-      }
+    //   if (filters!.rent != null && filters!.rent!.isNotEmpty) {
+    //     str +=
+    //         "\"rent\":" + jsonEncode(filters!.rent).replaceAll(' ', '') + ",";
+    //   }
 
-      if (filters!.prices != null && filters!.prices!.isNotEmpty) {
-        str += "\"prices\":" +
-            jsonEncode(filters!.prices).replaceAll(' ', '') +
-            ",";
-      }
+    //   if (filters!.prices != null && filters!.prices!.isNotEmpty) {
+    //     str += "\"prices\":" +
+    //         jsonEncode(filters!.prices).replaceAll(' ', '') +
+    //         ",";
+    //   }
 
-      if (str.endsWith(",")) {
-        str = str.substring(0, str.length - 1);
-      }
+    //   if (str.endsWith(",")) {
+    //     str = str.substring(0, str.length - 1);
+    //   }
 
-      str += "}";
+    //   str += "}";
+    // }
+
+    if (filters?.mater != null) {
+      if (filters!.mater!.asMap().containsKey(0)) {
+        str += getDelimiter(str) + "minMeter=${filters!.mater![0]}";
+      }
+      
+      if (filters!.mater!.asMap().containsKey(1)) {
+        str += getDelimiter(str) + "maxMeter=${filters!.mater![1]}";
+      }
     }
+    
+    if (filters?.price != null) {
+      if (filters!.price!.asMap().containsKey(0)) {
+        str += getDelimiter(str) + "minPrice=${filters!.price![0]}";
+      }
+      
+      if (filters!.price!.asMap().containsKey(1)) {
+        str += getDelimiter(str) + "maxPrice=${filters!.price![1]}";
+      }
+    }
+    
+    if (filters?.prices != null) {
+      if (filters!.prices!.asMap().containsKey(0)) {
+        str += getDelimiter(str) + "minPrices=${filters!.prices![0]}";
+      }
+      
+      if (filters!.prices!.asMap().containsKey(1)) {
+        str += getDelimiter(str) + "maxPrices=${filters!.prices![1]}";
+      }
+    }
+    
+    if (filters?.rent != null) {
+      if (filters!.rent!.asMap().containsKey(0)) {
+        str += getDelimiter(str) + "minRent=${filters!.rent![0]}";
+      }
+      
+      if (filters!.rent!.asMap().containsKey(1)) {
+        str += getDelimiter(str) + "maxRent=${filters!.rent![1]}";
+      }
+    }
+
+    propFilters.forEach((key, value) {
+      str += getDelimiter(str) + "$key=$value";
+    });
 
     return str;
   }
