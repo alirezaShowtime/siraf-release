@@ -21,6 +21,8 @@ import 'package:siraf3/models/home_item.dart';
 import 'package:siraf3/models/post.dart';
 import 'package:siraf3/rabbit_mq_consum.dart';
 import 'package:siraf3/rabbit_mq_data.dart';
+import 'package:siraf3/screens/consultant_profile/consultant_profile_screen.dart';
+import 'package:siraf3/screens/estate_profile/estate_profile_screen.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
 import 'package:siraf3/screens/menu_screen.dart';
@@ -51,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
+    checkInitialLink();
     listenLink();
 
     if (widget.nextScreen != null) {
@@ -399,6 +402,85 @@ class _HomeScreenState extends State<HomeScreen> {
             : "${cities.length} شهر";
   }
 
+  bool _initialURILinkHandled = false;
+
+  Future<void> checkInitialLink() async {
+    if (!_initialURILinkHandled) {
+      _initialURILinkHandled = true;
+      final uri = await getInitialUri();
+      if (uri != null) {
+        debugPrint("Initial URI received $uri");
+        if (!mounted) {
+          return;
+        }
+
+        RegExp reg = new RegExp(r'https://siraf.app/files/([0-9]+)');
+
+        if (reg.hasMatch(uri.toString())) {
+          var match = reg.firstMatch(uri.toString());
+          var id = match!.group(1);
+
+          if (id == null) {
+            return;
+          }
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => FileScreen(
+                id: int.parse(id),
+              ),
+            ),
+          );
+
+          return;
+        }
+
+        reg = new RegExp(r'https://siraf.app/real-estate/consultant/([0-9]+)');
+
+        if (reg.hasMatch(uri.toString())) {
+          var match = reg.firstMatch(uri.toString());
+          var id = match!.group(1);
+
+          if (id == null) {
+            return;
+          }
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ConsultantProfileScreen(
+                consultantId: int.parse(id),
+                consultantName: null,
+              ),
+            ),
+          );
+          return;
+        }
+         reg = new RegExp(r'https://siraf.app/real-estate/agency/([0-9]+)');
+
+        if (reg.hasMatch(uri.toString())) {
+          var match = reg.firstMatch(uri.toString());
+          var id = match!.group(1);
+
+          if (id == null) {
+            return;
+          }
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => EstateProfileScreen(
+                estateId: int.parse(id),
+              ),
+            ),
+          );
+          return;
+        }
+      }
+    }
+  }
+
   void listenLink() {
     uriLinkStream.listen((Uri? uri) {
       debugPrint('Received URI: $uri');
@@ -406,27 +488,49 @@ class _HomeScreenState extends State<HomeScreen> {
         return;
       }
       debugPrint('Received URI: $uri');
-      RegExp reg = new RegExp(r'https://siraf.app/file/([0-9]+)');
+      RegExp reg = new RegExp(r'https://siraf.app/files/([0-9]+)');
 
-      if (!reg.hasMatch(uri.toString())) {
-        return notify("صفحه ای برای نمایش پیدا نشد");
-      }
+      if (reg.hasMatch(uri.toString())) {
+        var match = reg.firstMatch(uri.toString());
+        var id = match!.group(1);
 
-      var match = reg.firstMatch(uri.toString());
-      var id = match!.group(1);
+        if (id == null) {
+          return;
+        }
 
-      if (id == null) {
-        return notify("صفحه ای برای نمایش پیدا نشد");
-      }
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => FileScreen(
-            id: int.parse(id),
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => FileScreen(
+              id: int.parse(id),
+            ),
           ),
-        ),
-      );
+        );
+
+        return;
+      }
+
+      reg = new RegExp(r'https://siraf.app/real-estate/consultant/([0-9]+)');
+
+      if (reg.hasMatch(uri.toString())) {
+        var match = reg.firstMatch(uri.toString());
+        var id = match!.group(1);
+
+        if (id == null) {
+          return;
+        }
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ConsultantProfileScreen(
+              consultantId: int.parse(id),
+              consultantName: null,
+            ),
+          ),
+        );
+        return;
+      }
     }, onError: (Object err) {
       if (!mounted) {
         return;

@@ -472,16 +472,16 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
     } else if (event is CreateFileLoadedState) {
       dissmisLoadingDialog();
       notify("فایل با موفقیت ایجاد شد");
-      // WidgetsBinding.instance.addPostFrameCallback((_) {
-      //   Navigator.pushAndRemoveUntil(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (_) => HomeScreen(
-      //               nextScreen: MaterialPageRoute(builder: (_) => MyFilesScreen()),
-      //             )),
-      //     (Route<dynamic> route) => false,
-      //   );
-      // });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (_) => HomeScreen(
+                    nextScreen: MaterialPageRoute(builder: (_) => MyFilesScreen()),
+                  )),
+          (Route<dynamic> route) => false,
+        );
+      });
     }
   }
 
