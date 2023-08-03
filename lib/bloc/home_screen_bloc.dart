@@ -161,7 +161,7 @@ class HSBloc extends Bloc<HSEvent, HSState> {
     var url = getFileUrl('file/files/' +
         event.filterData.toQueryString() +
         '&lastId=' +
-        event.lastId.toString());
+        event.lastId.toString() + "&progress=7");
 
     if (!withToken) {
       return await http2.get(url, timeout: Duration(seconds: 60));

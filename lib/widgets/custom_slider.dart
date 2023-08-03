@@ -54,7 +54,10 @@ class CarouselSliderCustom extends StatefulWidget {
   State<CarouselSliderCustom> createState() => _CarouselSliderCustomState();
 }
 
-class _CarouselSliderCustomState extends State<CarouselSliderCustom> {
+class _CarouselSliderCustomState extends State<CarouselSliderCustom> with AutomaticKeepAliveClientMixin {  
+  @override
+  bool get wantKeepAlive => true;
+
   int _current = 0;
   final CarouselController _controller = CarouselController();
 
@@ -168,7 +171,10 @@ class CarouselSliderItemCustom extends StatefulWidget {
       _CarouselSliderItemCustomState();
 }
 
-class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> {
+class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> with AutomaticKeepAliveClientMixin {  
+  @override
+  bool get wantKeepAlive => true;
+  
   @override
   Widget build(BuildContext context) {
     if (widget.slide.type == s.SliderType.image) {

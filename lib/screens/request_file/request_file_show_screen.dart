@@ -262,20 +262,20 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                     style: TextStyle(fontSize: 10, color: Themes.textGrey),
                   ),
                   SizedBox(height: 6),
-                  RatingBar.builder(
-                    initialRating:
+                  RatingBarIndicator(
+                    rating:
                         (requestConsultant.consultantId?.rate?.toDouble() ?? 0),
-                    minRating: 1,
+                    // minRating: 1,
                     direction: Axis.horizontal,
                     itemCount: 5,
-                    allowHalfRating: true,
+                    // allowHalfRating: true,
                     itemPadding: EdgeInsets.symmetric(horizontal: 0.25),
                     itemBuilder: (context, _) =>
                         icon(Icons.star, color: Colors.amber),
                     itemSize: 10,
-                    onRatingUpdate: (double value) {},
-                    updateOnDrag: false,
-                    ignoreGestures: true,
+                    // onRatingUpdate: (double value) {},
+                    // updateOnDrag: false,
+                    // ignoreGestures: true,
                     unratedColor: Colors.grey.shade300,
                   ),
                 ],

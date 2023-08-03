@@ -9,10 +9,12 @@ import 'package:siraf3/bloc/consultant_profile/comment/send/consultant_profile_c
 import 'package:siraf3/bloc/consultant_profile/profile/consultant_profile_bloc.dart';
 import 'package:siraf3/bloc/files_bloc.dart';
 import 'package:siraf3/extensions/list_extension.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/consultant_info.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
+import 'package:siraf3/screens/estate_profile/estate_profile_screen.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
 import 'package:siraf3/themes.dart';

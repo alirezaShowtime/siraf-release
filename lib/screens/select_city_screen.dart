@@ -377,10 +377,13 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
           SizedBox(
             width: 5,
           ),
-          Icon(
-            Typicons.delete_outline,
-            color: Themes.icon,
-            size: 22,
+          Padding(
+            padding: EdgeInsets.only(bottom: 2.5),
+            child: Icon(
+              Typicons.delete_outline,
+              color: Themes.icon,
+              size: 22,
+            ),
           ),
         ]),
       ),

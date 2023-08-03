@@ -38,6 +38,14 @@ extension SearchBar on _ConsultantProfileScreen {
                   color: Themes.text,
                   fontSize: 11,
                 ),
+                textInputAction: TextInputAction.search,
+                onSubmitted: (v) {
+                  setState(() {
+                    filterData.search = v.isFill() ? v : null;
+                  });
+
+                  getFiles();
+                },
               ),
             ),
           ),

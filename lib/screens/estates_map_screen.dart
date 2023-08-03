@@ -580,7 +580,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                                 ),
                               ),
                               Text(
-                                "امتیار ${estate.rate ?? 0.0} از 5",
+                                "امتیار ${((estate.rate ?? 0.0) * 10).round() / 10} از 5",
                                 style: TextStyle(
                                   color: Themes.textGrey,
                                   fontSize: 12,
@@ -749,7 +749,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                                   fontSize: 8,
                                 ),
                               ),
-                              RatingBar.builder(
+                              RatingBarIndicator(
                                 direction: Axis.horizontal,
                                 itemCount: 5,
                                 itemSize: 14,
@@ -762,9 +762,10 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                                     size: 6,
                                   );
                                 },
-                                initialRating: e.rate ?? 0.0,
-                                allowHalfRating: true,
-                                onRatingUpdate: (v) {},
+                                rating: e.rate ?? .0,
+                                // initialRating: e.rate ?? 0.0,
+                                // allowHalfRating: true,
+                                // onRatingUpdate: (v) {},
                               ),
                             ],
                           ),

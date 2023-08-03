@@ -97,7 +97,6 @@ class _SettingsScreen extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.7,
-        backgroundColor: Themes.background,
         automaticallyImplyLeading: false,
         leading: MyBackButton(),
         title: AppBarTitle("تنظیمات"),

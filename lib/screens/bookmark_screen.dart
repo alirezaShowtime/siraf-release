@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/bookmark_bloc.dart';
+import 'package:siraf3/bloc/notes_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/favorite_file.dart';
 import 'package:siraf3/models/file.dart' as file;
+import 'package:siraf3/models/note.dart';
 import 'package:siraf3/screens/compare_screen.dart';
 import 'package:siraf3/screens/file_screen.dart';
+import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/bookmark_file_item.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
+import 'package:siraf3/widgets/note_file_item.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 class BookmarkScreen extends StatefulWidget {
@@ -19,20 +23,38 @@ class BookmarkScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _BookmarkScreen();
 }
 
-class _BookmarkScreen extends State<BookmarkScreen> {
+class _BookmarkScreen extends State<BookmarkScreen> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin<BookmarkScreen> {
+  @override
+  bool get wantKeepAlive => true;
+
   bool isSelectable = false;
 
   List<FavoriteFile> selectedFiles = [];
 
   BookmarkBloc bloc = BookmarkBloc();
+  NotesBloc notesBloc = NotesBloc();
 
   List<FavoriteFile> files = [];
+  List<Note> notes = [];
+
+  late TabController tabController;
+
+  int currentTabIndex = 0;
 
   @override
   void initState() {
     super.initState();
 
+    tabController = new TabController(vsync: this, length: 2);
+
+    tabController.addListener(() {
+      setState(() {
+        currentTabIndex = tabController.index;
+      });
+    });
+
     getFiles();
+    getNotes();
   }
 
   @override
@@ -50,8 +72,15 @@ class _BookmarkScreen extends State<BookmarkScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => bloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => bloc,
+        ),
+        BlocProvider(
+          create: (_) => notesBloc,
+        ),
+      ],
       child: WillPopScope(
         onWillPop: () async {
           if (isSelectable) {
@@ -83,130 +112,83 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                 }
               },
             ),
+            bottom: TabBar(
+              controller: tabController,
+              dividerColor: Themes.textGrey.withOpacity(0.5),
+              // todo : temporaray
+              labelColor: Themes.text,
+              unselectedLabelColor: Themes.textGrey,
+              labelStyle: TextStyle(
+                fontSize: 14,
+                fontFamily: "IranSansBold",
+              ),
+              unselectedLabelStyle: TextStyle(
+                fontSize: 14,
+                fontFamily: "IranSansBold",
+              ),
+              indicatorColor: Themes.primary,
+              tabs: [
+                Tab(text: "نشان ها"),
+                Tab(text: "یادداشت ها"),
+              ],
+            ),
             titleSpacing: 0,
             actions: [
-              InkWell(
-                onTap: _compare,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 7, vertical: 15),
-                  child: Text(
-                    "مقایسه",
-                    style: TextStyle(
-                      fontSize: 13,
+              if (currentTabIndex == 0)
+                InkWell(
+                  onTap: _compare,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 15),
+                    child: Text(
+                      "مقایسه",
+                      style: TextStyle(
+                        fontSize: 13,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              MyPopupMenuButton(
-                itemBuilder: (_) => <PopupMenuItem<int?>>[
-                  PopupMenuItem<int?>(
-                    value: null,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "نمایش همه",
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: App.theme.textTheme.bodyLarge?.color,
-                          ),
+              if (currentTabIndex == 0)
+                MyPopupMenuButton(
+                  itemBuilder: (_) => <PopupMenuItem>[
+                    PopupMenuItem<int>(
+                      value: 0,
+                      child: Text(
+                        "انتخاب همه",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: App.theme.textTheme.bodyLarge?.color,
                         ),
-                        if (sort == null)
-                          Icon(
-                            Icons.check,
-                            size: 20,
-                          ),
-                      ],
-                    ),
-                    height: 35,
-                  ),
-                  PopupMenuItem<int?>(
-                    value: 1,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "فقط فایل ها",
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: App.theme.textTheme.bodyLarge?.color,
-                          ),
-                        ),
-                        if (sort == 1)
-                          Icon(
-                            Icons.check,
-                            size: 20,
-                          ),
-                      ],
-                    ),
-                    height: 35,
-                  ),
-                  PopupMenuItem<int?>(
-                    value: 2,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "فقط محتوا ها",
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: App.theme.textTheme.bodyLarge?.color,
-                          ),
-                        ),
-                        if (sort == 2)
-                          Icon(
-                            Icons.check,
-                            size: 20,
-                          ),
-                      ],
-                    ),
-                    height: 35,
-                  ),
-                ],
-                iconData: Icons.sort_rounded,
-                onSelected: (val) {
-                  setState(() {
-                    sort = val;
-                  });
-                  getFiles();
-                },
-              ),
-              MyPopupMenuButton(
-                itemBuilder: (_) => <PopupMenuItem>[
-                  PopupMenuItem<int>(
-                    value: 0,
-                    child: Text(
-                      "انتخاب همه",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: App.theme.textTheme.bodyLarge?.color,
                       ),
+                      height: 35,
                     ),
-                    height: 35,
-                  ),
-                ],
-                iconData: Icons.more_vert_rounded,
-                onSelected: (val) {
-                  setState(() {
-                    isSelectable = true;
+                  ],
+                  iconData: Icons.more_vert_rounded,
+                  onSelected: (val) {
+                    setState(() {
+                      isSelectable = true;
 
-                    selectedFiles.clear();
-                    files.forEach((element) {
-                      selectedFiles.add(element);
+                      selectedFiles.clear();
+                      files.forEach((element) {
+                        selectedFiles.add(element);
+                      });
                     });
-                  });
-                },
-              ),
+                  },
+                ),
             ],
           ),
-          body: BlocBuilder<BookmarkBloc, BookmarkState>(builder: _builder),
+          body: TabBarView(
+            controller: tabController,
+            children: [
+              BlocBuilder<BookmarkBloc, BookmarkState>(builder: _fileBuilder),
+              BlocBuilder<NotesBloc, NotesState>(builder: _noteBuilder),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _builder(BuildContext context, BookmarkState state) {
+  Widget _fileBuilder(BuildContext context, BookmarkState state) {
     if (state is BookmarkInitState) {
       return Container();
     }
@@ -234,7 +216,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
       children: files.map<Widget>(
         (e) {
           return GestureDetector(
-            onTap: isSelectable ? () => changeSelection(e) : () => onTapFile(e),
+            onTap: isSelectable ? () => changeSelection(e) : () => onTapFile(e.fileId!.id!),
             onLongPress: () => changeSelection(e),
             child: BookmarkFileItem(
               file: e,
@@ -253,8 +235,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
 
   void _compare() async {
     if (selectedFiles.length < 2) {
-      return notify(
-          "جهت مقایسه حداقل می بایست دو فایل هم نوع را انتخاب نمایید");
+      return notify("جهت مقایسه حداقل می بایست دو فایل هم نوع را انتخاب نمایید");
     }
 
     int? parentId;
@@ -276,14 +257,8 @@ class _BookmarkScreen extends State<BookmarkScreen> {
         favorite: true,
         fullCategory: null,
         name: e.fileId!.name,
-        images: e.fileId!.images
-                ?.map<file.Images>((e) => file.Images.fromJson(e.toJson()))
-                .toList() ??
-            [],
-        propertys: e.fileId!.propertys
-                ?.map<file.Property>((e) => file.Property.fromJson(e.toJson()))
-                .toList() ??
-            [],
+        images: e.fileId!.images?.map<file.Images>((e) => file.Images.fromJson(e.toJson())).toList() ?? [],
+        propertys: e.fileId!.propertys?.map<file.Property>((e) => file.Property.fromJson(e.toJson())).toList() ?? [],
         publishedAgo: e.fileId!.publishedAgo,
       );
     }).toList();
@@ -292,8 +267,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
       print(element.toJson());
     });
 
-    await Navigator.push(context,
-        MaterialPageRoute(builder: (_) => CompareScreen(files: files)));
+    await Navigator.push(context, MaterialPageRoute(builder: (_) => CompareScreen(files: files)));
 
     setState(() {
       selectedFiles.clear();
@@ -317,14 +291,63 @@ class _BookmarkScreen extends State<BookmarkScreen> {
     });
   }
 
-  onTapFile(FavoriteFile e) {
+  onTapFile(int id) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => FileScreen(
-          id: e.fileId!.id!,
+          id: id,
         ),
       ),
     );
+  }
+
+  Widget _noteBuilder(BuildContext context, NotesState state) {
+    if (state is NotesInitState) {
+      return Container();
+    }
+    if (state is NotesLoadingState) {
+      return Center(
+        child: Loading(),
+      );
+    }
+
+    if (state is NotesErrorState) {
+      String? message = jDecode(state.response.body)['message'] ?? null;
+      return Center(
+        child: TryAgain(
+          message: message,
+          onPressed: getFiles,
+        ),
+      );
+    }
+
+    state = state as NotesLoadedState;
+
+    notes = state.notes;
+
+    return ListView(
+      children: notes.map<Widget>(
+        (e) {
+          return GestureDetector(
+            onTap: () => onTapFile(e.fileId!.id!),
+            child: NoteFileItem(
+              note: e,
+              isSelected: false,
+              onRemoveFavorite: (file) {
+                setState(() {
+                  notes.remove(e);
+                });
+              },
+            ),
+          );
+        },
+      ).toList(),
+    );
+
+  }
+
+  void getNotes() {
+    notesBloc.add(NotesEvent());
   }
 }

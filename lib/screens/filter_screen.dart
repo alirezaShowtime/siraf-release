@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -61,6 +62,8 @@ class _FilterScreenState extends State<FilterScreen> {
   @override
   void initState() {
     super.initState();
+
+    propFilters = widget.filterData.propFilters;
 
     if (widget.total_url != null) totalFileBloc = TotalFileBloc(url: widget.total_url!);
 
@@ -838,6 +841,8 @@ class _FilterScreenState extends State<FilterScreen> {
                               propFilters[prop.value!] = e.value.toString();
                             });
                           }
+
+                          onChangeFilter();
                         },
                         child: Container(
                           constraints: BoxConstraints(
@@ -863,7 +868,8 @@ class _FilterScreenState extends State<FilterScreen> {
                         ),
                       ),
                     ),
-                  ).toList(),
+                  )
+                  .toList(),
             ),
           ),
         ]);
@@ -872,8 +878,126 @@ class _FilterScreenState extends State<FilterScreen> {
       if (widgets.isEmpty) {
         return Align(
           alignment: Alignment.center,
-          child: Container(
-            height: 245,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 160,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Text(
+                  "امکانات تصویری فایل",
+                  style: TextStyle(
+                    color: App.isDark ? DarkThemes.textMediumLight : Themes.secondary2,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _hasImage = !_hasImage;
+                            });
+                            onChangeFilter();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: _hasImage ? Themes.secondary2 : Colors.transparent,
+                              border: Border.all(color: Themes.secondary2, width: 1),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 12,
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              "عکس دار",
+                              style: TextStyle(
+                                color: _hasImage ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _hasVideo = !_hasVideo;
+                            });
+                            onChangeFilter();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: _hasVideo ? Themes.secondary2 : Colors.transparent,
+                              border: Border.all(color: Themes.secondary2, width: 1),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 12,
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              "ویدیو دار",
+                              style: TextStyle(
+                                color: _hasVideo ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _hasTour = !_hasTour;
+                            });
+                            onChangeFilter();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: _hasTour ? Themes.secondary2 : Colors.transparent,
+                              border: Border.all(color: Themes.secondary2, width: 1),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 12,
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              "تور مجازی",
+                              style: TextStyle(
+                                color: _hasTour ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         );
       }
@@ -1155,33 +1279,46 @@ class _FilterScreenState extends State<FilterScreen> {
     filterData.hasTour = _hasTour;
     filterData.propFilters = propFilters;
 
-    if (filterData.filters?.prices?.length == 1) {
+    if (filterData.filters?.prices?.length == 2 && filterData.filters!.prices![0] == 0 && filterData.filters!.prices![1] == 99999999999999999) {
+      filterData.filters!.prices = [];
+    } else if (filterData.filters?.prices?.length == 1) {
       filterData.filters!.prices = [
         filterData.filters!.prices![0],
         99999999999999999,
       ];
     }
 
-    if (filterData.filters?.price?.length == 1) {
+    if (filterData.filters?.price?.length == 2 && filterData.filters!.price![0] == 0 && filterData.filters!.price![1] == 99999999999999999) {
+      filterData.filters!.price = [];
+    } else if (filterData.filters?.price?.length == 1) {
       filterData.filters!.price = [
         filterData.filters!.price![0],
         99999999999999999,
       ];
     }
 
-    if (filterData.filters?.rent?.length == 1) {
+    if (filterData.filters?.rent?.length == 2 && filterData.filters!.rent![0] == 0 && filterData.filters!.rent![1] == 99999999999999999) {
+      filterData.filters!.rent = [];
+    } else if (filterData.filters?.rent?.length == 1) {
       filterData.filters!.rent = [
         filterData.filters!.rent![0],
         99999999999999999,
       ];
     }
 
-    if (filterData.filters?.mater?.length == 1) {
+    if (filterData.filters?.mater?.length == 2 && filterData.filters!.mater![0] == 0 && filterData.filters!.mater![1] == 99999999999999999) {
+      filterData.filters!.mater = [];
+    } else if (filterData.filters?.mater?.length == 1) {
       filterData.filters!.mater = [
         filterData.filters!.mater![0],
         99999999999999999,
       ];
     }
+
+    print("METER : ${jsonEncode(filterData.filters?.mater)}");
+    print("PRICE : ${jsonEncode(filterData.filters?.price)}");
+    print("PRICES : ${jsonEncode(filterData.filters?.prices)}");
+    print("RENT : ${jsonEncode(filterData.filters?.rent)}");
 
     totalFileBloc.add(TotalFileGetEvent(filterData: filterData));
 
@@ -1197,7 +1334,7 @@ class _FilterScreenState extends State<FilterScreen> {
     ];
 
     setState(() {
-      totalFilters = conditions.where((element) => element).length;
+      totalFilters = conditions.where((element) => element).length + filterData.propFilters.length;
     });
   }
 }

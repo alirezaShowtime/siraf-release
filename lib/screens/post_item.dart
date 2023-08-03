@@ -9,9 +9,11 @@ import 'package:siraf3/models/post.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
+import 'package:video_player/video_player.dart';
 
 class PostItem extends StatefulWidget {
   Post post;
+  Function(VideoPlayerController)? onVideoControllerChanged;
 
   PostItem({required this.post, super.key});
 
@@ -19,7 +21,10 @@ class PostItem extends StatefulWidget {
   State<PostItem> createState() => _PostItemState();
 }
 
-class _PostItemState extends State<PostItem> {
+class _PostItemState extends State<PostItem> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   List<String> images = [];
 
   List<String> videos = [];
@@ -63,21 +68,12 @@ class _PostItemState extends State<PostItem> {
     setState(() {
       description = widget.post.description ?? "";
 
-      summary = description.substring(
-          0, description.length > 120 ? 120 : description.length);
+      summary = description.substring(0, description.length > 120 ? 120 : description.length);
 
       isBookmark = (widget.post.isBookmark ?? 0) == 1 ? true : false;
 
-      images = widget.post.images
-              ?.where((e) => e.path != null)
-              .map<String>((e) => e.path!)
-              .toList() ??
-          [];
-      videos = widget.post.videos
-              ?.where((e) => e.path != null)
-              .map<String>((e) => e.path!)
-              .toList() ??
-          [];
+      images = widget.post.images?.where((e) => e.path != null).map<String>((e) => e.path!).toList() ?? [];
+      videos = widget.post.videos?.where((e) => e.path != null).map<String>((e) => e.path!).toList() ?? [];
     });
   }
 
@@ -91,21 +87,17 @@ class _PostItemState extends State<PostItem> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (!widget.post.images.isNotNullOrEmpty() &&
-              !widget.post.videos.isNotNullOrEmpty())
+          if (!widget.post.images.isNotNullOrEmpty() && !widget.post.videos.isNotNullOrEmpty())
             Container(
               padding: EdgeInsets.only(bottom: 15),
               height: 250,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Themes.background,
-                image: DecorationImage(
-                    image: AssetImage("assets/images/image_not_avialable.png"),
-                    alignment: Alignment.center),
+                image: DecorationImage(image: AssetImage("assets/images/image_not_avialable.png"), alignment: Alignment.center),
               ),
             ),
-          if (widget.post.images.isNotNullOrEmpty() ||
-              widget.post.videos.isNotNullOrEmpty())
+          if (widget.post.images.isNotNullOrEmpty() || widget.post.videos.isNotNullOrEmpty())
             CarouselSliderCustom(
               sliders: images
                       .map<s.Slider>(
@@ -152,9 +144,7 @@ class _PostItemState extends State<PostItem> {
                       }
                     },
                     icon: Icon(
-                      isBookmark
-                          ? CupertinoIcons.bookmark_fill
-                          : CupertinoIcons.bookmark,
+                      isBookmark ? CupertinoIcons.bookmark_fill : CupertinoIcons.bookmark,
                       color: isBookmark ? Themes.primary : Themes.icon,
                     ),
                   ),

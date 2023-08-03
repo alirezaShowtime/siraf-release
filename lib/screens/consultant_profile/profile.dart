@@ -8,7 +8,7 @@ extension Profile on _ConsultantProfileScreen {
         children: [
           Container(
             height: 160,
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 5),
+            padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
             decoration: BoxDecoration(
               color: Colors.white,
               border: !(moreDetail || showComment) ? null : Border(bottom: BorderSide(width: 1, color: Colors.grey.shade200)),
@@ -20,7 +20,7 @@ extension Profile on _ConsultantProfileScreen {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Avatar(size: 80, imagePath: consultantInfo.avatar, errorWidget: _profileWidget()),
-                    SizedBox(height: 20),
+                    SizedBox(height: 5),
                     Container(
                       padding: const EdgeInsets.only(left: 2),
                       decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.grey.shade200, width: 1))),
@@ -35,6 +35,19 @@ extension Profile on _ConsultantProfileScreen {
                             ),
                           ),
                           StaticStar(rating: consultantInfo.rate ?? 0),
+                          InkWell(
+                            onTap: () {
+                              push(context, EstateProfileScreen(estateId: 1, estateName: "املاک محبی",));
+                            },
+                            child: Text(
+                              "املاک محبی", // consultantInfo.estateName!,
+                              style: TextStyle(
+                                color: Themes.primary,
+                                fontSize: 11,
+                                fontFamily: "IranSansMedium",
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -118,17 +131,7 @@ extension Profile on _ConsultantProfileScreen {
                 },
               ),
             ),
-          if (!showComment)
-            Expanded(
-              child: BlocConsumer<FilesBloc, FilesState>(
-                builder: _buildFilesBloc,
-                listener: (_, state) {
-                  if (state is FilesLoadedState) {
-                    files = state.files;
-                  }
-                },
-              ),
-            ),
+          if (!showComment) Expanded(child: BlocBuilder<FilesBloc, FilesState>(builder: _buildFilesBloc)),
         ],
       ),
     );
@@ -152,6 +155,7 @@ extension Profile on _ConsultantProfileScreen {
     }
 
     state = state as FilesLoadedState;
+    files = state.files;
 
     return MyListView(
       isEmpty: !files.isFill(),

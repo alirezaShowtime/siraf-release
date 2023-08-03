@@ -8,6 +8,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:siraf3/bloc/property_bloc.dart';
 import 'package:siraf3/dialog.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/category.dart' as cat;
 import 'package:siraf3/models/city.dart';
@@ -348,9 +349,26 @@ class _EditFileFirstState extends State<EditFileFirst> {
               if (e.type!.toLowerCase() == "number") {
                 text = selectedMainProps[e.value!] as String;
 
+                if (text == "null") {
+                  text = null;
+                  selectedMainProps.remove(e.value!);
+                  return Column(
+                    children: [
+                      section(
+                        title: e.name ?? "",
+                        hint: e.type == "List" ? "انتخاب" : "تعیین",
+                        value: text,
+                        onTap: () => _onTapProp(e),
+                      ),
+                      SizedBox(
+                        height: 14,
+                      ),
+                    ],
+                  );
+                }
+
                 if (priceFields.contains(e.value!)) {
-                  text = text == "null" ? "توافقی" : number_format(int.parse(text)) + " تومان";
-                  notify("TEXT : " + text);
+                  text = number_format(int.parse(text)) + " تومان";
                 }
 
                 if (e.value == "prices") {

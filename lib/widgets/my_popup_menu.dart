@@ -44,6 +44,9 @@ class _MyPopupMenuButton extends State<MyPopupMenuButton> {
       ),
       itemBuilder: widget.itemBuilder,
       onSelected: widget.onSelected,
+      onOpened: () {
+        FocusScope.of(context).unfocus();
+      },
     );
   }
 }

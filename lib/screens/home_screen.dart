@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/cupertino.dart';
@@ -36,6 +37,7 @@ import 'package:siraf3/widgets/file_slide_item.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:uni_links/uni_links.dart';
+import 'package:video_player/video_player.dart';
 
 class HomeScreen extends StatefulWidget {
   MaterialPageRoute? nextScreen;
@@ -70,6 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
     getViewType();
 
     scrollController.addListener(pagination);
+    scrollController.addListener(postVideosListener);
 
     homeScreenBloc.stream.listen((event) {
       try {
@@ -265,8 +268,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   filterData = result;
                 });
 
-                print(filterData.toQueryString());
-
                 getFiles();
               }
             },
@@ -402,14 +403,12 @@ class _HomeScreenState extends State<HomeScreen> {
             : "${cities.length} شهر";
   }
 
-  bool _initialURILinkHandled = false;
-
   Future<void> checkInitialLink() async {
-    if (!_initialURILinkHandled) {
-      _initialURILinkHandled = true;
+    if (!initialURILinkHandled) {
+      initialURILinkHandled = true;
       final uri = await getInitialUri();
       if (uri != null) {
-        debugPrint("Initial URI received $uri");
+        debugPrint("Initial URI received 0 $uri");
         if (!mounted) {
           return;
         }
@@ -457,7 +456,7 @@ class _HomeScreenState extends State<HomeScreen> {
           );
           return;
         }
-         reg = new RegExp(r'https://siraf.app/real-estate/agency/([0-9]+)');
+        reg = new RegExp(r'https://siraf.app/real-estate/agency/([0-9]+)');
 
         if (reg.hasMatch(uri.toString())) {
           var match = reg.firstMatch(uri.toString());
@@ -483,7 +482,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void listenLink() {
     uriLinkStream.listen((Uri? uri) {
-      debugPrint('Received URI: $uri');
+      debugPrint('Received URI 1: $uri');
       if (!mounted) {
         return;
       }
@@ -531,6 +530,27 @@ class _HomeScreenState extends State<HomeScreen> {
         );
         return;
       }
+
+      reg = new RegExp(r'https://siraf.app/real-estate/agency/([0-9]+)');
+
+      if (reg.hasMatch(uri.toString())) {
+        var match = reg.firstMatch(uri.toString());
+        var id = match!.group(1);
+
+        if (id == null) {
+          return;
+        }
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => EstateProfileScreen(
+              estateId: int.parse(id),
+            ),
+          ),
+        );
+        return;
+      }
     }, onError: (Object err) {
       if (!mounted) {
         return;
@@ -547,6 +567,18 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {});
     });
   }
+
+  void postVideosListener() {
+    if (currentPost != null) {
+      currentVideoController?.pause();
+      currentPost = null;
+
+      setState(() {});
+    }
+  }
+
+  VideoPlayerController? currentVideoController;
+  Post? currentPost;
 }
 
 enum ViewType {

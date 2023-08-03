@@ -21,6 +21,7 @@ import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/estates_map_screen.dart';
 import 'package:siraf3/screens/files_map_screen.dart';
 import 'package:siraf3/screens/inquiry_screen.dart';
+import 'package:siraf3/screens/learn_screen.dart';
 import 'package:siraf3/screens/my_files_screen.dart';
 import 'package:siraf3/screens/request_file/request_file_screen.dart';
 import 'package:siraf3/screens/request_file/request_list_screen.dart';
@@ -328,6 +329,10 @@ class _MenuScreenState extends State<MenuScreen> {
                             ],
                           ),
                           // content: BlocBuilder<GetGroupsBloc, GetGroupsState>(builder: _buildTicketAccordionContent),
+                        ),
+                        Accordion(
+                          title: _accordionTitle("آموزش ها"),
+                          onClick: () => push(context, LearnScreen()),
                         ),
                         Accordion(
                           title: _accordionTitle("درباره سیراف و قوانین استفاده"),

@@ -39,7 +39,10 @@ class FileScreen extends StatefulWidget {
   State<FileScreen> createState() => _FileScreenState();
 }
 
-class _FileScreenState extends State<FileScreen> {
+class _FileScreenState extends State<FileScreen> with AutomaticKeepAliveClientMixin {  
+  @override
+  bool get wantKeepAlive => true;
+  
   FileBloc fileBloc = FileBloc();
   RelatedFilesBloc relatedFilesBloc = RelatedFilesBloc();
 
