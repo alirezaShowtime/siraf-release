@@ -82,6 +82,8 @@ late AndroidNotificationChannel channel;
 
 late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
+bool initialURILinkHandled = false;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (await (Settings().showNotification())) {

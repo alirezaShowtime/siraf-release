@@ -8,10 +8,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as m;
+import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/edit_file_form_data.dart';
 import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/screens/create/upload_media_guide.dart';
@@ -833,7 +835,77 @@ class _EditFileSecondState extends State<EditFileSecond> {
     }
   }
 
+  
+  BuildContext? addMediaBottmSheetContext;
+
   void _addMedia() async {
+    showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(15),
+            topRight: Radius.circular(15),
+          ),
+        ),
+        builder: (_) {
+          addMediaBottmSheetContext = _;
+          return Container(
+            height: 120,
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            child: Column(
+              children: [
+                InkWell(
+                  onTap: _chooseFromGallery,
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      children: [
+                        Icon(CupertinoIcons.photo),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          "انتخاب از گالری",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: "IranSansMedium",
+                            color: App.theme.textTheme.bodyLarge?.color,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: _takePhotoFromCamera,
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      children: [
+                        Icon(CupertinoIcons.photo_camera),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          "عکس از دوربین",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: "IranSansMedium",
+                            color: App.theme.textTheme.bodyLarge?.color,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  void _chooseFromGallery() async {
+    dismissDialog(addMediaBottmSheetContext);
     FilePickerResult? result =
     await FilePicker.platform.pickFiles(allowMultiple: true);
 
@@ -879,6 +951,25 @@ class _EditFileSecondState extends State<EditFileSecond> {
       }
     }
   }
+  
+  void _takePhotoFromCamera() async {
+    dismissDialog(addMediaBottmSheetContext);
+    var photo = await ImagePicker().pickImage(source: ImageSource.camera);
+
+    if (photo == null) return;
+
+    var file = File(photo.path);
+
+    var mediaBox = await buildMediaBox(file, FileType2.image);
+
+    setState(() {
+      files.add({
+        "file": file,
+        "title": null,
+      });
+      mediaBoxes.add(mediaBox);
+    });
+  }
 
   BuildContext? optionsDialog;
 
@@ -901,7 +992,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                 Column(
                   children: <Widget>[
                     SizedBox(
-                      height: 50,
+                      height: 40,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -909,8 +1000,8 @@ class _EditFileSecondState extends State<EditFileSecond> {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(16),
-                                  topRight: Radius.circular(16),
+                                  topLeft: Radius.circular(15),
+                                  topRight: Radius.circular(15),
                                 ),
                                 color: Themes.primary,
                               ),

@@ -672,7 +672,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
             children: [
               Align(
                 alignment: Alignment.topLeft,
-                child: RatingBar.builder(
+                child: RatingBarIndicator(
                   direction: Axis.horizontal,
                   itemCount: 5,
                   itemSize: 14,
@@ -685,9 +685,9 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                       size: 10,
                     );
                   },
-                  initialRating: estate.rate ?? 0.0,
-                  allowHalfRating: true,
-                  onRatingUpdate: (v) {},
+                  rating: estate.rate ?? 0.0,
+                  // allowHalfRating: true,
+                  // onRatingUpdate: (v) {},
                 ),
               ),
               Text(
@@ -764,7 +764,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                                   fontSize: 14,
                                 ),
                               ),
-                              RatingBar.builder(
+                              RatingBarIndicator(
                                 direction: Axis.horizontal,
                                 itemCount: 5,
                                 itemSize: 14,
@@ -777,9 +777,9 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                                     size: 10,
                                   );
                                 },
-                                initialRating: estate.rate ?? 0,
-                                allowHalfRating: true,
-                                onRatingUpdate: (v) {},
+                                rating: estate.rate ?? 0,
+                                // allowHalfRating: true,
+                                // onRatingUpdate: (v) {},
                               ),
                             ],
                           ),
@@ -974,7 +974,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                                   fontSize: 8,
                                 ),
                               ),
-                              RatingBar.builder(
+                              RatingBarIndicator(
                                 direction: Axis.horizontal,
                                 itemCount: 5,
                                 itemSize: 14,
@@ -987,9 +987,8 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                                     size: 6,
                                   );
                                 },
-                                allowHalfRating: true,
-                                initialRating: e.rate ?? 0,
-                                onRatingUpdate: (double value) {},
+                                rating: e.rate ?? 0,
+                                // onRatingUpdate: (double value) {},
                               ),
                             ],
                           ),

@@ -76,6 +76,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
   Widget build(BuildContext context) {
     buildContext = context;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: MyBackButton(),
         title: AppBarTitle("درخواست فایل"),
@@ -278,6 +279,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                   onTap: onClickSelectEstate,
                 ),
                 SizedBox(height: 80),
+                if (MediaQuery.of(context).viewInsets.bottom > 0) SizedBox(height: 200),
               ],
             ),
           ),

@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:siraf3/bloc/compressor_bloc.dart';
 import 'package:siraf3/bloc/create_file_bloc.dart';
 import 'package:siraf3/dialog.dart';
+import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
@@ -27,6 +31,7 @@ class CreateFileFinal extends StatefulWidget {
 
 class _CreateFileFinalState extends State<CreateFileFinal> {
   List<Estate> selectedEstates = [];
+  CompressorBloc compressorBloc = CompressorBloc();
   CreateFileBloc bloc = CreateFileBloc();
 
   @override
@@ -43,6 +48,35 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
     resetCreateFileForm = false;
 
     bloc.stream.listen(_listenBloc);
+
+    compressorBloc.stream.listen((event) {
+      if (event is CompressorLoadingState) {
+        showLoadingDialog(message: "در حال بهینه سازی رسانه ها");
+      } else if (event is CompressorFailState) {
+        dissmisLoadingDialog();
+        notify("خطا در بهینه سازی عکس ها و ویدیو ها رخ داد");
+        bloc.add(CreateFileEvent(data: widget.formData));
+      } else if (event is CompressorSuccessState) {
+        dissmisLoadingDialog();
+        if (event.images.isFill() || event.videos.isFill()) {
+          setState(() {
+            widget.formData.files = widget.formData.files.map<Map<String, dynamic>>((e) {
+              if (checkImageExtension((e['file'] as File).path)) {
+                e['file'] = event.images.elementAt(widget.formData.files.indexOf(e));
+              }
+
+              if (checkVideoExtension((e['file'] as File).path)) {
+                e['file'] = event.videos.elementAt(widget.formData.files.indexOf(e));
+              }
+
+              return e;
+            }).toList();
+          });
+          notify("بهینه سازی رسانه ها با موفقیت انجام شد");
+        }
+        bloc.add(CreateFileEvent(data: widget.formData));
+      }
+    });
 
     if (widget.formData.estates.isNotEmpty) {
       setState(() {
@@ -382,7 +416,7 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
   }
 
   BuildContext? resetDialogContext;
-  
+
   showResetDialog() {
     showDialog2(
       context: context,
@@ -437,7 +471,7 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
   }
 
   _finalize() {
-    if (! description.isFill()) {
+    if (!description.isFill()) {
       notify("لطفا توضیحات فایل را وارد کنید");
       return;
     }
@@ -448,7 +482,11 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
     widget.formData.estates = selectedEstates;
     widget.formData.secDescription = securityDescription;
     widget.formData.description = description!;
-    bloc.add(CreateFileEvent(data: widget.formData));
+    var imagesFile = widget.formData.files.where((element) => checkImageExtension((element['file'] as File).path));
+    var images = imagesFile.map<File>((e) => (e['file'] as File)).toList();
+    var videosFile = widget.formData.files.where((element) => checkVideoExtension((element['file'] as File).path));
+    var videos = videosFile.map<File>((e) => (e['file'] as File)).toList();
+    compressorBloc.add(CompressorEvent(images: images, videos: videos));
   }
 
   _listenBloc(CreateFileState event) {
@@ -472,20 +510,20 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
     } else if (event is CreateFileLoadedState) {
       dissmisLoadingDialog();
       notify("فایل با موفقیت ایجاد شد");
-      // WidgetsBinding.instance.addPostFrameCallback((_) {
-      //   Navigator.pushAndRemoveUntil(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (_) => HomeScreen(
-      //               nextScreen: MaterialPageRoute(builder: (_) => MyFilesScreen()),
-      //             )),
-      //     (Route<dynamic> route) => false,
-      //   );
-      // });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (_) => HomeScreen(
+                    nextScreen: MaterialPageRoute(builder: (_) => MyFilesScreen()),
+                  )),
+          (Route<dynamic> route) => false,
+        );
+      });
     }
   }
 
-  showLoadingDialog() {
+  showLoadingDialog({String? message}) {
     showDialog2(
       context: context,
       barrierDismissible: false,
@@ -505,10 +543,10 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 5),
                   child: Text(
-                    'در حال ایجاد فایل لطفا شکیبا باشید',
+                    message ?? 'در حال ایجاد فایل لطفا شکیبا باشید',
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
+                      fontSize: 14,
+                      fontFamily: "IransSansMedium",
                       color: App.theme.textTheme.bodyLarge?.color,
                     ),
                   ),

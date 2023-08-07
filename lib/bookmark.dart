@@ -193,11 +193,11 @@ class Bookmark {
     }
 
     if (note != null) {
-      var url = getFileUrl('note/addNoteFile/${id}/');
+      var url = getFileUrl('note/addNoteFile/');
 
       var response = await http2.postJsonWithToken(
         url,
-        body: {'note': note},
+        body: {'note': note, 'fileId': id},
       );
 
       if (!isResponseOk(response)) {
@@ -221,8 +221,11 @@ class Bookmark {
     var result = false;
 
     try {
-      var response = await http2.deleteWithToken(
+      var response = await http2.post(
         getFileUrl('file/deleteFileFavorite/?fileIds=[${id}]'),
+        headers: {
+          "Content-Type": "application/json",
+        }
       );
 
       print(response.statusCode);

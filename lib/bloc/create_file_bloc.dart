@@ -50,9 +50,6 @@ class CreateFileBloc extends Bloc<CreateFileEvent, CreateFileState> {
 
       var images = event.data.files.where((element) => checkImageExtension((element['file'] as io.File).path)).toList();
 
-      print("_________________________FILES_PURE____________________________");
-      print(event.data.files);
-
       var tours = event.data.files.where((element) => (element['file'] as io.File).path.endsWith("zip")).toList();
       var tour = tours.isNotEmpty ? tours.first : null;
 
@@ -83,15 +80,6 @@ class CreateFileBloc extends Bloc<CreateFileEvent, CreateFileState> {
 
       var url = event.data.estates.isEmpty ? getFileUrl("file/addFileSiraf/").toString() : getFileUrl("file/addFileEstate/").toString();
 
-      print("_________________________TOUR____________________________");
-      print(tour);
-
-      print(url);
-      print(headers);
-      print(formData.fields);
-      print("_________________________FILES____________________________");
-      print(formData.files);
-
       response = await Dio().post(
         url,
         options: Options(
@@ -112,10 +100,6 @@ class CreateFileBloc extends Bloc<CreateFileEvent, CreateFileState> {
       emit(CreateFileErrorState());
       return;
     }
-
-    print(response.statusCode);
-    print(response.statusMessage);
-    print(response.data);
 
     if (response.data['status'] == 1) {
       emit(CreateFileLoadedState());

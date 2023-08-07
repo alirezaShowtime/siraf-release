@@ -90,18 +90,18 @@ class _CommentItemWidget extends State<CommentItemWidget> {
               ),
               Column(
                 children: [
-                  RatingBar.builder(
-                    initialRating: widget.comment.rate,
-                    minRating: 1,
+                  RatingBarIndicator(
+                    rating: widget.comment.rate,
+                    // minRating: 1,
                     direction: Axis.horizontal,
                     itemCount: 5,
-                    allowHalfRating: true,
+                    // allowHalfRating: true,
                     itemPadding: EdgeInsets.symmetric(horizontal: 0.25),
                     itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
                     itemSize: 10,
-                    onRatingUpdate: (double value) {},
-                    updateOnDrag: false,
-                    ignoreGestures: true,
+                    // onRatingUpdate: (double value) {},
+                    // updateOnDrag: false,
+                    // ignoreGestures: true,
                     unratedColor: Colors.grey.shade300,
                   ),
                   Text(

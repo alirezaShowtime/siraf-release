@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,7 @@ class _FilterScreenState extends State<FilterScreen> {
   bool _hasTour = false;
 
   List<Category> categories = [];
+  Map<String, String> propFilters = {};
 
   int totalFilters = 0;
 
@@ -60,6 +62,8 @@ class _FilterScreenState extends State<FilterScreen> {
   @override
   void initState() {
     super.initState();
+
+    propFilters = widget.filterData.propFilters;
 
     if (widget.total_url != null) totalFileBloc = TotalFileBloc(url: widget.total_url!);
 
@@ -417,119 +421,6 @@ class _FilterScreenState extends State<FilterScreen> {
                               builder: _buildFields,
                               stream: propertyBloc.stream,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 15),
-                              child: Text(
-                                "امکانات تصویری فایل",
-                                style: TextStyle(
-                                  color: App.isDark ? DarkThemes.textMediumLight : Themes.secondary2,
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 15),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(5),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            _hasImage = !_hasImage;
-                                          });
-                                          onChangeFilter();
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(30),
-                                            color: _hasImage ? Themes.secondary2 : Colors.transparent,
-                                            border: Border.all(color: Themes.secondary2, width: 1),
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: 12,
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            "عکس دار",
-                                            style: TextStyle(
-                                              color: _hasImage ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(5),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            _hasVideo = !_hasVideo;
-                                          });
-                                          onChangeFilter();
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(30),
-                                            color: _hasVideo ? Themes.secondary2 : Colors.transparent,
-                                            border: Border.all(color: Themes.secondary2, width: 1),
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: 12,
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            "ویدیو دار",
-                                            style: TextStyle(
-                                              color: _hasVideo ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(5),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            _hasTour = !_hasTour;
-                                          });
-                                          onChangeFilter();
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(30),
-                                            color: _hasTour ? Themes.secondary2 : Colors.transparent,
-                                            border: Border.all(color: Themes.secondary2, width: 1),
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: 12,
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            "تور مجازی",
-                                            style: TextStyle(
-                                              color: _hasTour ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                             SizedBox(
                               height: 10,
                             ),
@@ -711,222 +602,530 @@ class _FilterScreenState extends State<FilterScreen> {
                 : data[1]
             : "";
 
-        widgets.add(Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                p.name!,
-                style: TextStyle(
-                  color: App.isDark ? DarkThemes.textMediumLight : Themes.secondary2,
-                  fontSize: 13,
-                ),
-              ),
-              SizedBox(width: 3),
-              if (p.isPrice())
-                Text(
-                  "(تومان)",
-                  style: TextStyle(
-                    color: App.isDark ? DarkThemes.textMediumLight : Themes.secondary2,
-                    fontSize: 10,
-                  ),
-                ),
-            ],
-          ),
-        ));
-
-        widgets.add(Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 15,
-            vertical: 10,
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  height: 40,
-                  child: TextFormField2(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(45),
-                        borderSide: BorderSide(
-                          color: Themes.secondary2,
-                          width: 1,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(45),
-                        borderSide: BorderSide(
-                          color: Themes.secondary2,
-                          width: 1,
-                        ),
-                      ),
-                      hintText: "حداقل",
-                      hintStyle: TextStyle(
-                        fontSize: 13,
-                        color: Themes.textGrey,
-                      ),
-                      contentPadding: EdgeInsets.all(10),
-                    ),
-                    initialValue: minInitialValue.toString(),
-                    inputFormatters: [MoneyInputFormatter(mantissaLength: 0)],
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.number,
-                    onChanged: (v) {
-                      v = v.replaceAll(',', '');
-
-                      var data = <int>[];
-
-                      switch (p.value) {
-                        case 'meter':
-                          data = filters.mater ?? [];
-                          break;
-                        case 'price':
-                          data = filters.price ?? [];
-                          break;
-                        case 'rent':
-                          data = filters.rent ?? [];
-                          break;
-                        case 'prices':
-                          data = filters.prices ?? [];
-                      }
-
-                      if (v.isEmpty) {
-                        data = [0, if (data.length > 1) data[1]];
-                      } else {
-                        data = [int.parse(v), if (data.length > 1) data[1]];
-                      }
-
-                      switch (p.value) {
-                        case "meter":
-                          filters.mater = data;
-                          break;
-                        case "price":
-                          filters.price = data;
-                          break;
-                        case "rent":
-                          filters.rent = data;
-                          break;
-                        case "prices":
-                          filters.prices = data;
-                          break;
-                        default:
-                      }
-
-                      onChangeFilter();
-                    },
+        widgets.addAll(
+          [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    p.name!,
                     style: TextStyle(
+                      color: App.isDark ? DarkThemes.textMediumLight : Themes.secondary2,
                       fontSize: 13,
-                      color: App.theme.textTheme.bodyLarge?.color,
                     ),
                   ),
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                child: SizedBox(
-                  height: 40,
-                  child: TextFormField2(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(45),
-                        borderSide: BorderSide(
-                          color: Themes.secondary2,
-                          width: 1,
-                        ),
+                  SizedBox(width: 3),
+                  if (p.isPrice())
+                    Text(
+                      "(تومان)",
+                      style: TextStyle(
+                        color: App.isDark ? DarkThemes.textMediumLight : Themes.secondary2,
+                        fontSize: 10,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(45),
-                        borderSide: BorderSide(
-                          color: Themes.secondary2,
-                          width: 1,
-                        ),
-                      ),
-                      hintText: "حداکثر",
-                      hintStyle: TextStyle(
-                        fontSize: 13,
-                        color: Themes.textGrey,
-                      ),
-                      contentPadding: EdgeInsets.all(10),
                     ),
-                    initialValue: maxInitialValue.toString(),
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [MoneyInputFormatter(mantissaLength: 0)],
-                    onChanged: (v) {
-                      v = v.replaceAll(',', '');
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 15,
+                vertical: 10,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 40,
+                      child: TextFormField2(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(45),
+                            borderSide: BorderSide(
+                              color: Themes.secondary2,
+                              width: 1,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(45),
+                            borderSide: BorderSide(
+                              color: Themes.secondary2,
+                              width: 1,
+                            ),
+                          ),
+                          hintText: "حداقل",
+                          hintStyle: TextStyle(
+                            fontSize: 13,
+                            color: Themes.textGrey,
+                          ),
+                          contentPadding: EdgeInsets.all(10),
+                        ),
+                        initialValue: minInitialValue.toString(),
+                        inputFormatters: [MoneyInputFormatter(mantissaLength: 0)],
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.number,
+                        onChanged: (v) {
+                          v = v.replaceAll(',', '');
 
-                      var data = <int>[];
+                          var data = <int>[];
 
-                      switch (p.value) {
-                        case 'meter':
-                          data = filters.mater ?? [];
-                          break;
-                        case 'price':
-                          data = filters.price ?? [];
-                          break;
-                        case 'rent':
-                          data = filters.rent ?? [];
-                          break;
-                        case 'prices':
-                          data = filters.prices ?? [];
-                      }
+                          switch (p.value) {
+                            case 'meter':
+                              data = filters.mater ?? [];
+                              break;
+                            case 'price':
+                              data = filters.price ?? [];
+                              break;
+                            case 'rent':
+                              data = filters.rent ?? [];
+                              break;
+                            case 'prices':
+                              data = filters.prices ?? [];
+                          }
 
-                      if (v.isEmpty) {
-                        data = [data.length > 0 ? data[0] : 0];
-                      } else {
-                        data = [data.length > 0 ? data[0] : 0, int.parse(v)];
-                      }
+                          if (v.isEmpty) {
+                            data = [0, if (data.length > 1) data[1]];
+                          } else {
+                            data = [int.parse(v), if (data.length > 1) data[1]];
+                          }
 
-                      switch (p.value) {
-                        case "meter":
-                          filters.mater = data;
-                          break;
-                        case "price":
-                          filters.price = data;
-                          break;
-                        case "rent":
-                          filters.rent = data;
-                          break;
-                        case "prices":
-                          filters.prices = data;
-                          break;
-                        default:
-                      }
+                          switch (p.value) {
+                            case "meter":
+                              filters.mater = data;
+                              break;
+                            case "price":
+                              filters.price = data;
+                              break;
+                            case "rent":
+                              filters.rent = data;
+                              break;
+                            case "prices":
+                              filters.prices = data;
+                              break;
+                            default:
+                          }
 
-                      onChangeFilter();
-                    },
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: App.theme.textTheme.bodyLarge?.color,
+                          onChangeFilter();
+                        },
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: App.theme.textTheme.bodyLarge?.color,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: SizedBox(
+                      height: 40,
+                      child: TextFormField2(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(45),
+                            borderSide: BorderSide(
+                              color: Themes.secondary2,
+                              width: 1,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(45),
+                            borderSide: BorderSide(
+                              color: Themes.secondary2,
+                              width: 1,
+                            ),
+                          ),
+                          hintText: "حداکثر",
+                          hintStyle: TextStyle(
+                            fontSize: 13,
+                            color: Themes.textGrey,
+                          ),
+                          contentPadding: EdgeInsets.all(10),
+                        ),
+                        initialValue: maxInitialValue.toString(),
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [MoneyInputFormatter(mantissaLength: 0)],
+                        onChanged: (v) {
+                          v = v.replaceAll(',', '');
+
+                          var data = <int>[];
+
+                          switch (p.value) {
+                            case 'meter':
+                              data = filters.mater ?? [];
+                              break;
+                            case 'price':
+                              data = filters.price ?? [];
+                              break;
+                            case 'rent':
+                              data = filters.rent ?? [];
+                              break;
+                            case 'prices':
+                              data = filters.prices ?? [];
+                          }
+
+                          if (v.isEmpty) {
+                            data = [data.length > 0 ? data[0] : 0];
+                          } else {
+                            data = [data.length > 0 ? data[0] : 0, int.parse(v)];
+                          }
+
+                          switch (p.value) {
+                            case "meter":
+                              filters.mater = data;
+                              break;
+                            case "price":
+                              filters.price = data;
+                              break;
+                            case "rent":
+                              filters.rent = data;
+                              break;
+                            case "prices":
+                              filters.prices = data;
+                              break;
+                            default:
+                          }
+
+                          onChangeFilter();
+                        },
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: App.theme.textTheme.bodyLarge?.color,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ));
+            ),
+          ],
+        );
       }
+
+      props = (snapshot.data! as PropertyLoadedState).iproperties;
+
+      props = props.where((element) => element.type == "List").toList();
+
+      props.forEach((prop) {
+        widgets.addAll([
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Text(
+              prop.name ?? '',
+              style: TextStyle(
+                color: App.isDark ? DarkThemes.textMediumLight : Themes.secondary2,
+                fontSize: 13,
+              ),
+            ),
+          ),
+          SizedBox(height: 10),
+          SizedBox(
+            height: 60,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: prop.items!
+                  .map<Widget>(
+                    (e) => Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: GestureDetector(
+                        onTap: () {
+                          if (propFilters.containsKey(prop.value) && propFilters[prop.value] == e.value.toString()) {
+                            setState(() {
+                              propFilters.remove(prop.value);
+                            });
+                          } else {
+                            setState(() {
+                              propFilters[prop.value!] = e.value.toString();
+                            });
+                          }
+
+                          onChangeFilter();
+                        },
+                        child: Container(
+                          constraints: BoxConstraints(
+                            minWidth: 50,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            color: propFilters.containsKey(prop.value) && propFilters[prop.value] == e.value.toString() ? Themes.secondary2 : Colors.transparent,
+                            border: Border.all(color: Themes.secondary2, width: 1),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            vertical: 5,
+                            horizontal: 10,
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            e.name ?? "",
+                            style: TextStyle(
+                              color: propFilters.containsKey(prop.value) && propFilters[prop.value] == e.value.toString() ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
+                              fontSize: 11,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+        ]);
+      });
 
       if (widgets.isEmpty) {
         return Align(
           alignment: Alignment.center,
-          child: Container(
-            height: 160,
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Loading(
-              backgroundColor: Colors.transparent,
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 160,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Text(
+                  "امکانات تصویری فایل",
+                  style: TextStyle(
+                    color: App.isDark ? DarkThemes.textMediumLight : Themes.secondary2,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _hasImage = !_hasImage;
+                            });
+                            onChangeFilter();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: _hasImage ? Themes.secondary2 : Colors.transparent,
+                              border: Border.all(color: Themes.secondary2, width: 1),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 12,
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              "عکس دار",
+                              style: TextStyle(
+                                color: _hasImage ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _hasVideo = !_hasVideo;
+                            });
+                            onChangeFilter();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: _hasVideo ? Themes.secondary2 : Colors.transparent,
+                              border: Border.all(color: Themes.secondary2, width: 1),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 12,
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              "ویدیو دار",
+                              style: TextStyle(
+                                color: _hasVideo ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _hasTour = !_hasTour;
+                            });
+                            onChangeFilter();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: _hasTour ? Themes.secondary2 : Colors.transparent,
+                              border: Border.all(color: Themes.secondary2, width: 1),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 12,
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              "تور مجازی",
+                              style: TextStyle(
+                                color: _hasTour ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         );
       }
 
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: widgets,
+      widgets.addAll([
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Text(
+            "امکانات تصویری فایل",
+            style: TextStyle(
+              color: App.isDark ? DarkThemes.textMediumLight : Themes.secondary2,
+              fontSize: 13,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _hasImage = !_hasImage;
+                      });
+                      onChangeFilter();
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: _hasImage ? Themes.secondary2 : Colors.transparent,
+                        border: Border.all(color: Themes.secondary2, width: 1),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 12,
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "عکس دار",
+                        style: TextStyle(
+                          color: _hasImage ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
+                          fontSize: 11,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _hasVideo = !_hasVideo;
+                      });
+                      onChangeFilter();
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: _hasVideo ? Themes.secondary2 : Colors.transparent,
+                        border: Border.all(color: Themes.secondary2, width: 1),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 12,
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "ویدیو دار",
+                        style: TextStyle(
+                          color: _hasVideo ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
+                          fontSize: 11,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _hasTour = !_hasTour;
+                      });
+                      onChangeFilter();
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: _hasTour ? Themes.secondary2 : Colors.transparent,
+                        border: Border.all(color: Themes.secondary2, width: 1),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 12,
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "تور مجازی",
+                        style: TextStyle(
+                          color: _hasTour ? Themes.textLight : (App.isDark ? DarkThemes.textMediumLight : Themes.text),
+                          fontSize: 11,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ]);
+
+      return SizedBox(
+        height: 245,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: widgets,
+          ),
+        ),
       );
     }
     if (snapshot.data is PropertyErrorState) {
@@ -936,7 +1135,7 @@ class _FilterScreenState extends State<FilterScreen> {
       return Align(
         alignment: Alignment.center,
         child: Container(
-          height: 160,
+          height: 245,
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: Loading(
             backgroundColor: Colors.transparent,
@@ -1035,6 +1234,7 @@ class _FilterScreenState extends State<FilterScreen> {
     widget.filterData.hasImage = _hasImage;
     widget.filterData.hasVideo = _hasVideo;
     widget.filterData.hasTour = _hasTour;
+    widget.filterData.propFilters = propFilters;
 
     Navigator.pop(
       context,
@@ -1077,34 +1277,48 @@ class _FilterScreenState extends State<FilterScreen> {
     filterData.hasImage = _hasImage;
     filterData.hasVideo = _hasVideo;
     filterData.hasTour = _hasTour;
+    filterData.propFilters = propFilters;
 
-    if (filterData.filters?.prices?.length == 1) {
+    if (filterData.filters?.prices?.length == 2 && filterData.filters!.prices![0] == 0 && filterData.filters!.prices![1] == 99999999999999999) {
+      filterData.filters!.prices = [];
+    } else if (filterData.filters?.prices?.length == 1) {
       filterData.filters!.prices = [
         filterData.filters!.prices![0],
         99999999999999999,
       ];
     }
 
-    if (filterData.filters?.price?.length == 1) {
+    if (filterData.filters?.price?.length == 2 && filterData.filters!.price![0] == 0 && filterData.filters!.price![1] == 99999999999999999) {
+      filterData.filters!.price = [];
+    } else if (filterData.filters?.price?.length == 1) {
       filterData.filters!.price = [
         filterData.filters!.price![0],
         99999999999999999,
       ];
     }
 
-    if (filterData.filters?.rent?.length == 1) {
+    if (filterData.filters?.rent?.length == 2 && filterData.filters!.rent![0] == 0 && filterData.filters!.rent![1] == 99999999999999999) {
+      filterData.filters!.rent = [];
+    } else if (filterData.filters?.rent?.length == 1) {
       filterData.filters!.rent = [
         filterData.filters!.rent![0],
         99999999999999999,
       ];
     }
 
-    if (filterData.filters?.mater?.length == 1) {
+    if (filterData.filters?.mater?.length == 2 && filterData.filters!.mater![0] == 0 && filterData.filters!.mater![1] == 99999999999999999) {
+      filterData.filters!.mater = [];
+    } else if (filterData.filters?.mater?.length == 1) {
       filterData.filters!.mater = [
         filterData.filters!.mater![0],
         99999999999999999,
       ];
     }
+
+    print("METER : ${jsonEncode(filterData.filters?.mater)}");
+    print("PRICE : ${jsonEncode(filterData.filters?.price)}");
+    print("PRICES : ${jsonEncode(filterData.filters?.prices)}");
+    print("RENT : ${jsonEncode(filterData.filters?.rent)}");
 
     totalFileBloc.add(TotalFileGetEvent(filterData: filterData));
 
@@ -1120,7 +1334,7 @@ class _FilterScreenState extends State<FilterScreen> {
     ];
 
     setState(() {
-      totalFilters = conditions.where((element) => element).length;
+      totalFilters = conditions.where((element) => element).length + filterData.propFilters.length;
     });
   }
 }

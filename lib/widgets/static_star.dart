@@ -14,18 +14,13 @@ class StaticStar extends StatefulWidget {
 class _StaticStar extends State<StaticStar> {
   @override
   Widget build(BuildContext context) {
-    return RatingBar.builder(
-      initialRating: widget.rating,
-      minRating: 1,
+    return RatingBarIndicator(
       direction: Axis.horizontal,
       itemCount: 5,
       itemPadding: EdgeInsets.symmetric(horizontal: 0.25),
       itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
-      itemSize: 10,
-      onRatingUpdate: (double value) {},
-      updateOnDrag: false,
-      allowHalfRating: true,
-      ignoreGestures: true,
+      itemSize: 13,
+      rating: widget.rating,
       unratedColor: Colors.grey.shade300,
     );
   }

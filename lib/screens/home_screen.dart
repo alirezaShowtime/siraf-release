@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/cupertino.dart';
@@ -21,6 +22,8 @@ import 'package:siraf3/models/home_item.dart';
 import 'package:siraf3/models/post.dart';
 import 'package:siraf3/rabbit_mq_consum.dart';
 import 'package:siraf3/rabbit_mq_data.dart';
+import 'package:siraf3/screens/consultant_profile/consultant_profile_screen.dart';
+import 'package:siraf3/screens/estate_profile/estate_profile_screen.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
 import 'package:siraf3/screens/menu_screen.dart';
@@ -34,6 +37,7 @@ import 'package:siraf3/widgets/file_slide_item.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:uni_links/uni_links.dart';
+import 'package:video_player/video_player.dart';
 
 class HomeScreen extends StatefulWidget {
   MaterialPageRoute? nextScreen;
@@ -51,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
+    checkInitialLink();
     listenLink();
 
     if (widget.nextScreen != null) {
@@ -67,6 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
     getViewType();
 
     scrollController.addListener(pagination);
+    scrollController.addListener(postVideosListener);
 
     homeScreenBloc.stream.listen((event) {
       try {
@@ -262,8 +268,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   filterData = result;
                 });
 
-                print(filterData.toQueryString());
-
                 getFiles();
               }
             },
@@ -399,34 +403,154 @@ class _HomeScreenState extends State<HomeScreen> {
             : "${cities.length} شهر";
   }
 
+  Future<void> checkInitialLink() async {
+    if (!initialURILinkHandled) {
+      initialURILinkHandled = true;
+      final uri = await getInitialUri();
+      if (uri != null) {
+        debugPrint("Initial URI received 0 $uri");
+        if (!mounted) {
+          return;
+        }
+
+        RegExp reg = new RegExp(r'https://siraf.app/files/([0-9]+)');
+
+        if (reg.hasMatch(uri.toString())) {
+          var match = reg.firstMatch(uri.toString());
+          var id = match!.group(1);
+
+          if (id == null) {
+            return;
+          }
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => FileScreen(
+                id: int.parse(id),
+              ),
+            ),
+          );
+
+          return;
+        }
+
+        reg = new RegExp(r'https://siraf.app/real-estate/consultant/([0-9]+)');
+
+        if (reg.hasMatch(uri.toString())) {
+          var match = reg.firstMatch(uri.toString());
+          var id = match!.group(1);
+
+          if (id == null) {
+            return;
+          }
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ConsultantProfileScreen(
+                consultantId: int.parse(id),
+                consultantName: null,
+              ),
+            ),
+          );
+          return;
+        }
+        reg = new RegExp(r'https://siraf.app/real-estate/agency/([0-9]+)');
+
+        if (reg.hasMatch(uri.toString())) {
+          var match = reg.firstMatch(uri.toString());
+          var id = match!.group(1);
+
+          if (id == null) {
+            return;
+          }
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => EstateProfileScreen(
+                estateId: int.parse(id),
+              ),
+            ),
+          );
+          return;
+        }
+      }
+    }
+  }
+
   void listenLink() {
     uriLinkStream.listen((Uri? uri) {
-      debugPrint('Received URI: $uri');
+      debugPrint('Received URI 1: $uri');
       if (!mounted) {
         return;
       }
       debugPrint('Received URI: $uri');
-      RegExp reg = new RegExp(r'https://siraf.app/file/([0-9]+)');
+      RegExp reg = new RegExp(r'https://siraf.app/files/([0-9]+)');
 
-      if (!reg.hasMatch(uri.toString())) {
-        return notify("صفحه ای برای نمایش پیدا نشد");
-      }
+      if (reg.hasMatch(uri.toString())) {
+        var match = reg.firstMatch(uri.toString());
+        var id = match!.group(1);
 
-      var match = reg.firstMatch(uri.toString());
-      var id = match!.group(1);
+        if (id == null) {
+          return;
+        }
 
-      if (id == null) {
-        return notify("صفحه ای برای نمایش پیدا نشد");
-      }
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => FileScreen(
-            id: int.parse(id),
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => FileScreen(
+              id: int.parse(id),
+            ),
           ),
-        ),
-      );
+        );
+
+        return;
+      }
+
+      reg = new RegExp(r'https://siraf.app/real-estate/consultant/([0-9]+)');
+
+      if (reg.hasMatch(uri.toString())) {
+        var match = reg.firstMatch(uri.toString());
+        var id = match!.group(1);
+
+        if (id == null) {
+          return;
+        }
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ConsultantProfileScreen(
+              consultantId: int.parse(id),
+              consultantName: null,
+            ),
+          ),
+        );
+        return;
+      }
+
+      reg = new RegExp(r'https://siraf.app/real-estate/agency/([0-9]+)');
+
+      if (reg.hasMatch(uri.toString())) {
+        var match = reg.firstMatch(uri.toString());
+        var id = match!.group(1);
+
+        if (id == null) {
+          return;
+        }
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => EstateProfileScreen(
+              estateId: int.parse(id),
+            ),
+          ),
+        );
+        return;
+      }
     }, onError: (Object err) {
       if (!mounted) {
         return;
@@ -443,6 +567,18 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {});
     });
   }
+
+  void postVideosListener() {
+    if (currentPost != null) {
+      currentVideoController?.pause();
+      currentPost = null;
+
+      setState(() {});
+    }
+  }
+
+  VideoPlayerController? currentVideoController;
+  Post? currentPost;
 }
 
 enum ViewType {

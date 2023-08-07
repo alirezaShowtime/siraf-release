@@ -7,6 +7,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:siraf3/dialog.dart';
@@ -168,10 +169,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       Container(
                         child: GridView(
                           shrinkWrap: true,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount:
-                                MediaQuery.of(context).size.width < 330 ? 4 : 5,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: MediaQuery.of(context).size.width < 330 ? 4 : 5,
                           ),
                           children: <Widget>[
                                 Container(
@@ -202,8 +201,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                                   .map<Widget>(
                                     (e) => InkWell(
                                       onTap: () {
-                                        showOptionsDialog(
-                                            mediaBoxes.indexOf(e));
+                                        showOptionsDialog(mediaBoxes.indexOf(e));
                                       },
                                       child: e,
                                     ),
@@ -234,10 +232,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       ),
                       TextFormField2(
                         decoration: InputDecoration(
-                          hintText:
-                              hints.containsKey(widget.formData.category.id!)
-                                  ? hints[widget.formData.category.id!]
-                                  : "مثال : آپارتمان 120 متری، میدان ونک",
+                          hintText: hints.containsKey(widget.formData.category.id!) ? hints[widget.formData.category.id!] : "مثال : آپارتمان 120 متری، میدان ونک",
                           border: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: Themes.icon,
@@ -273,10 +268,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             ),
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          hintStyle:
-                              TextStyle(fontSize: 14, color: Themes.textGrey),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
+                          hintStyle: TextStyle(fontSize: 14, color: Themes.textGrey),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         ),
                         style: TextStyle(
                           fontSize: 14,
@@ -356,8 +349,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             borderRadius: BorderRadius.circular(5),
                           ),
                           hintStyle: TextStyle(fontSize: 14),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         ),
                         style: TextStyle(fontSize: 14, color: Themes.text),
                         onChanged: (value) {
@@ -431,8 +423,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             borderRadius: BorderRadius.circular(5),
                           ),
                           hintStyle: TextStyle(fontSize: 14),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                           helperStyle: TextStyle(fontSize: 0.01),
                         ),
                         maxLength: 11,
@@ -480,8 +471,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       ),
                       TextFormField2(
                         decoration: InputDecoration(
-                          hintText:
-                              "نام و نام خانوادگی جهت هماهنگی بازدید را بنویسید.",
+                          hintText: "نام و نام خانوادگی جهت هماهنگی بازدید را بنویسید.",
                           border: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: Themes.icon,
@@ -518,8 +508,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             borderRadius: BorderRadius.circular(5),
                           ),
                           hintStyle: TextStyle(fontSize: 14),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         ),
                         style: TextStyle(fontSize: 14, color: Themes.text),
                         onChanged: (value) {
@@ -590,8 +579,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             borderRadius: BorderRadius.circular(5),
                           ),
                           hintStyle: TextStyle(fontSize: 14),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                           helperStyle: TextStyle(fontSize: 0.01),
                         ),
                         keyboardType: TextInputType.number,
@@ -692,8 +680,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   }
 
   _openHelp() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (_) => UploadMediaGuide()));
+    Navigator.push(context, MaterialPageRoute(builder: (_) => UploadMediaGuide()));
   }
 
   next() async {
@@ -723,49 +710,72 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   List<Widget> mediaBoxes = [];
   List<Map<String, dynamic>> files = [];
 
+  BuildContext? addMediaBottmSheetContext;
+
   void _addMedia() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-        allowMultiple: true,
-        allowedExtensions: image_extensions + video_extensions + ["zip"],
-        type: FileType.custom);
-
-    if (result != null) {
-      for (PlatformFile pFile in result.files) {
-        io.File file = io.File(pFile.path!);
-        if (!checkImageExtension(file.path) &&
-            !checkVideoExtension(file.path) &&
-            p.extension(file.path).replaceAll('.', '').toLowerCase() != "zip") {
-          notify(
-              'فرمت فایل انتخابی باید یکی از فرمت های ' +
-                  image_extensions.join(", ") +
-                  video_extensions.join(", ") +
-                  ", zip" +
-                  " باشد",
-              duration: Duration(seconds: 4));
-
-          return;
-        }
-        FileType2 type;
-
-        if (checkImageExtension(file.path)) {
-          type = FileType2.image;
-        } else if (checkVideoExtension(file.path)) {
-          type = FileType2.video;
-        } else {
-          type = FileType2.tour;
-        }
-
-        var mediaBox = await buildMediaBox(file, type);
-
-        setState(() {
-          files.add({
-            "file": file,
-            "title": null,
-          });
-          mediaBoxes.add(mediaBox);
+    showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(15),
+            topRight: Radius.circular(15),
+          ),
+        ),
+        builder: (_) {
+          addMediaBottmSheetContext = _;
+          return Container(
+            height: 120,
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            child: Column(
+              children: [
+                InkWell(
+                  onTap: _chooseFromGallery,
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      children: [
+                        Icon(CupertinoIcons.photo),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          "انتخاب از گالری",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: "IranSansMedium",
+                            color: App.theme.textTheme.bodyLarge?.color,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: _takePhotoFromCamera,
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      children: [
+                        Icon(CupertinoIcons.photo_camera),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          "عکس از دوربین",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: "IranSansMedium",
+                            color: App.theme.textTheme.bodyLarge?.color,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
         });
-      }
-    }
   }
 
   BuildContext? optionsDialog;
@@ -822,15 +832,13 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       shrinkWrap: true,
                       physics: BouncingScrollPhysics(),
                       children: [
-                        if (!checkVirtualTourExtension(
-                            (files[index]["file"] as io.File).path))
+                        if (!checkVirtualTourExtension((files[index]["file"] as io.File).path))
                           optionItem(
                             value: "عنوان را وارد کنید (اختیاری)",
                             isLast: false,
                             onTap: () => _showAddTitleDialog(index),
                           ),
-                        if (checkImageExtension(
-                            (files[index]["file"] as io.File).path))
+                        if (checkImageExtension((files[index]["file"] as io.File).path))
                           optionItem(
                             value: "انتخاب به عنوان نمایش اول",
                             isLast: false,
@@ -876,11 +884,9 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
         final byteData = await file.readAsBytes();
         Directory tempDir = await getTemporaryDirectory();
 
-        File tempVideo =
-            File("${tempDir.path}/assets/" + file.uri.pathSegments.last)
-              ..createSync(recursive: true)
-              ..writeAsBytesSync(byteData.buffer
-                  .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+        File tempVideo = File("${tempDir.path}/assets/" + file.uri.pathSegments.last)
+          ..createSync(recursive: true)
+          ..writeAsBytesSync(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
 
         final fileName = await VideoThumbnail.thumbnailFile(
           video: tempVideo.path,
@@ -930,8 +936,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
     );
   }
 
-  Widget optionItem(
-      {required String value, required bool isLast, void Function()? onTap}) {
+  Widget optionItem({required String value, required bool isLast, void Function()? onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -969,21 +974,12 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   }
 
   _editFile(int index) async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: false);
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false);
 
     if (result != null) {
       io.File file = io.File(result.files.first.path!);
-      if (!checkImageExtension(file.path) &&
-          !checkVideoExtension(file.path) &&
-          !checkVirtualTourExtension(file.path)) {
-        notify(
-            'فرمت فایل انتخابی باید یکی از فرمت های ' +
-                image_extensions.join(", ") +
-                video_extensions.join(", ") +
-                ", zip" +
-                " باشد",
-            duration: Duration(seconds: 4));
+      if (!checkImageExtension(file.path) && !checkVideoExtension(file.path) && !checkVirtualTourExtension(file.path)) {
+        notify('فرمت فایل انتخابی باید یکی از فرمت های ' + image_extensions.join(", ") + video_extensions.join(", ") + ", zip" + " باشد", duration: Duration(seconds: 4));
 
         return;
       }
@@ -1034,8 +1030,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
       barrierDismissible: true,
       builder: (_) {
         mediaTitleDialogContext = _;
-        TextEditingController _controller =
-            TextEditingController(text: files[index]['title']);
+        TextEditingController _controller = TextEditingController(text: files[index]['title']);
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -1049,8 +1044,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                 Column(
                   children: [
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       child: TextField2(
                         maxLines: 1,
                         controller: _controller,
@@ -1082,8 +1076,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                                 setState(() {
                                   files[index] = {
                                     "file": files[index]["file"],
-                                    "title": _controller.text.trim().isNotEmpty ? _controller.text.trim()
-                                        : null,
+                                    "title": _controller.text.trim().isNotEmpty ? _controller.text.trim() : null,
                                   };
                                 });
 
@@ -1123,11 +1116,64 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   }
 
   dismissMediaTitleDialog() {
-    if (mediaTitleDialogContext != null)
-      Navigator.pop(mediaTitleDialogContext!);
+    if (mediaTitleDialogContext != null) Navigator.pop(mediaTitleDialogContext!);
     if (optionsDialog != null) Navigator.pop(optionsDialog!);
 
     print(files);
+  }
+
+  void _chooseFromGallery() async {
+    dismissDialog(addMediaBottmSheetContext);
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true, allowedExtensions: image_extensions + video_extensions + ["zip"], type: FileType.custom);
+
+    if (result != null) {
+      for (PlatformFile pFile in result.files) {
+        io.File file = io.File(pFile.path!);
+        if (!checkImageExtension(file.path) && !checkVideoExtension(file.path) && p.extension(file.path).replaceAll('.', '').toLowerCase() != "zip") {
+          notify('فرمت فایل انتخابی باید یکی از فرمت های ' + image_extensions.join(", ") + video_extensions.join(", ") + ", zip" + " باشد", duration: Duration(seconds: 4));
+
+          return;
+        }
+        FileType2 type;
+
+        if (checkImageExtension(file.path)) {
+          type = FileType2.image;
+        } else if (checkVideoExtension(file.path)) {
+          type = FileType2.video;
+        } else {
+          type = FileType2.tour;
+        }
+
+        var mediaBox = await buildMediaBox(file, type);
+
+        setState(() {
+          files.add({
+            "file": file,
+            "title": null,
+          });
+          mediaBoxes.add(mediaBox);
+        });
+      }
+    }
+  }
+
+  void _takePhotoFromCamera() async {
+    dismissDialog(addMediaBottmSheetContext);
+    var photo = await ImagePicker().pickImage(source: ImageSource.camera);
+
+    if (photo == null) return;
+
+    var file = File(photo.path);
+
+    var mediaBox = await buildMediaBox(file, FileType2.image);
+
+    setState(() {
+      files.add({
+        "file": file,
+        "title": null,
+      });
+      mediaBoxes.add(mediaBox);
+    });
   }
 }
 

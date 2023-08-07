@@ -8,11 +8,13 @@ import 'package:flutter_share/flutter_share.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:siraf3/bloc/add_violation_bloc.dart';
 import 'package:siraf3/bloc/file_bloc.dart';
+import 'package:siraf3/bloc/related_files_bloc.dart';
 import 'package:siraf3/bookmark.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
+import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/file_detail.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/file_images_screen.dart';
@@ -20,6 +22,7 @@ import 'package:siraf3/screens/support_file_screen.dart';
 import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
+import 'package:siraf3/widgets/file_horizontal_item.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
@@ -36,8 +39,12 @@ class FileScreen extends StatefulWidget {
   State<FileScreen> createState() => _FileScreenState();
 }
 
-class _FileScreenState extends State<FileScreen> {
+class _FileScreenState extends State<FileScreen> with AutomaticKeepAliveClientMixin {  
+  @override
+  bool get wantKeepAlive => true;
+  
   FileBloc fileBloc = FileBloc();
+  RelatedFilesBloc relatedFilesBloc = RelatedFilesBloc();
 
   AddViolationBloc addViolationBloc = AddViolationBloc();
 
@@ -130,6 +137,8 @@ class _FileScreenState extends State<FileScreen> {
         titleShow = _scrollController.position.pixels > imgHeight + 50;
       });
     });
+
+    relatedFilesBloc.add(RelatedFilesEvent(id: widget.id));
   }
 
   bool titleShow = false;
@@ -147,8 +156,15 @@ class _FileScreenState extends State<FileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => fileBloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => fileBloc,
+        ),
+        BlocProvider(
+          create: (context) => relatedFilesBloc,
+        ),
+      ],
       child: Scaffold(
         body: SafeArea(child: BlocBuilder<FileBloc, FileState>(builder: buildBaseBloc)),
       ),
@@ -200,16 +216,17 @@ class _FileScreenState extends State<FileScreen> {
             SizedBox(
               height: 10,
             ),
-            GestureDetector(
-              onTap: () {
-                doWithLogin(context, () {
-                  showViolationDialog();
-                });
-              },
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 15),
+            BlocBuilder<RelatedFilesBloc, RelatedFilesState>(builder: _buildRelatedBloc),
+            Align(
+              alignment: Alignment.centerRight,
+              child: InkWell(
+                onTap: () {
+                  doWithLogin(context, () {
+                    showViolationDialog();
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.only(right: 15, left: 15, top: 5, bottom: 5),
                   child: Text(
                     "ثبت تخلف و مشکل فایل",
                     style: TextStyle(
@@ -949,6 +966,75 @@ class _FileScreenState extends State<FileScreen> {
       text: file.name ?? '',
       linkUrl: FILE_URL + widget.id.toString(),
       chooserTitle: 'اشتراک گذاری در',
+    );
+  }
+
+  List<File> relatedFiles = [];
+
+  Widget _buildRelatedBloc(BuildContext context, RelatedFilesState state) {
+    if (state is RelatedFilesInitState) return Container();
+
+    if (state is RelatedFilesLoadingState) {
+      return Container(
+        width: MediaQuery.of(context).size.width,
+        height: 200,
+        alignment: Alignment.center,
+        child: Loading(),
+      );
+    }
+
+    if (state is RelatedFilesErrorState) {
+      return Container();
+    }
+
+    relatedFiles = (state as RelatedFilesLoadedState).files;
+
+    double imageSize = (MediaQuery.of(context).size.width - 20) / 3.5;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 10),
+        Padding(
+          padding: EdgeInsets.only(right: 15),
+          child: Text(
+            "فایل های مرتبط",
+            style: TextStyle(fontSize: 13, fontFamily: "IranSansMedium"),
+          ),
+        ),
+        SizedBox(height: 10),
+        SizedBox(
+          height: 150,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: relatedFiles
+                .map(
+                  (e) => Container(
+                    width: MediaQuery.of(context).size.width - 50,
+                    height: 150,
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: GestureDetector(
+                      onTap: () {
+                        push(
+                            context,
+                            FileScreen(
+                              id: e.id!,
+                            ));
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: FileHorizontalItem(
+                          file: e,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+        SizedBox(height: 5),
+      ],
     );
   }
 }
