@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -100,8 +99,6 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   final ChatMessageSearchBloc chatMessageSearchBloc = ChatMessageSearchBloc();
   final ChatScreenPaginationBloc chatScreenPaginationBloc = ChatScreenPaginationBloc();
 
-  final ScrollController _chatController = ScrollController();
-
   final double begin_floatingActionButtonOffset = -100;
   final double end_floatingActionButtonOffset = 10;
 
@@ -126,7 +123,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
   StreamController<int> recordTimeStream = StreamController.broadcast();
 
-  String? lastMessage = "";
+  ChatMessage? lastMessage;
 
   late bool isBlockByMe;
   late bool blockByHer;
@@ -147,11 +144,15 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   StreamController<bool> changeEmojiKeyboardStatus = StreamController.broadcast();
 
   final ItemScrollController chatItemScrollController = ItemScrollController();
-  final ScrollOffsetListener chatScrollOffsetListener = ScrollOffsetListener.create();
+  final ScrollOffsetController chatScrollOffsetController = ScrollOffsetController();
 
   FoundMessageWidgetIndexes foundMessageWidgetIndexes = FoundMessageWidgetIndexes();
 
   int? currentFoundedIndex;
+
+  int newMessageCount = 0;
+
+  var newMessageCountBadgeSetState;
 
   @override
   void initState() {
@@ -167,7 +168,6 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     recordIconAnim = Tween<double>(begin: 0.7, end: 1.0).animate(voiceAnimController..repeat(reverse: true));
 
     initScrollAnimation();
-    _chatController.addListener(scrollListener);
 
     _request();
 
@@ -196,7 +196,6 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     voiceMessagePlayBloc.close();
     selectMessageBloc.close();
     chatMessagesBloc.close();
-    _chatController.dispose();
     voiceAnimController.dispose();
     chatBlockBloc.close();
     chatDeleteBloc.close();
@@ -235,7 +234,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
               consultantName: widget.consultantName,
               consultantImage: widget.consultantImage,
               chatId: widget.chatId,
-              lastMessage: lastMessage,
+              lastMessage: lastMessage?.message,
               isDisable: blockByHer || isBlockByMe,
             ),
             body: Stack(
@@ -247,7 +246,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                     messages = state.messages;
 
                     try {
-                      lastMessage = messages.last.message;
+                      lastMessage = messages.first;
                     } catch (e) {}
 
                     for (ChatMessage message in messages) {
@@ -306,6 +305,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                                       itemBuilder: (_, i) => list[i],
                                       addAutomaticKeepAlives: true,
                                       itemScrollController: chatItemScrollController,
+                                      scrollOffsetController: chatScrollOffsetController,
                                     ),
                                   );
                                 }),
@@ -463,7 +463,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
         Navigator.pop(context, {
           "chatId": widget.chatId,
-          "sentMessage": lastMessage,
+          "sentMessage": lastMessage?.message,
+          "newMessageCount": newMessageCount,
         });
 
         return false;

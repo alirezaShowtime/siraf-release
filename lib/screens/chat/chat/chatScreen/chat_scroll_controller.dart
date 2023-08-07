@@ -8,12 +8,52 @@ extension ChatScrollController on _ChatScreen {
         return Positioned(
           right: 10,
           bottom: _scrollDownAnimation.value,
-          child: FloatingActionButton(
-            onPressed: scrollDown,
-            child: icon(Icons.expand_more_rounded),
-            elevation: 10,
-            mini: true,
-            backgroundColor: Colors.grey.shade50,
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: FloatingActionButton(
+                  onPressed: scrollDown,
+                  child: icon(Icons.expand_more_rounded),
+                  elevation: 10,
+                  mini: true,
+                  backgroundColor: Colors.grey.shade50,
+                ),
+              ),
+              StatefulBuilder(builder: (context, setState) {
+                newMessageCountBadgeSetState = setState;
+                if (newMessageCount <= 0) return SizedBox();
+                return Container(
+                  height: 22,
+                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  alignment: Alignment.center,
+                  constraints: BoxConstraints(minWidth: 22),
+                  decoration: BoxDecoration(
+                    color: Themes.primary,
+                    borderRadius: BorderRadius.circular(100),
+                    boxShadow: [
+                      BoxShadow(
+                        offset: const Offset(0, 0),
+                        color: Colors.black12,
+                        blurRadius: 2,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    newMessageCount.toString(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontFamily: "sans-serif",
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                );
+              }),
+            ],
           ),
         );
       },
@@ -55,15 +95,17 @@ extension ChatScrollController on _ChatScreen {
           type: ChatScreenPaginationType.Previous,
         ));
       }
+
+      scrollListener(notification.metrics);
     }
 
     return false;
   }
 
-  void scrollDown({int milliseconds = 2000}) {
+  void scrollDown({int milliseconds = 1500}) {
     try {
-      _chatController.animateTo(
-        _chatController.position.minScrollExtent,
+      chatItemScrollController.scrollTo(
+        index: 0,
         duration: Duration(milliseconds: milliseconds),
         curve: Curves.fastOutSlowIn,
       );
@@ -103,21 +145,21 @@ extension ChatScrollController on _ChatScreen {
     ).animate(_scrollDownAnimationController);
   }
 
-  void scrollListener() {
-    if (_chatController.position.pixels < 150) {
+  void scrollListener(ScrollMetrics scrollMetrics) {
+    if (scrollMetrics.pixels < 150) {
       _scrollDownAnimationController.reset();
       _scrollDownAnimationController.reverse();
       return;
     }
 
-    if (_chatController.position.userScrollDirection == ScrollDirection.forward) {
+    if (scrollMetrics.axisDirection == AxisDirection.up) {
       if (_scrollDownAnimation.value != end_floatingActionButtonOffset) {
         _scrollDownAnimationController.reset();
       }
       _scrollDownAnimationController.forward();
     }
 
-    if (_chatController.position.userScrollDirection == ScrollDirection.reverse) {
+    if (scrollMetrics.axisDirection == AxisDirection.down) {
       if (_scrollDownAnimation.value != begin_floatingActionButtonOffset) {
         _scrollDownAnimationController.reset();
       }

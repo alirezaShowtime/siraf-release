@@ -75,8 +75,16 @@ extension BlocListeners on _ChatScreen {
   }
 
   void chatMessagesBlocListener() {
-    chatMessagesBloc.stream.listen((event) {
-      if (event is! MessagesSuccess) return;
+    chatMessagesBloc.stream.listen((state) {
+      if (state is! MessagesSuccess) return;
+
+      var notSeen = state.messages.where((e) => !e.isSeen).length;
+
+      if (state.newMessageCount > notSeen) {
+        newMessageCount = state.newMessageCount - notSeen;
+        newMessageCountBadgeSetState?.call(() {});
+        hasNextMessage = true;
+      }
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) => scrollDown());
     });
@@ -98,7 +106,7 @@ extension BlocListeners on _ChatScreen {
       for (var i = 0; i < messageWidgets.length(); i++) {
         if (messageWidgets.get(i).key != state.widgetKey) continue;
 
-        lastMessage = state.message.message;
+        lastMessage = state.message;
 
         messageWidgets.replace(
           i,
@@ -174,6 +182,11 @@ extension BlocListeners on _ChatScreen {
         showSearchResult = false;
         return;
       } else {
+        if (state.type == MessageSearchType.Next && (lastMessage?.id ?? 0) < state.messages.first.id!) {
+          lastMessage = state.messages.first;
+          hasNextMessage = state.messages.first.isSeen;
+        }
+
         showSearchResult = true;
       }
 
@@ -230,6 +243,13 @@ extension BlocListeners on _ChatScreen {
           hasNextMessage = false;
         }
         return;
+      }
+
+      var notSeen = state.messages.where((e) => !e.isSeen).length;
+
+      if (state.type == ChatScreenPaginationType.Next && notSeen > 0) {
+        newMessageCount -= notSeen;
+        newMessageCountBadgeSetState?.call(() {});
       }
 
       for (var message in state.type == ChatScreenPaginationType.Next ? state.messages.reversed : state.messages) {
