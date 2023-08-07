@@ -165,26 +165,58 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
               MyPopupMenuButton(
                 itemBuilder: (context) {
                   return [
-                    MyPopupMenuItem<String>(
+                    PopupMenuItem<String>(
                       value: "alphabet",
-                      label: "بر اساس حروف الفبا",
-                      withSpace: true,
-                      icon: currentSortType == "alphabet" ? Icons.check_rounded : null,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "بر اساس حروف الفبا",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Themes.text,
+                            ),
+                          ),
+                          if (currentSortType == "alphabet")
+                            Icon(
+                              Icons.check,
+                              color: Themes.icon,
+                              size: 20,
+                            ),
+                        ],
+                      ),
+                      height: 35,
                     ),
-                    MyPopupMenuItem<String>(
+                    PopupMenuItem<String>(
                       value: "topRate",
-                      label: "بالاترین امتیاز",
-                      withSpace: true,
-                      icon: currentSortType == "topRate" ? Icons.check_rounded : null,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "بالاترین امتیاز",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Themes.text,
+                            ),
+                          ),
+                          if (currentSortType == "topRate")
+                            Icon(
+                              Icons.check,
+                              color: Themes.icon,
+                              size: 20,
+                            ),
+                        ],
+                      ),
+                      height: 35,
                     ),
                     MyPopupMenuItem<String>(
-                      value: "new",
+                      value: "newest",
                       label: "جدید ترین",
                       withSpace: true,
                       icon: currentSortType == "new" ? Icons.check_rounded : null,
                     ),
                     MyPopupMenuItem<String>(
-                      value: "old",
+                      value: "oldest",
                       label: "قدیمی ترین",
                       withSpace: true,
                       icon: currentSortType == "old" ? Icons.check_rounded : null,

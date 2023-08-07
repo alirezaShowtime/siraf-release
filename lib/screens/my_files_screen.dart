@@ -6,6 +6,7 @@ import 'package:siraf3/bloc/my_files_bloc.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/my_file.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
@@ -145,37 +146,37 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                 itemBuilder: (context) {
                   return [
                     MyPopupMenuItem<String>(
-                      value: "",
+                      value: "new",
                       label: "جدید ترین",
                       withSpace: true,
                       icon: !currentSortType.isFill() ? Icons.check_rounded : null,
                     ),
                     MyPopupMenuItem<String>(
-                      value: "8",
+                      value: "old",
                       label: "قدیمی ترین",
                       withSpace: true,
                       icon: currentSortType == "8" ? Icons.check_rounded : null,
                     ),
                     MyPopupMenuItem<String>(
-                      value: "1",
+                      value: "pending",
                       label: "در انتظار تایید",
                       withSpace: true,
                       icon: currentSortType == "1" ? Icons.check_rounded : null,
                     ),
                     MyPopupMenuItem<String>(
-                      value: "5",
+                      value: "pendingReception",
                       label: "در انتظار پذیرش",
                       withSpace: true,
                       icon: currentSortType == "5" ? Icons.check_rounded : null,
                     ),
                     MyPopupMenuItem<String>(
-                      value: "7",
+                      value: "acceptReception",
                       label: "پذیرش شده",
                       withSpace: true,
                       icon: currentSortType == "7" ? Icons.check_rounded : null,
                     ),
                     MyPopupMenuItem<String>(
-                      value: "3",
+                      value: "rejectReception",
                       label: "رد شده",
                       withSpace: true,
                       icon: currentSortType == "3" ? Icons.check_rounded : null,
@@ -184,6 +185,9 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                 },
                 onSelected: (value) {
                   _loadFiles(sort: value);
+                  setState(() {
+                    currentSortType = value;
+                  });
                 },
                 iconData: CupertinoIcons.sort_down,
               ),
@@ -381,7 +385,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
   }
 
   _addFile() {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => CreateFileFirst()));
+    push(context, CreateFileFirst());
   }
 
   changeSelection(MyFile file) {

@@ -305,10 +305,10 @@ class _MenuScreenState extends State<MenuScreen> {
                                 title: "محاسبه کمیسیون",
                                 onClick: () => push(context, CommissionCalculatorScreen()),
                               ),
-                              AccordionItem(
-                                title: "تبدیل رهن به اجاره",
-                                onClick: () => push(context, CommissionCalculatorScreen()),
-                              ),
+                              // AccordionItem(
+                              //   title: "تبدیل رهن به اجاره",
+                              //   onClick: () => push(context, CommissionCalculatorScreen()),
+                              // ),
                             ],
                           ),
                         ),

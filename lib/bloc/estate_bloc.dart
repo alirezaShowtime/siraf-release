@@ -52,7 +52,7 @@ class EstateBloc extends Bloc<EstateEvent, EstateState> {
       emit(EstateLoadingState());
 
       var url = getEstateUrl(
-        "estate/estates?city_id=" +
+        "estate/estates?cityIds=" +
             "[" +
             event.city_ids.join(',') +
             "]"
