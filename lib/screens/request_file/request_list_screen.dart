@@ -15,6 +15,7 @@ import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
+import 'package:siraf3/widgets/my_popup_menu_item.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 class RequestListScreen extends StatefulWidget {
@@ -104,146 +105,49 @@ class _RequestListScreen extends State<RequestListScreen> {
                 offset: Offset(-10, 0),
                 child: MyPopupMenuButton(
                   iconData: CupertinoIcons.sort_down,
-                  itemBuilder: (_) => [
-                    PopupMenuItem<String?>(
+                  itemBuilder: (_) =>
+                  [
+                    MyPopupMenuItem<String?>(
                       value: "newest",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "جدیدترین",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: App.theme.textTheme.bodyLarge?.color,
-                            ),
-                          ),
-                          if (currentSortType == "newest")
-                            Icon(
-                              Icons.check,
-                              size: 20,
-                            ),
-                        ],
-                      ),
+                      label: "جدید ترین",
+                      withSpace: true,
+                      icon: currentSortType == "newest" ? Icons.check_rounded : null,
                     ),
-                    PopupMenuItem<String?>(
+                    MyPopupMenuItem<String?>(
                       value: "older",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "قدیمی ترین",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: App.theme.textTheme.bodyLarge?.color,
-                            ),
-                          ),
-                          if (currentSortType == "older")
-                            Icon(
-                              Icons.check,
-                              size: 20,
-                            ),
-                        ],
-                      ),
+                      label: "قدیمی ترین",
+                      withSpace: true,
+                      icon: currentSortType == "older" ? Icons.check_rounded : null,
                     ),
-                    PopupMenuItem<String?>(
+                    MyPopupMenuItem<String?>(
                       value: "waitePending",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "در انتظار تایید",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: App.theme.textTheme.bodyLarge?.color,
-                            ),
-                          ),
-                          if (currentSortType == "waitePending")
-                            Icon(
-                              Icons.check,
-                              size: 20,
-                            ),
-                        ],
-                      ),
+                      label: "در انتظار تایید",
+                      withSpace: true,
+                      icon: currentSortType == "waitePending" ? Icons.check_rounded : null,
                     ),
-                    PopupMenuItem<String?>(
+                    MyPopupMenuItem<String?>(
                       value: "waiteAccept",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "در انتظار پذیرش",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: App.theme.textTheme.bodyLarge?.color,
-                            ),
-                          ),
-                          if (currentSortType == "waiteAccept")
-                            Icon(
-                              Icons.check,
-                              size: 20,
-                            ),
-                        ],
-                      ),
+                      label: "در انتظار پذیرش",
+                      withSpace: true,
+                      icon: currentSortType == "waiteAccept" ? Icons.check_rounded : null,
                     ),
-                    PopupMenuItem<String?>(
+                    MyPopupMenuItem<String?>(
                       value: "accepted",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "پذیرش شده",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: App.theme.textTheme.bodyLarge?.color,
-                            ),
-                          ),
-                          if (currentSortType == "accepted")
-                            Icon(
-                              Icons.check,
-                              size: 20,
-                            ),
-                        ],
-                      ),
+                      label: "پذیرش شده",
+                      withSpace: true,
+                      icon: currentSortType == "accepted" ? Icons.check_rounded : null,
                     ),
-                    PopupMenuItem<String?>(
+                    MyPopupMenuItem<String?>(
                       value: "notAccept",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "عدم پذیرش",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: App.theme.textTheme.bodyLarge?.color,
-                            ),
-                          ),
-                          if (currentSortType == "notAccept")
-                            Icon(
-                              Icons.check,
-                              size: 20,
-                            ),
-                        ],
-                      ),
+                      label: "عدم پذیرش",
+                      withSpace: true,
+                      icon: currentSortType == "notAccept" ? Icons.check_rounded : null,
                     ),
-                    PopupMenuItem<String?>(
+                    MyPopupMenuItem<String?>(
                       value: "fail",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "رد شده",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: App.theme.textTheme.bodyLarge?.color,
-                            ),
-                          ),
-                          if (currentSortType == "fail")
-                            Icon(
-                              Icons.check,
-                              size: 20,
-                            ),
-                        ],
-                      ),
+                      label: "رد شده",
+                      withSpace: true,
+                      icon: currentSortType == "fail" ? Icons.check_rounded : null,
                     ),
                   ],
                   onSelected: (value) {
@@ -260,9 +164,7 @@ class _RequestListScreen extends State<RequestListScreen> {
                     value: 1,
                     child: Text(
                       "انتخاب همه",
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: App.theme.textTheme.bodyLarge?.color),
+                      style: TextStyle(fontSize: 12, color: App.theme.textTheme.bodyLarge?.color),
                     ),
                   ),
                 ],
@@ -303,14 +205,11 @@ class _RequestListScreen extends State<RequestListScreen> {
 
   Widget item(Request request) {
     return GestureDetector(
-      onTap: () =>
-          isSelectable ? changeSelection(request) : onClickItem(request),
+      onTap: () => isSelectable ? changeSelection(request) : onClickItem(request),
       onLongPress: () => changeSelection(request),
       child: Container(
         foregroundDecoration: BoxDecoration(
-          color: selectedRequests.any((element) => element.id == request.id)
-              ? Themes.blue.withOpacity(0.2)
-              : Colors.transparent,
+          color: selectedRequests.any((element) => element.id == request.id) ? Themes.blue.withOpacity(0.2) : Colors.transparent,
         ),
         decoration: BoxDecoration(
           color: App.theme.dialogBackgroundColor,
@@ -329,8 +228,7 @@ class _RequestListScreen extends State<RequestListScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              request.categoryId!.getMainCategoryName()! +
-                  " | ${request.title}",
+              request.categoryId!.getMainCategoryName()! + " | ${request.title}",
               style: TextStyle(
                 fontSize: 13,
                 fontFamily: "IranSansBold",
@@ -359,8 +257,7 @@ class _RequestListScreen extends State<RequestListScreen> {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(
-                        color: statusBadgeColors[request.status!]!, width: 1),
+                    border: Border.all(color: statusBadgeColors[request.status!]!, width: 1),
                     borderRadius: BorderRadius.circular(10),
                     color: statusBadgeColors[request.status!]!.withOpacity(0.3),
                   ),
@@ -382,8 +279,7 @@ class _RequestListScreen extends State<RequestListScreen> {
   }
 
   void requestFile() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (_) => RequestFileScreen()));
+    Navigator.push(context, MaterialPageRoute(builder: (_) => RequestFileScreen()));
   }
 
   void removeFile() {
@@ -460,8 +356,7 @@ class _RequestListScreen extends State<RequestListScreen> {
                 ),
               ),
               elevation: 0.2,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(7)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
               fillColor: Themes.primary,
             ),
           ],
@@ -559,8 +454,7 @@ class _RequestListScreen extends State<RequestListScreen> {
       dismissDialog(loadingDialogContext);
 
       setState(() {
-        requests.removeWhere(
-            (element) => state.event.ids.any((e) => element.id == e));
+        requests.removeWhere((element) => state.event.ids.any((e) => element.id == e));
       });
 
       var itemName = state.event.ids.length == 1 ? "درخواست" : "درخواست ها";
