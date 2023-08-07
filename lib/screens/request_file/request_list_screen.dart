@@ -105,8 +105,7 @@ class _RequestListScreen extends State<RequestListScreen> {
                 offset: Offset(-10, 0),
                 child: MyPopupMenuButton(
                   iconData: CupertinoIcons.sort_down,
-                  itemBuilder: (_) =>
-                  [
+                  itemBuilder: (_) => [
                     MyPopupMenuItem<String?>(
                       value: "newest",
                       label: "جدید ترین",
