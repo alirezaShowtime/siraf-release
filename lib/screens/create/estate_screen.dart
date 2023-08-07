@@ -18,6 +18,7 @@ import 'package:siraf3/screens/estate_profile/estate_profile_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
+import 'package:siraf3/widgets/my_popup_menu_item.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
@@ -164,115 +165,35 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
               MyPopupMenuButton(
                 itemBuilder: (context) {
                   return [
-                    PopupMenuItem<String>(
+                    MyPopupMenuItem<String>(
                       value: "alphabet",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "بر اساس حروف الفبا",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Themes.text,
-                            ),
-                          ),
-                          if (currentSortType == "alphabet")
-                            Icon(
-                              Icons.check,
-                              color: Themes.icon,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
+                      label: "بر اساس حروف الفبا",
+                      withSpace: true,
+                      icon: currentSortType == "alphabet" ? Icons.check_rounded : null,
                     ),
-                    PopupMenuItem<String>(
+                    MyPopupMenuItem<String>(
                       value: "topRate",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "بالاترین امتیاز",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Themes.text,
-                            ),
-                          ),
-                          if (currentSortType == "topRate")
-                            Icon(
-                              Icons.check,
-                              color: Themes.icon,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
+                      label: "بالاترین امتیاز",
+                      withSpace: true,
+                      icon: currentSortType == "topRate" ? Icons.check_rounded : null,
                     ),
-                    PopupMenuItem<String>(
+                    MyPopupMenuItem<String>(
                       value: "new",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "جدید ترین",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Themes.text,
-                            ),
-                          ),
-                          if (currentSortType == "newest")
-                            Icon(
-                              Icons.check,
-                              color: Themes.icon,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
+                      label: "جدید ترین",
+                      withSpace: true,
+                      icon: currentSortType == "new" ? Icons.check_rounded : null,
                     ),
-                    PopupMenuItem<String>(
+                    MyPopupMenuItem<String>(
                       value: "old",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "قدیمی ترین",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Themes.text,
-                            ),
-                          ),
-                          if (currentSortType == "oldest")
-                            Icon(
-                              Icons.check,
-                              color: Themes.icon,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
+                      label: "قدیمی ترین",
+                      withSpace: true,
+                      icon: currentSortType == "old" ? Icons.check_rounded : null,
                     ),
-                    PopupMenuItem<String>(
+                    MyPopupMenuItem<String>(
                       value: "random",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "تصادفی",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Themes.text,
-                            ),
-                          ),
-                          if (currentSortType == "random")
-                            Icon(
-                              Icons.check,
-                              color: Themes.icon,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
+                      label: "تصادفی",
+                      withSpace: true,
+                      icon: currentSortType == "random" ? Icons.check_rounded : null,
                     ),
                   ];
                 },

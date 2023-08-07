@@ -241,48 +241,6 @@ bool isValidNumberPhone(String numberPhone) {
   return numberPhone.length == 11;
 }
 
-PopupMenuItem<String> popupMenuItem({
-  required String title,
-  Function()? onTap,
-  String? value,
-}) {
-  return PopupMenuItem<String>(
-      onTap: onTap,
-      value: value,
-      child: Text(
-        title,
-        style: TextStyle(
-          color: App.theme.textTheme.bodyLarge?.color,
-          fontSize: 11,
-        ),
-      ));
-}
-
-PopupMenuItem<String> popupMenuItemWithIcon({
-  required String title,
-  required IconData iconDate,
-  Function()? onTap,
-  String? value,
-}) {
-  return PopupMenuItem<String>(
-    onTap: onTap,
-    value: value,
-    child: Row(
-      children: [
-        icon(iconDate, size: 20),
-        SizedBox(width: 10),
-        Text(
-          title,
-          style: TextStyle(
-            color: App.theme.textTheme.bodyLarge?.color,
-            fontSize: 11,
-          ),
-        )
-      ],
-    ),
-  );
-}
-
 String nonIfZero(number) {
   if (number == 0 || number == .0 || number == "0") return "ندارد";
 

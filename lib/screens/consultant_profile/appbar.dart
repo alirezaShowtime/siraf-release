@@ -13,8 +13,8 @@ extension AppBarWidget on _ConsultantProfileScreen {
         IconButton(onPressed: share, icon: icon(Icons.share_rounded, size: 22)),
         MyPopupMenuButton(
           itemBuilder: (_) => [
-            popupMenuItem(
-              title: "گزارش تخلف",
+            MyPopupMenuItem<String>(
+              label: "گزارش تخلف",
               value: "report",
             ),
           ],

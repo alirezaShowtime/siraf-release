@@ -16,6 +16,7 @@ import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
+import 'package:siraf3/widgets/my_popup_menu_item.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 class RequestFileShowScreen extends StatefulWidget {
@@ -78,20 +79,12 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
           automaticallyImplyLeading: false,
           title: AppBarTitle("درخواست شماره : ${widget.request.id}"),
           actions: [
-            IconButton(
-                onPressed: showDeleteDialog,
-                icon: icon(CupertinoIcons.delete, size: 20)),
+            IconButton(onPressed: showDeleteDialog, icon: icon(CupertinoIcons.delete, size: 20)),
             MyPopupMenuButton(
               itemBuilder: (_) => [
-                PopupMenuItem<String>(
+                MyPopupMenuItem<String>(
                   value: "edit",
-                  child: Text(
-                    "ویرایش درخواست",
-                    style: TextStyle(
-                      color: App.theme.textTheme.bodyLarge?.color,
-                      fontSize: 12,
-                    ),
-                  ),
+                  label: "ویرایش درخواست",
                 ),
               ],
               onSelected: (v) => onClickEditRequest(),
@@ -105,8 +98,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.request.categoryId!.getMainCategoryName()! +
-                    " | ${widget.request.title}",
+                widget.request.categoryId!.getMainCategoryName()! + " | ${widget.request.title}",
                 style: TextStyle(
                   fontSize: 14,
                   fontFamily: "IranSansBold",
@@ -114,28 +106,14 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
               ),
               SizedBox(height: 10),
               Text(
-                "محدوده قیمت: " +
-                    ((widget.request.minPrice ?? 0) > 0
-                        ? "از ${widget.request.minPrice} "
-                        : "") +
-                    ((widget.request.maxPrice ?? 0) > 0
-                        ? "تا ${widget.request.maxPrice} "
-                        : "") +
-                    "تومان",
+                "محدوده قیمت: " + ((widget.request.minPrice ?? 0) > 0 ? "از ${widget.request.minPrice} " : "") + ((widget.request.maxPrice ?? 0) > 0 ? "تا ${widget.request.maxPrice} " : "") + "تومان",
                 style: TextStyle(
                   fontSize: 12,
                   fontFamily: "IranSansBold",
                 ),
               ),
               Text(
-                "محدوده متراژ: " +
-                    ((widget.request.minMeter ?? 0) > 0
-                        ? "از ${widget.request.minMeter} "
-                        : "") +
-                    ((widget.request.maxMeter ?? 0) > 0
-                        ? "تا ${widget.request.maxMeter} "
-                        : "") +
-                    "متر",
+                "محدوده متراژ: " + ((widget.request.minMeter ?? 0) > 0 ? "از ${widget.request.minMeter} " : "") + ((widget.request.maxMeter ?? 0) > 0 ? "تا ${widget.request.maxMeter} " : "") + "متر",
                 style: TextStyle(
                   fontSize: 12,
                   fontFamily: "IranSansBold",
@@ -192,8 +170,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
               Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: Text(
-                  statusHelpTexts[widget.request.status!] ??
-                      (widget.request.commentOperator ?? ""),
+                  statusHelpTexts[widget.request.status!] ?? (widget.request.commentOperator ?? ""),
                   style: TextStyle(
                     color: App.theme.tooltipTheme.textStyle?.color,
                     fontSize: 11,
@@ -203,9 +180,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
               ),
               //todo: if status is accepted, show blow widget
               SizedBox(height: 10),
-              if (widget.request.status == 1)
-                BlocBuilder<RequestConsultantBloc, RequestConsultantState>(
-                    builder: _requestConsultantBlocBuilder),
+              if (widget.request.status == 1) BlocBuilder<RequestConsultantBloc, RequestConsultantState>(builder: _requestConsultantBlocBuilder),
             ],
           ),
         ),
@@ -230,8 +205,8 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image(
-                  image: NetworkImage(
-                      "https://auth.siraf.app/media/static/upload/user/avatar/avatar.png"), // todo change image link
+                  image: NetworkImage("https://auth.siraf.app/media/static/upload/user/avatar/avatar.png"),
+                  // todo change image link
                   height: 40,
                   width: 40,
                   fit: BoxFit.fill,
@@ -263,15 +238,13 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                   ),
                   SizedBox(height: 6),
                   RatingBarIndicator(
-                    rating:
-                        (requestConsultant.consultantId?.rate?.toDouble() ?? 0),
+                    rating: (requestConsultant.consultantId?.rate?.toDouble() ?? 0),
                     // minRating: 1,
                     direction: Axis.horizontal,
                     itemCount: 5,
                     // allowHalfRating: true,
                     itemPadding: EdgeInsets.symmetric(horizontal: 0.25),
-                    itemBuilder: (context, _) =>
-                        icon(Icons.star, color: Colors.amber),
+                    itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
                     itemSize: 10,
                     // onRatingUpdate: (double value) {},
                     // updateOnDrag: false,
@@ -284,12 +257,8 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
           ),
           Row(
             children: [
-              IconButton(
-                  onPressed: () => startChat(requestConsultant),
-                  icon: icon(Icons.chat_outlined)),
-              IconButton(
-                  onPressed: () => call(requestConsultant.consultantId!),
-                  icon: icon(Icons.phone_rounded)),
+              IconButton(onPressed: () => startChat(requestConsultant), icon: icon(Icons.chat_outlined)),
+              IconButton(onPressed: () => call(requestConsultant.consultantId!), icon: icon(Icons.phone_rounded)),
             ],
           ),
         ],
@@ -417,8 +386,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
     }
   }
 
-  Widget _requestConsultantBlocBuilder(
-      BuildContext context, RequestConsultantState state) {
+  Widget _requestConsultantBlocBuilder(BuildContext context, RequestConsultantState state) {
     if (state is RequestConsultantInitState) {
       return Container();
     }
@@ -439,16 +407,14 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
           child: TryAgain(
             message: jDecode(state.response?.body ?? "{}")['message'],
             onPressed: () {
-              requestConsultantBloc
-                  .add(RequestConsultantEvent(id: widget.request.id!));
+              requestConsultantBloc.add(RequestConsultantEvent(id: widget.request.id!));
             },
           ),
         ),
       );
     }
 
-    state = RequestConsultantLoadedState(
-        consultants: (state as RequestConsultantLoadedState).consultants);
+    state = RequestConsultantLoadedState(consultants: (state as RequestConsultantLoadedState).consultants);
 
     consultants = state.consultants;
 

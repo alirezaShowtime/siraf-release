@@ -38,6 +38,7 @@ import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_image.dart';
 import 'package:siraf3/widgets/my_list_view.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
+import 'package:siraf3/widgets/my_popup_menu_item.dart';
 import 'package:siraf3/widgets/my_text_field.dart';
 import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
@@ -47,15 +48,10 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 import 'comment_item_widget.dart';
 
 part 'add_comment_widget.dart';
-
 part 'answer_item.dart';
-
 part 'event_listeners.dart';
-
 part 'profile.dart';
-
 part 'profile_detail.dart';
-
 part 'search_bar.dart';
 
 class EstateProfileScreen extends StatefulWidget {
@@ -244,9 +240,9 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
             }
           },
           itemBuilder: (_) => [
-            popupMenuItem(title: "سپردن فایل", value: "file"),
-            popupMenuItem(title: "درخواست فایل", value: "requestFile"),
-            popupMenuItem(title: "گزارش تخلف", value: "report"),
+            MyPopupMenuItem<String>(label: "سپردن فایل", value: "file"),
+            MyPopupMenuItem<String>(label: "درخواست فایل", value: "requestFile"),
+            MyPopupMenuItem<String>(label: "گزارش تخلف", value: "report"),
           ],
           iconData: Icons.more_vert,
         ),
