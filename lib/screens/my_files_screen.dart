@@ -65,9 +65,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
       } else if (event is DeleteFileErrorState) {
         dismissDeleteDialog();
         dismissDialog(loadingDialogContext);
-        errorDialog(
-            context: context,
-            message: "خطایی در حذف فایل رخ داد لطفا مجددا تلاش کنید");
+        errorDialog(context: context, message: "خطایی در حذف فایل رخ داد لطفا مجددا تلاش کنید");
       } else if (event is DeleteFileSuccessState) {
         dismissDeleteDialog();
         dismissDialog(loadingDialogContext);
@@ -133,8 +131,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                 IconButton(
                   onPressed: selectedFiles.isNotEmpty
                       ? () {
-                          showDeleteDialog(
-                              selectedFiles.map((e) => e.id!).toList());
+                          showDeleteDialog(selectedFiles.map((e) => e.id!).toList());
                         }
                       : null,
                   icon: Icon(
@@ -147,7 +144,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                 itemBuilder: (context) {
                   return [
                     PopupMenuItem<String>(
-                      value: "",
+                      value: "new",
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -158,7 +155,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                               color: App.theme.textTheme.bodyLarge?.color,
                             ),
                           ),
-                          if (currentSortType == "" || currentSortType == null)
+                          if (currentSortType == "new" || currentSortType == null)
                             Icon(
                               Icons.check,
                               size: 20,
@@ -168,7 +165,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                       height: 35,
                     ),
                     PopupMenuItem<String>(
-                      value: "8",
+                      value: "old",
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -179,7 +176,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                               color: App.theme.textTheme.bodyLarge?.color,
                             ),
                           ),
-                          if (currentSortType == "8")
+                          if (currentSortType == "old")
                             Icon(
                               Icons.check,
                               size: 20,
@@ -189,7 +186,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                       height: 35,
                     ),
                     PopupMenuItem<String>(
-                      value: "1",
+                      value: "pending",
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -200,7 +197,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                               color: App.theme.textTheme.bodyLarge?.color,
                             ),
                           ),
-                          if (currentSortType == "1")
+                          if (currentSortType == "pending")
                             Icon(
                               Icons.check,
                               size: 20,
@@ -210,7 +207,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                       height: 35,
                     ),
                     PopupMenuItem<String>(
-                      value: "5",
+                      value: "pendingReception",
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -221,7 +218,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                               color: App.theme.textTheme.bodyLarge?.color,
                             ),
                           ),
-                          if (currentSortType == "5")
+                          if (currentSortType == "pendingReception")
                             Icon(
                               Icons.check,
                               size: 20,
@@ -231,7 +228,28 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                       height: 35,
                     ),
                     PopupMenuItem<String>(
-                      value: "7",
+                      value: "accept",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "تایید شده",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: App.theme.textTheme.bodyLarge?.color,
+                            ),
+                          ),
+                          if (currentSortType == "accept")
+                            Icon(
+                              Icons.check,
+                              size: 20,
+                            ),
+                        ],
+                      ),
+                      height: 35,
+                    ),
+                    PopupMenuItem<String>(
+                      value: "acceptReception",
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -242,7 +260,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                               color: App.theme.textTheme.bodyLarge?.color,
                             ),
                           ),
-                          if (currentSortType == "7")
+                          if (currentSortType == "acceptReception")
                             Icon(
                               Icons.check,
                               size: 20,
@@ -252,7 +270,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                       height: 35,
                     ),
                     PopupMenuItem<String>(
-                      value: "3",
+                      value: "reject",
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -263,7 +281,28 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                               color: App.theme.textTheme.bodyLarge?.color,
                             ),
                           ),
-                          if (currentSortType == "3")
+                          if (currentSortType == "reject")
+                            Icon(
+                              Icons.check,
+                              size: 20,
+                            ),
+                        ],
+                      ),
+                      height: 35,
+                    ),
+                    PopupMenuItem<String>(
+                      value: "rejectReception",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "پذیرش نشده",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: App.theme.textTheme.bodyLarge?.color,
+                            ),
+                          ),
+                          if (currentSortType == "rejectReception")
                             Icon(
                               Icons.check,
                               size: 20,
@@ -276,6 +315,9 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                 },
                 onSelected: (value) {
                   _loadFiles(sort: value);
+                  setState(() {
+                    currentSortType = value;
+                  });
                 },
                 iconData: CupertinoIcons.sort_down,
               ),
@@ -329,9 +371,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
       return Center(
         child: TryAgain(
           onPressed: _loadFiles,
-          message: state.response != null
-              ? jDecode(state.response!.body)['message']
-              : "خطا در دریافت اطلاعات پیش آمد مجدد تلاش کنید",
+          message: state.response != null ? jDecode(state.response!.body)['message'] : "خطا در دریافت اطلاعات پیش آمد مجدد تلاش کنید",
         ),
       );
     }
@@ -363,8 +403,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                 ),
               ),
               elevation: 0.2,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(7)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
               fillColor: Themes.primary,
             ),
           ],
@@ -379,9 +418,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
         children: files
             .map<Widget>(
               (file) => GestureDetector(
-                onTap: isSelectable
-                    ? () => changeSelection(file)
-                    : () => onTapFile(file),
+                onTap: isSelectable ? () => changeSelection(file) : () => onTapFile(file),
                 onLongPress: () => changeSelection(file),
                 child: MyFileHorizontalItem(
                   file: file,
@@ -485,8 +522,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
   }
 
   _addFile() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (_) => CreateFileFirst()));
+    Navigator.push(context, MaterialPageRoute(builder: (_) => CreateFileFirst()));
   }
 
   changeSelection(MyFile file) {

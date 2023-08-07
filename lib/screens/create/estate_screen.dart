@@ -209,7 +209,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                       height: 35,
                     ),
                     PopupMenuItem<String>(
-                      value: "new",
+                      value: "newest",
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -231,7 +231,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                       height: 35,
                     ),
                     PopupMenuItem<String>(
-                      value: "old",
+                      value: "oldest",
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

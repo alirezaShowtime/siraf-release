@@ -10,8 +10,9 @@ import 'package:siraf3/models/user.dart';
 
 class MyFilesEvent {
   String? sort;
+  String? filter;
 
-  MyFilesEvent({this.sort});
+  MyFilesEvent({this.sort, this.filter});
 }
 
 class MyFilesState {}
@@ -46,11 +47,17 @@ class MyFilesBloc extends Bloc<MyFilesEvent, MyFilesState> {
 
     print(await User.getBearerToken());
 
+    if (event.sort != "new" && event.sort != "old") {
+      event.filter = event.sort;
+      event.sort = null;
+    }
+
     try {
       response = await http2.getWithToken(
         getFileUrl(
           "file/myFiles/" +
-              (event.sort?.isNotEmpty ?? false ? "?sort=${event.sort!}" : ""),
+              (event.sort?.isNotEmpty ?? false ? "?sort=${event.sort!}" : "") +
+              (event.filter?.isNotEmpty ?? false ? "?filter=${event.filter!}" : ""),
         ),
         timeout: Duration(seconds: 5000)
       );
@@ -69,7 +76,7 @@ class MyFilesBloc extends Bloc<MyFilesEvent, MyFilesState> {
 
       var files = MyFile.fromList(json['data']);
 
-      emit(MyFilesLoadedState(files: files, sort: event.sort));
+      emit(MyFilesLoadedState(files: files, sort: event.sort ?? event.filter));
     } else {
       emit(MyFilesErrorState(response: response));
     }
