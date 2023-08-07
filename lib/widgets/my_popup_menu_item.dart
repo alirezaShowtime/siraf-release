@@ -20,16 +20,17 @@ PopupMenuItem<T> MyPopupMenuItem<T>({
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
         child: Row(
+          textDirection: withSpace ? TextDirection.ltr : null,
           mainAxisAlignment: withSpace ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
           children: [
-            iconWidget != null ? iconWidget : Icon(icon, size: 20),
-            SizedBox(width: 10),
+            if (icon != null || iconWidget != null || withSpace) iconWidget != null ? iconWidget : Icon(icon, size: 24),
+            if (iconWidget != null || icon != null) SizedBox(width: 10),
             Text(
               label,
               style: TextStyle(
                 color: enable ? Themes.themeData().textTheme.bodyLarge?.color : Colors.grey,
                 fontSize: 11,
-                fontFamily: "IranSansMedium"
+                fontFamily: "IranSansMedium",
               ),
             ),
           ],

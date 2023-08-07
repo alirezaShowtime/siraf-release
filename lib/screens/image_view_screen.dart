@@ -75,6 +75,14 @@ class _ImageViewScreen extends State<ImageViewScreen> {
     );
   }
 
+  @override
+  void dispose() {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(statusBarBrightness: Brightness.light, statusBarIconBrightness: Brightness.light, systemNavigationBarIconBrightness: Brightness.light, systemNavigationBarDividerColor: Colors.white),
+    );
+    super.dispose();
+  }
+
   ImageProvider _getProvider() {
     if (widget.imageFile != null) {
       return FileImage(widget.imageFile!);
