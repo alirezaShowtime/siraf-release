@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/bloc/consultant_profile/comment/send/consultant_profile_comment_rate_bloc.dart';
 import 'package:siraf3/bloc/consultant_profile/profile/consultant_profile_bloc.dart';
@@ -32,6 +31,7 @@ import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 import 'comment_item_widget.dart';
+import 'consultant_share_screen.dart';
 
 part 'add_comment_widget.dart';
 part 'answer_item.dart';

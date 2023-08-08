@@ -4,12 +4,14 @@ extension EventListener on _ConsultantProfileScreen {
   void share() {
     if (consultantInfo?.shareLink == null) return;
 
-    FlutterShare.share(
-      title: 'اشتراک گذاری',
-      text: consultantInfo?.name ?? '',
-      linkUrl: consultantInfo?.shareLink,
-      chooserTitle: 'اشتراک گذاری در',
-    );
+    push(
+        context,
+        ConsultantShareScreen(
+          shareLink: consultantInfo!.shareLink!,
+          consultantName: consultantInfo!.name!,
+          consultantProfile: consultantInfo!.avatar,
+          estateName: consultantInfo!.estateName!,
+        ));
   }
 
   void viewMoreDetail({bool? force}) {
