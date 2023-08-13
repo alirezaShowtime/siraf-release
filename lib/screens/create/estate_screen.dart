@@ -14,7 +14,7 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/map_utilities.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/estate.dart';
-import 'package:siraf3/screens/estate_profile/estate_profile_screen.dart';
+import 'package:siraf3/screens/estate_profile_without_comment/estate_profile_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
@@ -835,13 +835,11 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                           Expanded(
                             child: MaterialButton(
                               onPressed: () {
-                                Navigator.push(
+                                push(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (_) => EstateProfileScreen(
-                                      estateId: estate.id!,
-                                      estateName: estate.name,
-                                    ),
+                                  EstateProfileScreen(
+                                    estateId: estate.id!,
+                                    estateName: estate.name,
                                   ),
                                 );
                               },

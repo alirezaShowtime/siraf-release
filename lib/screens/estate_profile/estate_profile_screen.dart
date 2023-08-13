@@ -22,7 +22,7 @@ import 'package:siraf3/models/estate_profile.dart' as estateProfileModel;
 import 'package:siraf3/models/estate_profile.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
-import 'package:siraf3/screens/consultant_profile/consultant_profile_screen.dart';
+import 'package:siraf3/screens/consultant_profile_without_comment/consultant_profile_screen.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
@@ -204,16 +204,17 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
               case "file":
                 {
                   push(
-                      context,
-                      CreateFileFirst(
-                        estates: [
-                          Estate(
-                            id: estateProfile?.id,
-                            name: estateProfile?.name,
-                            address: estateProfile?.address,
-                          ),
-                        ],
-                      ));
+                    context,
+                    CreateFileFirst(
+                      estates: [
+                        Estate(
+                          id: estateProfile?.id,
+                          name: estateProfile?.name,
+                          address: estateProfile?.address,
+                        ),
+                      ],
+                    ),
+                  );
                   return;
                 }
               case "requestFile":
@@ -284,11 +285,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 3),
       child: GestureDetector(
         onTap: () {
-          push(
-              context,
-              ImageViewScreen(
-                imageUrl: image.image,
-              ));
+          push(context, ImageViewScreen(imageUrl: image.image));
         },
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),

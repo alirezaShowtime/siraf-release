@@ -1,4 +1,4 @@
-part of 'package:siraf3/screens/estate_profile/estate_profile_screen.dart';
+part of 'estate_profile_screen.dart';
 
 extension ProfileDetail on _EstateProfileScreen {
   Widget profileDetail(estateProfileModel.EstateProfile estateProfile) {

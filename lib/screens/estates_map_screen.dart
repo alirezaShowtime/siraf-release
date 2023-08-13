@@ -21,7 +21,7 @@ import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
 
-import 'estate_profile/estate_profile_screen.dart';
+import 'estate_profile_without_comment/estate_profile_screen.dart';
 
 class EstatesMapScreen extends StatefulWidget {
   EstatesMapScreen({super.key});
@@ -657,14 +657,9 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                           Expanded(
                             child: MaterialButton(
                               onPressed: () {
-                                Navigator.push(
+                                push(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (_) => EstateProfileScreen(
-                                      estateId: estate.id!,
-                                      estateName: estate.name,
-                                    ),
-                                  ),
+                                  EstateProfileScreen(estateId: estate.id!, estateName: estate.name),
                                 );
                               },
                               shape: RoundedRectangleBorder(
