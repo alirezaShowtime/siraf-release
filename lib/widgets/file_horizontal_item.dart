@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:siraf3/bookmark.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file.dart';
-import 'package:siraf3/themes.dart';
 
 class FileHorizontalItem extends StatefulWidget {
   File file;
@@ -132,7 +130,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                                   .toList()
                                   .take(4)
                                   .map<Widget>((e) => Flexible(
-                                    child: Text(
+                                        child: Text(
                                           "${e.name} ${nonIfZero(e.value)}",
                                           style: TextStyle(
                                             color: App.theme.textTheme.bodyLarge?.color,
@@ -141,7 +139,7 @@ class _FileHorizontalItemState extends State<FileHorizontalItem> {
                                             fontFamily: 'IranSans',
                                           ),
                                         ),
-                                  ))
+                                      ))
                                   .toList() ??
                               [],
                         ),

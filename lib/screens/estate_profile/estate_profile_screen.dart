@@ -22,7 +22,7 @@ import 'package:siraf3/models/estate_profile.dart' as estateProfileModel;
 import 'package:siraf3/models/estate_profile.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
-import 'package:siraf3/screens/consultant_profile/consultant_profile_screen.dart';
+import 'package:siraf3/screens/consultant_profile_without_comment/consultant_profile_screen.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
@@ -38,6 +38,7 @@ import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_image.dart';
 import 'package:siraf3/widgets/my_list_view.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
+import 'package:siraf3/widgets/my_popup_menu_item.dart';
 import 'package:siraf3/widgets/my_text_field.dart';
 import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
@@ -47,15 +48,10 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 import 'comment_item_widget.dart';
 
 part 'add_comment_widget.dart';
-
 part 'answer_item.dart';
-
 part 'event_listeners.dart';
-
 part 'profile.dart';
-
 part 'profile_detail.dart';
-
 part 'search_bar.dart';
 
 class EstateProfileScreen extends StatefulWidget {
@@ -208,16 +204,17 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
               case "file":
                 {
                   push(
-                      context,
-                      CreateFileFirst(
-                        estates: [
-                          Estate(
-                            id: estateProfile?.id,
-                            name: estateProfile?.name,
-                            address: estateProfile?.address,
-                          ),
-                        ],
-                      ));
+                    context,
+                    CreateFileFirst(
+                      estates: [
+                        Estate(
+                          id: estateProfile?.id,
+                          name: estateProfile?.name,
+                          address: estateProfile?.address,
+                        ),
+                      ],
+                    ),
+                  );
                   return;
                 }
               case "requestFile":
@@ -244,9 +241,9 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
             }
           },
           itemBuilder: (_) => [
-            popupMenuItem(title: "سپردن فایل", value: "file"),
-            popupMenuItem(title: "درخواست فایل", value: "requestFile"),
-            popupMenuItem(title: "گزارش تخلف", value: "report"),
+            MyPopupMenuItem<String>(label: "سپردن فایل", value: "file"),
+            MyPopupMenuItem<String>(label: "درخواست فایل", value: "requestFile"),
+            MyPopupMenuItem<String>(label: "گزارش تخلف", value: "report"),
           ],
           iconData: Icons.more_vert,
         ),
@@ -288,11 +285,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 3),
       child: GestureDetector(
         onTap: () {
-          push(
-              context,
-              ImageViewScreen(
-                imageUrl: image.image,
-              ));
+          push(context, ImageViewScreen(imageUrl: image.image));
         },
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),

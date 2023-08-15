@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/chat_message.dart';
+import 'package:siraf3/screens/chat/chat/new_message_badge_widget.dart';
 
 import 'abstract_message_widget.dart';
 import 'date_badge.dart';
@@ -55,19 +56,22 @@ class MessageWidgetList {
     );
   }
 
-  void add({required String createDate, required MessageWidget widget}) {
+  void add({required String createDate, required MessageWidget widget, bool checkNewMessage = false}) {
     if (_list.isEmpty || _list.last.key != createDate) {
-      var w = MapEntry(
+      _list.add(MapEntry(
         createDate,
         DateBadge(
           createDate: dateFormatter(createDate),
           color: Colors.grey.shade100,
           margin: EdgeInsets.symmetric(vertical: 10),
         ),
-      );
-
-      _list.add(w);
+      ));
     }
+
+    if (checkNewMessage && _list.last.value is ChatMessageWidget && (_list.last.value as ChatMessageWidget).message.isSeen && !(widget as ChatMessageWidget).message.isSeen) {
+      _list.add(MapEntry(createDate, NewMessageBadgeWidget()));
+    }
+
     _list.add(MapEntry(createDate, widget));
   }
 

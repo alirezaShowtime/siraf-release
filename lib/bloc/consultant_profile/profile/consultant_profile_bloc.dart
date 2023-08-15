@@ -22,7 +22,6 @@ class ConsultantProfileBloc extends Bloc<ConsultantProfileEvent, ConsultantProfi
 
     var json = jDecode(res.body);
 
-    print(json);
     emit(ConsultantProfileSuccessState(ConsultantInfo.fromJson(json["data"])));
   }
 }

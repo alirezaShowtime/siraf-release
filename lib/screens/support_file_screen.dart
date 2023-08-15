@@ -11,7 +11,7 @@ import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file_consulant.dart';
 import 'package:siraf3/models/file_detail.dart' as file_detail;
 import 'package:siraf3/models/user.dart';
-import 'package:siraf3/screens/consultant_profile/consultant_profile_screen.dart';
+import 'package:siraf3/screens/consultant_profile_without_comment/consultant_profile_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/loading.dart';

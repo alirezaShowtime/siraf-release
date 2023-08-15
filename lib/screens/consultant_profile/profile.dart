@@ -37,10 +37,15 @@ extension Profile on _ConsultantProfileScreen {
                           StaticStar(rating: consultantInfo.rate ?? 0),
                           InkWell(
                             onTap: () {
-                              push(context, EstateProfileScreen(estateId: 1, estateName: "املاک محبی",));
+                              push(
+                                  context,
+                                  EstateProfileScreen(
+                                    estateId: 1,
+                                    estateName: consultantInfo.estateName,
+                                  ));
                             },
                             child: Text(
-                              "املاک محبی", // consultantInfo.estateName!,
+                              consultantInfo.estateName ?? "", // consultantInfo.estateName!,
                               style: TextStyle(
                                 color: Themes.primary,
                                 fontSize: 11,

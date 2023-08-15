@@ -22,8 +22,8 @@ import 'package:siraf3/models/post.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/rabbit_mq_consum.dart';
 import 'package:siraf3/rabbit_mq_data.dart';
-import 'package:siraf3/screens/consultant_profile/consultant_profile_screen.dart';
-import 'package:siraf3/screens/estate_profile/estate_profile_screen.dart';
+import 'package:siraf3/screens/consultant_profile_without_comment/consultant_profile_screen.dart';
+import 'package:siraf3/screens/estate_profile_without_comment/estate_profile_screen.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
 import 'package:siraf3/screens/menu_screen.dart';
@@ -519,13 +519,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
           playingVideoController?.pause();
 
-          Navigator.push(
+          push(
             context,
-            MaterialPageRoute(
-              builder: (_) => EstateProfileScreen(
-                estateId: int.parse(id),
-              ),
-            ),
+            EstateProfileScreen(estateId: int.parse(id)),
           );
           return;
         }
@@ -599,15 +595,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
 
         playingVideoController?.pause();
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => EstateProfileScreen(
-              estateId: int.parse(id),
-            ),
-          ),
-        );
+        push(context, EstateProfileScreen(estateId: int.parse(id)));
         return;
       }
     }, onError: (Object err) {

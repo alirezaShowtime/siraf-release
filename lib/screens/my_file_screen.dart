@@ -19,7 +19,7 @@ import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file_consulant.dart';
 import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/models/user.dart';
-import 'package:siraf3/screens/consultant_profile/consultant_profile_screen.dart';
+import 'package:siraf3/screens/consultant_profile_without_comment/consultant_profile_screen.dart';
 import 'package:siraf3/screens/edit/edit_file_first.dart';
 import 'package:siraf3/screens/file_view_chart_screen.dart';
 import 'package:siraf3/screens/webview_screen.dart';
@@ -29,6 +29,7 @@ import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
+import 'package:siraf3/widgets/my_popup_menu_item.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -1019,39 +1020,20 @@ class _MyFileScreenState extends State<MyFileScreen> {
                 MyPopupMenuButton(
                   itemBuilder: (context) {
                     return [
-                      PopupMenuItem<int>(
+                      MyPopupMenuItem<int>(
                         value: 0,
-                        child: Text(
-                          "ویرایش",
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: App.theme.textTheme.bodyLarge?.color,
-                          ),
-                        ),
-                        height: 35,
+                        label: "ویرایش",
                       ),
-                      PopupMenuItem<int>(
+                      MyPopupMenuItem<int>(
                         value: 1,
-                        child: Text(
-                          "آمار بازدید",
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: App.theme.textTheme.bodyLarge?.color,
-                          ),
-                        ),
-                        height: 35,
+                        label: "آمار بازدید",
                       ),
                     ];
                   },
                   onSelected: (value) {
                     switch (value) {
                       case 0:
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => EditFileFirst(file: file),
-                          ),
-                        );
+                        push(context, EditFileFirst(file: file));
 
                         break;
                       case 1:

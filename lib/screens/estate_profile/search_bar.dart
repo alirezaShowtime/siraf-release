@@ -1,4 +1,4 @@
-part of 'package:siraf3/screens/estate_profile/estate_profile_screen.dart';
+part of 'estate_profile_screen.dart';
 
 extension SearchBar on _EstateProfileScreen {
   Widget searchBar(String estateName) {
@@ -8,12 +8,8 @@ extension SearchBar on _EstateProfileScreen {
       decoration: BoxDecoration(
         color: App.theme.dialogBackgroundColor,
         border: Border(
-          bottom: BorderSide(
-              color: App.isDark ? Colors.grey.shade900 : Colors.grey.shade200,
-              width: 1),
-          top: BorderSide(
-              color: App.isDark ? Colors.grey.shade900 : Colors.grey.shade200,
-              width: 1),
+          bottom: BorderSide(color: App.isDark ? Colors.grey.shade900 : Colors.grey.shade200, width: 1),
+          top: BorderSide(color: App.isDark ? Colors.grey.shade900 : Colors.grey.shade200, width: 1),
         ),
       ),
       child: Row(
@@ -23,8 +19,9 @@ extension SearchBar on _EstateProfileScreen {
               decoration: BoxDecoration(
                 border: Border(
                   right: BorderSide(
-                      color: App.isDark ? Themes.textGrey : Themes.text,
-                      width: 1),
+                    color: App.isDark ? Themes.textGrey : Themes.text,
+                    width: 1,
+                  ),
                 ),
               ),
               child: TextField2(

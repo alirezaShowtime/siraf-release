@@ -1,4 +1,4 @@
-part of 'package:siraf3/screens/consultant_profile/consultant_profile_screen.dart';
+part of 'consultant_profile_screen.dart';
 
 class AnswerItemWidget extends StatefulWidget {
   @override

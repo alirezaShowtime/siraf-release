@@ -53,7 +53,7 @@ class LocationFilesBloc extends Bloc<LocationFilesEvent, LocationFilesState> {
       ),
       timeout: Duration(seconds: 500),
     );
- 
+
     print(response.statusCode);
     print(convertUtf8(response.body));
 

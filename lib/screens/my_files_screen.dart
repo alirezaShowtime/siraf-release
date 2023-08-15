@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/delete_file_bloc.dart';
 import 'package:siraf3/bloc/my_files_bloc.dart';
 import 'package:siraf3/dialog.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/my_file.dart';
@@ -16,6 +17,7 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_file_horizontal_item.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
+import 'package:siraf3/widgets/my_popup_menu_item.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
 class MyFilesScreen extends StatefulWidget {
@@ -131,7 +133,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                 IconButton(
                   onPressed: selectedFiles.isNotEmpty
                       ? () {
-                          showDeleteDialog(selectedFiles.map((e) => e.id!).toList());
+                    showDeleteDialog(selectedFiles.map((e) => e.id!).toList());
                         }
                       : null,
                   icon: Icon(
@@ -143,173 +145,41 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
               MyPopupMenuButton(
                 itemBuilder: (context) {
                   return [
-                    PopupMenuItem<String>(
+                    MyPopupMenuItem<String>(
                       value: "new",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "جدید ترین",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: App.theme.textTheme.bodyLarge?.color,
-                            ),
-                          ),
-                          if (currentSortType == "new" || currentSortType == null)
-                            Icon(
-                              Icons.check,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
+                      label: "جدید ترین",
+                      withSpace: true,
+                      icon: !currentSortType.isFill() ? Icons.check_rounded : null,
                     ),
-                    PopupMenuItem<String>(
+                    MyPopupMenuItem<String>(
                       value: "old",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "قدیمی ترین",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: App.theme.textTheme.bodyLarge?.color,
-                            ),
-                          ),
-                          if (currentSortType == "old")
-                            Icon(
-                              Icons.check,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
+                      label: "قدیمی ترین",
+                      withSpace: true,
+                      icon: currentSortType == "8" ? Icons.check_rounded : null,
                     ),
-                    PopupMenuItem<String>(
+                    MyPopupMenuItem<String>(
                       value: "pending",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "در انتظار تایید",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: App.theme.textTheme.bodyLarge?.color,
-                            ),
-                          ),
-                          if (currentSortType == "pending")
-                            Icon(
-                              Icons.check,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
+                      label: "در انتظار تایید",
+                      withSpace: true,
+                      icon: currentSortType == "1" ? Icons.check_rounded : null,
                     ),
-                    PopupMenuItem<String>(
+                    MyPopupMenuItem<String>(
                       value: "pendingReception",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "در انتظار پذیرش",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: App.theme.textTheme.bodyLarge?.color,
-                            ),
-                          ),
-                          if (currentSortType == "pendingReception")
-                            Icon(
-                              Icons.check,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
+                      label: "در انتظار پذیرش",
+                      withSpace: true,
+                      icon: currentSortType == "5" ? Icons.check_rounded : null,
                     ),
-                    PopupMenuItem<String>(
-                      value: "accept",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "تایید شده",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: App.theme.textTheme.bodyLarge?.color,
-                            ),
-                          ),
-                          if (currentSortType == "accept")
-                            Icon(
-                              Icons.check,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
-                    ),
-                    PopupMenuItem<String>(
+                    MyPopupMenuItem<String>(
                       value: "acceptReception",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "پذیرش شده",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: App.theme.textTheme.bodyLarge?.color,
-                            ),
-                          ),
-                          if (currentSortType == "acceptReception")
-                            Icon(
-                              Icons.check,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
+                      label: "پذیرش شده",
+                      withSpace: true,
+                      icon: currentSortType == "7" ? Icons.check_rounded : null,
                     ),
-                    PopupMenuItem<String>(
-                      value: "reject",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "رد شده",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: App.theme.textTheme.bodyLarge?.color,
-                            ),
-                          ),
-                          if (currentSortType == "reject")
-                            Icon(
-                              Icons.check,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
-                    ),
-                    PopupMenuItem<String>(
+                    MyPopupMenuItem<String>(
                       value: "rejectReception",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "پذیرش نشده",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: App.theme.textTheme.bodyLarge?.color,
-                            ),
-                          ),
-                          if (currentSortType == "rejectReception")
-                            Icon(
-                              Icons.check,
-                              size: 20,
-                            ),
-                        ],
-                      ),
-                      height: 35,
+                      label: "رد شده",
+                      withSpace: true,
+                      icon: currentSortType == "3" ? Icons.check_rounded : null,
                     ),
                   ];
                 },
@@ -324,16 +194,9 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
               MyPopupMenuButton(
                 itemBuilder: (context) {
                   return [
-                    PopupMenuItem<int>(
+                    MyPopupMenuItem<int>(
                       value: 0,
-                      child: Text(
-                        "انتخاب همه",
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: App.theme.textTheme.bodyLarge?.color,
-                        ),
-                      ),
-                      height: 35,
+                      label: "انتخاب همه",
                     ),
                   ];
                 },
@@ -522,7 +385,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
   }
 
   _addFile() {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => CreateFileFirst()));
+    push(context, CreateFileFirst());
   }
 
   changeSelection(MyFile file) {

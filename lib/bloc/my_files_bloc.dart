@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart';
-import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/my_file.dart';
 import 'package:siraf3/models/user.dart';
 
@@ -54,13 +54,10 @@ class MyFilesBloc extends Bloc<MyFilesEvent, MyFilesState> {
 
     try {
       response = await http2.getWithToken(
-        getFileUrl(
-          "file/myFiles/" +
-              (event.sort?.isNotEmpty ?? false ? "?sort=${event.sort!}" : "") +
-              (event.filter?.isNotEmpty ?? false ? "?filter=${event.filter!}" : ""),
-        ),
-        timeout: Duration(seconds: 5000)
-      );
+          getFileUrl(
+            "file/myFiles/" + (event.sort?.isNotEmpty ?? false ? "?sort=${event.sort!}" : "") + (event.filter?.isNotEmpty ?? false ? "?filter=${event.filter!}" : ""),
+          ),
+          timeout: Duration(seconds: 5000));
     } on HttpException catch (e) {
       emit(MyFilesErrorState(response: null));
       return;
