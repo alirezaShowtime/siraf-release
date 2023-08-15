@@ -12,6 +12,7 @@ import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:video_player/video_player.dart';
 
 import '../widgets/my_app_bar.dart';
 
@@ -48,7 +49,21 @@ class _LearnScreenState extends State<LearnScreen> with AutomaticKeepAliveClient
         });
       }
     });
+
     scrollController.addListener(pagination);
+    scrollController.addListener(() {
+      if (playingVideoController == null || !playingVideoController!.value.isPlaying) {
+        return;
+      }
+
+      var screen_height = MediaQuery.of(context).size.height - 70;
+
+      if ((playingPostIndex) * 340 > scrollController.position.pixels + screen_height || (playingPostIndex + 1) * 340 < scrollController.position.pixels) {
+        playingVideoController!.pause();
+        playingVideoController = null;
+        playingPostIndex = -1;
+      }
+    });
 
     _moreBloc.stream.listen(_loadMoreListener);
   }
@@ -171,12 +186,31 @@ class _LearnScreenState extends State<LearnScreen> with AutomaticKeepAliveClient
 
     return ListView(
       controller: scrollController,
-      children: posts.map<Widget>((e) => PostItem(post: e)).toList() +
+      children: posts
+              .map<Widget>(
+                (e) => PostItem(
+                  post: e,
+                  onStartVideo: (vController) => onStartVideo(vController, e),
+                ),
+              )
+              .toList() +
           [
             if (_isLoadingMore) PaginationLoading(),
           ],
     );
   }
+
+  onStartVideo(vController, e) {
+    var index = posts.lastIndexWhere((element) => element.id == e.id);
+
+    setState(() {
+      playingPostIndex = index;
+      playingVideoController = vController;
+    });
+  }
+
+  int playingPostIndex = -1;
+  VideoPlayerController? playingVideoController;
 
   getPosts() {
     var searchText = _searchController.text.trim().isEmpty ? null : _searchController.text;

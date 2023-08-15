@@ -92,6 +92,7 @@ dependencies:
   scrollable_positioned_list: ^0.3.8
   image_picker: ^1.0.1
   flutter_image_compress: ^2.0.4
+  video_compressor: ^0.0.5
 
 
 dev_dependencies:

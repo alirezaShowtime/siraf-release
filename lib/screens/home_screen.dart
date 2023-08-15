@@ -1,9 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:badges/badges.dart' as badges;
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +19,7 @@ import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/models/home_item.dart';
 import 'package:siraf3/models/post.dart';
+import 'package:siraf3/models/user.dart';
 import 'package:siraf3/rabbit_mq_consum.dart';
 import 'package:siraf3/rabbit_mq_data.dart';
 import 'package:siraf3/screens/consultant_profile/consultant_profile_screen.dart';
@@ -38,6 +38,7 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:video_player/video_player.dart';
+import 'package:siraf3/http2.dart' as http2;
 
 class HomeScreen extends StatefulWidget {
   MaterialPageRoute? nextScreen;
@@ -96,7 +97,37 @@ class _HomeScreenState extends State<HomeScreen> {
 
     consumRabbitMq();
     listenRabbitData();
+
+    scrollController.addListener(() {
+      if (playingVideoController == null || !playingVideoController!.value.isPlaying) {
+        return;
+      }
+
+      var screen_height = MediaQuery.of(context).size.height - 70;
+
+      int space = 0;
+
+      var newList = items.sublist(0, playingPostIndex + 1)
+        ..forEach((element) {
+          print("TYPE : ${element.type.toString()}");
+          space += element.type == Type.File ? 122 : 340;
+        });
+
+      print("TYPE : ${newList.last.type.toString()} ---- NAME : ${newList.last.file != null ? newList.last.file?.name : newList.last.post?.title}");
+      print(space);
+
+      if (space - 340 > scrollController.position.pixels + screen_height || space < scrollController.position.pixels) {
+        playingVideoController!.pause();
+        playingVideoController = null;
+        playingPostIndex = -1;
+      }
+    });
+
+    addDevice();
   }
+
+  int playingPostIndex = -1;
+  VideoPlayerController? playingVideoController;
 
   HSBloc _moreBloc = HSBloc();
 
@@ -333,7 +364,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   controller: scrollController,
                   children: items
                           .map<Widget>(
-                            (item) => item.type == Type.File ? fileItem(item.file!) : postItem(item.post!),
+                            (item) => item.type == Type.File ? fileItem(item.file!) : postItem(item, item.post!),
                           )
                           .toList() +
                       [
@@ -356,6 +387,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget fileItem(File file) {
     return GestureDetector(
       onTap: () {
+        playingVideoController?.pause();
+
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -370,8 +403,22 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget postItem(Post post) {
-    return PostItem(post: post);
+  Widget postItem(HomeItem item, Post post) {
+    return PostItem(
+      post: post,
+      onStartVideo: (vController) => onStartVideo(vController, item),
+    );
+  }
+
+  onStartVideo(vController, HomeItem e) {
+    var index = items.lastIndexWhere((element) => element.post?.id == e.post?.id);
+
+    print("PLAYING VIDEO INDEX : $index");
+
+    setState(() {
+      playingPostIndex = index;
+      playingVideoController = vController;
+    });
   }
 
   void _scrollDown() {
@@ -423,6 +470,8 @@ class _HomeScreenState extends State<HomeScreen> {
             return;
           }
 
+          playingVideoController?.pause();
+
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -445,6 +494,8 @@ class _HomeScreenState extends State<HomeScreen> {
             return;
           }
 
+          playingVideoController?.pause();
+
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -465,6 +516,8 @@ class _HomeScreenState extends State<HomeScreen> {
           if (id == null) {
             return;
           }
+
+          playingVideoController?.pause();
 
           Navigator.push(
             context,
@@ -497,6 +550,8 @@ class _HomeScreenState extends State<HomeScreen> {
           return;
         }
 
+        playingVideoController?.pause();
+
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -519,6 +574,8 @@ class _HomeScreenState extends State<HomeScreen> {
           return;
         }
 
+        playingVideoController?.pause();
+
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -540,6 +597,8 @@ class _HomeScreenState extends State<HomeScreen> {
         if (id == null) {
           return;
         }
+
+        playingVideoController?.pause();
 
         Navigator.push(
           context,
@@ -579,6 +638,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   VideoPlayerController? currentVideoController;
   Post? currentPost;
+
+  void addDevice() async {
+    if (await User.hasToken()) {
+      await http2.postJsonWithToken(
+        Uri.parse("https://message.siraf.app/api/fireBase/addDevice/"),
+        body: {
+          "token": (await FirebaseMessaging.instance.getToken()).toString(),
+          "userId": (await User.fromLocal()).id,
+        },
+      );
+    }
+  }
 }
 
 enum ViewType {

@@ -13,9 +13,9 @@ import 'package:video_player/video_player.dart';
 
 class PostItem extends StatefulWidget {
   Post post;
-  Function(VideoPlayerController)? onVideoControllerChanged;
+  Function(VideoPlayerController)? onStartVideo;
 
-  PostItem({required this.post, super.key});
+  PostItem({required this.post, this.onStartVideo, super.key});
 
   @override
   State<PostItem> createState() => _PostItemState();
@@ -127,6 +127,7 @@ class _PostItemState extends State<PostItem> with AutomaticKeepAliveClientMixin 
               imageFit: BoxFit.fitHeight,
               indicatorSelectedColor: Themes.blue,
               indicatorColor: Colors.grey,
+              onStartVideo: widget.onStartVideo
             ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

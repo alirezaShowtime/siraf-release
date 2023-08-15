@@ -1,11 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/config.dart';
-import 'package:siraf3/helpers.dart';
-import 'package:siraf3/models/file_detail.dart';
-import 'package:siraf3/models/user.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/mini_video.dart';
+import 'package:video_player/video_player.dart';
 import 'slider.dart' as slider;
 import 'package:flutter/material.dart' as m;
 import 'slider.dart' as s;
@@ -28,6 +26,7 @@ class CarouselSliderCustom extends StatefulWidget {
   bool indicatorsCenterAlign;
   Function(s.Slider)? onImageTap;
   Function(int)? onPageChanged;
+  Function(VideoPlayerController)? onStartVideo;
 
   CarouselSliderCustom(
       {required this.sliders,
@@ -47,6 +46,7 @@ class CarouselSliderCustom extends StatefulWidget {
       this.enlargeCenterPage = false,
       this.viewportFraction,
       this.onPageChanged,
+      this.onStartVideo,
       Key? key})
       : super(key: key);
 
@@ -108,6 +108,7 @@ class _CarouselSliderCustomState extends State<CarouselSliderCustom> with Automa
                     borderRadius: widget.itemBorderRadius,
                     onImageTap: widget.onImageTap,
                     index: widget.sliders.indexOf(image),
+                    onStartVideo: widget.onStartVideo,
                   ),
                 );
               },
@@ -154,6 +155,7 @@ class CarouselSliderItemCustom extends StatefulWidget {
   BoxFit? imageFit;
   int index;
   s.Slider slide;
+  Function(VideoPlayerController)? onStartVideo;
 
   CarouselSliderItemCustom(
       {required this.image,
@@ -163,6 +165,7 @@ class CarouselSliderItemCustom extends StatefulWidget {
       required this.slide,
       this.onImageTap,
       this.imageFit,
+      this.onStartVideo,
       Key? key})
       : super(key: key);
 
@@ -223,7 +226,7 @@ class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> wit
   }
 
   _buildVideo() {
-    return MiniVideo(thumbnail: widget.image, videoUrl: widget.slide.link!);
+    return MiniVideo(thumbnail: widget.image, videoUrl: widget.slide.link!, onStartVideo: widget.onStartVideo,);
   }
 
   _buildTour() {

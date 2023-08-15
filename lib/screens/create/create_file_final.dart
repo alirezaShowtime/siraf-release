@@ -39,6 +39,7 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
     super.dispose();
 
     bloc.close();
+    compressorBloc.close();
   }
 
   @override
@@ -49,34 +50,7 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
 
     bloc.stream.listen(_listenBloc);
 
-    compressorBloc.stream.listen((event) {
-      if (event is CompressorLoadingState) {
-        showLoadingDialog(message: "در حال بهینه سازی رسانه ها");
-      } else if (event is CompressorFailState) {
-        dissmisLoadingDialog();
-        notify("خطا در بهینه سازی عکس ها و ویدیو ها رخ داد");
-        bloc.add(CreateFileEvent(data: widget.formData));
-      } else if (event is CompressorSuccessState) {
-        dissmisLoadingDialog();
-        if (event.images.isFill() || event.videos.isFill()) {
-          setState(() {
-            widget.formData.files = widget.formData.files.map<Map<String, dynamic>>((e) {
-              if (checkImageExtension((e['file'] as File).path)) {
-                e['file'] = event.images.elementAt(widget.formData.files.indexOf(e));
-              }
-
-              if (checkVideoExtension((e['file'] as File).path)) {
-                e['file'] = event.videos.elementAt(widget.formData.files.indexOf(e));
-              }
-
-              return e;
-            }).toList();
-          });
-          notify("بهینه سازی رسانه ها با موفقیت انجام شد");
-        }
-        bloc.add(CreateFileEvent(data: widget.formData));
-      }
-    });
+    compressorBloc.stream.listen(_listenCompressor);
 
     if (widget.formData.estates.isNotEmpty) {
       setState(() {
@@ -546,7 +520,7 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
                     message ?? 'در حال ایجاد فایل لطفا شکیبا باشید',
                     style: TextStyle(
                       fontSize: 14,
-                      fontFamily: "IransSansMedium",
+                      fontFamily: "IranSansMedium",
                       color: App.theme.textTheme.bodyLarge?.color,
                     ),
                   ),
@@ -619,5 +593,34 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
         );
       },
     );
+  }
+
+  void _listenCompressor(CompressorState event) {
+    if (event is CompressorLoadingState) {
+      showLoadingDialog(message: "در حال بهینه سازی رسانه ها");
+    } else if (event is CompressorFailState) {
+      dissmisLoadingDialog();
+      notify("خطا در بهینه سازی عکس ها و ویدیو ها رخ داد");
+      bloc.add(CreateFileEvent(data: widget.formData));
+    } else if (event is CompressorSuccessState) {
+      dissmisLoadingDialog();
+      if (event.images.isFill() || event.videos.isFill()) {
+        setState(() {
+          widget.formData.files = widget.formData.files.map<Map<String, dynamic>>((e) {
+            if (checkImageExtension((e['file'] as File).path)) {
+              e['file'] = event.images.elementAt(widget.formData.files.indexOf(e));
+            }
+
+            if (checkVideoExtension((e['file'] as File).path)) {
+              e['file'] = event.videos.elementAt(widget.formData.files.indexOf(e));
+            }
+
+            return e;
+          }).toList();
+        });
+        notify("بهینه سازی رسانه ها با موفقیت انجام شد");
+      }
+      bloc.add(CreateFileEvent(data: widget.formData));
+    }
   }
 }

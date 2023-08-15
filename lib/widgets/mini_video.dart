@@ -14,15 +14,9 @@ class MiniVideo extends StatefulWidget {
   bool autoReverse;
   Widget? playIcon;
   double? width;
+  Function(VideoPlayerController)? onStartVideo;
 
-  MiniVideo(
-      {required this.thumbnail,
-      required this.videoUrl,
-      this.imageFit,
-      this.autoReverse = true,
-      this.playIcon,
-      this.width,
-      super.key});
+  MiniVideo({required this.thumbnail, required this.videoUrl, this.onStartVideo, this.imageFit, this.autoReverse = true, this.playIcon, this.width, super.key});
 
   @override
   State<MiniVideo> createState() => MiniVideoState();
@@ -48,11 +42,7 @@ class MiniVideoState extends State<MiniVideo> {
   Widget build(BuildContext context) {
     return _controller.value.isInitialized
         ? SizedBox(
-            height: widget.width != null
-                ? _controller.value.size.height /
-                    _controller.value.size.width *
-                    widget.width!
-                : _controller.value.size.height,
+            height: widget.width != null ? _controller.value.size.height / _controller.value.size.width * widget.width! : _controller.value.size.height,
             width: widget.width ?? _controller.value.size.width,
             child: Stack(
               children: [
@@ -62,6 +52,7 @@ class MiniVideoState extends State<MiniVideo> {
                       _controller.pause();
                     } else {
                       _controller.play();
+                      widget.onStartVideo?.call(_controller);
                     }
                   },
                   child: SizedBox(
@@ -79,6 +70,7 @@ class MiniVideoState extends State<MiniVideo> {
                     child: GestureDetector(
                       onTap: () {
                         _controller.play();
+                        widget.onStartVideo?.call(_controller);
                       },
                       child: widget.playIcon ??
                           Stack(
@@ -105,8 +97,7 @@ class MiniVideoState extends State<MiniVideo> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) =>
-                              VideoScreen(videoUrl: widget.videoUrl),
+                          builder: (_) => VideoScreen(videoUrl: widget.videoUrl),
                         ),
                       );
                     },
@@ -139,15 +130,14 @@ class MiniVideoState extends State<MiniVideo> {
 
     _controller.addListener(() {
       setState(() {
-        if (!_controller.value.isPlaying &&
-            _controller.value.isInitialized &&
-            (_controller.value.duration == _controller.value.position &&
-                widget.autoReverse)) {
+        if (!_controller.value.isPlaying && _controller.value.isInitialized && (_controller.value.duration == _controller.value.position && widget.autoReverse)) {
           _controller.seekTo(Duration(seconds: 0));
           _controller.play();
         }
       });
     });
+
+    widget.onStartVideo?.call(_controller);
   }
 
   @override

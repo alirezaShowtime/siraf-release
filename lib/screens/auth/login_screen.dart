@@ -53,8 +53,6 @@ class _LoginScreen extends State<LoginScreen> {
     _blocListener();
   }
 
-  bool _checkRules = false;
-
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion(
@@ -161,51 +159,41 @@ class _LoginScreen extends State<LoginScreen> {
                 ),
               ),
             ),
-            Column(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Text(
+                  "با ورود به برنامه ",
+                  style: TextStyle(
+                    color: App.theme.textTheme.bodyLarge?.color,
+                    fontFamily: "IRANSansBold",
+                    fontSize: 10,
+                  ),
+                ),
                 InkWell(
-                  borderRadius: BorderRadius.circular(7),
                   onTap: () {
                     push(context, RulesScreen());
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: Text(
-                      "شرایط استفاده از خدمات، قوانین و حریم خصوصی",
-                      style: TextStyle(
-                        color: App.theme.primaryColor,
-                        fontFamily: "IRANSansBold",
-                        fontSize: 10,
-                      ),
+                  child: Text(
+                    "شرایط استفاده از خدمات، قوانین و حریم خصوصی",
+                    style: TextStyle(
+                      color: App.theme.primaryColor,
+                      fontFamily: "IRANSansBold",
+                      fontSize: 10,
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 25,
-                      width: 25,
-                      child: Checkbox(
-                          value: _checkRules,
-                          onChanged: (v) {
-                            setState(() {
-                              _checkRules = v ?? false;
-                            });
-                          }),
-                    ),
-                    Text(
-                      "موارد فوق را می پذیرم",
-                      style: TextStyle(
-                        color: App.theme.textTheme.bodyLarge?.color,
-                        fontFamily: "IRANSansBold",
-                        fontSize: 10,
-                      ),
-                    ),
-                  ],
+                Text(
+                  " را می پذیرید",
+                  style: TextStyle(
+                    color: App.theme.textTheme.bodyLarge?.color,
+                    fontFamily: "IRANSansBold",
+                    fontSize: 10,
+                  ),
                 ),
               ],
             ),
+            SizedBox(height: 5),
             BlocBuilder<LoginBloc, LoginState>(
               bloc: _bloc,
               builder: (context, state) {
@@ -227,10 +215,6 @@ class _LoginScreen extends State<LoginScreen> {
 
     if (!numberPhone.isNotNullOrEmpty()) {
       return notify("شماره وارد نشده است.");
-    }
-
-    if (!_checkRules) {
-      return notify("لطفا شرایط استفاده و قوانین و حریم خصوصی را قبول کنید");
     }
 
     _bloc.add(LoginRequestEvent(numberPhone));
