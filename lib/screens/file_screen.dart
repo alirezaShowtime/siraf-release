@@ -794,6 +794,13 @@ class _FileScreenState extends State<FileScreen> with AutomaticKeepAliveClientMi
                                 if (_controller2.text.trim().isEmpty) {
                                   return notify("لطفا توضیحات را وارد کنید");
                                 }
+                                if (_controller.text.trim().length < 2) {
+                                  return notify("عنوان حداقل باید شامل 2 کاراکتر باشد.");
+                                }
+
+                                if (_controller2.text.trim().length < 10) {
+                                  return notify("توضیحات حداقل باید شامل 10 کاراکتر باشد.");
+                                }
 
                                 addViolationBloc.add(
                                   AddViolationEvent(
