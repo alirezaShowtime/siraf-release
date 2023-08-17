@@ -3,17 +3,14 @@ import 'dart:math';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:siraf3/settings.dart';
 
 import 'main.dart';
 
-listenNotification() async {
-  if (await (Settings().showNotification())) {
-    FirebaseMessaging.onMessage.listen(firebaseMessageListener);
-  }
+listenNotification({Future<dynamic> Function(String?)? onSelectNotification}) {
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) => firebaseMessageListener(message, onSelectNotification: onSelectNotification));
 }
 
-firebaseMessageListener(RemoteMessage message) async {
+firebaseMessageListener(RemoteMessage message, {Future<dynamic> Function(String?)? onSelectNotification}) async {
   if (message.data.isEmpty) return;
 
   RemoteNotification? notification = message.notification;
@@ -22,7 +19,7 @@ firebaseMessageListener(RemoteMessage message) async {
       InitializationSettings(
         android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       ),
-      onSelectNotification: (_) async {});
+      onSelectNotification: onSelectNotification);
   int id;
   String title, body;
 

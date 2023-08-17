@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:badges/badges.dart' as badges;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,17 +21,23 @@ import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/models/home_item.dart';
 import 'package:siraf3/models/post.dart';
+import 'package:siraf3/models/request.dart';
+import 'package:siraf3/models/ticket.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/rabbit_mq_consum.dart';
 import 'package:siraf3/rabbit_mq_data.dart';
+import 'package:siraf3/screens/chat/chat/chatScreen/chat_screen.dart';
 import 'package:siraf3/screens/consultant_profile_without_comment/consultant_profile_screen.dart';
 import 'package:siraf3/screens/estate_profile_without_comment/estate_profile_screen.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
 import 'package:siraf3/screens/menu_screen.dart';
+import 'package:siraf3/screens/my_file_screen.dart';
 import 'package:siraf3/screens/post_item.dart';
+import 'package:siraf3/screens/request_file/request_file_show_screen.dart';
 import 'package:siraf3/screens/search_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
+import 'package:siraf3/screens/ticket/ticket_chat/ticket_chat_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/empty.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
@@ -124,6 +132,84 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     addDevice();
+
+    listenNotification(onSelectNotification: onSelectNotification);
+
+    checkNotificationClicked();
+
+    WidgetsBinding.instance.addObserver(LifecycleEventHandler(
+        resumeCallBack: () async => setState(() {
+              checkNotificationClicked();
+            })));
+  }
+
+  var notifications_handled = [];
+
+  checkNotificationClicked() async {
+    var initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+    if (initialMessage != null) {
+      if (notifications_handled.contains(initialMessage.messageId)) return;
+
+      notifications_handled.add(initialMessage.messageId);
+      onSelectNotification(jsonEncode(initialMessage.data));
+    }
+  }
+
+  Future onSelectNotification(String? pStr) async {
+    if (pStr == null) return;
+    var payload = jsonDecode(pStr) as Map<String, dynamic>;
+    if (!payload.containsKey("type")) return;
+
+    switch (payload['type']) {
+      case 'ticket':
+        var data = jsonDecode(jsonEncode(payload['ticket_id']));
+        data = data is String ? jsonDecode(data) : data;
+
+        var ticket = Ticket.fromJson(data);
+
+        push(
+          context,
+          TicketChatScreen(
+            ticket: ticket,
+          ),
+        );
+        break;
+      case 'chat':
+        push(
+          context,
+          ChatScreen(
+            chatId: int.parse(
+              payload['chat_id'].toString(),
+            ),
+          ),
+        );
+        break;
+      case 'my_file':
+        var data = jsonDecode(jsonEncode(payload['file_id']));
+        data = data is String ? jsonDecode(data) : data;
+
+        push(
+          context,
+          MyFileScreen(
+            id: data['id'],
+            progress: data['progress'],
+          ),
+        );
+        break;
+      case 'my_request':
+        var data = jsonDecode(jsonEncode(payload['request_id']));
+        data = data is String ? jsonDecode(data) : data;
+        
+        var request = Request.fromJson(data);
+
+        push(
+          context,
+          RequestFileShowScreen(
+            request: request,
+          ),
+        );
+        break;
+    }
   }
 
   int playingPostIndex = -1;
@@ -643,4 +729,32 @@ class _HomeScreenState extends State<HomeScreen> {
 enum ViewType {
   List,
   Slide;
+}
+
+class LifecycleEventHandler extends WidgetsBindingObserver {
+  final AsyncCallback? resumeCallBack;
+  final AsyncCallback? suspendingCallBack;
+
+  LifecycleEventHandler({
+    this.resumeCallBack,
+    this.suspendingCallBack,
+  });
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        if (resumeCallBack != null) {
+          await resumeCallBack!();
+        }
+        break;
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        if (suspendingCallBack != null) {
+          await suspendingCallBack!();
+        }
+        break;
+    }
+  }
 }

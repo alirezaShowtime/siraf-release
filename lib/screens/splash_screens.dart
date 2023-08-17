@@ -1,22 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:siraf3/bloc/check_version_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
-import 'package:siraf3/main.dart';
 import 'package:siraf3/models/group.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/screens/intro_screen.dart';
 import 'package:siraf3/themes.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:siraf3/utilities/get_last_version.dart';
+import 'package:siraf3/widgets/confirm_dialog.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -29,6 +28,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   final Duration duration = const Duration(milliseconds: 500);
   late AnimationController _controller;
   bool isHidden = true;
+  CheckVersionBloc checkVersionBloc = CheckVersionBloc();
 
   @override
   void initState() {
@@ -45,6 +45,40 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     });
 
     checkConnectionAndGoNextScreen();
+
+    checkVersionBloc.stream.listen((state) async {
+      if (state is CheckVersionErrorState) handleNextActions();
+      if (state is! CheckVersionSuccessState) return;
+
+      if (!state.hasUpdate || !state.isRequired) {
+        handleNextActions();
+        return;
+      }
+
+      animationDialog(
+          context: context,
+          builder: (dialogContext) {
+            return ConfirmDialog(
+              dialogContext: dialogContext,
+              title: "بروزرسانی",
+              content: "نسخه جدیدی از برنامه منتشر شده است.",
+              applyText: "بروزرسانی",
+              cancelText: "خروج از برنامه",
+              onApply: () => GetLastVersion.start(state.downloadUrl),
+              onCancel: applicationExit,
+            );
+          });
+    });
+  }
+
+  handleNextActions() async {
+    if (await User.hasToken()) {
+      await refreshToken();
+    }
+
+    await getTicketGroups();
+
+    goNextScreen();
   }
 
   checkConnectionAndGoNextScreen() async {
@@ -53,13 +87,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     });
     await Future.delayed(Duration(milliseconds: 2500));
     if (await checkUserConnection()) {
-      if (await User.hasToken()) {
-        await refreshToken();
-      }
-
-      await getTicketGroups();
-
-      goNextScreen();
+      checkVersionBloc.add(CheckVersionEvent());
     }
   }
 
@@ -217,14 +245,13 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   Future refreshToken() async {
     var user = (await User.fromLocal());
-    var response =
-        await http2.post(Uri.parse("https://auth.siraf.app/api/token/refresh/"),
-            body: jsonEncode({
-              "refresh": user.refreshToken ?? "",
-            }),
-            headers: {
-              "Content-Type": "application/json",
-            });
+    var response = await http2.post(Uri.parse("https://auth.siraf.app/api/token/refresh/"),
+        body: jsonEncode({
+          "refresh": user.refreshToken ?? "",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        });
 
     if (isResponseOk(response)) {
       var body = jDecode(response.body);
@@ -239,7 +266,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     var sharedPreferences = await SharedPreferences.getInstance();
 
     if (!((await sharedPreferences.getBool("IS_INTRO_SHOW")) ?? false)) {
-      sharedPreferences.setBool("IS_INTRO_SHOW", true);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => IntroScreen()));
       return;
     }

@@ -429,3 +429,14 @@ String dateFormatter(String dateStr) {
 
   return "$day ${monthNames[month]}";
 }
+
+void applicationExit() {
+  if (Platform.isAndroid) {
+    SystemNavigator.pop();
+    return;
+  }
+
+  if (Platform.isIOS) {
+    exit(0);
+  }
+}

@@ -4,6 +4,7 @@ import 'package:siraf3/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({Key? key}) : super(key: key);
@@ -67,7 +68,8 @@ class _IntroScreenState extends State<IntroScreen> {
               "شروع",
               style: TextStyle(color: Themes.primary, fontSize: 16),
             ),
-            onDone: () {
+            onDone: () async {
+              (await SharedPreferences.getInstance()).setBool("IS_INTRO_SHOW", true);
               Navigator.pushReplacement(
                   context, MaterialPageRoute(builder: (_) => HomeScreen()));
             },
