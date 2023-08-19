@@ -3,11 +3,9 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:intl/intl.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:share_plus_platform_interface/share_plus_platform_interface.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/avatar.dart';
@@ -134,20 +132,19 @@ class _EstateShareScreen extends State<EstateShareScreen> {
 
   void screenshot() async {
     if (qrImage != null) {
-      var name = 'siraf_share_qrcode_${generateMd5(widget.estateName + DateTime.now().microsecondsSinceEpoch.toString())}.png';
-      var qrImageFile = File((await getTemporaryDirectory()).path + "/$name");
+      final f = DateFormat("yyyy_MM_dd");
+      var name = 'siraf_share_qrcode_${f.format(DateTime.now())}.png';
+      String downloadPath = (await getDownloadPath())!;
+      var path = downloadPath + "/Siraf/Share/$name";
+      var qrImageFile = File(path);
 
-      if (await qrImageFile.exists()) await qrImageFile.delete();
+      if (await qrImageFile.exists()) {
+        path = generateUniquePath(path);
+      }
 
-      await qrImageFile.writeAsBytes(qrImage!);
-      await qrImageFile.create();
-
-      await Share.shareXFiles(
-        subject: 'لینک پروفایل املاک ${widget.estateName} \n با مدیریت : ${widget.managerName}',
-        [
-          XFile(qrImageFile.path, mimeType: 'image/png'),
-        ],
-      );
+      await qrImageFile.create(recursive: true);
+      await (await (await qrImageFile.open(mode: FileMode.write)).writeFrom(qrImage!)).close();
+      notify("در مسیر ${path.replaceFirst(downloadPath, "Downloads")} ذخیره شد.");
       return;
     }
 

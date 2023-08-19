@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:intl/intl.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:siraf3/helpers.dart';
@@ -146,18 +147,19 @@ class _ConsultantShareScreen extends State<ConsultantShareScreen> {
 
   void screenshot() async {
     if (qrImage != null) {
-      var downloadPath = await getDownloadPath();
-
-      if (downloadPath == null) {
-        notify("خطایی در هنگام ذخیره عکس رخ داد");
-        return;
-      }
-
-      var path = generateUniquePath("${await getDownloadPath()}/Siraf/Share/siraf_share_qrcode.png");
+      final f = DateFormat("yyyy_MM_dd");
+      var name = 'siraf_share_qrcode_${f.format(DateTime.now())}.png';
+      String downloadPath = (await getDownloadPath())!;
+      var path = downloadPath + "/Siraf/Share/$name";
       var qrImageFile = File(path);
 
-      await qrImageFile.writeAsBytes(qrImage!);
-      await qrImageFile.create();
+      if (await qrImageFile.exists()) {
+        path = generateUniquePath(path);
+      }
+
+      await qrImageFile.create(recursive: true);
+      await (await (await qrImageFile.open(mode: FileMode.write)).writeFrom(qrImage!)).close();
+      notify("در مسیر ${path.replaceFirst(downloadPath, "Downloads")} ذخیره شد.");
       return;
     }
 
