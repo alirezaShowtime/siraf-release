@@ -40,7 +40,7 @@ class SendMessageSuccess extends SendMessageState {
 
   Future<void> playSentSound() async {
     final player = AudioPlayer();
-    await player.play(AssetSource("sounds/message-sent.mp3"));
+    await player.play(AssetSource("sounds/message-sent.wav"));
   }
 }
 
