@@ -85,6 +85,12 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
 
       logRequestDio(res);
 
+      if (res.statusCode == 403) {
+        _requestQueue.clear();
+        event.requestModel.controller.messageSate.add(MessageState.ErrorUpload);
+        return emit(SendMessageForbiddenAccess());
+      }
+
       if (res.statusCode != 200 || res.data["status"] != 1) {
         throw new Exception();
       }

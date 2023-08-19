@@ -5,6 +5,8 @@ abstract class SendMessageState {}
 
 class SendMessageInitial extends SendMessageState {}
 
+class SendMessageForbiddenAccess extends SendMessageState {}
+
 class SendMessageCanceled extends SendMessageState {
   List<Key> widgetKeys;
 

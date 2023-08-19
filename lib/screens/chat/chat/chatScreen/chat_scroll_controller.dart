@@ -130,7 +130,6 @@ extension ChatScrollController on _ChatScreen {
   }
 
   void scrollToIndex(int index, [bool revers = false]) {
-    print("scrollToIndex $index");
     chatItemScrollController.scrollTo(
       index: !revers ? index : messageWidgets.length() - 1 - index,
       duration: Duration(milliseconds: index < 20 ? 500 : 2000),

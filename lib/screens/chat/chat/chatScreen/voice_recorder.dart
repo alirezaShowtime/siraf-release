@@ -2,7 +2,6 @@ part of 'chat_screen.dart';
 
 extension VoiceRecorder on _ChatScreen {
   Future<void> startRecording() async {
-    print("status record start");
     if (await recordPermissionsRequest()) {
       Directory appFolder = await getTemporaryDirectory();
       bool appFolderExists = await appFolder.exists();
@@ -21,7 +20,7 @@ extension VoiceRecorder on _ChatScreen {
 
   Future<String?> stopRecording() async {
     if (!await _audioRecorder.isRecording()) return null;
-    print("status record stop");
+
     String? path = await _audioRecorder.stop();
     _audioRecorder.dispose();
 
@@ -29,7 +28,6 @@ extension VoiceRecorder on _ChatScreen {
   }
 
   Future<void> cancelRecording() async {
-    print("status record cancel");
     try {
       if (await _audioRecorder.isRecording()) {
         String? path = await _audioRecorder.stop();

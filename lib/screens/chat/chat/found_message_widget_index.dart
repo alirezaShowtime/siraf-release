@@ -12,7 +12,6 @@ class FoundMessageWidgetIndexes {
   void setList(List<MapEntry<int, int>> list, [bool revers = false]) {
     this.list = list;
     currentIndex = !revers ? 0 : list.length - 1;
-    print("this.list ${this.list}");
   }
 
   MapEntry<int, int> next() {

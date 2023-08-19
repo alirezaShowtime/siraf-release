@@ -86,7 +86,6 @@ abstract class ChatSendingMessageWidgetState extends AbstractMessageWidget<ChatS
   ChatMessage? message() => null;
 
   bool onClickDeleteMessage(bool isForAll) {
-    print("ChatDeleteMessageSendingEvent");
     BlocProvider.of<ChatDeleteMessageBloc>(context).add(ChatDeleteMessageSendingEvent([widget.messageKey.key]));
 
     return true;

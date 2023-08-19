@@ -14,7 +14,6 @@ import 'package:siraf3/config.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/screens/consultant_profile_without_comment/consultant_profile_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/avatar.dart';
@@ -35,18 +34,16 @@ class AppBarChat extends AppBar {
   String? consultantImage;
   int? consultantId;
   int? chatId;
-  ChatMessage? lastMessage;
   bool isDisable;
-  int newMessageCount;
+  void Function() onClickBackButton;
 
   AppBarChat({
     this.consultantName,
     this.consultantImage,
     this.consultantId,
     this.chatId,
-    this.lastMessage,
-    required this.newMessageCount,
     this.isDisable = false,
+    required this.onClickBackButton,
   });
 }
 
@@ -128,10 +125,26 @@ class _AppBarChat extends State<AppBarChat> {
                           return blockUser();
                       }
                     },
-                    itemBuilder: (_) => [
-                      MyPopupMenuItem(value: 0, label: "جستوجو", icon: CupertinoIcons.search),
-                      MyPopupMenuItem(value: 1, label: "حذف چت", icon: CupertinoIcons.trash),
-                      if (!isBlock) MyPopupMenuItem(value: 2, label: "مسدود کردن", icon: Icons.block),
+                    itemBuilder: (_) =>
+                    [
+                      MyPopupMenuItem(
+                        value: 0,
+                        label: "جستوجو",
+                        icon: CupertinoIcons.search,
+                      ),
+                      MyPopupMenuItem(
+                        value: 1,
+                        label: "حذف چت",
+                        icon: CupertinoIcons.trash,
+                        enable: !widget.isDisable,
+                      ),
+                      if (!isBlock)
+                        MyPopupMenuItem(
+                          value: 2,
+                          label: "مسدود کردن",
+                          icon: Icons.block,
+                          enable: !widget.isDisable,
+                        ),
                     ],
                   );
                 },
@@ -359,10 +372,6 @@ class _AppBarChat extends State<AppBarChat> {
       return;
     }
 
-    Navigator.pop(context, {
-      "chatId": widget.chatId,
-      "sentMessage": widget.lastMessage?.message ?? "فایل",
-      "newMessageCount": widget.newMessageCount,
-    });
+    widget.onClickBackButton.call();
   }
 }

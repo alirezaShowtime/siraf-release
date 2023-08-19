@@ -155,13 +155,6 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
   var newMessageCountBadgeSetState;
 
-  void setLastMessage(ChatMessage value) {
-    lastMessage = value;
-    try {
-      setState(() {});
-    } catch (_) {}
-  }
-
   @override
   void initState() {
     super.initState();
@@ -242,9 +235,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
               consultantName: widget.consultantName,
               consultantImage: widget.consultantImage,
               chatId: widget.chatId,
-              lastMessage: lastMessage,
-              newMessageCount: newMessageCount,
               isDisable: blockByHer || isBlockByMe,
+              onClickBackButton: backToList,
             ),
             body: Stack(
               children: [
@@ -255,7 +247,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                     messages = state.messages;
 
                     try {
-                      setLastMessage(messages.last);
+                      lastMessage = messages.last;
                     } catch (e) {}
 
                     for (ChatMessage message in messages) {
@@ -470,11 +462,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
           return false;
         }
 
-        Navigator.pop(context, {
-          "chatId": widget.chatId,
-          "sentMessage": lastMessage?.message ?? "فایل",
-          "newMessageCount": newMessageCount,
-        });
+        backToList();
 
         return false;
       };
@@ -489,5 +477,14 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
         size: 20,
       ),
     );
+  }
+
+  void backToList() {
+    Navigator.pop(context, {
+      "chatId": widget.chatId,
+      "sentMessage": lastMessage?.message ?? "فایل",
+      "newMessageCount": newMessageCount,
+      "isBlockByMe": isBlockByMe,
+    });
   }
 }

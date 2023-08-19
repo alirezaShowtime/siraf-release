@@ -204,8 +204,6 @@ class ChatSendingVideoMessageWidgetState extends ChatSendingMessageWidgetState {
                       FutureBuilder<VideoPlayerValue>(
                         future: getVideoInfo(videoFile),
                         builder: (context, snapshot) {
-                          print("snapshot.data?.duration.inSeconds ${snapshot.data?.duration.inSeconds}");
-
                           return Text(
                             timeFormatter(snapshot.data?.duration.inSeconds ?? 0, hasHour: true),
                             style: TextStyle(

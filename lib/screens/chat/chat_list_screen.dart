@@ -419,6 +419,9 @@ class _ChatListScreen extends State<ChatListScreen> {
       chats.removeAt(index);
       return;
     }
+    if (result.containsKey("isBlockByMe")) {
+      chatItem.isBlockByMe = result["isBlockByMe"];
+    }
 
     if (result.containsKey("newMessageCount")) {
       chatItem.countNotSeen = result["newMessageCount"];
@@ -426,7 +429,6 @@ class _ChatListScreen extends State<ChatListScreen> {
 
     if (result.containsKey("sentMessage")) {
       chatItem.isConsultant = false;
-      print("sentMessage ${result["sentMessage"]}");
       chatItem.lastMessage = result["sentMessage"];
     }
 
