@@ -395,7 +395,7 @@ class _ChatListScreen extends State<ChatListScreen> {
   }
 
   void goToChatScreen(ChatItem chatItem) async {
-    var result = await push<Map>(
+    Map result = await push(
         context,
         ChatScreen(
           chatId: chatItem.id!,
@@ -411,7 +411,7 @@ class _ChatListScreen extends State<ChatListScreen> {
           fileAddress: chatItem.fileAddress,
         ));
 
-    if (result is! Map || !result.containsKey("chatId") || chatItem.id != result["chatId"]) return;
+    if (!result.containsKey("chatId") || chatItem.id != result["chatId"]) return;
 
     var index = chats.indexOf(chatItem);
 
@@ -424,8 +424,9 @@ class _ChatListScreen extends State<ChatListScreen> {
       chatItem.countNotSeen = result["newMessageCount"];
     }
 
-    if (!result.containsKey("sentMessage")) {
+    if (result.containsKey("sentMessage")) {
       chatItem.isConsultant = false;
+      print("sentMessage ${result["sentMessage"]}");
       chatItem.lastMessage = result["sentMessage"];
     }
 

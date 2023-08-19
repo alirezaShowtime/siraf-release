@@ -106,7 +106,7 @@ extension BlocListeners on _ChatScreen {
       for (var i = 0; i < messageWidgets.length(); i++) {
         if (messageWidgets.get(i).key != state.widgetKey) continue;
 
-        lastMessage = state.message;
+        setLastMessage(state.message);
 
         messageWidgets.replace(
           i,
@@ -183,7 +183,7 @@ extension BlocListeners on _ChatScreen {
         return;
       } else {
         if (state.type == MessageSearchType.Next && (lastMessage?.id ?? 0) < state.messages.first.id!) {
-          lastMessage = state.messages.first;
+          // lastMessage = state.messages.first;
           hasNextMessage = state.messages.first.isSeen;
         }
 

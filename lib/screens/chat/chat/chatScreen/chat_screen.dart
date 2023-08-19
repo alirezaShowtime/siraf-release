@@ -155,6 +155,13 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
   var newMessageCountBadgeSetState;
 
+  void setLastMessage(ChatMessage value) {
+    lastMessage = value;
+    try {
+      setState(() {});
+    } catch (_) {}
+  }
+
   @override
   void initState() {
     super.initState();
@@ -235,7 +242,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
               consultantName: widget.consultantName,
               consultantImage: widget.consultantImage,
               chatId: widget.chatId,
-              lastMessage: lastMessage?.message,
+              lastMessage: lastMessage,
+              newMessageCount: newMessageCount,
               isDisable: blockByHer || isBlockByMe,
             ),
             body: Stack(
@@ -247,7 +255,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                     messages = state.messages;
 
                     try {
-                      lastMessage = messages.first;
+                      setLastMessage(messages.last);
                     } catch (e) {}
 
                     for (ChatMessage message in messages) {
@@ -464,7 +472,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
         Navigator.pop(context, {
           "chatId": widget.chatId,
-          "sentMessage": lastMessage?.message,
+          "sentMessage": lastMessage?.message ?? "فایل",
           "newMessageCount": newMessageCount,
         });
 
