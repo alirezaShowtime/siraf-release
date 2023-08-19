@@ -17,9 +17,9 @@ class CheckVersionLoadingState extends CheckVersionState {}
 class CheckVersionSuccessState extends CheckVersionState {
   bool hasUpdate;
   String downloadUrl;
+  bool isRequired;
 
-  CheckVersionSuccessState(
-      {required this.hasUpdate, required this.downloadUrl});
+  CheckVersionSuccessState({required this.hasUpdate, required this.downloadUrl, required this.isRequired});
 }
 
 class CheckVersionErrorState extends CheckVersionState {
@@ -42,8 +42,7 @@ class CheckVersionBloc extends Bloc<CheckVersionEvent, CheckVersionState> {
 
     var response = await http2.get(
       Uri.parse(
-        "https://auth.siraf.app/api/application/version?type=1&platform=" +
-            (Platform.isAndroid ? "0" : "1"),
+        "https://auth.siraf.app/api/application/version?type=1&platform=" + (Platform.isAndroid ? "0" : "1"),
       ),
     );
 
@@ -53,9 +52,16 @@ class CheckVersionBloc extends Bloc<CheckVersionEvent, CheckVersionState> {
       var appV = int.parse(buildNumber);
       var lastV = int.parse(json['data']['version'].toString());
 
-      emit(CheckVersionSuccessState(
+      print("appV $appV");
+      print("lastV $lastV");
+
+      emit(
+        CheckVersionSuccessState(
           hasUpdate: lastV > appV,
-          downloadUrl: json['data']['path'].toString()));
+          downloadUrl: json['data']['path'].toString(),
+          isRequired: json['data']['require'],
+        ),
+      );
     } else {
       emit(CheckVersionErrorState(response: response));
     }
