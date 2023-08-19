@@ -95,8 +95,10 @@ extension ChatScrollController on _ChatScreen {
           type: ChatScreenPaginationType.Previous,
         ));
       }
+    }
 
-      scrollListener(notification.metrics);
+    if (notification is UserScrollNotification) {
+      scrollListener(notification.metrics, notification.direction);
     }
 
     return false;
@@ -145,21 +147,21 @@ extension ChatScrollController on _ChatScreen {
     ).animate(_scrollDownAnimationController);
   }
 
-  void scrollListener(ScrollMetrics scrollMetrics) {
+  void scrollListener(ScrollMetrics scrollMetrics, ScrollDirection direction) {
     if (scrollMetrics.pixels < 150) {
       _scrollDownAnimationController.reset();
       _scrollDownAnimationController.reverse();
       return;
     }
 
-    if (scrollMetrics.axisDirection == AxisDirection.up) {
+    if (direction == ScrollDirection.forward) {
       if (_scrollDownAnimation.value != end_floatingActionButtonOffset) {
         _scrollDownAnimationController.reset();
       }
       _scrollDownAnimationController.forward();
     }
 
-    if (scrollMetrics.axisDirection == AxisDirection.down) {
+    if (direction == ScrollDirection.reverse) {
       if (_scrollDownAnimation.value != begin_floatingActionButtonOffset) {
         _scrollDownAnimationController.reset();
       }
