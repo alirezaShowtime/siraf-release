@@ -16,6 +16,7 @@ class TicketMessagesSuccess extends TicketMessagesState {
     var data = jDecode(response.body)["data"];
 
     ticketDetails = _removeEmptyMessage(TicketDetails.fromJson(data));
+    ticketDetails.messages = ticketDetails.messages?.reversed.toList();
   }
 
   TicketDetails _removeEmptyMessage(TicketDetails ticketDetails) {

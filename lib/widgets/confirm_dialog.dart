@@ -71,11 +71,8 @@ class _ConfirmDialog extends State<ConfirmDialog> {
                 children: [
                   Expanded(
                     child: DialogButton(
-                      labelText: widget.cancelText,
-                      onPressed: () {
-                        widget.onCancel?.call();
-                        dismissDialog(context);
-                      },
+                      labelText: widget.applyText,
+                      onPressed: widget.onApply,
                     ),
                   ),
                   Container(
@@ -85,8 +82,11 @@ class _ConfirmDialog extends State<ConfirmDialog> {
                   ),
                   Expanded(
                     child: DialogButton(
-                      labelText: widget.applyText,
-                      onPressed: widget.onApply,
+                      labelText: widget.cancelText,
+                      onPressed: () {
+                        widget.onCancel?.call();
+                        dismissDialog(context);
+                      },
                     ),
                   ),
                 ],

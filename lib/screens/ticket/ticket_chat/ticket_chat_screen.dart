@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:siraf3/bloc/ticket/close/close_ticket_bloc.dart';
 import 'package:siraf3/bloc/ticket/messages/ticket_messages_bloc.dart';
 import 'package:siraf3/bloc/ticket/sendMessage/send_message_bloc.dart';
@@ -21,6 +22,8 @@ import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
+part 'chat_scroll_controller.dart';
+
 class TicketChatScreen extends StatefulWidget {
   Ticket ticket;
 
@@ -36,13 +39,6 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
   CloseTicketBloc closeTicketBloc = CloseTicketBloc();
 
   TextEditingController messageController = TextEditingController();
-  ScrollController _chatController = ScrollController();
-
-  static const double begin_floatingActionButtonOffset = -100;
-  static const double end_floatingActionButtonOffset = 10;
-
-  late AnimationController _scrollDownAnimationController;
-  late Animation<double> _scrollDownAnimation;
 
   List<Message> messages = [];
   late TicketDetails ticketDetails;
@@ -53,14 +49,21 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
   bool ticketIsClosed = false;
   Timer? scrollDownButtonTimer;
 
+  final ItemScrollController chatItemScrollController = ItemScrollController();
+
+  final double begin_floatingActionButtonOffset = -100;
+  final double end_floatingActionButtonOffset = 10;
+  late AnimationController _scrollDownAnimationController;
+  late Animation<double> _scrollDownAnimation;
+  String lastMessage = "";
+
   @override
   void initState() {
     super.initState();
 
     ticketIsClosed = !widget.ticket.status;
 
-    _initScrollAnimation();
-    _chatController.addListener(_scrollListener);
+    initScrollAnimation();
 
     _getTicket();
 
@@ -90,6 +93,7 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
 
         setState(() {
           messageWidgets[i] = MessageWidget(message: state.message);
+          lastMessage = state.message.message ?? "";
         });
 
         break;
@@ -111,7 +115,7 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
 
       if (state is CloseTicketSuccess) {
         dismissDialog(loadingDialogContext);
-        notify(" تیکت با بسته شد.");
+        notify(" تیکت بسته شد.");
         setState(() {
           ticketIsClosed = true;
         });
@@ -121,8 +125,6 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
 
   @override
   void dispose() {
-    _chatController.removeListener(_scrollListener);
-    _chatController.dispose();
     ticketMessagesBloc.close();
     _scrollDownAnimationController.dispose();
     super.dispose();
@@ -134,14 +136,24 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
       onWillPop: () async {
         sendMessageBloc.close();
 
-        return true;
+        Navigator.pop(context, {
+          "lastMessage": lastMessage,
+          "isClosed": ticketIsClosed,
+        });
+
+        return false;
       },
       child: MultiBlocProvider(
         providers: [BlocProvider<SendMessageBloc>(create: (_) => sendMessageBloc)],
         child: Scaffold(
           resizeToAvoidBottomInset: true,
           backgroundColor: Color(0xfffbfbfb),
-          appBar: AppBarChat(onclickCloseChat: onclickCloseChat, ticket: widget.ticket),
+          appBar: AppBarChat(
+            onclickCloseChat: onclickCloseChat,
+            ticket: widget.ticket,
+            ticketIsClosed: ticketIsClosed,
+            lastMessage: lastMessage,
+          ),
           body: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
@@ -200,6 +212,8 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
                   ticketDetails = state.ticketDetails;
 
                   messageWidgets = ticketDetails.messages!.map<Widget>((e) => MessageWidget(message: e)).toList();
+
+                  lastMessage = ticketDetails.messages!.last.message ?? "";
                 },
               ),
               if (ticketIsClosed)
@@ -225,47 +239,6 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
         ),
       ),
     );
-  }
-
-  void _initScrollAnimation() {
-    _scrollDownAnimationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
-
-    _scrollDownAnimation = Tween<double>(
-      end: end_floatingActionButtonOffset,
-      begin: begin_floatingActionButtonOffset,
-    ).animate(_scrollDownAnimationController);
-  }
-
-  void _scrollListener() {
-    if (_chatController.position.pixels < 150) {
-      _scrollDownAnimationController.reset();
-      _scrollDownAnimationController.reverse();
-      return;
-    }
-
-    if (_chatController.position.userScrollDirection == ScrollDirection.forward) {
-      if (_scrollDownAnimation.value != end_floatingActionButtonOffset) {
-        _scrollDownAnimationController.reset();
-      }
-      _scrollDownAnimationController.forward();
-    }
-
-    if (_chatController.position.userScrollDirection == ScrollDirection.reverse) {
-      if (_scrollDownAnimation.value != begin_floatingActionButtonOffset) {
-        _scrollDownAnimationController.reset();
-      }
-      _scrollDownAnimationController.reverse();
-    }
-  }
-
-  //event listeners
-  void scrollDown({int milliseconds = 2000}) {
-    _chatController.animateTo(
-      _chatController.position.maxScrollExtent,
-      duration: Duration(milliseconds: milliseconds),
-      curve: Curves.fastOutSlowIn,
-    );
-    _scrollDownAnimationController.reverse();
   }
 
   void onclickCloseChat() {
@@ -306,34 +279,21 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
         children: [
           NotificationListener(
             onNotification: onNotificationListView,
-            child: ListView.builder(
-              controller: _chatController,
+            child: ScrollablePositionedList.builder(
+              reverse: true,
               itemCount: messageWidgets.length + 2,
+              addAutomaticKeepAlives: true,
+              itemScrollController: chatItemScrollController,
               itemBuilder: (_, i) {
-                if (i == 0) return SizedBox(height: 60);
+                if (i == 0) return SizedBox(height: 5);
 
-                if (i == messageWidgets.length + 1) return SizedBox(height: 5);
+                if (i == messageWidgets.length + 1) return SizedBox(height: 60);
 
                 return messageWidgets[i - 1];
               },
             ),
           ),
-          AnimatedBuilder(
-            animation: _scrollDownAnimation,
-            builder: (_, __) {
-              return Positioned(
-                right: 10,
-                bottom: _scrollDownAnimation.value,
-                child: FloatingActionButton(
-                  onPressed: scrollDown,
-                  child: icon(Icons.expand_more_rounded),
-                  elevation: 10,
-                  mini: true,
-                  backgroundColor: Colors.grey.shade50,
-                ),
-              );
-            },
-          ),
+          ScrollDownButtonWidget()
         ],
       ),
     );
@@ -353,7 +313,7 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
       files: files,
     );
 
-    messageWidgets.add(sendingMessageWidget);
+    messageWidgets.insert(0, sendingMessageWidget);
 
     scrollDown();
     setState(() {});
@@ -366,18 +326,5 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
         widgetKey: sendingMessageWidget.key!,
       ),
     );
-  }
-
-  bool onNotificationListView(Notification notification) {
-    if (notification is ScrollUpdateNotification) {
-      scrollDownButtonTimer?.cancel();
-    }
-
-    if (notification is ScrollEndNotification) {
-      scrollDownButtonTimer = Timer(Duration(seconds: 3), () {
-        _scrollDownAnimationController.reverse();
-      });
-    }
-    return false;
   }
 }

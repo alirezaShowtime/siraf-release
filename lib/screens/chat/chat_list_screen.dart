@@ -145,8 +145,8 @@ class _ChatListScreen extends State<ChatListScreen> {
                 MyPopupMenuButton(
                   itemBuilder: (context) {
                     return [
-                      MyPopupMenuItem<int>(enable: selectedChats.length < chats.length, value: 0, label: "انتخاب همه", icon: Icons.check_box_outlined),
-                      if (selectedChats.isNotEmpty) MyPopupMenuItem<int>(value: 1, label: "لغو انتخاب همه", icon: Icons.check_box_outline_blank_outlined),
+                      MyPopupMenuItem<int>(enable: selectedChats.length < chats.length, value: 0, label: "انتخاب همه"),
+                      if (selectedChats.isNotEmpty) MyPopupMenuItem<int>(value: 1, label: "لغو انتخاب همه"),
                     ];
                   },
                   onSelected: (value) {

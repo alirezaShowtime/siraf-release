@@ -13,8 +13,15 @@ class AppBarChat extends AppBar {
 
   Ticket ticket;
   void Function()? onclickCloseChat;
+  bool ticketIsClosed;
+  String lastMessage;
 
-  AppBarChat({required this.ticket, this.onclickCloseChat});
+  AppBarChat({
+    required this.ticket,
+    required this.lastMessage,
+    this.onclickCloseChat,
+    this.ticketIsClosed = false,
+  });
 }
 
 class _AppBarChat extends State<AppBarChat> {
@@ -24,7 +31,14 @@ class _AppBarChat extends State<AppBarChat> {
       automaticallyImplyLeading: false,
       elevation: defaultElevation,
       titleSpacing: 0,
-      leading: MyBackButton(),
+      leading: MyBackButton(
+        onPressed: () {
+          Navigator.pop(context, {
+            "lastMessage": widget.lastMessage,
+            "isClosed": widget.ticketIsClosed,
+          });
+        },
+      ),
       title: title(),
       actions: [
         MyPopupMenuButton(
@@ -33,6 +47,7 @@ class _AppBarChat extends State<AppBarChat> {
             MyPopupMenuItem(
               label: "بستن تیکت",
               icon: Icons.close_rounded,
+              enable: !widget.ticketIsClosed,
               onTap: () => widget.onclickCloseChat?.call(),
             ),
           ],

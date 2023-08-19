@@ -142,6 +142,9 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
     if (widget._messageController.value.text.isFill()) {
       widget.onClickSendMessage?.call(widget._messageController.value.text, null);
       widget._messageController.clear();
+      setState(() {
+        showSendButton = false;
+      });
       return;
     }
 
