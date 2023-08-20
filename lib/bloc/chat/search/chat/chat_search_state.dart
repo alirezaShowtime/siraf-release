@@ -18,7 +18,7 @@ class ChatSearchError extends ChatSearchState {
 }
 
 class ChatSearchSuccess extends ChatSearchState {
-  late List<ChatItem> chatItems;
+   List<ChatItem> chatItems = [];
 
   ChatSearchSuccess(Response res) {
     var data = jDecode(res.body)["data"];

@@ -7,7 +7,6 @@ import 'package:siraf3/bloc/chat/delete/chat_delete_bloc.dart';
 import 'package:siraf3/bloc/chat/list/chat_list_bloc.dart';
 import 'package:siraf3/bloc/chat/search/chat/chat_search_bloc.dart';
 import 'package:siraf3/dialog.dart';
-import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/chat_item.dart';
@@ -449,7 +448,6 @@ class _ChatListScreen extends State<ChatListScreen> {
         }
       },
       onSubmitted: (text) {
-        if (!text.isFill()) return;
         searchRequest(text);
       },
       textInputAction: TextInputAction.search,
