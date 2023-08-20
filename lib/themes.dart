@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Themes {
   static const primary = Color(0xff0067A5);
@@ -27,6 +28,25 @@ class Themes {
   static const inputBorderNormal = Color(0xffeae7e7);
 
   static const blueSky = Color(0x704abbff);
+
+  static SystemUiOverlayStyle getSystemUiOverlayStyle() => SystemUiOverlayStyle(
+        statusBarColor: Themes.appBar,
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Themes.appBar,
+        systemNavigationBarDividerColor: Color(0xffEEEEEE),
+        systemNavigationBarIconBrightness: Brightness.dark,
+      );
+
+  static SystemUiOverlayStyle getSystemUiOverlayStyleTransparent() => SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Themes.appBar,
+        systemNavigationBarDividerColor: Color(0xffEEEEEE),
+        systemNavigationBarIconBrightness: Brightness.dark,
+        systemStatusBarContrastEnforced: false,
+      );
 
   static ThemeData themeData() {
     return ThemeData(

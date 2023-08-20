@@ -34,12 +34,6 @@ class MyAppBar extends AppBar {
     super.backwardsCompatibility,
     super.toolbarTextStyle,
     super.titleTextStyle,
-    super.systemOverlayStyle = const SystemUiOverlayStyle(
-      statusBarColor: Themes.appBar,
-      statusBarBrightness: Brightness.dark,
-      statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: Themes.appBar,
-      systemNavigationBarDividerColor: Themes.appBar,
-    ),
-  });
+    SystemUiOverlayStyle? systemOverlayStyle,
+  }) : super(systemOverlayStyle: Themes.getSystemUiOverlayStyle());
 }

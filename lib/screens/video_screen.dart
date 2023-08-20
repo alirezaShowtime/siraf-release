@@ -104,6 +104,8 @@ class _VideoScreenState extends State<VideoScreen> {
           statusBarBrightness: Brightness.light,
           statusBarIconBrightness: Brightness.light,
           systemNavigationBarColor: Colors.black,
+          systemNavigationBarDividerColor: Colors.black,
+          systemNavigationBarIconBrightness: Brightness.light,
         ),
         leading: MyBackButton(color: Themes.iconLight),
         backgroundColor: Colors.transparent,
