@@ -453,7 +453,7 @@ class _ChatListScreen extends State<ChatListScreen> {
       textInputAction: TextInputAction.search,
       decoration: InputDecoration(
         border: InputBorder.none,
-        hintText: "جستوجو...",
+        hintText: "جستجو...",
         hintStyle: TextStyle(color: Colors.grey.shade400),
       ),
       style: TextStyle(

@@ -129,7 +129,7 @@ class _AppBarChat extends State<AppBarChat> {
                     [
                       MyPopupMenuItem(
                         value: 0,
-                        label: "جستوجو",
+                        label: "جستجو",
                         icon: CupertinoIcons.search,
                       ),
                       MyPopupMenuItem(
@@ -338,7 +338,7 @@ class _AppBarChat extends State<AppBarChat> {
       textInputAction: TextInputAction.search,
       decoration: InputDecoration(
         border: InputBorder.none,
-        hintText: "جستوجو...",
+        hintText: "جستجو...",
         hintStyle: TextStyle(color: Colors.grey.shade400),
       ),
       style: TextStyle(
