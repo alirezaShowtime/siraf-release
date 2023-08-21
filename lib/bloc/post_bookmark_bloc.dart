@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart' as dio;
 import 'package:siraf3/helpers.dart';
 import 'package:http/http.dart';
 import 'package:siraf3/http2.dart' as http2;
 import 'package:bloc/bloc.dart';
+import 'package:siraf3/models/user.dart';
 
 class PostBookmarkEvent {}
 
@@ -59,14 +61,23 @@ class PostBookmarkBloc extends Bloc<PostBookmarkEvent, PostBookmarkState> {
     } else if (event is PostBookmarkRemoveEvent) {
       emit(PostBookmarkLoadingState());
 
-      var response = await http2.deleteWithToken(
-        getContentUrl("bookmark/deleteBookmark/?bookmarkIds=[${event.id}]"));
+      await dio.Dio().delete(
+        getContentUrl("bookmark/deleteBookmark/?bookmarkIds=[${event.id}]").toString(),
+        options: dio.Options(
+          headers: {
+            "Authorization": await User.getBearerToken(),
+          },
+        ),
+      );
+      emit(PostBookmarkSuccessState(bookmark: false));
 
-      if (isResponseOk(response)) {
-        emit(PostBookmarkSuccessState(bookmark: false));
-      } else {
-        emit(PostBookmarkErrorState(response: response));
-      }
+      // var response = await http2.deleteWithToken(getContentUrl("bookmark/deleteBookmark/?bookmarkIds=[${event.id}]"));
+
+      // if (isResponseOk(response)) {
+      //   emit(PostBookmarkSuccessState(bookmark: false));
+      // } else {
+      //   emit(PostBookmarkErrorState(response: response));
+      // }
     }
   }
 }

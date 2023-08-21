@@ -121,23 +121,23 @@ class _SearchScreen extends State<SearchScreen> {
               child: Padding(
                 padding: EdgeInsets.only(left: 5, right: 15),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      "سابقه جستجو",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Themes.blue,
-                        fontFamily: "IranSansBold",
-                      ),
-                    ),
+                    // Text(
+                    //   "سابقه جستجو",
+                    //   style: TextStyle(
+                    //     fontSize: 12,
+                    //     color: Themes.blue,
+                    //     fontFamily: "IranSansBold",
+                    //   ),
+                    // ),
                     TextButton(
                       onPressed: () {
                         emptyHistory();
                       },
                       child: Text(
-                        "پاک کردن",
+                        "پاک کردن سوابق",
                         style: TextStyle(
                           fontSize: 12,
                           color: Themes.blue,

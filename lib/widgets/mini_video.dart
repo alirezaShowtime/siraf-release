@@ -14,9 +14,10 @@ class MiniVideo extends StatefulWidget {
   bool autoReverse;
   Widget? playIcon;
   double? width;
+  bool directPlay;
   Function(VideoPlayerController)? onStartVideo;
 
-  MiniVideo({required this.thumbnail, required this.videoUrl, this.onStartVideo, this.imageFit, this.autoReverse = true, this.playIcon, this.width, super.key});
+  MiniVideo({required this.thumbnail, required this.videoUrl, this.onStartVideo, this.imageFit, this.autoReverse = true, this.playIcon, this.width, this.directPlay = false, super.key});
 
   @override
   State<MiniVideo> createState() => MiniVideoState();
@@ -47,14 +48,7 @@ class MiniVideoState extends State<MiniVideo> {
             child: Stack(
               children: [
                 GestureDetector(
-                  onTap: () {
-                    if (_controller.value.isPlaying) {
-                      _controller.pause();
-                    } else {
-                      _controller.play();
-                      widget.onStartVideo?.call(_controller);
-                    }
-                  },
+                  onTap: !widget.directPlay ? handleVideoClick : null,
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
@@ -64,7 +58,7 @@ class MiniVideoState extends State<MiniVideo> {
                     ),
                   ),
                 ),
-                if (!_controller.value.isPlaying)
+                if (!widget.directPlay && !_controller.value.isPlaying)
                   Align(
                     alignment: Alignment.center,
                     child: GestureDetector(
@@ -89,31 +83,47 @@ class MiniVideoState extends State<MiniVideo> {
                           ),
                     ),
                   ),
-                Positioned(
-                  left: 5,
-                  bottom: 5,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => VideoScreen(videoUrl: widget.videoUrl),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Themes.secondary2.withOpacity(0.8),
-                      ),
-                      child: Icon(
-                        Icons.fullscreen_outlined,
-                        color: Themes.iconLight,
-                        size: 30,
-                      ),
+                if (widget.directPlay)
+                  Align(
+                    alignment: Alignment.center,
+                    child: GestureDetector(
+                      onTap: goVideoScreen,
+                      child: widget.playIcon ??
+                          Stack(
+                            children: [
+                              Icon(
+                                CupertinoIcons.play_fill,
+                                size: 44,
+                                color: Themes.primary,
+                              ),
+                              Icon(
+                                CupertinoIcons.play_fill,
+                                size: 40,
+                                color: Themes.iconLight,
+                              ),
+                            ],
+                          ),
                     ),
                   ),
-                )
+                if (!widget.directPlay)
+                  Positioned(
+                    left: 5,
+                    bottom: 5,
+                    child: InkWell(
+                      onTap: goVideoScreen,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Themes.secondary2.withOpacity(0.8),
+                        ),
+                        child: Icon(
+                          Icons.fullscreen_outlined,
+                          color: Themes.iconLight,
+                          size: 30,
+                        ),
+                      ),
+                    ),
+                  )
               ],
             ),
           )
@@ -145,5 +155,23 @@ class MiniVideoState extends State<MiniVideo> {
     _controller.dispose();
 
     super.dispose();
+  }
+
+  void handleVideoClick() {
+    if (_controller.value.isPlaying) {
+      _controller.pause();
+    } else {
+      _controller.play();
+      widget.onStartVideo?.call(_controller);
+    }
+  }
+
+  void goVideoScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => VideoScreen(videoUrl: widget.videoUrl),
+      ),
+    );
   }
 }

@@ -838,7 +838,7 @@ class _FilterScreenState extends State<FilterScreen> {
                             });
                           } else {
                             setState(() {
-                              propFilters[prop.value!] = e.value.toString();
+                              propFilters.addAll({prop.value!: e.value.toString()});
                             });
                           }
 

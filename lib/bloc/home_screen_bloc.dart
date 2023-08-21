@@ -58,16 +58,16 @@ class HSBloc extends Bloc<HSEvent, HSState> {
       int? posts_new_last_id;
 
       Response responseFiles = await handleFileRequest(event);
-      Response responseContent = await handleContentRequest(event);
+      // Response responseContent = await handleContentRequest(event);
 
       if (is401(responseFiles)) {
         User.remove();
         responseFiles = await handleFileRequest(event, withToken: false);
       }
-      if (is401(responseContent)) {
-        User.remove();
-        responseContent = await handleContentRequest(event, withToken: false);
-      }
+      // if (is401(responseContent)) {
+      //   User.remove();
+      //   responseContent = await handleContentRequest(event, withToken: false);
+      // }
 
       if (!isResponseOk(responseFiles)) {
         emit(HSErrorState(response: responseFiles));
@@ -81,29 +81,30 @@ class HSBloc extends Bloc<HSEvent, HSState> {
         files_new_last_id = json['data']["lastId"] as int?;
       }
 
-      if (isResponseOk(responseContent)) {
-        var json = jDecode(responseContent.body);
-        posts = Post.fromList(json['data']);
-        postsLength = posts.length;
-        posts_new_last_id = posts.length > 0 ? posts.last.id : null;
-      }
+      // if (isResponseOk(responseContent)) {
+      //   var json = jDecode(responseContent.body);
+      //   posts = Post.fromList(json['data']);
+      //   postsLength = posts.length;
+      //   posts_new_last_id = posts.length > 0 ? posts.last.id : null;
+      // }
 
       print("FILES LENGTH : ${files.length}");
       print("POSTS LENGTH : ${posts.length}");
 
-      var items = <HomeItem>[];
+      // todo temporary //array must be empty to combine files and contents
+      var items = files.map((e) => HomeItem(type: Type.File, file: e)).toList();
 
-      if (filesLength > 0 && postsLength > 0) {
-        items = combainFilesWithPosts(files, posts);
-      }
+      // if (filesLength > 0 && postsLength > 0) {
+        // items = combainFilesWithPosts(files, posts);
+      // }
 
-      if (postsLength == 0 && filesLength > 0) {
-        items = files.map((e) => HomeItem(type: Type.File, file: e)).toList();
-      }
+      // if (postsLength == 0 && filesLength > 0) {
+      //   items = files.map((e) => HomeItem(type: Type.File, file: e)).toList();
+      // }
 
-      if (filesLength == 0 && postsLength > 0) {
-        items = posts.map((e) => HomeItem(type: Type.Post, post: e)).toList();
-      }
+      // if (filesLength == 0 && postsLength > 0) {
+      //   items = posts.map((e) => HomeItem(type: Type.Post, post: e)).toList();
+      // }
 
       emit(HSLoadedState(
         homeItems: items,

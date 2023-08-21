@@ -7,6 +7,7 @@ import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
+import 'package:dio/dio.dart' as dio;
 
 class Bookmark {
   int id;
@@ -75,8 +76,7 @@ class Bookmark {
                       color: Themes.textGrey,
                     ),
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       child: TextField2(
                         minLines: 5,
                         maxLines: 5,
@@ -184,8 +184,7 @@ class Bookmark {
         result = true;
       } else {
         var json = jDecode(response.body);
-        notify(json['message'] ??
-            "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
+        notify(json['message'] ?? "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
         result = false;
       }
     } catch (_) {
@@ -221,21 +220,20 @@ class Bookmark {
     var result = false;
 
     try {
-      var response = await http2.post(
-        getFileUrl('file/deleteFileFavorite/?fileIds=[${id}]'),
-        headers: {
-          "Content-Type": "application/json",
-        }
+      var response = await dio.Dio().delete(
+        getFileUrl('file/deleteFileFavorite/?fileIds=[${id}]').toString(),
+        options: dio.Options(
+          headers: {
+            "Content-Type": "application/json",
+          },
+        ),
       );
 
-      print(response.statusCode);
-
-      if (isResponseOk(response)) {
+      if (response.statusCode == 200) {
         result = true;
       } else {
-        var json = jDecode(response.body);
-        notify(json['message'] ??
-            "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
+        var json = response.data;
+        notify(json['message'] ?? "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
         result = false;
       }
     } catch (_) {

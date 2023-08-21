@@ -42,6 +42,8 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
   void initState() {
     super.initState();
 
+    _controller = MapController();
+
     getEstates();
     setEstates();
 
@@ -60,6 +62,10 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
               Future.delayed(Duration(milliseconds: 500), () {
                 _controller.move(myLocationMarker!.point, getZoomLevel(3000));
               });
+            });
+          } else if (event.search && event.estates.isNotEmpty) {
+            Future.delayed(Duration(milliseconds: 500), () {
+              _controller.move(toLatLng(event.estates.first.lat!, event.estates.first.long!), _controller.zoom);
             });
           } else {
             move(event);

@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +18,7 @@ import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/my_switch.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:siraf3/http2.dart' as http2;
 
 import '../widgets/app_bar_title.dart';
 import '../widgets/my_back_button.dart';
@@ -166,14 +169,27 @@ class _SettingsScreen extends State<SettingsScreen> {
           //   ),
           // ),
 
-          if (widget.user!.id != null)
+          if (widget.user?.id != null)
             item(
               title: "اعلان برنامه",
               widget: MySwitch(
                 value: showNotification,
-                onToggle: (value) {
+                onToggle: (value) async {
                   setState(() => showNotification = value);
                   settings.setShowNotification(value);
+
+                  if (value) {
+                    await Firebase.initializeApp();
+                    http2.postJsonWithToken(
+                      Uri.parse("https://message.siraf.app/api/fireBase/addDevice/"),
+                      body: {
+                        "token": (await FirebaseMessaging.instance.getToken()).toString(),
+                        "userId": widget.user!.id,
+                      },
+                    );
+                  } else {
+                    FirebaseMessaging.instance.deleteToken();
+                  }
                 },
               ),
             ),
@@ -189,6 +205,7 @@ class _SettingsScreen extends State<SettingsScreen> {
                   statusBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
                   statusBarBrightness: darkMode ? Brightness.light : Brightness.dark,
                   statusBarIconBrightness: darkMode ? Brightness.light : Brightness.dark,
+                  systemNavigationBarDividerColor: darkMode ? Color.fromARGB(255, 82, 82, 82) : Color.fromARGB(255, 235, 234, 234),
                   systemNavigationBarIconBrightness: darkMode ? Brightness.light : Brightness.dark,
                   systemNavigationBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
                 ));

@@ -7,19 +7,18 @@ import 'package:meta/meta.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/user.dart';
+import 'package:siraf3/settings.dart';
 
 part 'verify_number_phone_event.dart';
 
 part 'verify_number_phone_state.dart';
 
-class VerifyNumberPhoneBloc
-    extends Bloc<VerifyNumberPhoneEvent, VerifyNumberPhoneState> {
+class VerifyNumberPhoneBloc extends Bloc<VerifyNumberPhoneEvent, VerifyNumberPhoneState> {
   VerifyNumberPhoneBloc() : super(VerifyNumberPhoneInitial()) {
     on<VerifyNumberPhoneRequestEvent>(_request);
   }
 
-  FutureOr<void> _request(VerifyNumberPhoneRequestEvent event,
-      Emitter<VerifyNumberPhoneState> emit) async {
+  FutureOr<void> _request(VerifyNumberPhoneRequestEvent event, Emitter<VerifyNumberPhoneState> emit) async {
     if (state is VerifyNumberPhoneLoading) return;
     emit(VerifyNumberPhoneLoading());
 
@@ -45,13 +44,15 @@ class VerifyNumberPhoneBloc
 
     await user.save();
 
-    await http2.postJsonWithToken(
-      Uri.parse("https://message.siraf.app/api/fireBase/addDevice/"),
-      body: {
-        "token": (await FirebaseMessaging.instance.getToken()).toString(),
-        "userId": user.id,
-      },
-    );
+    if (await Settings().showNotification()) {
+      await http2.postJsonWithToken(
+        Uri.parse("https://message.siraf.app/api/fireBase/addDevice/"),
+        body: {
+          "token": (await FirebaseMessaging.instance.getToken()).toString(),
+          "userId": user.id,
+        },
+      );
+    }
 
     return emit(VerifyNumberPhoneSuccess(user));
   }

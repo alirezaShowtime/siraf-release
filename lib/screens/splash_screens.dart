@@ -166,16 +166,20 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                         AnimatedPositioned(
                           duration: duration,
                           top: isHidden ? 0 : 35,
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 2.0),
-                            child: Text(
-                              "پلتفرم دسترسی به املاک شهر",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                fontFamily: 'KalamehBlack',
+                          left: 0,
+                          right: 0,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "پلتفرم دسترسی به املاک شهر",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontFamily: 'KalamehBlack',
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ),
                         Positioned(
@@ -189,7 +193,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                                 color: Themes.primary,
                                 child: Image(
                                   image: AssetImage('assets/images/siraf_logo_text.png'),
-                                  width: 120,
+                                  width: 130,
+                                  fit: BoxFit.fitWidth,
                                 ),
                               ),
                             ],

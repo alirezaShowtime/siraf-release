@@ -307,6 +307,7 @@ class _FileScreenState extends State<FileScreen> with AutomaticKeepAliveClientMi
                 );
               }
             },
+            directPlayVideos: true,
           ),
         Positioned(
           bottom: 25,
@@ -851,6 +852,7 @@ class _FileScreenState extends State<FileScreen> with AutomaticKeepAliveClientMi
 
   Widget _buildTopBar(FileDetail file) {
     var iconColor = Themes.iconLight;
+    var activeIconColor = Themes.primary;
 
     var toolbarOpacity = (file.media?.images?.isNotEmpty ?? false) ? this.toolbarOpacity : 1.0;
 
@@ -954,7 +956,7 @@ class _FileScreenState extends State<FileScreen> with AutomaticKeepAliveClientMi
                       Icon(
                         isFavorite ? Icons.bookmark : Icons.bookmark_border,
                         size: 22,
-                        color: iconColor,
+                        color: isFavorite ? activeIconColor : iconColor,
                       ),
                     ],
                   ),

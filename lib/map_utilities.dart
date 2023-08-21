@@ -20,21 +20,29 @@ void animatedMapMove(MapController mapController, LatLng destLocation, double de
   final lngTween = Tween<double>(begin: mapController.center.longitude, end: destLocation.longitude);
   final zoomTween = Tween<double>(begin: mapController.zoom, end: destZoom);
 
-  final controller = AnimationController(duration: const Duration(milliseconds: 500), vsync: tickerProvider);
+  try {
+    final controller = AnimationController(duration: const Duration(milliseconds: 500), vsync: tickerProvider);
 
-  final Animation<double> animation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
+    final Animation<double> animation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
 
-  controller.addListener(() {
-    mapController.move(LatLng(latTween.evaluate(animation), lngTween.evaluate(animation)), zoomTween.evaluate(animation));
-  });
+    controller.addListener(() {
+      mapController.move(LatLng(latTween.evaluate(animation), lngTween.evaluate(animation)), zoomTween.evaluate(animation));
+    });
 
-  animation.addStatusListener((status) {
-    if (status == AnimationStatus.completed) {
-      controller.dispose();
-    } else if (status == AnimationStatus.dismissed) {
-      controller.dispose();
-    }
-  });
+    animation.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        controller.dispose();
+      } else if (status == AnimationStatus.dismissed) {
+        controller.dispose();
+      }
+    });
 
-  controller.forward();
+    controller.forward();
+  } catch (e) {
+    mapController.move(LatLng(destLocation.latitude, destLocation.longitude), destZoom);
+  }
+}
+
+void mapMove(MapController mapController, LatLng destLocation, double destZoom) {
+    mapController.move(LatLng(destLocation.latitude, destLocation.longitude), destZoom);
 }

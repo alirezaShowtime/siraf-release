@@ -288,7 +288,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
           Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 7),
                 child: Card(
                   color: App.theme.dialogBackgroundColor,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -313,10 +313,10 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                           ),
                         ),
                       ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    _myLocationSection(),
+                    // SizedBox(
+                    //   height: 10,
+                    // ),
+                    // _myLocationSection(),
                     SizedBox(
                       height: 10,
                     ),

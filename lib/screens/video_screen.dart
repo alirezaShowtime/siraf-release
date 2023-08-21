@@ -220,6 +220,8 @@ class _VideoScreenState extends State<VideoScreen> {
       DeviceOrientation.portraitUp,
     ]);
 
+    SystemChrome.restoreSystemUIOverlays();
+
     super.dispose();
     _controller?.dispose();
   }

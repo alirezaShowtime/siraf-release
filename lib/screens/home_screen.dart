@@ -38,6 +38,7 @@ import 'package:siraf3/screens/request_file/request_file_show_screen.dart';
 import 'package:siraf3/screens/search_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/screens/ticket/ticket_chat/ticket_chat_screen.dart';
+import 'package:siraf3/settings.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/empty.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
@@ -199,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 'my_request':
         var data = jsonDecode(jsonEncode(payload['request_id']));
         data = data is String ? jsonDecode(data) : data;
-        
+
         var request = Request.fromJson(data);
 
         push(
@@ -714,7 +715,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Post? currentPost;
 
   void addDevice() async {
-    if (await User.hasToken()) {
+    if (await User.hasToken() && await Settings().showNotification()) {
       await http2.postJsonWithToken(
         Uri.parse("https://message.siraf.app/api/fireBase/addDevice/"),
         body: {

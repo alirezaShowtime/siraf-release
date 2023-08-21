@@ -22,6 +22,7 @@ import 'package:siraf3/models/estate_profile.dart' as estateProfileModel;
 import 'package:siraf3/models/estate_profile.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
+import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/consultant_profile_without_comment/consultant_profile_screen.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/file_screen.dart';

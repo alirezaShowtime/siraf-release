@@ -22,7 +22,7 @@ extension AddCommentWidget on _EstateProfileScreen {
               minRating: 0,
               direction: Axis.horizontal,
               itemCount: 5,
-              allowHalfRating: true,
+              // allowHalfRating: true,
               itemPadding: EdgeInsets.symmetric(horizontal: 10),
               itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
               itemSize: 35,
@@ -34,7 +34,11 @@ extension AddCommentWidget on _EstateProfileScreen {
           Align(
             alignment: Alignment.centerLeft,
             child: MaterialButton(
-              onPressed: () => sendCommentOrRate(estateId),
+              onPressed: () {
+                doWithLogin(context, () {
+                  sendCommentOrRate(estateId);
+                });
+              },
               color: Themes.primary,
               elevation: 3,
               shape: RoundedRectangleBorder(

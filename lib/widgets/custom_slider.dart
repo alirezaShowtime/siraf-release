@@ -24,6 +24,7 @@ class CarouselSliderCustom extends StatefulWidget {
   List<slider.Slider> sliders;
   BoxFit? imageFit;
   bool indicatorsCenterAlign;
+  bool directPlayVideos;
   Function(s.Slider)? onImageTap;
   Function(int)? onPageChanged;
   Function(VideoPlayerController)? onStartVideo;
@@ -47,6 +48,7 @@ class CarouselSliderCustom extends StatefulWidget {
       this.viewportFraction,
       this.onPageChanged,
       this.onStartVideo,
+      this.directPlayVideos = false,
       Key? key})
       : super(key: key);
 
@@ -109,6 +111,7 @@ class _CarouselSliderCustomState extends State<CarouselSliderCustom> with Automa
                     onImageTap: widget.onImageTap,
                     index: widget.sliders.indexOf(image),
                     onStartVideo: widget.onStartVideo,
+                    directPlay: widget.directPlayVideos,
                   ),
                 );
               },
@@ -156,6 +159,7 @@ class CarouselSliderItemCustom extends StatefulWidget {
   int index;
   s.Slider slide;
   Function(VideoPlayerController)? onStartVideo;
+  bool directPlay;
 
   CarouselSliderItemCustom(
       {required this.image,
@@ -166,6 +170,7 @@ class CarouselSliderItemCustom extends StatefulWidget {
       this.onImageTap,
       this.imageFit,
       this.onStartVideo,
+      this.directPlay = false,
       Key? key})
       : super(key: key);
 
@@ -226,7 +231,7 @@ class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> wit
   }
 
   _buildVideo() {
-    return MiniVideo(thumbnail: widget.image, videoUrl: widget.slide.link!, onStartVideo: widget.onStartVideo,);
+    return MiniVideo(thumbnail: widget.image, videoUrl: widget.slide.link!, onStartVideo: widget.onStartVideo, directPlay: widget.directPlay,);
   }
 
   _buildTour() {
