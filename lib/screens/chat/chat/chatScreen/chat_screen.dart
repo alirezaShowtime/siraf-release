@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -234,8 +235,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
               consultantName: widget.consultantName,
               consultantImage: widget.consultantImage,
               chatId: widget.chatId,
-              lastMessage: lastMessage?.message,
               isDisable: blockByHer || isBlockByMe,
+              onClickBackButton: backToList,
             ),
             body: Stack(
               children: [
@@ -246,7 +247,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                     messages = state.messages;
 
                     try {
-                      lastMessage = messages.first;
+                      lastMessage = messages.last;
                     } catch (e) {}
 
                     for (ChatMessage message in messages) {
@@ -461,11 +462,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
           return false;
         }
 
-        Navigator.pop(context, {
-          "chatId": widget.chatId,
-          "sentMessage": lastMessage?.message,
-          "newMessageCount": newMessageCount,
-        });
+        backToList();
 
         return false;
       };
@@ -480,5 +477,14 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
         size: 20,
       ),
     );
+  }
+
+  void backToList() {
+    Navigator.pop(context, {
+      "chatId": widget.chatId,
+      "sentMessage": lastMessage?.message ?? "فایل",
+      "newMessageCount": newMessageCount,
+      "isBlockByMe": isBlockByMe,
+    });
   }
 }

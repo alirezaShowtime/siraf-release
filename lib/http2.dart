@@ -178,13 +178,12 @@ void logRequest(http.Response response, {Object? requestBody}) async {
 
   messages.add("\n\n\nREQUEST ${response.request!.method.toUpperCase()} ${response.statusCode}");
 
-  if (await User.hasToken()) {
-    messages.add("\n\nUSER TOKEN : ${await User.getBearerToken()}");
+  if (response.request?.headers?.containsKey("Authorization") ?? false) {
+    messages.add("\n\nUSER TOKEN : ${response.request!.headers["Authorization"]}");
   }
 
   messages.add("\n\nTO :  ${Uri.decodeFull(response.request!.url.toString())}");
-  // messages.add("\n\nHEADERS :  ${convertUtf8(getPrettyJSONString(response.request!.headers..remove("Authorization")))}");
-  messages.add("\n\nHEADERS :  ${convertUtf8(getPrettyJSONString(response.request!.headers))}");
+  messages.add("\n\nHEADERS :  ${convertUtf8(getPrettyJSONString(response.request!.headers..remove("Authorization")))}");
   messages.add("\n\nQUERIES :  ${convertUtf8(getPrettyJSONString(response.request!.url.queryParameters))}");
 
   messages.add("\n\n\nREQUEST BODY : ${convertUtf8(getPrettyJSONString(requestBody))}");

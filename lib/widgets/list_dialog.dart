@@ -23,6 +23,7 @@ class _ListDialog extends State<ListDialog> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       backgroundColor: App.theme.dialogBackgroundColor,
       content: Container(
+        clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
         ),
@@ -32,10 +33,10 @@ class _ListDialog extends State<ListDialog> {
               children: <Widget>[
                 ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxHeight: 200,
+                    maxHeight: 310,
                   ),
                   child: SingleChildScrollView(
-                    physics: BouncingScrollPhysics(),
+                    physics: ClampingScrollPhysics(),
                     child: Column(
                       children: widget.list
                           .map<Widget>(
@@ -75,37 +76,31 @@ class _ListDialog extends State<ListDialog> {
     );
   }
 
-  Widget buildListItem(
-      {required Map<String, dynamic> item,
-      bool isLast = false,
-      void Function(Map<String, dynamic>)? onItemTap}) {
-    return GestureDetector(
-      onTap: () {
-        selectedItems.add(item);
-        if (onItemTap != null) onItemTap(item);
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: isLast
-                ? BorderSide.none
-                : BorderSide(
-                    color: Themes.textGrey.withOpacity(0.5), width: 0.7),
+  Widget buildListItem({required Map<String, dynamic> item, bool isLast = false, void Function(Map<String, dynamic>)? onItemTap}) {
+    return Material(
+      color: Colors.white,
+      child: InkWell(
+        onTap: () {
+          selectedItems.add(item);
+          if (onItemTap != null) onItemTap(item);
+        },
+        child: Container(
+          height: 50,
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: isLast ? BorderSide.none : BorderSide(color: Colors.grey.shade300, width: 0.7),
+            ),
           ),
-        ),
-        padding: EdgeInsets.symmetric(vertical: 10),
-        alignment: Alignment.center,
-        child: Center(
-          child: Text(
-            item["name"],
-            style: TextStyle(
-              fontSize: 13,
-              color: selectedItems.any((e) {
-                print(e);
-                return e['name'] == item['name'];
-              })
-                  ? Themes.primary
-                  : App.theme.textTheme.bodyLarge?.color,
+          padding: EdgeInsets.symmetric(vertical: 10),
+          alignment: Alignment.center,
+          child: Center(
+            child: Text(
+              item["name"],
+              style: TextStyle(
+                fontSize: 13,
+                color: selectedItems.any((e) => e['name'] == item['name']) ? Themes.primary : App.theme.textTheme.bodyLarge?.color,
+                fontFamily: "IranSansBold",
+              ),
             ),
           ),
         ),

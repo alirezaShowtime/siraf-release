@@ -56,13 +56,11 @@ extension BlocListeners on _ChatScreen {
         endTimer();
       }
       if (state == RecordingVoiceState.Recording) {
-        print("status record! start");
         await startRecording();
         startTimer();
       }
       if (state == RecordingVoiceState.Done) {
         try {
-          print("status record! stop");
           var path = await stopRecording();
 
           if (recordTime < 1) return;
@@ -99,6 +97,12 @@ extension BlocListeners on _ChatScreen {
           }
         }
         listViewSetState?.call(() {});
+      }
+
+      if (state is SendMessageForbiddenAccess) {
+        blockByHer = true;
+        setState(() {});
+        return;
       }
 
       if (state is! SendMessageSuccess) return;
@@ -183,7 +187,7 @@ extension BlocListeners on _ChatScreen {
         return;
       } else {
         if (state.type == MessageSearchType.Next && (lastMessage?.id ?? 0) < state.messages.first.id!) {
-          lastMessage = state.messages.first;
+          // lastMessage = state.messages.first;
           hasNextMessage = state.messages.first.isSeen;
         }
 

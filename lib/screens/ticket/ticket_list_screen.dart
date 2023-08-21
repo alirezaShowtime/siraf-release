@@ -29,6 +29,10 @@ class _TicketListScreen extends State<TicketListScreen> {
   TicketListBloc ticketsBloc = TicketListBloc();
   CloseTicketBloc closeTicketBloc = CloseTicketBloc();
 
+  List<Ticket> tickets = [];
+  List<Ticket> selectedTickets = [];
+  bool isSelectable = false;
+
   @override
   void initState() {
     super.initState();
@@ -74,10 +78,6 @@ class _TicketListScreen extends State<TicketListScreen> {
       }
     });
   }
-
-  List<Ticket> tickets = [];
-  List<Ticket> selectedTickets = [];
-  bool isSelectable = false;
 
   @override
   Widget build(BuildContext context) {
@@ -168,18 +168,24 @@ class _TicketListScreen extends State<TicketListScreen> {
               ),
             ],
           ),
-          body: BlocConsumer(
-            bloc: ticketsBloc,
-            builder: _listBlocBuilder,
-            listener: (context, state) {
-              if (state is! TicketListSuccess) return;
-
-              tickets = sortTickets(state.tickets);
+          body: RefreshIndicator(
+            color: Themes.primary,
+            onRefresh: () async {
+              ticketsBloc.add(TicketListRequestEvent());
             },
+            child: BlocConsumer(
+              bloc: ticketsBloc,
+              builder: _listBlocBuilder,
+              listener: (context, state) {
+                if (state is! TicketListSuccess) return;
+
+                tickets = sortTickets(state.tickets);
+              },
+            ),
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              push(context, TicketCreationScreen());
+              navigateToCreateTicketScreen();
             },
             backgroundColor: Themes.primary,
             child: Icon(Icons.add_rounded, color: Colors.white),
@@ -224,7 +230,7 @@ class _TicketListScreen extends State<TicketListScreen> {
             notify("این تیکت بسته شده است");
             return;
           }
-          push(context, TicketChatScreen(ticket: ticket));
+          openChatScreen(ticket);
 
           setState(() {
             totalNoSeen -= ticket.messageNotSeen ?? 0;
@@ -410,5 +416,33 @@ class _TicketListScreen extends State<TicketListScreen> {
     list.addAll(pending);
     list.addAll(disabled);
     return list;
+  }
+
+  void openChatScreen(Ticket ticket) async {
+    Map result = await push(context, TicketChatScreen(ticket: ticket));
+
+    bool hasLastMessageKey = result.containsKey("lastMessage");
+    bool hasIsClosedKey = result.containsKey("isClosed");
+
+    if (!hasIsClosedKey && !hasLastMessageKey) return;
+
+    var i = tickets.indexOf(ticket);
+
+    if (hasLastMessageKey) {
+      tickets[i].lastMessage = result["lastMessage"];
+    }
+
+    if (hasIsClosedKey) {
+      tickets[i].status = !result["isClosed"];
+    }
+    setState(() {});
+  }
+
+  void navigateToCreateTicketScreen() async {
+    bool isRefresh = await push(context, TicketCreationScreen());
+
+    if (isRefresh) {
+      ticketsBloc.add(TicketListRequestEvent());
+    }
   }
 }

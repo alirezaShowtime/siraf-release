@@ -7,7 +7,6 @@ import 'package:siraf3/bloc/chat/delete/chat_delete_bloc.dart';
 import 'package:siraf3/bloc/chat/list/chat_list_bloc.dart';
 import 'package:siraf3/bloc/chat/search/chat/chat_search_bloc.dart';
 import 'package:siraf3/dialog.dart';
-import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/chat_item.dart';
@@ -145,8 +144,8 @@ class _ChatListScreen extends State<ChatListScreen> {
                 MyPopupMenuButton(
                   itemBuilder: (context) {
                     return [
-                      MyPopupMenuItem<int>(enable: selectedChats.length < chats.length, value: 0, label: "انتخاب همه", icon: Icons.check_box_outlined),
-                      if (selectedChats.isNotEmpty) MyPopupMenuItem<int>(value: 1, label: "لغو انتخاب همه", icon: Icons.check_box_outline_blank_outlined),
+                      MyPopupMenuItem<int>(enable: selectedChats.length < chats.length, value: 0, label: "انتخاب همه"),
+                      if (selectedChats.isNotEmpty) MyPopupMenuItem<int>(value: 1, label: "لغو انتخاب همه"),
                     ];
                   },
                   onSelected: (value) {
@@ -395,7 +394,7 @@ class _ChatListScreen extends State<ChatListScreen> {
   }
 
   void goToChatScreen(ChatItem chatItem) async {
-    var result = await push<Map>(
+    Map result = await push(
         context,
         ChatScreen(
           chatId: chatItem.id!,
@@ -411,7 +410,7 @@ class _ChatListScreen extends State<ChatListScreen> {
           fileAddress: chatItem.fileAddress,
         ));
 
-    if (result is! Map || !result.containsKey("chatId") || chatItem.id != result["chatId"]) return;
+    if (!result.containsKey("chatId") || chatItem.id != result["chatId"]) return;
 
     var index = chats.indexOf(chatItem);
 
@@ -419,12 +418,15 @@ class _ChatListScreen extends State<ChatListScreen> {
       chats.removeAt(index);
       return;
     }
+    if (result.containsKey("isBlockByMe")) {
+      chatItem.isBlockByMe = result["isBlockByMe"];
+    }
 
     if (result.containsKey("newMessageCount")) {
       chatItem.countNotSeen = result["newMessageCount"];
     }
 
-    if (!result.containsKey("sentMessage")) {
+    if (result.containsKey("sentMessage")) {
       chatItem.isConsultant = false;
       chatItem.lastMessage = result["sentMessage"];
     }
@@ -446,7 +448,6 @@ class _ChatListScreen extends State<ChatListScreen> {
         }
       },
       onSubmitted: (text) {
-        if (!text.isFill()) return;
         searchRequest(text);
       },
       textInputAction: TextInputAction.search,

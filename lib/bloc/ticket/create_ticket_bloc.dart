@@ -25,7 +25,19 @@ class CreateTicketSuccessState extends CreateTicketState {}
 class CreateTicketErrorState extends CreateTicketState {
   Response? response;
 
-  CreateTicketErrorState({required this.response});
+  String? message;
+
+  CreateTicketErrorState({Response? response}) {
+    if (response?.data == null) {
+      message = "خطایی در ایجاد گفتگو پیش آمد لطفا بعدا مجدد تلاش کنید";
+    } else {
+      try {
+        message = response!.data!['message'];
+      } catch (_) {
+        message = "خطایی در ایجاد گفتگو پیش آمد لطفا بعدا مجدد تلاش کنید";
+      }
+    }
+  }
 }
 
 class CreateTicketBloc extends Bloc<CreateTicketEvent, CreateTicketState> {
