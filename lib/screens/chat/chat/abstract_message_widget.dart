@@ -67,6 +67,7 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
   @override
   Widget build(BuildContext context) {
     return Stack(
+      alignment: isForMe() ? Alignment.centerRight : Alignment.centerLeft,
       children: [
         Positioned(
           right: 0,
