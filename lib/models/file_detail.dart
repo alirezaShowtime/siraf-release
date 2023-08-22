@@ -129,6 +129,10 @@ class FileDetail {
     return prices.asMap().containsKey(0) ? prices[0] : null;
   }
 
+  String getPriceStr() {
+    return getPrice()?.value != null ? number_format(int.parse(getPrice()!.value!)) : "توافقی";
+  }
+
   String getPricePerMeter() {
     print("METER : ${getMeter()}");
     if (getFirstPriceInt() == 0 || getMeter() == 0) {
@@ -177,12 +181,20 @@ class FileDetail {
     return null;
   }
 
+  String getVadieStr() {
+    return getVadie()?.value != null ? number_format(int.parse(getVadie()!.value!)) : "توافقی";
+  }
+
   Property? getRent() {
     if (property!.where((element) => element.key == "rent").isNotEmpty) {
       return property!.firstWhere((element) => element.key == "rent");
     }
 
     return null;
+  }
+
+  String getRentStr() {
+    return getRent()?.value != null ? number_format(int.parse(getRent()!.value!)) : "توافقی";
   }
 
   List<Property> getPrices() => property?.where((element) => element.section == 3).toList() ?? <Property>[];

@@ -440,3 +440,9 @@ void applicationExit() {
     exit(0);
   }
 }
+
+String noneOr(value) {
+  if (value == null || value == 0 || value == .0 || value == "0") return "ندارد";
+
+  return value.toString();
+}

@@ -1,9 +1,7 @@
-import 'dart:io';
-
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart';
-import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/file_detail.dart';
 import 'package:siraf3/models/user.dart';
 
@@ -22,16 +20,22 @@ class FileInitState extends FileState {}
 class FileLoadingState extends FileState {}
 
 class FileLoadedState extends FileState {
-  FileDetail file;
-  bool? favorite;
+  late FileDetail file;
+  bool favorite = false;
 
-  FileLoadedState({required this.file, required this.favorite});
+  FileLoadedState(Response res) {
+    var data = jDecode(res.body);
+    file = FileDetail.fromJson(data['data']);
+    favorite = data['data']['favorite'] ?? false;
+  }
 }
 
 class FileErrorState extends FileState {
-  Response? response;
+  String? message;
 
-  FileErrorState({required this.response});
+  FileErrorState(Response res) {
+    message = jDecode(res.body)["message"];
+  }
 }
 
 class FileBloc extends Bloc<FileEvent, FileState> {
@@ -42,49 +46,27 @@ class FileBloc extends Bloc<FileEvent, FileState> {
   _onEvent(event, emit) async {
     emit(FileLoadingState());
 
-    try {
-      var response;
+    var url = getFileUrl('file/file/' + event.id.toString());
 
-      var url = getFileUrl('file/file/' + event.id.toString());
+    var res = (await User.hasToken()) ? await http2.getWithToken(url) : await http2.get(url);
 
-      if (await User.hasToken()) {
-        response = await http2.getWithToken(url);
-      } else {
-        response = await http2.get(url);
-      }
-
-      if (isResponseOk(response)) {
-        var json = jDecode(response.body);
-        emit(FileLoadedState(
-            file: FileDetail.fromJson(json['data']),
-            favorite: json['data']['favorite']));
-      } else {
-        var json = jDecode(response.body);
-
-        if (json['code'] == 205) {
-          User.remove();
-
-          response = await http2.get(url);
-
-          if (isResponseOk(response)) {
-            var json = jDecode(response.body);
-
-            emit(FileLoadedState(
-                file: FileDetail.fromJson(json['data']['files']),
-                favorite: json['data']['favorite']));
-          } else {
-            emit(FileErrorState(response: response));
-          }
-        } else {
-          emit(FileErrorState(response: response));
-        }
-      }
-    } on HttpException catch (e) {
-      print(e);
-      emit(FileErrorState(response: null));
-    } on SocketException catch (e) {
-      print(e);
-      emit(FileErrorState(response: null));
+    if (isResponseOk(res)) {
+      return emit(FileLoadedState(res));
     }
+
+    var json = jDecode(res.body);
+
+    if (json['code'] != 205) {
+      return emit(FileErrorState(res));
+    }
+
+    User.remove();
+
+    res = await http2.get(url);
+
+    if (isResponseOk(res)) {
+      return emit(FileLoadedState(res));
+    }
+    return emit(FileErrorState(res));
   }
 }

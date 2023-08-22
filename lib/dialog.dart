@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/widgets/error_dialog.dart';
 import 'package:siraf3/widgets/loading_dialog.dart';
+import 'package:siraf3/widgets/violation_dialog.dart';
 
 BuildContext? dialogContext;
 
@@ -65,6 +66,26 @@ BuildContext? errorDialog({required BuildContext context, String? message}) {
       errorDialogContext = _;
       return ErrorDialog(
         message: message ?? "خطایی در هنگام انجام عملیات رخ داد",
+      );
+    },
+  );
+}
+
+void violationDialog(BuildContext context, void Function(String title, String description) onApply) {
+  showDialog2(
+    context: context,
+    barrierDismissible: true,
+    builder: (_) {
+      TextEditingController _violationControllerTitle = TextEditingController();
+      TextEditingController _violationControllerDesc = TextEditingController();
+      return ViolationDialog(
+        titleController: _violationControllerTitle,
+        descriptionController: _violationControllerDesc,
+        onApply: (title, desc) {
+          onApply.call(title, desc);
+
+          Navigator.pop(_);
+        },
       );
     },
   );

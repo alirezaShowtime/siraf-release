@@ -22,7 +22,6 @@ import 'package:siraf3/models/estate_profile.dart' as estateProfileModel;
 import 'package:siraf3/models/estate_profile.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
-import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/consultant_profile_without_comment/consultant_profile_screen.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/file_screen.dart';
@@ -46,13 +45,9 @@ import 'package:siraf3/widgets/try_again.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 part 'add_comment_widget.dart';
-
 part 'event_listeners.dart';
-
 part 'profile.dart';
-
 part 'profile_detail.dart';
-
 part 'search_bar.dart';
 
 class EstateProfileScreen extends StatefulWidget {
