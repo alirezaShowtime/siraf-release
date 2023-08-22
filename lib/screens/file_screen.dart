@@ -1,153 +1,60 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as m;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_share/flutter_share.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:siraf3/bloc/add_violation_bloc.dart';
 import 'package:siraf3/bloc/file_bloc.dart';
 import 'package:siraf3/bloc/related_files_bloc.dart';
 import 'package:siraf3/bookmark.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/dialog.dart';
+import 'package:siraf3/extensions/list_extension.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/file_detail.dart';
-import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/file_images_screen.dart';
 import 'package:siraf3/screens/support_file_screen.dart';
 import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/widgets/collapsable.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_icon_button.dart';
+import 'package:siraf3/widgets/simple_map.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
-import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class FileScreen extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _FileScreen();
+
   int id;
 
   FileScreen({required this.id, super.key});
-
-  @override
-  State<FileScreen> createState() => _FileScreenState();
 }
 
-class _FileScreenState extends State<FileScreen> with AutomaticKeepAliveClientMixin {  
-  @override
-  bool get wantKeepAlive => true;
-  
+class _FileScreen extends State<FileScreen> {
+  bool expand = true;
+  bool secDescExpand = false;
+  late ScrollController _scrollController;
+  late String imageName;
+  var toolbarSetState;
+  List<s.Slider> sliders = [];
   FileBloc fileBloc = FileBloc();
+  AddViolationBloc addViolationBloc = AddViolationBloc();
   RelatedFilesBloc relatedFilesBloc = RelatedFilesBloc();
 
-  AddViolationBloc addViolationBloc = AddViolationBloc();
-
-  bool isFavorite = false;
-
-  ScrollController _scrollController = ScrollController();
-
   late Bookmark bookmark;
+  List<File> relatedFiles = [];
 
-  @override
-  void dispose() {
-    super.dispose();
-
-    fileBloc.close();
-    addViolationBloc.close();
+  bool get _isSliverAppBarCollapsed {
+    return _scrollController.hasClients && _scrollController.offset > (200 - kToolbarHeight);
   }
 
-  FileState currentState = FileInitState();
-
-  @override
-  void initState() {
-    super.initState();
-
-    fileBloc.add(FileFetchEvent(id: widget.id));
-    fileBloc.stream.listen((event) async {
-      setState(() {
-        currentState = event;
-      });
-      if (event is FileLoadedState) {
-        print(await User.getBearerToken());
-
-        setSliders(event.file);
-
-        setState(() {
-          isFavorite = event.favorite ?? false;
-
-          description = event.file.description ?? "";
-          summary = event.file.description ?? "";
-
-          if (summary.length > 128) {
-            summary = summary.substring(0, 128) + "...";
-          }
-        });
-
-        bookmark = Bookmark(id: widget.id, isFavorite: isFavorite, context: context);
-
-        bookmark.favoriteStream.stream.listen((bool data) {
-          setState(() {
-            isFavorite = data;
-          });
-        });
-
-        if (event.file.media!.images!.asMap().containsKey(0) && event.file.media!.images![0].name.isNotNullOrEmpty()) {
-          imageName = " | ${event.file.media!.images![0].name!.trim()}";
-        } else {
-          imageName = "";
-        }
-      }
-    });
-
-    addViolationBloc.stream.listen((event) {
-      if (event is AddViolationLoadingState) {
-        loadingDialog(context: context);
-      } else if (event is AddViolationErrorState) {
-        dismissDialog(loadingDialogContext);
-        notify("خطا در ثبت اطلاعات رخ داد");
-      } else if (event is AddViolationSuccessState) {
-        dismissDialog(loadingDialogContext);
-        dismissViolationDialog();
-        notify("تخلف با موفقیت ثبت شد");
-      }
-    });
-
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels > imgHeight && toolbarOpacity == 1) return;
-
-      if (_scrollController.position.pixels <= imgHeight && toolbarOpacity == 0) return;
-
-      setState(() {
-        toolbarOpacity = _scrollController.position.pixels <= imgHeight ? 0 : 1;
-      });
-    });
-
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels > imgHeight + 50 && titleShow) return;
-
-      if (_scrollController.position.pixels <= imgHeight + 50 && !titleShow) return;
-
-      setState(() {
-        titleShow = _scrollController.position.pixels > imgHeight + 50;
-      });
-    });
-
-    relatedFilesBloc.add(RelatedFilesEvent(id: widget.id));
-  }
-
-  bool titleShow = false;
-
-  var imgHeight = 200;
-
-  double toolbarOpacity = 0.0;
-
-  setSliders(FileDetail file) async {
+  void setSliders(FileDetail file) async {
     var data = await file.getSliders();
     setState(() {
       sliders = data;
@@ -155,224 +62,318 @@ class _FileScreenState extends State<FileScreen> with AutomaticKeepAliveClientMi
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    fileBloc.add(FileFetchEvent(id: widget.id));
+    relatedFilesBloc.add(RelatedFilesEvent(id: widget.id));
+
+    _scrollController = ScrollController()..addListener(() => toolbarSetState?.call(() {}));
+
+    fileBloc.add(FileFetchEvent(id: widget.id));
+    fileBloc.stream.listen((state) async {
+      if (state is! FileLoadedState) return;
+      setSliders(state.file);
+
+      try {
+        imageName = state.file.media!.images!.first.name!.trim();
+      } catch (e) {
+        imageName = "";
+      }
+    });
+
+    addViolationBloc.stream.listen((state) {
+      if (state is AddViolationLoadingState) {
+        loadingDialog(context: context);
+      }
+      if (state is AddViolationErrorState) {
+        dismissDialog(loadingDialogContext);
+        notify(state.message);
+      }
+      if (state is AddViolationSuccessState) {
+        dismissDialog(loadingDialogContext);
+        notify("تخلف با موفقیت ثبت شد");
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    fileBloc.close();
+    addViolationBloc.close();
+    relatedFilesBloc.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => fileBloc,
-        ),
-        BlocProvider(
-          create: (context) => relatedFilesBloc,
-        ),
-      ],
-      child: Scaffold(
-        body: SafeArea(child: BlocBuilder<FileBloc, FileState>(builder: buildBaseBloc)),
-      ),
-    );
-  }
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: BlocConsumer(
+        bloc: fileBloc,
+        listener: (context, state) {
+          if (state is! FileLoadedState) return;
 
-  Widget buildBaseBloc(_co, FileState state) {
-    if (state is FileInitState || state is FileLoadingState) {
-      return Center(
-        child: Loading(),
-      );
-    }
+          bookmark = Bookmark(
+            id: widget.id,
+            context: context,
+            isFavorite: state.favorite ?? false,
+          );
+        },
+        builder: (context, state) {
+          if (state is FileLoadingState || state is FileInitState) return Center(child: Loading());
 
-    if (state is FileErrorState) {
-      return Center(
-        child: TryAgain(
-          onPressed: () {
-            fileBloc.add(FileFetchEvent(id: widget.id));
-          },
-          message: jDecode(state.response?.body ?? "")['message'],
-        ),
-      );
-    }
-
-    state = state as FileLoadedState;
-
-    return Stack(
-      children: [
-        ListView(
-          controller: _scrollController,
-          children: [
-            _buildSliders(state.file),
-            SizedBox(height: 10),
-            _buildTitle(state.file),
-            SizedBox(height: 15),
-            if (state.file.getMainProperties().isNotEmpty) _buildMainProps(state.file),
-            if (state.file.getMainProperties().isNotEmpty) SizedBox(height: 15),
-            _buildDescription(state.file),
-            SizedBox(height: 15),
-            if (state.file.getOtherProperties().isNotEmpty)
-              Divider(
-                height: 0.7,
-                color: Themes.textGrey,
-              ),
-            if (state.file.getOtherProperties().isNotEmpty) SizedBox(height: 15),
-            if (state.file.getOtherProperties().isNotEmpty) _buildProps(state.file),
-            SizedBox(height: 15),
-            if (state.file.lat != null || state.file.long != null) _buildMap(state.file),
-            SizedBox(
-              height: 10,
-            ),
-            BlocBuilder<RelatedFilesBloc, RelatedFilesState>(builder: _buildRelatedBloc),
-            Align(
-              alignment: Alignment.centerRight,
-              child: InkWell(
-                onTap: () {
-                  doWithLogin(context, () {
-                    showViolationDialog();
-                  });
+          if (state is FileErrorState)
+            return Center(
+              child: TryAgain(
+                message: state.message,
+                onPressed: () {
+                  fileBloc.add(FileFetchEvent(id: widget.id));
                 },
-                child: Container(
-                  padding: const EdgeInsets.only(right: 15, left: 15, top: 5, bottom: 5),
-                  child: Text(
-                    "ثبت تخلف و مشکل فایل",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontFamily: "IranSansMedium",
-                      color: Colors.grey.shade500,
+              ),
+            );
+
+          state as FileLoadedState;
+
+          return NestedScrollView(
+            controller: _scrollController,
+            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  systemOverlayStyle: Themes.getSystemUiOverlayStyleTransparent(),
+                  expandedHeight: 260,
+                  elevation: 0.7,
+                  backgroundColor: Colors.white,
+                  leading: MyBackButton(color: Colors.white, shadow: true),
+                  flexibleSpace: FlexibleSpaceBar(background: _buildSliders(state.file)),
+                ),
+                StatefulBuilder(builder: (context, setState) {
+                  toolbarSetState = setState;
+                  return SliverAppBar(
+                    systemOverlayStyle: Themes.getSystemUiOverlayStyle(),
+                    elevation: 0.7,
+                    backgroundColor: Colors.white,
+                    titleSpacing: 0,
+                    leading: _isSliverAppBarCollapsed ? MyBackButton() : SizedBox(),
+                    leadingWidth: _isSliverAppBarCollapsed ? null : 0,
+                    collapsedHeight: 60,
+                    expandedHeight: 60,
+                    pinned: true,
+                    title: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (!_isSliverAppBarCollapsed) SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                state.file.name!,
+                                style: TextStyle(
+                                  fontSize: _isSliverAppBarCollapsed ? 13 : 15,
+                                  fontFamily: "IranSansBold",
+                                ),
+                              ),
+                              Text(
+                                "${state.file.city!.name} | ${state.file.publishedAgo} ",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontFamily: "IranSansMedium",
+                                  fontSize: _isSliverAppBarCollapsed ? 9 : 10,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    actions: [
+                      IconButton(
+                        onPressed: () => shareFile(state.file.name!),
+                        icon: icon(Icons.share_rounded),
+                      ),
+                      IconButton(
+                        onPressed: () => bookmark.addOrRemoveFavorite(),
+                        icon: icon(CupertinoIcons.bookmark),
+                      ),
+                    ],
+                  );
+                }),
+              ];
+            },
+            body: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: ListView(
+                      children: [
+                        Text(
+                          "${state.file.isRental() ? 'ودیعه' : 'قیمت کل'} : ${state.file.isRental() ? state.file.getVadieStr() : state.file.getPriceStr()}",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontFamily: "IranSansBold",
+                          ),
+                        ),
+                        Text(
+                          "${state.file.isRental() ? 'اجاره ماهانه' : 'قیمت هر متر'} : ${state.file.isRental() ? state.file.getRentStr() : state.file.getPricePerMeter()}",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontFamily: "IranSansBold",
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20, bottom: 20),
+                          child: _buildMainProps(state.file),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Text(
+                            state.file.description.isFill() ? state.file.description! : "فاقد توضیحات",
+                            style: TextStyle(
+                              fontFamily: "IranSansMedium",
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        if (state.file.getOtherProperties().isFill())
+                          Container(
+                            clipBehavior: Clip.hardEdge,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            foregroundDecoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15.0),
+                              border: Border.all(color: Colors.grey.shade200, width: 2.0),
+                            ),
+                            child: Column(
+                              children: [
+                                InkWell(
+                                  borderRadius: BorderRadius.circular(20),
+                                  onTap: () => setState(() => expand = !expand),
+                                  child: Container(
+                                    height: 50,
+                                    padding: EdgeInsets.only(right: 10),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "سایر ویژگی ها و امکانات",
+                                          style: TextStyle(fontFamily: "IranSansBold", fontSize: 12),
+                                        ),
+                                        AnimatedRotation(
+                                          duration: Duration(milliseconds: 400),
+                                          turns: expand ? 0 : -.5,
+                                          child: MyIconButton(
+                                            onTap: () => setState(() => expand = !expand),
+                                            iconData: Icons.keyboard_arrow_up_rounded,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Collapsable(
+                                  expand: expand,
+                                  child: Column(
+                                    children: [
+                                      for (var item in state.file.getOtherProperties())
+                                        propertyItemWidget(
+                                          title: item.name.toString(),
+                                          value: noneOr(item.value),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        if (state.file.lat.isFill() && state.file.long.isFill())
+                          Padding(
+                            padding: EdgeInsets.only(top: 20),
+                            child: SimpleMap(
+                              lat: state.file.lat!.toDouble(),
+                              long: state.file.long!.toDouble(),
+                              width: double.infinity,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                        BlocConsumer(
+                          bloc: relatedFilesBloc,
+                          builder: _buildRelatedBloc,
+                          listener: (_, state) {
+                            if (state is! RelatedFilesLoadedState) return;
+
+                            relatedFiles = state.files;
+                          },
+                        ),
+                        Container(
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.only(top: 20, bottom: 10),
+                          child: GestureDetector(
+                            onTap: () => doWithLogin(context, () => showViolationDialog()),
+                            child: Text(
+                              "ثبت تخلف و مشکل فایل",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontFamily: "IranSansMedium",
+                                decoration: TextDecoration.underline,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ),
-            ),
-            SizedBox(height: 65),
-          ],
-        ),
-        _buildTopBar(state.file),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: _buildPriceSection(state.file),
-        ),
-      ],
-    );
-  }
-
-  String imageName = "";
-
-  List<s.Slider> sliders = [];
-
-  Widget _buildSliders(FileDetail file) {
-    return Stack(
-      children: [
-        if (!file.media!.images.isNotNullOrEmpty() && !file.media!.video.isNotNullOrEmpty() && !file.media!.virtualTour.isNotNullOrEmpty())
-          Container(
-            padding: EdgeInsets.only(bottom: 15),
-            height: 290,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: App.theme.backgroundColor,
-              image: DecorationImage(image: AssetImage(IMAGE_NOT_AVAILABLE), alignment: Alignment.center),
-            ),
-          ),
-        if (file.media!.images.isNotNullOrEmpty() || file.media!.video.isNotNullOrEmpty() || file.media!.virtualTour.isNotNullOrEmpty())
-          CarouselSliderCustom(
-            sliders: sliders,
-            autoPlay: false,
-            height: 290,
-            indicatorsCenterAlign: true,
-            viewportFraction: 1.0,
-            itemMargin: EdgeInsets.only(bottom: 15),
-            indicatorPosition: EdgeInsets.only(left: 0, right: 0, bottom: 0),
-            itemBorderRadius: BorderRadius.zero,
-            imageFit: BoxFit.cover,
-            indicatorSelectedColor: Themes.blue,
-            indicatorColor: Colors.grey,
-            onPageChanged: (i) {
-              setState(() {
-                if (file.media!.images!.asMap().containsKey(i) && file.media!.images![i].name.isNotNullOrEmpty()) {
-                  imageName = " | ${file.media!.images![i].name!.trim()}";
-                } else {
-                  imageName = "";
-                }
-              });
-            },
-            onImageTap: (s.Slider slider) {
-              if (slider.type == s.SliderType.image) {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => FileImagesScreen(file: file)));
-              }
-              if (slider.type == s.SliderType.virtual_tour) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => WebViewScreen(
-                      title: file.name ?? "",
-                      url: slider.link!,
+                Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xFF000000).withOpacity(0.23),
+                        offset: Offset(0, 1),
+                        blurRadius: 5,
+                        spreadRadius: 0,
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Themes.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: InkWell(
+                      onTap: () => onClickCall(state.file, state.favorite),
+                      borderRadius: BorderRadius.circular(15),
+                      child: Container(
+                        height: 50,
+                        alignment: Alignment.center,
+                        child: Text(
+                          "تماس | پیام",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontFamily: "IranSansBold",
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                );
-              }
-            },
-            directPlayVideos: true,
-          ),
-        Positioned(
-          bottom: 25,
-          right: 10,
-          child: Container(
-            color: Colors.white60,
-            padding: EdgeInsets.all(5),
-            child: Text(
-              "${widget.id}$imageName",
-              style: TextStyle(
-                fontFamily: "IranSans",
-                color: Color(0xff606060),
-                fontSize: 13,
-              ),
+                ),
+              ],
             ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTitle(FileDetail file) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width - 40 - 25,
-                ),
-                child: Text(
-                  (file.fullCategory != null ? file.fullCategory!.getMainCategoryName().toString().trim() + " | " : "") + file.name!.trim(),
-                  maxLines: 3,
-                  style: TextStyle(
-                    fontSize: 14,
-                    height: 1.3,
-                    fontFamily: "IranSansBold",
-                  ),
-                ),
-              ),
-              Text(
-                (file.publishedAgo ?? "") + ' | ' + (file.city?.name ?? ""),
-                style: TextStyle(
-                  color: App.theme.tooltipTheme.textStyle?.color,
-                  fontFamily: "IranSans",
-                  fontSize: 9,
-                ),
-              ),
-            ],
-          ),
-        ),
-        MyIconButton(
-          onTap: () => share(file),
-          icon: Icon(
-            Icons.share_rounded,
-            color: App.theme.iconTheme.color,
-          ),
-        ),
-      ],
+          );
+        },
+      ),
     );
   }
 
@@ -383,14 +384,13 @@ class _FileScreenState extends State<FileScreen> with AutomaticKeepAliveClientMi
         .getMainProperties()
         .map<List<Widget>>(
           (e) => [
-            _buildPropItem(nonIfZero(e.value), e.name!),
+            _buildPropItem(e.value.toString(), e.name!),
             if (file.getMainProperties().last != e) VerticalDivider(width: 1.5, color: Colors.grey.shade300),
           ],
         )
         .toList();
-    for (List<Widget> item in a) {
-      items += item;
-    }
+
+    for (List<Widget> item in a) items += item;
 
     return IntrinsicHeight(
       child: Row(
@@ -417,278 +417,92 @@ class _FileScreenState extends State<FileScreen> with AutomaticKeepAliveClientMi
         Text(
           label.split(r" ").take(2).join(" "),
           style: TextStyle(
-            color: Themes.themeData().tooltipTheme.textStyle?.color,
-            fontFamily: "IranSans",
-            fontSize: 10,
+            color: Colors.grey,
+            fontFamily: "IranSansMedium",
+            fontSize: 11,
           ),
         ),
       ],
     );
   }
 
-  late String description = "";
-
-  late String summary = "";
-
-  bool showSummary = true;
-
-  Widget _buildDescription(FileDetail file) {
-    if (file.description == null) {
-      return Container();
-    }
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15),
-        child: Text(
-          description,
-          style: TextStyle(
-            fontSize: 11.5,
-            fontWeight: FontWeight.w400,
-            fontFamily: 'IranSans',
-            height: 1.5,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMap(FileDetail file) {
-    var lat = double.parse(file.lat!);
-    var long = double.parse(file.long!);
-    if (lat > 90 || lat < -90 || long > 90 || long < -90) {
-      return Container(
-        width: double.infinity,
-        height: 200,
-        alignment: Alignment.center,
-        child: Text(
-          "موقعیت مکانی صحیح نیست ${lat} , ${long}",
-          style: TextStyle(fontSize: 13, fontFamily: "IranSansMedium", color: Colors.red),
-        ),
-      );
-    }
-    return GestureDetector(
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: 200,
-        child: FlutterMap(
-          options: MapOptions(
-            center: LatLng(double.parse(file.lat!), double.parse(file.long!)),
-            zoom: 13.0,
-            onTap: (_, _1) {
-              launchUrl(Uri.parse('geo:0,0?q=${file.lat!},${file.long!}'));
-            },
-          ),
-          children: [
-            TileLayerWidget(
-              options: TileLayerOptions(
-                urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
-              ),
-            ),
-            MarkerLayerWidget(
-              options: MarkerLayerOptions(
-                markers: [
-                  Marker(
-                    point: LatLng(double.parse(file.lat!), double.parse(file.long!)),
-                    builder: (_) {
-                      return m.Image(
-                        image: AssetImage('assets/images/map_marker.png'),
-                        width: 30,
-                        height: 40,
-                        fit: BoxFit.contain,
-                      );
-                    },
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  bool isPropOpen = true;
-
-  Widget _buildProps(FileDetail file) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(
-                "سایر امکانات و ویژگی ها",
-                style: TextStyle(
-                  fontSize: 13,
-                  fontFamily: "IranSans",
-                  color: Color(0xff8c8c8c),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    isPropOpen = !isPropOpen;
-                  });
-                },
-                child: Icon(
-                  isPropOpen ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                  size: 18,
-                  color: Color(0xff8c8c8c),
-                ),
-              ),
-            ],
-          ),
-          if (isPropOpen)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: Column(
-                children: file
-                    .getOtherProperties()
-                    .map<Widget>(
-                      (e) => Padding(
-                        padding: EdgeInsets.only(bottom: (file.getOtherProperties().last != e ? 5 : 0)),
-                        child: Text(
-                          e.name.toString() + " : " + nonIfZero(e.value),
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontFamily: "IranSans",
-                            color: Color(0xff8c8c8c),
-                            height: 1.3,
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPriceSection(FileDetail file) {
+  Widget _buildSliders(FileDetail file) {
     return Container(
-      width: double.infinity,
-      height: 60,
-      decoration: BoxDecoration(
-        color: App.theme.dialogBackgroundColor,
-        boxShadow: [
-          BoxShadow(
-            color: App.theme.shadowColor,
-            offset: const Offset(0, -1),
-            blurRadius: 2,
-          ),
-        ],
-      ),
-      child: Row(
+      color: Colors.grey.shade50,
+      child: Stack(
         children: [
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(9),
-              child: !file.isRental()
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "قیمت",
-                              style: TextStyle(color: greyColor, fontSize: 10, height: 1),
-                            ),
-                            Text(
-                              file.getPrice()?.value != null ? number_format(int.parse(file.getPrice()!.value!)) : "توافقی",
-                              style: TextStyle(color: Themes.text, fontSize: 12, height: 1, fontFamily: "IranSansBold"),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "قیمت هر متر",
-                              style: TextStyle(color: greyColor, fontSize: 13),
-                            ),
-                            Text(
-                              file.getPricePerMeter(),
-                              style: TextStyle(color: Colors.grey.shade500, fontSize: 11),
-                            ),
-                          ],
-                        ),
-                      ],
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "ودیعه",
-                              style: TextStyle(color: greyColor, fontSize: 10, height: 1),
-                            ),
-                            Text(
-                              file.getVadie()?.value != null ? number_format(int.parse(file.getVadie()!.value!)) : "توافقی",
-                              style: TextStyle(color: Themes.text, fontSize: 12, height: 1, fontFamily: "IranSansBold"),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "اجاره ماهانه",
-                              style: TextStyle(color: greyColor, fontSize: 13),
-                            ),
-                            Text(
-                              file.getRent()?.value != null ? number_format(int.parse(file.getRent()!.value!)) : "توافقی",
-                              style: TextStyle(color: Colors.grey.shade500, fontSize: 11),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+          if (!file.media!.images.isFill() && !file.media!.video.isFill() && !file.media!.virtualTour.isFill())
+            Container(
+              height: 300,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Themes.themeData().backgroundColor,
+                image: DecorationImage(image: AssetImage(IMAGE_NOT_AVAILABLE), alignment: Alignment.center),
+              ),
             ),
-          ),
-          Expanded(
-            child: GestureDetector(
-              onTap: () async {
-                var result = await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => SupportFileScreen(
-                      file: file,
-                      isFavorite: isFavorite,
-                      id: widget.id,
-                    ),
-                  ),
-                );
-
-                if (result is bool) {
-                  setState(() {
-                    isFavorite = result;
-                  });
+          if (file.media!.images.isFill() || file.media!.video.isFill() || file.media!.virtualTour.isFill())
+            CarouselSliderCustom(
+              sliders: sliders,
+              autoPlay: false,
+              height: 300,
+              indicatorsCenterAlign: true,
+              viewportFraction: 1.0,
+              itemMargin: EdgeInsets.zero,
+              indicatorPosition: EdgeInsets.only(left: 0, right: 0, bottom: 18),
+              itemBorderRadius: BorderRadius.zero,
+              imageFit: BoxFit.cover,
+              indicatorSelectedColor: Themes.blue,
+              indicatorColor: Colors.white,
+              onPageChanged: (i) {
+                setState(() {
+                  if (file.media!.images!.asMap().containsKey(i) && file.media!.images![i].name.isFill()) {
+                    imageName = " | ${file.media!.images![i].name!.trim()}";
+                  } else {
+                    imageName = "";
+                  }
+                });
+              },
+              onImageTap: (s.Slider slider) {
+                if (slider.type == s.SliderType.image) {
+                  push(context, FileImagesScreen(file: file, index: sliders.indexOf(slider)));
+                }
+                if (slider.type == s.SliderType.virtual_tour) {
+                  push(
+                    context,
+                    WebViewScreen(title: file.name ?? "", url: slider.link!),
+                  );
                 }
               },
+            ),
+          if (imageName.isFill())
+            Positioned(
+              bottom: 5,
+              right: 5,
               child: Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Themes.primary,
-                ),
+                decoration: BoxDecoration(color: Colors.black.withOpacity(0.6), borderRadius: BorderRadius.circular(7)),
+                padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                 child: Text(
-                  "تماس | پیام",
+                  imageName,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 15,
-                    fontFamily: "IranSansBold",
+                    fontSize: 12,
+                    fontFamily: "IranSansMedium",
                   ),
+                ),
+              ),
+            ),
+          Positioned(
+            bottom: 5,
+            left: 5,
+            child: Container(
+              decoration: BoxDecoration(color: Colors.black.withOpacity(0.6), borderRadius: BorderRadius.circular(7)),
+              padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+              child: Text(
+                "کد فایل : ${widget.id}",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontFamily: "IranSansMedium",
                 ),
               ),
             ),
@@ -698,287 +512,77 @@ class _FileScreenState extends State<FileScreen> with AutomaticKeepAliveClientMi
     );
   }
 
-  BuildContext? violationDialogContext;
-
-  showViolationDialog() {
-    showDialog2(
-      context: context,
-      barrierDismissible: true,
-      builder: (_) {
-        violationDialogContext = _;
-        TextEditingController _controller = TextEditingController();
-        TextEditingController _controller2 = TextEditingController();
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: App.theme.dialogBackgroundColor,
-          content: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
+  Widget propertyItemWidget({required String title, required String value}) {
+    return Container(
+      width: double.infinity,
+      color: Colors.white,
+      height: 40,
+      margin: EdgeInsets.only(bottom: 2, left: 2, right: 2),
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      alignment: Alignment.centerRight,
+      child: Row(
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 11,
+                fontFamily: "IranSansBold",
+              ),
             ),
-            child: Wrap(
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      child: TextField2(
-                        maxLines: 1,
-                        controller: _controller,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(color: App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey, width: 1),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(color: Themes.primary, width: 1),
-                          ),
-                          hintText: "عنوان",
-                          hintStyle: TextStyle(
-                            color: App.theme.tooltipTheme.textStyle?.color,
-                            fontSize: 13,
-                            fontFamily: "IranSans",
-                          ),
-                        ),
-                        style: TextStyle(
-                          color: App.theme.textTheme.bodyLarge?.color,
-                          fontSize: 13,
-                          fontFamily: "IranSansMedium",
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      child: TextField2(
-                        minLines: 6,
-                        maxLines: 10,
-                        controller: _controller2,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(color: App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey, width: 1),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(color: Themes.primary, width: 1),
-                          ),
-                          hintText: "توضیحات",
-                          hintStyle: TextStyle(
-                            color: App.theme.tooltipTheme.textStyle?.color,
-                            fontSize: 13,
-                            fontFamily: "IranSans",
-                          ),
-                        ),
-                        style: TextStyle(
-                          color: App.theme.textTheme.bodyLarge?.color,
-                          fontSize: 13,
-                          fontFamily: "IranSansMedium",
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    SizedBox(
-                      height: 50,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: MaterialButton(
-                              onPressed: () async {
-                                if (_controller.text.trim().isEmpty) {
-                                  return notify("لطفا عنوان را وارد کنید");
-                                }
-                                if (_controller2.text.trim().isEmpty) {
-                                  return notify("لطفا توضیحات را وارد کنید");
-                                }
-                                if (_controller.text.trim().length < 2) {
-                                  return notify("عنوان حداقل باید شامل 2 کاراکتر باشد.");
-                                }
-
-                                if (_controller2.text.trim().length < 10) {
-                                  return notify("توضیحات حداقل باید شامل 10 کاراکتر باشد.");
-                                }
-
-                                addViolationBloc.add(
-                                  AddViolationEvent(
-                                    title: _controller.text,
-                                    body: _controller2.text,
-                                    fileId: widget.id,
-                                  ),
-                                );
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(15),
-                                  bottomRight: Radius.circular(15),
-                                ),
-                              ),
-                              color: Themes.primary,
-                              elevation: 1,
-                              height: 50,
-                              child: Text(
-                                "تایید",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "IranSansBold",
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 9),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 11,
+              fontFamily: "IranSansBold",
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showViolationDialog() {
+    violationDialog(
+      context,
+      (title, description) {
+        addViolationBloc.add(
+          AddViolationEvent(
+            title: title,
+            body: description,
+            fileId: widget.id,
           ),
         );
       },
     );
   }
 
-  dismissViolationDialog() {
-    if (violationDialogContext != null) {
-      Navigator.pop(violationDialogContext!);
-    }
-  }
-
-  Widget _buildTopBar(FileDetail file) {
-    var iconColor = Themes.iconLight;
-    var activeIconColor = Themes.primary;
-
-    var toolbarOpacity = (file.media?.images?.isNotEmpty ?? false) ? this.toolbarOpacity : 1.0;
-
-    if (toolbarOpacity > 0) {
-      iconColor = App.theme.appBarTheme.foregroundColor ?? Themes.iconLight;
-    }
-    return Positioned(
-      top: 0,
-      left: 0,
-      right: 0,
-      child: Container(
-        color: App.theme.appBarTheme.backgroundColor?.withOpacity(toolbarOpacity),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Stack(
-                    children: <Widget>[
-                      if (toolbarOpacity == 0)
-                        Positioned(
-                          left: 1.0,
-                          top: 2.0,
-                          child: Icon(CupertinoIcons.back, color: Colors.black26),
-                        ),
-                      if (toolbarOpacity == 0)
-                        Positioned(
-                          right: 1.0,
-                          top: 2.0,
-                          child: Icon(CupertinoIcons.back, color: Colors.black26),
-                        ),
-                      Icon(
-                        CupertinoIcons.back,
-                        color: iconColor,
-                      ),
-                    ],
-                  ),
-                ),
-                if (titleShow)
-                  SizedBox(
-                    width: 210,
-                    child: Text(
-                      (file.name ?? ""),
-                      style: TextStyle(
-                        fontFamily: "IranSansMedium",
-                        color: Themes.text,
-                        fontSize: 12.5,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-              ],
-            ),
-            Row(
-              children: [
-                if (titleShow)
-                  MyIconButton(
-                    onTap: () => share(file),
-                    icon: Stack(
-                      children: <Widget>[
-                        Icon(
-                          Icons.share_rounded,
-                          color: App.theme.iconTheme.color,
-                        ),
-                      ],
-                    ),
-                  ),
-                IconButton(
-                  onPressed: () async {
-                    doWithLogin(context, () async {
-                      bookmark.addOrRemoveFavorite();
-                    });
-                  },
-                  icon: Stack(
-                    children: [
-                      if (toolbarOpacity == 0)
-                        Positioned(
-                          top: 0.5,
-                          right: 0.5,
-                          child: Icon(
-                            Icons.bookmark_border,
-                            size: 22,
-                            color: Colors.black26,
-                          ),
-                        ),
-                      if (toolbarOpacity == 0)
-                        Positioned(
-                          top: 0.5,
-                          left: 0.5,
-                          child: Icon(
-                            Icons.bookmark_border,
-                            size: 22,
-                            color: Colors.black26,
-                          ),
-                        ),
-                      Icon(
-                        isFavorite ? Icons.bookmark : Icons.bookmark_border,
-                        size: 22,
-                        color: isFavorite ? activeIconColor : iconColor,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void share(FileDetail file) async {
+  void shareFile(String fileName) async {
     await FlutterShare.share(
       title: 'اشتراک گذاری فایل',
-      text: file.name ?? '',
+      text: fileName,
       linkUrl: FILE_URL + widget.id.toString(),
       chooserTitle: 'اشتراک گذاری در',
     );
   }
 
-  List<File> relatedFiles = [];
+  void onClickCall(FileDetail file, bool isFavorite) async {
+    var result = await push(
+      context,
+      SupportFileScreen(
+        file: file,
+        isFavorite: isFavorite,
+        id: widget.id,
+      ),
+    );
+
+    if (result is! bool) return;
+    setState(() {
+      isFavorite = result;
+    });
+  }
 
   Widget _buildRelatedBloc(BuildContext context, RelatedFilesState state) {
     if (state is RelatedFilesInitState) return Container();
@@ -986,60 +590,45 @@ class _FileScreenState extends State<FileScreen> with AutomaticKeepAliveClientMi
     if (state is RelatedFilesLoadingState) {
       return Container(
         width: MediaQuery.of(context).size.width,
-        height: 200,
+        height: 150,
         alignment: Alignment.center,
         child: Loading(),
       );
     }
 
-    if (state is RelatedFilesErrorState) {
-      return Container();
-    }
-
-    relatedFiles = (state as RelatedFilesLoadedState).files;
-
-    double imageSize = (MediaQuery.of(context).size.width - 20) / 3.5;
+    if (state is RelatedFilesErrorState) return Container();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 10),
+        SizedBox(height: 30),
         Padding(
           padding: EdgeInsets.only(right: 15),
           child: Text(
             "فایل های مرتبط",
-            style: TextStyle(fontSize: 13, fontFamily: "IranSansMedium"),
+            style: TextStyle(fontSize: 12, fontFamily: "IranSansBold"),
           ),
         ),
-        SizedBox(height: 10),
-        SizedBox(
-          height: 150,
+        Container(
+          height: 110,
+          margin: EdgeInsets.only(top: 10),
           child: ListView(
             scrollDirection: Axis.horizontal,
-            children: relatedFiles
-                .map(
-                  (e) => Container(
-                    width: MediaQuery.of(context).size.width - 50,
-                    height: 150,
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: GestureDetector(
-                      onTap: () {
-                        push(
-                            context,
-                            FileScreen(
-                              id: e.id!,
-                            ));
-                      },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: FileHorizontalItem(
-                          file: e,
-                        ),
-                      ),
+            children: [
+              for (var relatedFile in relatedFiles)
+                Container(
+                  height: 150,
+                  width: MediaQuery.of(context).size.width - 50,
+                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  child: GestureDetector(
+                    onTap: () => push(context, FileScreen(id: relatedFile.id!)),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: FileHorizontalItem(file: relatedFile),
                     ),
                   ),
-                )
-                .toList(),
+                ),
+            ],
           ),
         ),
         SizedBox(height: 5),
