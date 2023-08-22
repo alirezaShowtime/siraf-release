@@ -7,13 +7,14 @@ class AppBarTitle extends StatefulWidget {
 
   String title;
   double fontSize;
+  Color color;
 
-  AppBarTitle(this.title, {this.fontSize = 16});
+  AppBarTitle(this.title, {this.fontSize = 16, this.color = Themes.text});
 }
 
 class _AppBarTitle extends State<AppBarTitle> {
   @override
   Widget build(BuildContext context) {
-    return Text(widget.title, style: TextStyle(fontSize: widget.fontSize));
+    return Text(widget.title, style: TextStyle(fontSize: widget.fontSize, color: widget.color, fontFamily: "IranSansBold"));
   }
 }
