@@ -41,8 +41,8 @@ class _ImageViewScreen extends State<ImageViewScreen> {
               scrollPhysics: const BouncingScrollPhysics(),
               builder: (BuildContext context, int index) {
                 return PhotoViewGalleryPageOptions(
-                  minScale: 0.1,
-                  maxScale: 0.3,
+                  minScale: 0.18,
+                  maxScale: 0.18,
                   imageProvider: _getProvider(),
                   initialScale: PhotoViewComputedScale.contained,
                 );
