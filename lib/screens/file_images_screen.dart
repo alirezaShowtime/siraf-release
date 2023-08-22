@@ -1,9 +1,10 @@
-import 'package:siraf3/extensions/string_extension.dart';
-import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:siraf3/extensions/string_extension.dart';
+import 'package:siraf3/widgets/app_bar_title.dart';
+import 'package:siraf3/widgets/my_back_button.dart';
 
 class FileImagesScreen extends StatefulWidget {
   var file;
@@ -47,15 +48,15 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
               onPageChanged: (i) => imageTitleSetState?.call(() => currentImageIndex = i),
               builder: (BuildContext context, int index) {
                 return PhotoViewGalleryPageOptions(
-                  maxScale: 0.18,
-                  minScale: 0.18,
-                  imageProvider: NetworkImage(widget.file.media!.image![index].path!),
-                  initialScale: PhotoViewComputedScale.covered,
-                  heroAttributes: PhotoViewHeroAttributes(tag: widget.file.media!.image![index].id!),
+                  minScale: PhotoViewComputedScale.contained,
+                  maxScale: PhotoViewComputedScale.contained,
+                  imageProvider: NetworkImage(widget.file.media!.images![index].path!),
+                  initialScale: PhotoViewComputedScale.contained,
+                  heroAttributes: PhotoViewHeroAttributes(tag: widget.file.media!.images![index].id!),
                 );
               },
               pageController: PageController(initialPage: widget.index ?? 0),
-              itemCount: widget.file.media!.image!.length,
+              itemCount: widget.file.media!.images!.length,
               loadingBuilder: (context, event) => Center(
                 child: Container(
                   width: 20.0,
@@ -75,10 +76,7 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
                 children: [
                   MyBackButton(color: Colors.white),
                   SizedBox(width: 15),
-                  Text(
-                    widget.file.name ?? "ناشناس",
-                    style: TextStyle(fontSize: 15, color: Colors.white),
-                  ),
+                  AppBarTitle(widget.file.name ?? "ناشناس", color: Colors.white),
                 ],
               ),
             ),
@@ -86,7 +84,7 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
               builder: (context, setState) {
                 imageTitleSetState = setState;
 
-                String title = widget.file.media?.image?[currentImageIndex].name;
+                String title = widget.file.media?.images?[currentImageIndex].name;
 
                 if (!title.isFill()) return SizedBox();
 
@@ -97,7 +95,7 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
                     margin: EdgeInsets.only(left: 10, right: 10, top: 100),
                     constraints: BoxConstraints(minWidth: 50),
                     decoration: BoxDecoration(
-                      color: Colors.white10,
+                      color: Colors.black38,
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: Text(
@@ -108,6 +106,13 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
                         fontSize: 12,
                         fontFamily: "IranSansMedium",
                         color: Colors.white,
+                        shadows: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 2,
+                            spreadRadius: 2,
+                          ),
+                        ],
                       ),
                     ),
                   ),
