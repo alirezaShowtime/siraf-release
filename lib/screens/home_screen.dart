@@ -313,19 +313,22 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   openMenu() async {
+    closeRabbit();
     await Navigator.push(context, MaterialPageRoute(builder: (_) => MenuScreen()));
 
-    listenRabbitData();
     setState(() {});
+    
+    Future.delayed(Duration(milliseconds: 200), () {
+      consumRabbitMq();
+      listenRabbitData();
+    });
   }
-
-  // @override
-  // void dispose() {
-  //   super.dispose();
-
-  //   homeScreenBloc.close();
-  //   _moreBloc.close();
-  // }
+  
+  @override
+  void dispose() {
+    closeRabbit();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
