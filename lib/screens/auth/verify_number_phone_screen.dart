@@ -108,9 +108,12 @@ class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
       onWillPop: () => Future.value(false),
       child: AnnotatedRegion(
         value: SystemUiOverlayStyle(
-          statusBarColor: App.theme.primaryColor,
+          statusBarColor: Themes.primary,
           statusBarBrightness: Brightness.light,
           statusBarIconBrightness: Brightness.light,
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarDividerColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
         ),
         child: Scaffold(
           resizeToAvoidBottomInset: false,
