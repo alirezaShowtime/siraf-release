@@ -16,6 +16,7 @@ class MyTextButton extends StatefulWidget {
   double? fontSize;
   EdgeInsets? padding;
   bool border;
+  late BorderRadius borderRadius;
 
   Size? minimumSize;
   MaterialTapTargetSize? tapTargetSize;
@@ -36,7 +37,10 @@ class MyTextButton extends StatefulWidget {
     this.disable = false,
     this.disableTextColor = Colors.grey,
     Color? disableColor,
+    BorderRadius? borderRadius,
   }) {
+    this.borderRadius = borderRadius ?? BorderRadius.circular(8);
+
     if (disableColor == null) {
       this.disableColor = Colors.grey.shade100;
     }
@@ -57,14 +61,14 @@ class _MyTextButton extends State<MyTextButton> {
         foregroundColor: widget.rippleColor ?? Themes.primary,
         tapTargetSize: widget.tapTargetSize,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: widget.borderRadius,
         ),
       ),
       child: widget.child ??
           Text(
             widget.text!,
             style: TextStyle(
-              fontSize: widget.fontSize ?? 12,
+              fontSize: widget.fontSize ?? 10,
               fontFamily: "IranSansBold",
               color: widget.disable ? widget.disableTextColor : (widget.textColor ?? widget.rippleColor),
             ),
@@ -82,7 +86,7 @@ class _MyTextButton extends State<MyTextButton> {
         foregroundColor: widget.rippleColor ?? Themes.primary,
         tapTargetSize: widget.tapTargetSize,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: widget.borderRadius,
         ),
       ),
       child: widget.child ??

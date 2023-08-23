@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:siraf3/models/city.dart';
-import 'package:http/http.dart' as http;
-import 'package:siraf3/http2.dart' as http2;
+import 'package:http/http.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/http2.dart' as http2;
+import 'package:siraf3/models/city.dart';
 
 class GetCitiesEventBase {}
 
@@ -28,9 +28,11 @@ class GetCitiesLoadedState extends GetCitiesState {
 }
 
 class GetCitiesErrorState extends GetCitiesState {
-  http.Response response;
+  String? message;
 
-  GetCitiesErrorState({required this.response});
+  GetCitiesErrorState(Response response) {
+    message = jDecode(response.body)["message"];
+  }
 }
 
 class GetCitiesBloc extends Bloc<GetCitiesEventBase, GetCitiesState> {
@@ -39,20 +41,20 @@ class GetCitiesBloc extends Bloc<GetCitiesEventBase, GetCitiesState> {
   }
 
   _onEvent(event, emit) async {
-    if (event is GetCitiesEvent) {
-      emit(GetCitiesLoadingState());
-
-      var response = await http2.get(getFileUrl("city/citys/"));
-
-      if (response.statusCode == 200) {
-        var json = jDecode(response.body);
-        var cities = City.fromList(json['data']);
-        emit(GetCitiesLoadedState(cities: cities));
-      } else {
-        emit(GetCitiesErrorState(response: response));
-      }
-    } else if (event is GetCitiesEmitState) {
-      emit(event.state);
+    if (event is GetCitiesEmitState) {
+      return emit(event.state);
     }
+
+    if (event is! GetCitiesEvent) return;
+
+    emit(GetCitiesLoadingState());
+
+    var res = await http2.get(getFileUrl("city/citys/"));
+
+    if (res.statusCode != 200) {
+      return emit(GetCitiesErrorState(res));
+    }
+    var cities = City.fromList(jDecode(res.body)['data']);
+    return emit(GetCitiesLoadedState(cities: cities));
   }
 }
