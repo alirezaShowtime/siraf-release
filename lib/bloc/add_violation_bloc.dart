@@ -1,20 +1,16 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
-import 'package:http/http.dart';
-import 'package:siraf3/http2.dart' as http2;
 import 'package:bloc/bloc.dart';
+import 'package:http/http.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/models/user.dart';
+import 'package:siraf3/http2.dart' as http2;
 
 class AddViolationEvent {
   String title;
   String body;
   int fileId;
 
-  AddViolationEvent(
-      {required this.title, required this.body, required this.fileId});
+  AddViolationEvent({required this.title, required this.body, required this.fileId});
 }
 
 class AddViolationState {}
@@ -24,9 +20,11 @@ class AddViolationInitState extends AddViolationState {}
 class AddViolationLoadingState extends AddViolationState {}
 
 class AddViolationErrorState extends AddViolationState {
-  Response? response;
+  String? message;
 
-  AddViolationErrorState({this.response});
+  AddViolationErrorState(Response res) {
+    message = jDecode(res.body)["message"];
+  }
 }
 
 class AddViolationSuccessState extends AddViolationState {}
@@ -36,39 +34,20 @@ class AddViolationBloc extends Bloc<AddViolationEvent, AddViolationState> {
     on(_onEvent);
   }
 
-  FutureOr<void> _onEvent(
-      AddViolationEvent event, Emitter<AddViolationState> emit) async {
+  FutureOr<void> _onEvent(AddViolationEvent event, Emitter<AddViolationState> emit) async {
     emit(AddViolationLoadingState());
 
-    Response response;
+    var res = await http2.postJsonWithToken(
+      getFileUrl("violation/addViolation/"),
+      body: {
+        "fileId": event.fileId,
+        "title": event.title,
+        "body": event.body,
+      },
+    );
 
-    try {
-      response = await http2.postJsonWithToken(
-        getFileUrl("violation/addViolation/"),
-        body: {
-          "fileId": event.fileId,
-          "title": event.title,
-          "body": event.body,
-        },
-      );
+    if (!isResponseOk(res)) return emit(AddViolationErrorState(res));
 
-      print(response.statusCode);
-      print(jDecode(response.body));
-    } on HttpException catch (e) {
-      emit(AddViolationErrorState());
-      return;
-    } on SocketException catch (e) {
-      emit(AddViolationErrorState());
-      return;
-    }
-
-    if (response.statusCode < 400) {
-      emit(AddViolationSuccessState());
-    } else {
-      if (response.statusCode == 401) {
-        User.remove();
-      }
-      emit(AddViolationErrorState(response: response));
-    }
+    return emit(AddViolationErrorState(res));
   }
 }

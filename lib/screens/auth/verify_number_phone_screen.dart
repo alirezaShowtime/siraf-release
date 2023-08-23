@@ -9,6 +9,7 @@ import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/screens/home_screen.dart';
+import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/block_btn.dart';
 import 'package:siraf3/widgets/my_image.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
@@ -108,9 +109,12 @@ class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
       onWillPop: () => Future.value(false),
       child: AnnotatedRegion(
         value: SystemUiOverlayStyle(
-          statusBarColor: App.theme.primaryColor,
+          statusBarColor: Themes.primary,
           statusBarBrightness: Brightness.light,
           statusBarIconBrightness: Brightness.light,
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarDividerColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
         ),
         child: Scaffold(
           resizeToAvoidBottomInset: false,

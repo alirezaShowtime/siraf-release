@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:siraf3/models/file_detail.dart';
+import 'package:siraf3/extensions/string_extension.dart';
+import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 
 class FileImagesScreen extends StatefulWidget {
-  FileDetail file;
+  var file;
   int? index;
 
   FileImagesScreen({required this.file, this.index, Key? key}) : super(key: key);
@@ -16,14 +17,20 @@ class FileImagesScreen extends StatefulWidget {
 }
 
 class _FileImagesScreenState extends State<FileImagesScreen> {
+  var imageTitleSetState;
+
+  int currentImageIndex = 0;
+
   @override
   void initState() {
     super.initState();
+
+    currentImageIndex = widget.index ?? 0;
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
+    return AnnotatedRegion(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.light,
@@ -38,11 +45,11 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
           children: [
             PhotoViewGallery.builder(
               scrollPhysics: const BouncingScrollPhysics(),
+              onPageChanged: (i) => imageTitleSetState?.call(() => currentImageIndex = i),
               builder: (BuildContext context, int index) {
                 return PhotoViewGalleryPageOptions(
-                  // maxScale: 4.0,
-                  // minScale: 0.5,
-                  minScale: 0.1,
+                  minScale: PhotoViewComputedScale.contained,
+                  maxScale: PhotoViewComputedScale.contained,
                   imageProvider: NetworkImage(widget.file.media!.images![index].path!),
                   initialScale: PhotoViewComputedScale.contained,
                   heroAttributes: PhotoViewHeroAttributes(tag: widget.file.media!.images![index].id!),
@@ -68,16 +75,49 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   MyBackButton(color: Colors.white),
-                  SizedBox(width: 10,),
-                  Text(
-                    widget.file.name ?? '',
-                    style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 15,
-                    ),
-                  ),
+                  SizedBox(width: 15),
+                  AppBarTitle(widget.file.name ?? "ناشناس", color: Colors.white),
                 ],
               ),
+            ),
+            StatefulBuilder(
+              builder: (context, setState) {
+                imageTitleSetState = setState;
+
+                String title = widget.file.media?.images?[currentImageIndex].name;
+
+                if (!title.isFill()) return SizedBox();
+
+                return Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    margin: EdgeInsets.only(left: 10, right: 10, top: 100),
+                    constraints: BoxConstraints(minWidth: 50),
+                    decoration: BoxDecoration(
+                      color: Colors.black38,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: Text(
+                      title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: "IranSansMedium",
+                        color: Colors.white,
+                        shadows: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 2,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),

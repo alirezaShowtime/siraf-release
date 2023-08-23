@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/widgets/error_dialog.dart';
 import 'package:siraf3/widgets/loading_dialog.dart';
+import 'package:siraf3/widgets/violation_dialog.dart';
+
+import 'widgets/my_image.dart';
 
 BuildContext? dialogContext;
 
@@ -68,6 +71,94 @@ BuildContext? errorDialog({required BuildContext context, String? message}) {
       );
     },
   );
+}
+
+void violationDialog(BuildContext context, void Function(String title, String description) onApply) {
+  showDialog2(
+    context: context,
+    barrierDismissible: true,
+    builder: (_) {
+      TextEditingController _violationControllerTitle = TextEditingController();
+      TextEditingController _violationControllerDesc = TextEditingController();
+      return ViolationDialog(
+        titleController: _violationControllerTitle,
+        descriptionController: _violationControllerDesc,
+        onApply: (title, desc) {
+          onApply.call(title, desc);
+
+          Navigator.pop(_);
+        },
+      );
+    },
+  );
+}
+
+void showImageDialog({required BuildContext context, required String image, String? label}) {
+  showDialog2(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          contentPadding: label == null ? null : EdgeInsets.all(10),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (label != null) SizedBox(height: 7),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: 400,
+                  minWidth: 250,
+                ),
+                child: MyImage(
+                  background: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(15),
+                  image: NetworkImage(image),
+                  width: 250,
+                  errorWidget: Container(
+                    width: 250,
+                    height: 250,
+                    alignment: Alignment.center,
+                    color: Colors.grey.shade100,
+                    child: Text(
+                      image.isNotEmpty ? "خطا" : "فاقد عکس",
+                      style: TextStyle(
+                        color: Colors.grey.shade400,
+                        fontFamily: "IranSansBold",
+                        fontSize: 11,
+                      ),
+                    ),
+                  ),
+                  loadingWidget: Container(
+                    width: 250,
+                    height: 250,
+                    alignment: Alignment.center,
+                    color: Colors.grey.shade100,
+                    child: Text(
+                      "در حال بارگذاری",
+                      style: TextStyle(
+                        color: Colors.grey.shade400,
+                        fontFamily: "IranSansBold",
+                        fontSize: 11,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              if (label != null) SizedBox(height: 10),
+              if (label != null)
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontFamily: "IranSansBold",
+                  ),
+                ),
+            ],
+          ),
+        );
+      });
 }
 
 dismissDialog(BuildContext? dialogContext) {

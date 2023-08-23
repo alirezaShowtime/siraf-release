@@ -5,12 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/bloc/auth/edit_profile_bloc.dart';
 import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/themes.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_text_icon_button.dart';
@@ -73,11 +73,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return BlocProvider(
       create: (_) => editProfileBloc,
       child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarBrightness: Brightness.light,
-          statusBarIconBrightness: Brightness.light,
-        ),
+        value: Themes.getSystemUiOverlayStyleTransparent(),
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           body: Column(

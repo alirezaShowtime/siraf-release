@@ -15,12 +15,13 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
+import 'file_screen.dart';
+
 class SearchResultScreen extends StatefulWidget {
   FilterData filterData;
   FilterData originalFilterData;
 
-  SearchResultScreen(
-      {required this.originalFilterData, required this.filterData, super.key});
+  SearchResultScreen({required this.originalFilterData, required this.filterData, super.key});
 
   @override
   State<SearchResultScreen> createState() => _SearchResultScreenState();
@@ -284,7 +285,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
   //                     Navigator.push(
   //                       context,
   //                       MaterialPageRoute(
-  //                         builder: (_) => FileScreen(id: file.id!),
+  //                         builder: (_) => FileScreen2(id: file.id!),
   //                       ),
   //                     );
   //                   },

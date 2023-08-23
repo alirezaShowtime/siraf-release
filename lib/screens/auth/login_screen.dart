@@ -7,7 +7,6 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/screens/auth/verify_number_phone_screen.dart';
 import 'package:siraf3/screens/rules_screen.dart';
-import 'package:siraf3/screens/webview_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/block_btn.dart';
 import 'package:siraf3/widgets/my_image.dart';
@@ -57,9 +56,12 @@ class _LoginScreen extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return AnnotatedRegion(
       value: SystemUiOverlayStyle(
-        statusBarColor: App.theme.primaryColor,
+        statusBarColor: Themes.primary,
         statusBarBrightness: Brightness.light,
         statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarDividerColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
         resizeToAvoidBottomInset: false,

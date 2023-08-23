@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/widgets/my_icon_button.dart';
 
+import 'collapsable.dart';
+
 class Accordion extends StatefulWidget {
   final Widget title;
   Widget? content;
@@ -25,7 +27,7 @@ class Accordion extends StatefulWidget {
   _AccordionState createState() => _AccordionState();
 }
 
-class _AccordionState extends State<Accordion> {
+class _AccordionState extends State<Accordion> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -69,7 +71,10 @@ class _AccordionState extends State<Accordion> {
               ),
             ),
           ),
-          widget.open == true ? Padding(padding: const EdgeInsets.only(bottom: 9), child: widget.content) : Container()
+          Collapsable(
+            expand: widget.open == true,
+            child: Padding(padding: const EdgeInsets.only(bottom: 9), child: widget.content),
+          ),
         ],
       ),
     );

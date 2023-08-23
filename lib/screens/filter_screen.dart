@@ -158,11 +158,7 @@ class _FilterScreenState extends State<FilterScreen> {
         BlocProvider<TotalFileBloc>(create: (_) => totalFileBloc),
       ],
       child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarBrightness: Brightness.light,
-          statusBarIconBrightness: Brightness.light,
-        ),
+        value: Themes.getSystemUiOverlayStyleTransparent(),
         child: Scaffold(
           resizeToAvoidBottomInset: true,
           body: BlocBuilder<CategoriesBloc, CategoriesBlocState>(builder: _buildMainWidgets),

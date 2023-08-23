@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/get_cities_bloc.dart';
+import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/city.dart';
@@ -10,10 +11,12 @@ import 'package:siraf3/models/province.dart';
 import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/accordion.dart';
+import 'package:siraf3/widgets/block_btn.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/widgets/my_back_button.dart';
+import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
-import 'package:siraf3/widgets/usefull/button/button_primary.dart';
 import 'package:siraf3/widgets/usefull/text/text_normal.dart';
 import 'package:siraf3/widgets/usefull/text/text_title.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
@@ -62,12 +65,10 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
 
     getCities();
 
-    getCurrentCityName();
-
     if (widget.showSelected || (widget.selectedCities?.isNotEmpty ?? false)) showSelectedCities();
   }
 
-  showSelectedCities() async {
+  void showSelectedCities() async {
     List<City> cities = [];
     if (widget.selectedCities?.isNotEmpty ?? false) {
       cities = widget.selectedCities!;
@@ -80,15 +81,13 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
     });
   }
 
-  getCities() {
+  void getCities() {
     setState(() {
       selectedCities.clear();
       provinces.clear();
     });
     bloc.add(GetCitiesEvent());
   }
-
-  getCurrentCityName() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -105,9 +104,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                         selectedCities = [];
                       });
                     },
-                    icon: Icon(
-                      CupertinoIcons.refresh,
-                    ),
+                    icon: Icon(Icons.refresh_rounded),
                   ),
                   IconButton(
                     onPressed: () {
@@ -115,44 +112,38 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                         onSearching = true;
                       });
                     },
-                    icon: Icon(
-                      CupertinoIcons.search,
-                    ),
+                    icon: Icon(CupertinoIcons.search),
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
+                  SizedBox(width: 10),
                 ]
               : [],
           title: !onSearching
               ? TextTitle("انتخاب شهر")
               : TextField2(
-                  decoration: InputDecoration(
+            decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "جستجو در شهر ها",
                     hintStyle: TextStyle(
-                      fontSize: 15,
-                      color: App.theme.tooltipTheme.textStyle?.color,
+                      fontSize: 12,
+                      fontFamily: "IranSansMedium",
                     ),
                   ),
-                  style: TextStyle(fontSize: 15, color: App.theme.textTheme.bodyLarge?.color),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: App.theme.textTheme.bodyLarge?.color,
+                    fontFamily: "IranSansMedium",
+                  ),
                   controller: _searchFieldCtrl,
-                  onChanged: ((value) {
-                    doSearch(value.trim());
-                  }),
-                ),
+                  onChanged: doSearch,
+          ),
           automaticallyImplyLeading: false,
           titleSpacing: 0,
-          leading: IconButton(
+          leading: MyBackButton(
             onPressed: () async {
               if (await _handleBack()) {
                 Navigator.pop(context);
               }
             },
-            icon: Icon(
-              CupertinoIcons.back,
-              size: 20,
-            ),
           ),
         ),
         body: getContentWidget(currentState),
@@ -213,18 +204,14 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
     bloc.add(GetCitiesEmitState(state: GetCitiesLoadedState(cities: cities, searching: true)));
   }
 
-  _onCitiesEvent(GetCitiesState state) {
+  void _onCitiesEvent(GetCitiesState state) {
     setState(() {
       currentState = state;
     });
 
-    if (state is GetCitiesInitialState || state is GetCitiesLoadingState) {
-      return;
-    }
+    if (state is GetCitiesInitialState || state is GetCitiesLoadingState) return;
 
-    if (state is GetCitiesErrorState) {
-      return;
-    }
+    if (state is GetCitiesErrorState) return;
 
     state = state as GetCitiesLoadedState;
 
@@ -249,7 +236,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
     });
   }
 
-  _onTapSubmit() async {
+  void _onTapSubmit() async {
     if (widget.force && selectedCities.isEmpty) return notify("شهری انتخاب نکرده اید");
 
     if (widget.saveCity) {
@@ -257,11 +244,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
 
       await (await SharedPreferences.getInstance()).setBool("isFirstOpen", false);
 
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => HomeScreen()),
-        (route) => false,
-      );
+      pushAndRemoveUntil(context, HomeScreen());
     } else {
       Navigator.pop(context, selectedCities);
     }
@@ -269,83 +252,59 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
 
   Widget getContentWidget(GetCitiesState state) {
     if (state is GetCitiesInitialState || state is GetCitiesLoadingState) {
-      return Center(
-        child: Loading(),
-      );
+      return Center(child: Loading());
     }
 
     if (state is GetCitiesErrorState) {
-      return Center(
-        child: TryAgain(
-          onPressed: getCities,
-        ),
-      );
+      return Center(child: TryAgain(onPressed: getCities, message: state.message));
     }
 
     if (state is GetCitiesLoadedState) {
       return Stack(
         children: [
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 7),
-                child: Card(
-                  color: App.theme.dialogBackgroundColor,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  child: Column(children: [
-                    if (selectedCities.isNotEmpty)
-                      Container(
-                        margin: EdgeInsets.only(top: 10),
-                        width: double.infinity,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: selectedCities
-                                .map<Widget>(
-                                  (e) => Padding(
-                                      padding: EdgeInsets.only(
-                                        right: selectedCities.first == e ? 10 : 5,
-                                        left: selectedCities.last == e ? 10 : 0,
-                                      ),
-                                      child: _createSelectedCityBadge(e)),
-                                )
-                                .toList(),
-                          ),
+          ListView(
+            children: <Widget>[
+              if (selectedCities.isFill())
+                Container(
+                  margin: EdgeInsets.only(top: 10),
+                  width: double.infinity,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(width: 5),
+                            for (var selectedCity in selectedCities) _createSelectedCityBadge(selectedCity),
+                            SizedBox(width: 5),
+                          ],
                         ),
-                      ),
-                    // SizedBox(
-                    //   height: 10,
-                    // ),
-                    // _myLocationSection(),
-                    SizedBox(
-                      height: 10,
+                        if (selectedCities.isNotEmpty)
+                          Padding(
+                            padding: EdgeInsets.only(left: 10),
+                            child: MyTextButton(
+                              borderRadius: BorderRadius.circular(100),
+                              text: "حذف همه",
+                              onPressed: () => setState(() => selectedCities.clear()),
+                            ),
+                          ),
+                      ],
                     ),
-                  ]),
+                  ),
                 ),
-              ),
-              Expanded(
-                  child: ListView(
-                children: provinces.map<Widget>((e) {
-                      return _accordionItem(e);
-                    }).toList() +
-                    [
-                      SizedBox(height: 60),
-                    ],
-              )),
+              SizedBox(height: 10),
+              for (var province in provinces) _accordionItem(province),
+              SizedBox(height: 60),
             ],
           ),
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: ButtonPrimary(
-                onPressed: _onTapSubmit,
-                text: "تایید",
-                fullWidth: true,
-              ),
-            ),
+            child: BlockBtn(text: "تایید", onTap: _onTapSubmit),
           )
         ],
       );
@@ -356,34 +315,30 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
 
   int currentCityAccordion = -1;
 
-  _createSelectedCityBadge(City e) {
+  Widget _createSelectedCityBadge(City city) {
     return GestureDetector(
       onTap: () {
         setState(() {
-          selectedCities.removeWhere((el) => el.id == e.id);
+          selectedCities.removeWhere((el) => el.id == city.id);
         });
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+        padding: EdgeInsets.only(left: 4, right: 8, top: 2, bottom: 2),
+        margin: EdgeInsets.only(left: 5, right: 5),
         decoration: BoxDecoration(
           color: Color(0xfffdb713),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(100),
         ),
         child: Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
-          TextNormal(
-            e.name!,
-            color: Themes.text,
+          Text(
+            city.name!,
+            style: TextStyle(fontFamily: "IranSansBold", fontSize: 11),
           ),
-          SizedBox(
-            width: 5,
-          ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 2.5),
-            child: Icon(
-              Typicons.delete_outline,
-              color: Themes.icon,
-              size: 22,
-            ),
+          SizedBox(width: 5),
+          Icon(
+            Icons.close_rounded,
+            color: Themes.icon,
+            size: 22,
           ),
         ]),
       ),
@@ -394,48 +349,41 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Accordion(
-        title: TextNormal(
-          province.name,
-        ),
         open: currentCityAccordion == province.id,
+        title: Text(
+          province.name,
+          style: TextStyle(fontFamily: "IranSansBold", fontSize: 13),
+        ),
         onClick: () {
           setState(() {
             currentCityAccordion = currentCityAccordion == province.id ? -1 : province.id;
           });
-          print(currentCityAccordion);
         },
         content: Container(
-          color: App.theme.dialogBackgroundColor,
+          color: Colors.white,
           padding: EdgeInsets.only(top: 10, bottom: 15, right: 20),
           alignment: Alignment.centerRight,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: ([City(id: -3)] + province.cities).map<Widget>((e) {
-              if (widget.max == 1 && e.id == -3) {
-                return SizedBox();
-              }
-              if (e.id == -3) {
-                return _accordionProvinceItem(province);
-              }
-              return _accordionCityItem(e);
-            }).toList(),
+            children: province.cities.map<Widget>((e) => _accordionCityItem(e)).toList(),
           ),
         ),
       ),
     );
   }
 
-  Widget _accordionCityItem(City e) {
+  Widget _accordionCityItem(City city) {
     return GestureDetector(
       onTap: () {
         setState(() {
-          if (selectedCities.any((element) => element.id == e.id)) {
-            selectedCities.removeWhere((el) => el.id == e.id);
+          if (selectedCities.any((element) => element.id == city.id)) {
+            selectedCities.removeWhere((el) => el.id == city.id);
           } else {
             if (widget.max != null && selectedCities.length == widget.max) {
               notify("حداکثر " + widget.max.toString() + " شهر میتوانید انتخاب کنید");
             } else {
-              selectedCities.add(e);
+              selectedCities.add(city);
             }
           }
         });
@@ -445,9 +393,9 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
         child: Row(
           children: [
             TextNormal(
-              e.name!,
-              fontFamily: selectedCities.any((element) => element.id == e.id) ? "IranSansMedium" : "IranSans",
-              color: selectedCities.any((element) => element.id == e.id) ? Themes.primary : App.theme.tooltipTheme.textStyle?.color,
+              city.name!,
+              fontFamily: selectedCities.any((e) => e.id == city.id) ? "IranSansBold" : "IranSans",
+              color: selectedCities.any((e) => e.id == city.id) ? Themes.primary : Themes.textGrey,
             ),
           ],
         ),

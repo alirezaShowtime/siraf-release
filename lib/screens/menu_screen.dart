@@ -85,11 +85,7 @@ class _MenuScreenState extends State<MenuScreen> {
     return BlocProvider(
       create: (_) => getGroupsBloc,
       child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarBrightness: Brightness.light,
-          statusBarIconBrightness: Brightness.light,
-        ),
+        value: Themes.getSystemUiOverlayStyleTransparent(),
         child: WillPopScope(
           onWillPop: () async {
             closeRabbit();
