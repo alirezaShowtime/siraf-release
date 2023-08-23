@@ -1,3 +1,4 @@
+import 'package:dart_amqp/dart_amqp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,8 @@ import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/chat_item.dart';
+import 'package:siraf3/models/chat_message.dart';
+import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/chat/chat/chatScreen/chat_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
@@ -67,6 +70,8 @@ class _ChatListScreen extends State<ChatListScreen> {
         setState(() {});
       } catch (e) {}
     });
+
+    listenRabbit();
   }
 
   List<ChatItem> chats = [];
@@ -372,6 +377,8 @@ class _ChatListScreen extends State<ChatListScreen> {
       return false;
     }
 
+    rabbitClient?.close();
+
     return true;
   }
 
@@ -394,6 +401,8 @@ class _ChatListScreen extends State<ChatListScreen> {
   }
 
   void goToChatScreen(ChatItem chatItem) async {
+    rabbitClient?.close();
+
     Map result = await push(
         context,
         ChatScreen(
@@ -409,6 +418,8 @@ class _ChatListScreen extends State<ChatListScreen> {
           isDeleted: chatItem.isDeleted,
           fileAddress: chatItem.fileAddress,
         ));
+
+    listenRabbit();
 
     if (!result.containsKey("chatId") || chatItem.id != result["chatId"]) return;
 
@@ -453,7 +464,7 @@ class _ChatListScreen extends State<ChatListScreen> {
       textInputAction: TextInputAction.search,
       decoration: InputDecoration(
         border: InputBorder.none,
-        hintText: "جستوجو...",
+        hintText: "جستجو...",
         hintStyle: TextStyle(color: Colors.grey.shade400),
       ),
       style: TextStyle(
@@ -480,5 +491,41 @@ class _ChatListScreen extends State<ChatListScreen> {
 
   void searchRequest(String text) {
     chatSearchBloc.add(ChatSearchRequestEvent(text));
+  }
+
+  @override
+  void dispose() {
+    rabbitClient?.close();
+    super.dispose();
+  }
+
+  Client? rabbitClient;
+
+  void listenRabbit() async {
+    rabbitClient = Client(settings: ConnectionSettings(host: "188.121.106.229", port: 5672, authProvider: PlainAuthenticator("admin", "admin")));
+
+    Channel channel = await rabbitClient!.channel();
+    var queueName = (await User.fromLocal()).id!.toString();
+    Queue queue = await channel.queue(queueName);
+    var consumer = await queue.consume(consumerTag: "app_user_chat_list");
+    consumer.listen((AmqpMessage message) async {
+      if (message.payloadAsJson['type'] == "new_message") {
+        var list = chats.where((chat) => chat.id == message.payloadAsJson['data']['chat_id']);
+        if (list.isEmpty) return;
+
+        var chat = list.first;
+        var chat_index = chats.indexWhere((e) => e.id == chat.id);
+
+        var chatMessage = ChatMessage.fromJson(message.payloadAsJson['data']['message']);
+
+        chats[chat_index].createDate = chatMessage.createDate;
+        chats[chat_index].createTime = chatMessage.createTime;
+        chats[chat_index].lastMessage = chatMessage.message;
+        chats[chat_index].isSeen = false;
+        chats[chat_index].countNotSeen = (chats[chat_index].countNotSeen ?? 0) + 1;
+
+        setState(() {});
+      }
+    });
   }
 }

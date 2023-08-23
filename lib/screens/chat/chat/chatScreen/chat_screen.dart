@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
+import 'package:dart_amqp/dart_amqp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +31,7 @@ import 'package:siraf3/dialog.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/chat_message.dart';
+import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/chat/chat/abstract_message_widget.dart';
 import 'package:siraf3/screens/chat/chat/chatScreen/app_bar_chat_widget.dart';
 import 'package:siraf3/screens/chat/chat/chat_message_editor_widget.dart';
@@ -50,6 +53,7 @@ part 'chat_message_search.dart';
 part 'chat_scroll_controller.dart';
 part 'header_widget.dart';
 part 'voice_recorder.dart';
+part 'rabbit_listener.dart';
 
 class ChatScreen extends StatefulWidget {
   String? consultantName;
@@ -154,6 +158,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   int newMessageCount = 0;
 
   var newMessageCountBadgeSetState;
+  
+  Client? rabbitClient;
 
   @override
   void initState() {
@@ -189,6 +195,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     chatDeleteBlocListener();
 
     paginationBlocListener();
+    
+    listenRabbit();
   }
 
   @override
@@ -203,6 +211,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     recordTimeStream.close();
     _audioRecorder.dispose();
     chatDeleteMessageBloc.close();
+    rabbitClient?.close();
     super.dispose();
   }
 
@@ -480,6 +489,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   }
 
   void backToList() {
+    rabbitClient?.close();
+    
     Navigator.pop(context, {
       "chatId": widget.chatId,
       "sentMessage": lastMessage?.message ?? "فایل",

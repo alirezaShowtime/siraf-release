@@ -11,6 +11,7 @@ import 'package:siraf3/config.dart';
 import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/user.dart';
+import 'package:siraf3/rabbit_mq_consum.dart';
 import 'package:siraf3/rabbit_mq_data.dart';
 import 'package:siraf3/screens/auth/edit_profile_screen.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
@@ -56,14 +57,16 @@ class _MenuScreenState extends State<MenuScreen> {
 
     getGroupsBloc.add(GetGroupsEvent());
 
+    consumRabbitMq();
     listenRabbitData();
   }
 
   @override
   void dispose() {
-    super.dispose();
     disposed = true;
     getGroupsBloc.close();
+    closeRabbit();
+    super.dispose();
   }
 
   getUser() async {
@@ -83,316 +86,334 @@ class _MenuScreenState extends State<MenuScreen> {
       create: (_) => getGroupsBloc,
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: Themes.getSystemUiOverlayStyleTransparent(),
-        child: Scaffold(
-          body: ColoredBox(
-            color: App.theme.backgroundColor,
-            child: Column(
-              children: [
-                Stack(
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.width / 3 * 2.075,
-                      padding: EdgeInsets.only(bottom: 60),
-                      margin: EdgeInsets.only(bottom: 50),
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("assets/images/menu_background.png"),
-                          fit: BoxFit.cover,
-                          colorFilter: ColorFilter.mode(
-                            App.isDark ? DarkThemes.background : Themes.primary,
-                            BlendMode.hardLight,
+        child: WillPopScope(
+          onWillPop: () async {
+            closeRabbit();
+            return true;
+          },
+          child: Scaffold(
+            body: ColoredBox(
+              color: App.theme.backgroundColor,
+              child: Column(
+                children: [
+                  Stack(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width / 3 * 2.075,
+                        padding: EdgeInsets.only(bottom: 60),
+                        margin: EdgeInsets.only(bottom: 50),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("assets/images/menu_background.png"),
+                            fit: BoxFit.cover,
+                            colorFilter: ColorFilter.mode(
+                              App.isDark ? DarkThemes.background : Themes.primary,
+                              BlendMode.hardLight,
+                            ),
                           ),
                         ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () async {
-                              await doWithLogin(context, () async {
-                                await Navigator.push(context, MaterialPageRoute(builder: (_) => EditProfileScreen()));
-                                getUser();
-                              });
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            GestureDetector(
+                              onTap: () async {
+                                await doWithLogin(context, () async {
+                                  await Navigator.push(context, MaterialPageRoute(builder: (_) => EditProfileScreen()));
+                                  getUser();
+                                });
 
-                              getUser();
-                            },
-                            child: ClipRRect(
-                              child: Hero(
-                                tag: 'profileImage',
-                                child: Avatar(
-                                  image: NetworkImage(user?.avatar ?? ""),
-                                  errorWidget: _profileWidget(),
-                                  loadingWidget: _profileWidget(),
-                                  size: 80,
+                                getUser();
+                              },
+                              child: ClipRRect(
+                                child: Hero(
+                                  tag: 'profileImage',
+                                  child: Avatar(
+                                    image: NetworkImage(user?.avatar ?? ""),
+                                    errorWidget: _profileWidget(),
+                                    loadingWidget: _profileWidget(),
+                                    size: 80,
+                                  ),
+                                ),
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () async {
+                                if (user == null || user!.phone == null) {
+                                  await push(context, LoginScreen());
+                                  getUser();
+                                }
+                              },
+                              child: Text(
+                                user?.token != null ? (user?.name ?? "") : "ورود به حساب",
+                                style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: "IranSansMedium"),
+                              ),
+                            ),
+                            Text(
+                              user?.phone != null ? phoneFormat(user!.phone!) : "",
+                              textDirection: TextDirection.ltr,
+                              style: TextStyle(color: Colors.white, fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        top: MediaQuery.of(context).padding.top,
+                        left: 7,
+                        right: 7,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            MyIconButton(
+                              onTap: () {
+                                closeRabbit();
+                                Navigator.pop(context);
+                              },
+                              icon: Icon(CupertinoIcons.back, color: Themes.iconLight, size: 20),
+                            ),
+                            MyIconButton(
+                              onTap: () async {
+                                await push(context, SettingsScreen(user: user));
+                                getUser();
+                              },
+                              icon: Icon(CupertinoIcons.settings, color: Themes.iconLight, size: 20),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 5,
+                        left: 0,
+                        right: 0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Card(
+                              color: App.theme.dialogBackgroundColor,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 4),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    _item(
+                                      title: "پیام ها",
+                                      icon: CupertinoIcons.envelope,
+                                      hasBadge: hasNewMessage,
+                                      onClick: () {
+                                        if (hasNewMessage) {
+                                          setState(() => hasNewMessage = false);
+                                          hasNewMessageStream.add(hasNewMessage);
+                                        }
+                                        doWithLogin(context, () async {
+                                          closeRabbit();
+
+                                          await push(context, ChatListScreen());
+
+                                          Future.delayed(Duration(milliseconds: 200), () {
+                                            consumRabbitMq();
+                                            listenRabbitData();
+                                          });
+                                        });
+                                      },
+                                    ),
+                                    _item(
+                                      title: "ثبت فایل",
+                                      icon: CupertinoIcons.add,
+                                      onClick: () async {
+                                        await doWithLogin(context, () => push(context, CreateFileFirst()));
+                                        getUser();
+                                      },
+                                    ),
+                                    _item(
+                                      title: "نشان ها",
+                                      icon: CupertinoIcons.bookmark,
+                                      onClick: () => doWithLogin(context, () => push(context, BookmarkScreen())),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              borderRadius: BorderRadius.circular(100),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: ListView(
+                        children: [
+                          Accordion(
+                            title: _accordionTitle("فایل ها و در خواست ها"),
+                            onClick: () => _onClickAccordion(0),
+                            open: openedItem == 0,
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AccordionItem(
+                                  title: "فایل های من",
+                                  onClick: () async {
+                                    await doWithLogin(context, () => push(context, MyFilesScreen()));
+                                    getUser();
+                                  },
+                                ),
+                                AccordionItem(
+                                  title: "ثبت در خواست",
+                                  onClick: () async {
+                                    await doWithLogin(context, () => push(context, RequestFileScreen()));
+
+                                    getUser();
+                                  },
+                                ),
+                                AccordionItem(
+                                  title: "در خواست های من",
+                                  onClick: () async {
+                                    await doWithLogin(context, () => push(context, RequestListScreen()));
+
+                                    getUser();
+                                  },
+                                ),
+                                AccordionItem(
+                                  title: "ملک های اطراف من",
+                                  onClick: () => push(context, FilesMapScreen()),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Accordion(
+                            title: _accordionTitle("دفاتر املاک"),
+                            onClick: () => _onClickAccordion(1),
+                            open: openedItem == 1,
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AccordionItem(
+                                  title: "دفاتر املاک اطراف من",
+                                  onClick: () => push(context, EstatesMapScreen()),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Accordion(
+                            title: _accordionTitle("استعلامات"),
+                            onClick: () => _onClickAccordion(2),
+                            open: openedItem == 2,
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AccordionItem(
+                                  title: "استعلامات ثبتی",
+                                  onClick: () => push(context, InquiryScreen()),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Accordion(
+                            title: _accordionTitle("محاسبات"),
+                            onClick: () => _onClickAccordion(3),
+                            open: openedItem == 3,
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AccordionItem(
+                                  title: "محاسبه کمیسیون",
+                                  onClick: () => push(context, CommissionCalculatorScreen()),
+                                ),
+                                // AccordionItem(
+                                //   title: "تبدیل رهن به اجاره",
+                                //   onClick: () => push(context, CommissionCalculatorScreen()),
+                                // ),
+                              ],
+                            ),
+                          ),
+                          Accordion(
+                            title: _accordionTitle("پشتیبانی"),
+                            onClick: () => _onClickAccordion(4),
+                            open: openedItem == 4,
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                AccordionItem(
+                                  title: "تیکت های من",
+                                  onClick: () async {
+                                    await doWithLogin(context, () => push(context, TicketListScreen()));
+                                    getUser();
+                                  },
+                                ),
+                              ],
+                            ),
+                            // content: BlocBuilder<GetGroupsBloc, GetGroupsState>(builder: _buildTicketAccordionContent),
+                          ),
+                          Accordion(
+                            title: _accordionTitle("آموزش ها"),
+                            onClick: () => push(context, LearnScreen()),
+                          ),
+                          Accordion(
+                            title: _accordionTitle("درباره سیراف و قوانین استفاده"),
+                            onClick: () => push(context, RulesScreen()),
+                          ),
+                          Accordion(
+                            title: _accordionTitle("معرفی برنامه به دیگران(${VERSION})"),
+                            onClick: () async {
+                              await FlutterShare.share(
+                                title: 'اشتراک گذاری برنامه',
+                                text: "اپلیکیشن سیراف",
+                                linkUrl: "https://siraf.app/app",
+                                chooserTitle: 'اشتراک گذاری در',
+                              );
+                            },
+                          ),
+                          /*
+                          GestureDetector(
+                            onTap: () => push(context, RulesScreen()),
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: 5),
+                              padding: EdgeInsets.only(bottom: 11, top: 11, right: 7),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: App.theme.dialogBackgroundColor,
+                              ),
+                              child: Text(
+                                "درباره سیراف و قوانین استفاده",
+                                style: TextStyle(fontSize: 13, fontFamily: "IranSansBold"),
+                              ),
                             ),
                           ),
                           GestureDetector(
                             onTap: () async {
-                              if (user == null || user!.phone == null) {
-                                await push(context, LoginScreen());
-                                getUser();
-                              }
+                              await FlutterShare.share(
+                                title: 'اشتراک گذاری برنامه',
+                                text: "اپلیکیشن سیراف",
+                                linkUrl: "https://siraf.app/app",
+                                chooserTitle: 'اشتراک گذاری در',
+                              );
                             },
-                            child: Text(
-                              user?.token != null ? (user?.name ?? "") : "ورود به حساب",
-                              style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: "IranSansMedium"),
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: 5),
+                              padding: EdgeInsets.only(bottom: 11, top: 11, right: 7),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: App.theme.dialogBackgroundColor,
+                              ),
+                              child: Text(
+                                "معرفی برنامه به دیگران(${VERSION})",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontFamily: "IranSansBold",
+                                ),
+                              ),
                             ),
                           ),
-                          Text(
-                            user?.phone != null ? phoneFormat(user!.phone!) : "",
-                            textDirection: TextDirection.ltr,
-                            style: TextStyle(color: Colors.white, fontSize: 15),
-                          ),
+                          */
+                          const SizedBox(height: 40),
                         ],
                       ),
-                    ),
-                    Positioned(
-                      top: MediaQuery.of(context).padding.top,
-                      left: 7,
-                      right: 7,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          MyIconButton(
-                            onTap: () => Navigator.pop(context),
-                            icon: Icon(CupertinoIcons.back, color: Themes.iconLight, size: 20),
-                          ),
-                          MyIconButton(
-                            onTap: () async {
-                              await push(context, SettingsScreen(user: user));
-                              getUser();
-                            },
-                            icon: Icon(CupertinoIcons.settings, color: Themes.iconLight, size: 20),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 5,
-                      left: 0,
-                      right: 0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Card(
-                            color: App.theme.dialogBackgroundColor,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  _item(
-                                    title: "پیام ها",
-                                    icon: CupertinoIcons.envelope,
-                                    hasBadge: hasNewMessage,
-                                    onClick: () {
-                                      if (hasNewMessage) {
-                                        setState(() => hasNewMessage = false);
-                                        hasNewMessageStream.add(hasNewMessage);
-                                      }
-                                      doWithLogin(context, () => push(context, ChatListScreen()));
-                                    },
-                                  ),
-                                  _item(
-                                    title: "ثبت فایل",
-                                    icon: CupertinoIcons.add,
-                                    onClick: () async {
-                                      await doWithLogin(context, () => push(context, CreateFileFirst()));
-                                      getUser();
-                                    },
-                                  ),
-                                  _item(
-                                    title: "نشان ها",
-                                    icon: CupertinoIcons.bookmark,
-                                    onClick: () => doWithLogin(context, () => push(context, BookmarkScreen())),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: ListView(
-                      children: [
-                        Accordion(
-                          title: _accordionTitle("فایل ها و در خواست ها"),
-                          onClick: () => _onClickAccordion(0),
-                          open: openedItem == 0,
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AccordionItem(
-                                title: "فایل های من",
-                                onClick: () async {
-                                  await doWithLogin(context, () => push(context, MyFilesScreen()));
-                                  getUser();
-                                },
-                              ),
-                              AccordionItem(
-                                title: "ثبت در خواست",
-                                onClick: () async {
-                                  await doWithLogin(context, () => push(context, RequestFileScreen()));
-
-                                  getUser();
-                                },
-                              ),
-                              AccordionItem(
-                                title: "در خواست های من",
-                                onClick: () async {
-                                  await doWithLogin(context, () => push(context, RequestListScreen()));
-
-                                  getUser();
-                                },
-                              ),
-                              AccordionItem(
-                                title: "ملک های اطراف من",
-                                onClick: () => push(context, FilesMapScreen()),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Accordion(
-                          title: _accordionTitle("دفاتر املاک"),
-                          onClick: () => _onClickAccordion(1),
-                          open: openedItem == 1,
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AccordionItem(
-                                title: "دفاتر املاک اطراف من",
-                                onClick: () => push(context, EstatesMapScreen()),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Accordion(
-                          title: _accordionTitle("استعلامات"),
-                          onClick: () => _onClickAccordion(2),
-                          open: openedItem == 2,
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AccordionItem(
-                                title: "استعلامات ثبتی",
-                                onClick: () => push(context, InquiryScreen()),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Accordion(
-                          title: _accordionTitle("محاسبات"),
-                          onClick: () => _onClickAccordion(3),
-                          open: openedItem == 3,
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AccordionItem(
-                                title: "محاسبه کمیسیون",
-                                onClick: () => push(context, CommissionCalculatorScreen()),
-                              ),
-                              // AccordionItem(
-                              //   title: "تبدیل رهن به اجاره",
-                              //   onClick: () => push(context, CommissionCalculatorScreen()),
-                              // ),
-                            ],
-                          ),
-                        ),
-                        Accordion(
-                          title: _accordionTitle("پشتیبانی"),
-                          onClick: () => _onClickAccordion(4),
-                          open: openedItem == 4,
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              AccordionItem(
-                                title: "تیکت های من",
-                                onClick: () async {
-                                  await doWithLogin(context, () => push(context, TicketListScreen()));
-                                  getUser();
-                                },
-                              ),
-                            ],
-                          ),
-                          // content: BlocBuilder<GetGroupsBloc, GetGroupsState>(builder: _buildTicketAccordionContent),
-                        ),
-                        Accordion(
-                          title: _accordionTitle("آموزش ها"),
-                          onClick: () => push(context, LearnScreen()),
-                        ),
-                        Accordion(
-                          title: _accordionTitle("درباره سیراف و قوانین استفاده"),
-                          onClick: () => push(context, RulesScreen()),
-                        ),
-                        Accordion(
-                          title: _accordionTitle("معرفی برنامه به دیگران(${VERSION})"),
-                          onClick: () async {
-                            await FlutterShare.share(
-                              title: 'اشتراک گذاری برنامه',
-                              text: "اپلیکیشن سیراف",
-                              linkUrl: "https://siraf.app/app",
-                              chooserTitle: 'اشتراک گذاری در',
-                            );
-                          },
-                        ),
-                        /*
-                        GestureDetector(
-                          onTap: () => push(context, RulesScreen()),
-                          child: Container(
-                            margin: EdgeInsets.only(bottom: 5),
-                            padding: EdgeInsets.only(bottom: 11, top: 11, right: 7),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: App.theme.dialogBackgroundColor,
-                            ),
-                            child: Text(
-                              "درباره سیراف و قوانین استفاده",
-                              style: TextStyle(fontSize: 13, fontFamily: "IranSansBold"),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () async {
-                            await FlutterShare.share(
-                              title: 'اشتراک گذاری برنامه',
-                              text: "اپلیکیشن سیراف",
-                              linkUrl: "https://siraf.app/app",
-                              chooserTitle: 'اشتراک گذاری در',
-                            );
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(bottom: 5),
-                            padding: EdgeInsets.only(bottom: 11, top: 11, right: 7),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: App.theme.dialogBackgroundColor,
-                            ),
-                            child: Text(
-                              "معرفی برنامه به دیگران(${VERSION})",
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontFamily: "IranSansBold",
-                              ),
-                            ),
-                          ),
-                        ),
-                        */
-                        const SizedBox(height: 40),
-                      ],
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

@@ -178,7 +178,7 @@ void logRequest(http.Response response, {Object? requestBody}) async {
 
   messages.add("\n\n\nREQUEST ${response.request!.method.toUpperCase()} ${response.statusCode}");
 
-  if (response.request?.headers?.containsKey("Authorization") ?? false) {
+  if (response.request?.headers.containsKey("Authorization") ?? false) {
     messages.add("\n\nUSER TOKEN : ${response.request!.headers["Authorization"]}");
   }
 
