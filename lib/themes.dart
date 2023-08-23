@@ -38,10 +38,10 @@ class Themes {
         systemNavigationBarIconBrightness: Brightness.dark,
       );
 
-  static SystemUiOverlayStyle getSystemUiOverlayStyleTransparent() => SystemUiOverlayStyle(
+  static SystemUiOverlayStyle getSystemUiOverlayStyleTransparent({Brightness? statusBarIconBrightness}) => SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.dark,
+        statusBarIconBrightness: statusBarIconBrightness ?? Brightness.dark,
         systemNavigationBarColor: Themes.appBar,
         systemNavigationBarDividerColor: Color(0xffEEEEEE),
         systemNavigationBarIconBrightness: Brightness.dark,
