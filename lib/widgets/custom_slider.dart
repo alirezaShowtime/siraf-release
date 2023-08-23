@@ -1,11 +1,14 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:siraf3/config.dart';
+import 'package:flutter/material.dart' as m;
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/mini_video.dart';
 import 'package:video_player/video_player.dart';
+
+import 'my_image.dart';
 import 'slider.dart' as slider;
-import 'package:flutter/material.dart' as m;
 import 'slider.dart' as s;
 
 class CarouselSliderCustom extends StatefulWidget {
@@ -20,132 +23,153 @@ class CarouselSliderCustom extends StatefulWidget {
   double? viewportFraction;
   Color indicatorSelectedColor;
   Color indicatorColor;
-  EdgeInsets indicatorPosition;
   List<slider.Slider> sliders;
   BoxFit? imageFit;
   bool indicatorsCenterAlign;
-  bool directPlayVideos;
   Function(s.Slider)? onImageTap;
   Function(int)? onPageChanged;
-  Function(VideoPlayerController)? onStartVideo;
+  void Function(VideoPlayerController p1)? onStartVideo;
+  bool float;
 
-  CarouselSliderCustom(
-      {required this.sliders,
-      required this.height,
-      required this.itemMargin,
-      required this.indicatorPosition,
-      required this.itemBorderRadius,
-      this.indicatorsCenterAlign = false,
-      this.onImageTap,
-      this.autoPlay = true,
-      this.reverse = false,
-      this.imageFit,
-      this.indicatorColor = Colors.black,
-      this.indicatorSelectedColor = Colors.white,
-      this.enableInfiniteScroll = true,
-      this.initialPage = 0,
-      this.enlargeCenterPage = false,
-      this.viewportFraction,
-      this.onPageChanged,
-      this.onStartVideo,
-      this.directPlayVideos = false,
-      Key? key})
-      : super(key: key);
+  EdgeInsets indicatorMargin;
+
+  Alignment indicatorAlignment;
+
+  CarouselSliderCustom({
+    Key? key,
+    required this.sliders,
+    required this.height,
+    required this.itemMargin,
+    required this.itemBorderRadius,
+    this.indicatorsCenterAlign = false,
+    this.onImageTap,
+    this.autoPlay = true,
+    this.reverse = false,
+    this.imageFit,
+    this.indicatorColor = Colors.black,
+    this.indicatorSelectedColor = Colors.white,
+    this.enableInfiniteScroll = true,
+    this.initialPage = 0,
+    this.enlargeCenterPage = false,
+    this.viewportFraction,
+    this.onPageChanged,
+    this.indicatorAlignment = Alignment.bottomCenter,
+    this.indicatorMargin = EdgeInsets.zero,
+    this.float = false,
+    this.onStartVideo,
+  }) : super(key: key);
 
   @override
   State<CarouselSliderCustom> createState() => _CarouselSliderCustomState();
 }
 
-class _CarouselSliderCustomState extends State<CarouselSliderCustom> with AutomaticKeepAliveClientMixin {  
-  @override
-  bool get wantKeepAlive => true;
-
+class _CarouselSliderCustomState extends State<CarouselSliderCustom> {
   int _current = 0;
   final CarouselController _controller = CarouselController();
 
+  List<StreamController<bool>> pageChangeStreams = [];
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        CarouselSlider(
-          options: CarouselOptions(
-            height: widget.height,
-            viewportFraction: widget.viewportFraction ?? 0.8,
-            initialPage: widget.initialPage,
-            enableInfiniteScroll: widget.enableInfiniteScroll,
-            reverse: widget.reverse,
-            autoPlay: widget.autoPlay,
-            scrollPhysics: widget.sliders.length > 1
-                ? null
-                : NeverScrollableScrollPhysics(),
-            enlargeCenterPage: widget.enlargeCenterPage,
-            autoPlayInterval: Duration(seconds: 5),
-            autoPlayAnimationDuration: Duration(milliseconds: 800),
-            autoPlayCurve: Curves.fastOutSlowIn,
-            scrollDirection: Axis.horizontal,
-            onPageChanged: (index, reason) {
-              setState(() {
-                _current = index;
-              });
-              if (widget.onPageChanged != null) {
-                widget.onPageChanged!(index);
-              }
-            },
-          ),
-          carouselController: _controller,
-          items: widget.sliders.map((image) {
-            return Builder(
-              builder: (BuildContext context) {
-                var sliders = widget.sliders
-                    .where((element) => image.image == element.image);
-                return GestureDetector(
-                  onTap: sliders.isNotEmpty && sliders.first.link != null
-                      ? () {}
-                      : null,
-                  child: CarouselSliderItemCustom(
-                    image: image.image,
-                    slide: image,
-                    imageFit: widget.imageFit,
-                    margin: widget.itemMargin,
-                    borderRadius: widget.itemBorderRadius,
-                    onImageTap: widget.onImageTap,
-                    index: widget.sliders.indexOf(image),
-                    onStartVideo: widget.onStartVideo,
-                    directPlay: widget.directPlayVideos,
-                  ),
-                );
-              },
-            );
-          }).toList(),
-        ),
-        if (widget.sliders.length > 1)
-          Positioned(
-            bottom: widget.indicatorPosition.bottom,
-            left: widget.indicatorPosition.left,
-            right: widget.indicatorPosition.right,
-            child: Row(
-              mainAxisAlignment: widget.indicatorsCenterAlign
-                  ? MainAxisAlignment.center
-                  : MainAxisAlignment.end,
-              children: widget.sliders.asMap().entries.map((entry) {
-                return GestureDetector(
-                  onTap: () => _controller.animateToPage(entry.key),
-                  child: Container(
-                    width: 6.0,
-                    height: 6.0,
-                    margin: EdgeInsets.symmetric(horizontal: 2.5),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: _current == entry.key
-                          ? widget.indicatorSelectedColor
-                          : widget.indicatorColor,
-                    ),
-                  ),
-                );
-              }).toList(),
+    pageChangeStreams = widget.sliders.map<StreamController<bool>>((e) => StreamController<bool>.broadcast()).toList();
+
+    if (widget.float)
+      return Stack(
+        children: [
+          _content(),
+          if (widget.sliders.length > 1)
+            Align(
+              alignment: widget.indicatorAlignment,
+              child: Padding(
+                padding: widget.indicatorMargin,
+                child: _indicator(),
+              ),
             ),
-          ),
+        ],
+      );
+
+    return Column(
+      children: [
+        _content(),
+        if (widget.sliders.length > 1) _indicator(),
       ],
+    );
+  }
+
+  Widget _content() {
+    return ColoredBox(
+      color: Colors.grey.shade50,
+      child: CarouselSlider(
+        options: CarouselOptions(
+          height: widget.height,
+          viewportFraction: widget.viewportFraction ?? 0.8,
+          initialPage: widget.initialPage,
+          enableInfiniteScroll: widget.enableInfiniteScroll,
+          reverse: widget.reverse,
+          autoPlay: widget.autoPlay,
+          scrollPhysics: widget.sliders.length > 1 ? null : NeverScrollableScrollPhysics(),
+          enlargeCenterPage: widget.enlargeCenterPage,
+          autoPlayInterval: Duration(seconds: 5),
+          autoPlayAnimationDuration: Duration(milliseconds: 800),
+          autoPlayCurve: Curves.fastOutSlowIn,
+          scrollDirection: Axis.horizontal,
+          onPageChanged: (index, reason) {
+            setState(() {
+              _current = index;
+              pageChangeStreams.forEach((element) {
+                element.add(true);
+              });
+            });
+            if (widget.onPageChanged != null) {
+              widget.onPageChanged!(index);
+            }
+          },
+        ),
+        carouselController: _controller,
+        items: widget.sliders.map((image) {
+          return Builder(
+            builder: (BuildContext context) {
+              var sliders = widget.sliders.where((element) => image.image == element.image);
+              return GestureDetector(
+                onTap: sliders.isNotEmpty && sliders.first.link != null ? () {} : null,
+                child: CarouselSliderItemCustom(
+                  pageChangeStream: pageChangeStreams[widget.sliders.indexOf(image)],
+                  image: image.image,
+                  slide: image,
+                  imageFit: widget.imageFit,
+                  margin: widget.itemMargin,
+                  borderRadius: widget.itemBorderRadius,
+                  onImageTap: widget.onImageTap,
+                  index: widget.sliders.indexOf(image),
+                ),
+              );
+            },
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _indicator() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        mainAxisAlignment: widget.indicatorsCenterAlign ? MainAxisAlignment.center : MainAxisAlignment.end,
+        children: widget.sliders.asMap().entries.map((entry) {
+          return GestureDetector(
+            onTap: () => _controller.animateToPage(entry.key),
+            child: Container(
+              width: 6.0,
+              height: 6.0,
+              margin: EdgeInsets.symmetric(horizontal: 2.5),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _current == entry.key ? widget.indicatorSelectedColor : widget.indicatorColor,
+              ),
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 }
@@ -158,31 +182,38 @@ class CarouselSliderItemCustom extends StatefulWidget {
   BoxFit? imageFit;
   int index;
   s.Slider slide;
+  StreamController<bool> pageChangeStream;
   Function(VideoPlayerController)? onStartVideo;
-  bool directPlay;
 
-  CarouselSliderItemCustom(
-      {required this.image,
-      required this.margin,
-      required this.borderRadius,
-      required this.index,
-      required this.slide,
-      this.onImageTap,
-      this.imageFit,
-      this.onStartVideo,
-      this.directPlay = false,
-      Key? key})
-      : super(key: key);
+  CarouselSliderItemCustom({
+    required this.image,
+    required this.margin,
+    required this.borderRadius,
+    required this.index,
+    required this.slide,
+    required this.pageChangeStream,
+    this.onImageTap,
+    this.onStartVideo,
+    this.imageFit,
+    Key? key,
+  }) : super(key: key);
 
   @override
-  State<CarouselSliderItemCustom> createState() =>
-      _CarouselSliderItemCustomState();
+  State<CarouselSliderItemCustom> createState() => _CarouselSliderItemCustomState();
 }
 
-class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> with AutomaticKeepAliveClientMixin {  
+class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> {
   @override
-  bool get wantKeepAlive => true;
-  
+  void initState() {
+    super.initState();
+
+    widget.pageChangeStream.stream.listen((bool event) {
+      if (event) videoKey.currentState?.getVideoController().pause();
+    });
+  }
+
+  final videoKey = new GlobalKey<MiniVideoState>();
+
   @override
   Widget build(BuildContext context) {
     if (widget.slide.type == s.SliderType.image) {
@@ -200,30 +231,48 @@ class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> wit
 
   _buildImage() {
     return GestureDetector(
-      onTap: widget.onImageTap != null
-          ? () {
-              widget.onImageTap!(widget.slide);
-            }
-          : null,
+      onTap: widget.onImageTap != null ? () => widget.onImageTap!(widget.slide) : null,
       child: Container(
         width: MediaQuery.of(context).size.width,
         margin: widget.margin,
-        child: ClipRRect(
+        child: MyImage(
+          image: widget.image,
           borderRadius: widget.borderRadius,
-          child: m.Image(
-            image: widget.image,
-            width: MediaQuery.of(context).size.width,
-            fit: widget.imageFit ?? BoxFit.cover,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          fit: widget.imageFit ?? BoxFit.cover,
+          loadingWidget: Container(
             height: MediaQuery.of(context).size.height,
-            errorBuilder: (_, _1, _2) {
-              return m.Image(
-                image: AssetImage(IMAGE_NOT_AVAILABLE),
-                width: MediaQuery.of(context).size.width,
-                fit: widget.imageFit ?? BoxFit.cover,
-                height: MediaQuery.of(context).size.height,
-                color: Color(0x757f8c8d),
-              );
-            },
+            width: MediaQuery.of(context).size.width,
+            color: Colors.grey.shade50,
+            alignment: Alignment.center,
+            child: Text(
+              "درحال بارگذاری",
+              style: TextStyle(
+                fontSize: 11,
+                fontFamily: "IranSansBold",
+                color: Colors.grey.shade400,
+              ),
+            ),
+          ),
+          errorWidget: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            color: Colors.grey.shade50,
+            alignment: Alignment.center,
+            child: Column(
+              children: [
+                Icon(Icons.error_outline_rounded, size: 35, color: Colors.grey.shade400),
+                Text(
+                  "خطا!!",
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontFamily: "IranSansBold",
+                    color: Colors.grey.shade400,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -231,18 +280,25 @@ class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> wit
   }
 
   _buildVideo() {
-    return MiniVideo(thumbnail: widget.image, videoUrl: widget.slide.link!, onStartVideo: widget.onStartVideo, directPlay: widget.directPlay,);
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      margin: widget.margin,
+      alignment: Alignment.center,
+      child: MiniVideo(
+        thumbnail: widget.image,
+        videoUrl: widget.slide.link!,
+        key: videoKey,
+        onStartVideo: widget.onStartVideo,
+      ),
+    );
   }
 
   _buildTour() {
     return Stack(
       children: [
         GestureDetector(
-          onTap: widget.onImageTap != null
-              ? () {
-                  widget.onImageTap!(widget.slide);
-                }
-              : null,
+          onTap: widget.onImageTap != null ? () => widget.onImageTap!(widget.slide) : null,
           child: Container(
             width: MediaQuery.of(context).size.width,
             margin: widget.margin,
@@ -255,7 +311,7 @@ class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> wit
                 height: MediaQuery.of(context).size.height,
                 errorBuilder: (_, _1, _2) {
                   return m.Image(
-                    image: AssetImage(IMAGE_NOT_AVAILABLE),
+                    image: AssetImage("assets/images/image_not_avialable.png"),
                     width: MediaQuery.of(context).size.width,
                     fit: widget.imageFit ?? BoxFit.cover,
                     height: MediaQuery.of(context).size.height,
@@ -267,11 +323,7 @@ class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> wit
           ),
         ),
         GestureDetector(
-          onTap: widget.onImageTap != null
-              ? () {
-                  widget.onImageTap!(widget.slide);
-                }
-              : null,
+          onTap: widget.onImageTap != null ? () => widget.onImageTap!(widget.slide) : null,
           child: Align(
             alignment: Alignment.center,
             child: Column(

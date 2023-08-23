@@ -93,7 +93,7 @@ class _FileSlideItemState extends State<FileSlideItem> {
                   indicatorsCenterAlign: true,
                   viewportFraction: 1.0,
                   itemMargin: EdgeInsets.only(bottom: 15),
-                  indicatorPosition: EdgeInsets.only(left: 0, right: 0, bottom: 0),
+                  float: true,
                   itemBorderRadius: BorderRadius.zero,
                   imageFit: BoxFit.cover,
                   indicatorSelectedColor: Themes.blue,
