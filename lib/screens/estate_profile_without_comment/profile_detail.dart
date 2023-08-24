@@ -1,133 +1,196 @@
 part of 'estate_profile_screen.dart';
 
 extension ProfileDetail on _EstateProfileScreen {
-  Widget profileDetail(estateProfileModel.EstateProfile estateProfile) {
-    return Container(
-      width: double.infinity,
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height - (Scaffold.of(scaffoldContext).appBarMaxHeight ?? 0) - 190,
-      ),
-      padding: const EdgeInsets.only(left: 20, right: 20),
-      decoration: BoxDecoration(
+  Widget profileDetail(EstateProfile estateProfile) {
+    return Expanded(
+      child: Container(
+        width: double.infinity,
         color: Colors.white,
-        border: Border(
-          bottom: BorderSide(color: Colors.grey.shade200, width: 1),
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (estateProfile.description.isFill() || estateProfile.video.isFill() || estateProfile.images.isFill() || estateProfile.consultants.isFill()) SizedBox(height: 15),
-          if (!estateProfile.description.isFill() && !estateProfile.video.isFill() && !estateProfile.images.isFill() && !estateProfile.consultants.isFill())
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Text(
-                "جزییات بیشتر در دسترس نیست",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Themes.text,
-                  fontFamily: "IranSansBold",
-                  fontSize: 10,
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (!estateProfile.description.isFill() && !estateProfile.video.isFill() && !estateProfile.images.isFill() && !estateProfile.consultants.isFill())
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20, top: 20),
+                  child: Text(
+                    "جزییات بیشتر در دسترس نیست",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Themes.text,
+                      fontFamily: "IranSansBold",
+                      fontSize: 10,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          if (estateProfile.description.isFill())
-            Text(
-              estateProfile.description!,
-              style: TextStyle(color: Themes.textGrey, fontSize: 11),
-            ),
-          if (estateProfile.video.isFill())
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              child: AspectRatio(
-                aspectRatio: 2.1,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: FutureBuilder<Uint8List?>(
-                    future: VideoThumbnail.thumbnailData(video: estateProfile.video!, imageFormat: ImageFormat.JPEG),
-                    builder: (context, snapshot) {
-                      return Stack(
-                        children: [
-                          MyImage(
-                            image: (snapshot.data == null ? NetworkImage("") : MemoryImage(snapshot.data!)) as ImageProvider,
-                            errorWidget: MyImage.defaultErrorImageWidget(),
-                            loadingWidget: MyImage.defaultLoadingImageWidget(),
-                            fit: BoxFit.cover,
-                            width: MediaQuery.of(context).size.width,
-                          ),
-                          Align(
-                            alignment: Alignment.center,
-                            child: IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => VideoScreen(
-                                      videoUrl: estateProfile.video!,
-                                    ),
-                                  ),
-                                );
-                              },
-                              icon: Stack(
-                                children: [
-                                  Icon(
-                                    CupertinoIcons.play_fill,
-                                    size: 44,
-                                    color: Themes.primary,
-                                  ),
-                                  Icon(
-                                    CupertinoIcons.play_fill,
-                                    size: 40,
-                                    color: Themes.iconLight,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
-                      );
-                    },
+              Padding(
+                padding: const EdgeInsets.only(top: 12, bottom: 14),
+                child: Text(
+                  "آدرس : ${estateProfile.address ?? "??"}",
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontFamily: "IranSansMedium",
                   ),
                 ),
               ),
-            ),
-          if (estateProfile.images.isFill())
-            Container(
-              height: 60,
-              margin: EdgeInsets.symmetric(vertical: 10),
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                physics: BouncingScrollPhysics(),
-                itemCount: estateProfile.images.length,
-                itemBuilder: (context, i) => estateImageItem(estateProfile.images[i]),
+              Row(
+                children: [
+                  Text(
+                    "تلفن ثابت : ${estateProfile.telephoneNumber ?? "??"}",
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontFamily: "IranSansMedium",
+                    ),
+                  ),
+                  if (estateProfile.telephoneNumber != null)
+                    InkWell(
+                      onTap: () => callTo(estateProfile.telephoneNumber!),
+                      borderRadius: BorderRadius.circular(5),
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        margin: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Text(
+                          "تماس",
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Themes.primary,
+                            fontFamily: "IranSansBold",
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
-            ),
-          if (estateProfile.consultants.isFill()) divider(),
-          if (estateProfile.consultants.isFill())
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 10),
-              alignment: Alignment.center,
-              child: Text(
-                "مشاورین ${estateProfile.name}",
-                style: TextStyle(
-                  fontFamily: "IranSansBold",
-                  fontSize: 13,
-                  color: Themes.text,
+              Row(
+                children: [
+                  Text(
+                    "شماره مدیر : ${estateProfile.phoneNumber ?? "??"}",
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontFamily: "IranSansMedium",
+                    ),
+                  ),
+                  if (estateProfile.phoneNumber != null)
+                    InkWell(
+                      onTap: () => callTo(estateProfile.phoneNumber!),
+                      borderRadius: BorderRadius.circular(5),
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        margin: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Text(
+                          "تماس",
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Themes.primary,
+                            fontFamily: "IranSansBold",
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              if (estateProfile.lat != null && estateProfile.long != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 30),
+                  child: SimpleMap(
+                    lat: estateProfile.lat!,
+                    long: estateProfile.long!,
+                    width: double.infinity,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                 ),
-              ),
-            ),
-          if (estateProfile.consultants.isFill())
-            SizedBox(
-              height: 100,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                physics: BouncingScrollPhysics(),
-                itemCount: estateProfile.consultants?.length ?? 0,
-                itemBuilder: (context, i) => consultantItem(estateProfile.consultants![i]),
-              ),
-            ),
-        ],
+              if (estateProfile.description.isFill())
+                Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: Text(
+                    "توضیحات",
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontFamily: "IranSansBold",
+                    ),
+                  ),
+                ),
+              if (estateProfile.description.isFill())
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: Text(
+                    estateProfile.description!,
+                    style: TextStyle(fontSize: 11),
+                  ),
+                ),
+              if (estateProfile.video.isFill())
+                Container(
+                  margin: const EdgeInsets.only(top: 12),
+                  child: AspectRatio(
+                    aspectRatio: 2.1,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: FutureBuilder<Uint8List?>(
+                        future: VideoThumbnail.thumbnailData(video: estateProfile.video!, imageFormat: ImageFormat.PNG),
+                        builder: (context, snapshot) {
+                          return Stack(
+                            children: [
+                              MyImage(
+                                image: (snapshot.data == null ? NetworkImage("") : MemoryImage(snapshot.data!)) as ImageProvider,
+                                border: Border.all(color: Colors.grey.shade200, width: 1),
+                                errorWidget: MyImage.defaultErrorImageWidget(),
+                                loadingWidget: MyImage.defaultLoadingImageWidget(),
+                                fit: BoxFit.cover,
+                                width: MediaQuery.of(context).size.width,
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              Align(
+                                child: VideoButton(
+                                  icon: CupertinoIcons.play_fill,
+                                  onTap: () => push(context, VideoScreen(videoUrl: estateProfile.video!)),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              if (estateProfile.images.isFill())
+                Container(
+                  height: 60,
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    physics: BouncingScrollPhysics(),
+                    itemCount: estateProfile.images.length,
+                    itemBuilder: (context, i) => estateImageItem(estateProfile.images, index: i),
+                  ),
+                ),
+              if (estateProfile.consultants.isFill()) divider(),
+              if (estateProfile.consultants.isFill())
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  alignment: Alignment.center,
+                  child: Text(
+                    "مشاورین ${estateProfile.name}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Themes.text,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+              if (estateProfile.consultants.isFill())
+                SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    physics: BouncingScrollPhysics(),
+                    itemCount: estateProfile.consultants?.length ?? 0,
+                    itemBuilder: (context, i) => consultantItem(estateProfile.consultants![i]),
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -30,6 +30,7 @@ class MyImage extends StatefulWidget {
   final Widget? loadingWidget;
   final BorderRadius? borderRadius;
   final Color background;
+  final BoxBorder? border;
 
   MyImage({
     super.key,
@@ -57,6 +58,7 @@ class MyImage extends StatefulWidget {
     this.errorWidget,
     this.loadingWidget,
     this.borderRadius = BorderRadius.zero,
+    this.border,
     this.background = Colors.transparent,
   });
 
@@ -108,6 +110,7 @@ class _MyImage extends State<MyImage> {
       decoration: BoxDecoration(
         color: widget.background,
         borderRadius: widget.borderRadius,
+        border: widget.border,
       ),
       child: ClipRRect(
         borderRadius: widget.borderRadius,

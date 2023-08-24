@@ -4,22 +4,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:siraf3/extensions/string_extension.dart';
+import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 
 class ImageViewScreen extends StatefulWidget {
-  String? imageUrl;
-  File? imageFile;
+  List<String>? imageUrls;
+  List<File>? imageFiles;
+  int index;
+  String? title;
 
-  ImageViewScreen({this.imageUrl, this.imageFile, Key? key}) : super(key: key);
+  ImageViewScreen({
+    super.key,
+    this.title,
+    this.imageUrls,
+    this.imageFiles,
+    this.index = 1,
+  });
 
   @override
   State<ImageViewScreen> createState() => _ImageViewScreen();
 }
 
 class _ImageViewScreen extends State<ImageViewScreen> {
+  int currentImageIndex = 0;
+
   @override
   void initState() {
     super.initState();
+
+    currentImageIndex = widget.index;
   }
 
   @override
@@ -39,15 +53,16 @@ class _ImageViewScreen extends State<ImageViewScreen> {
           children: [
             PhotoViewGallery.builder(
               scrollPhysics: const BouncingScrollPhysics(),
-              builder: (BuildContext context, int index) {
+              onPageChanged: (i) => currentImageIndex = i,
+              builder: (BuildContext context, int i) {
                 return PhotoViewGalleryPageOptions(
-                  maxScale: PhotoViewComputedScale.contained,
+                  imageProvider: _getProvider(i),
                   minScale: PhotoViewComputedScale.contained,
-                  imageProvider: _getProvider(),
+                  maxScale: PhotoViewComputedScale.contained,
                   initialScale: PhotoViewComputedScale.contained,
                 );
               },
-              itemCount: 1,
+              itemCount: widget.imageFiles?.length ?? widget.imageUrls?.length ?? 0,
               loadingBuilder: (context, event) => Center(
                 child: Container(
                   width: 20.0,
@@ -66,6 +81,8 @@ class _ImageViewScreen extends State<ImageViewScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   MyBackButton(color: Colors.white),
+                  SizedBox(width: 10),
+                  if (widget.title.isFill()) AppBarTitle(widget.title!, color: Colors.white),
                 ],
               ),
             ),
@@ -75,11 +92,11 @@ class _ImageViewScreen extends State<ImageViewScreen> {
     );
   }
 
-  ImageProvider _getProvider() {
-    if (widget.imageFile != null) {
-      return FileImage(widget.imageFile!);
+  ImageProvider _getProvider(int index) {
+    if (widget.imageFiles != null) {
+      return FileImage(widget.imageFiles![index]);
     } else {
-      return NetworkImage(widget.imageUrl!);
+      return NetworkImage(widget.imageUrls![index]);
     }
   }
 }

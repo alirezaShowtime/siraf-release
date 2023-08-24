@@ -19,15 +19,11 @@ class Themes {
 
   static const disabled = Color.fromARGB(255, 180, 180, 180);
 
-  static const searchBoxBackground = Color(0xfff0f0f0);
-  static const searchBoxHint = Color(0xff969696);
-  static const searchBoxBorder = Color(0xffeae7e7);
-
-  static const inputHint = Color(0xff9b9b9b);
-  static const inputBorder = Color(0xff0067a5);
-  static const inputBorderNormal = Color(0xffeae7e7);
-
-  static const blueSky = Color(0x704abbff);
+  static final textSelectionTheme = TextSelectionThemeData(
+    cursorColor: Themes.primary,
+    selectionColor: Themes.primary.withOpacity(0.2),
+    selectionHandleColor: Themes.primary,
+  );
 
   static SystemUiOverlayStyle getSystemUiOverlayStyle() => SystemUiOverlayStyle(
         statusBarColor: Themes.appBar,
@@ -48,39 +44,45 @@ class Themes {
         systemStatusBarContrastEnforced: false,
       );
 
+  static final primarySwatch = MaterialColor(
+    0xff0067A5,
+    {
+      50: Color(0xff0067A5),
+      100: Color(0xff0067A5),
+      200: Color(0xff0067A5),
+      300: Color(0xff0067A5),
+      400: Color(0xff0067A5),
+      500: Color(0xff0067A5),
+      600: Color(0xff0067A5),
+      700: Color(0xff0067A5),
+      900: Color(0xff0067A5),
+    },
+  );
+
   static ThemeData themeData() {
     return ThemeData(
-      primarySwatch: Colors.blue,
+      primarySwatch: primarySwatch,
       fontFamily: 'IranSans',
-      backgroundColor: Themes.background,
-      scaffoldBackgroundColor: Themes.background,
-      dialogBackgroundColor: Themes.background2,
-      accentColor: Themes.secondary,
-      secondaryHeaderColor: Themes.secondary,
       primaryColor: Themes.primary,
-      appBarTheme: AppBarTheme(
-        shadowColor: Color(0x50000000),
-        backgroundColor: Themes.appBar,
-        foregroundColor: Themes.text,
-        titleTextStyle: TextStyle(
-            fontSize: 16, color: Themes.text, fontFamily: "IranSansMedium"),
-        iconTheme: IconThemeData(
-          color: Themes.icon,
-        ),
-        titleSpacing: 0,
-        elevation: 0.7,
-        actionsIconTheme: IconThemeData(
-          color: Themes.icon,
-        ),
-      ),
-      iconTheme: IconThemeData(
-        color: Themes.icon,
-      ),
-      tooltipTheme: TooltipThemeData(
-          textStyle: TextStyle(
-        color: Themes.textGrey,
-      )),
+      accentColor: Themes.secondary,
+      backgroundColor: Themes.background,
+      secondaryHeaderColor: Themes.secondary,
+      dialogBackgroundColor: Themes.background2,
+      scaffoldBackgroundColor: Themes.background,
       shadowColor: Colors.grey.withOpacity(0.1),
+      iconTheme: IconThemeData(color: Themes.icon),
+      textSelectionTheme: textSelectionTheme,
+      tooltipTheme: TooltipThemeData(textStyle: TextStyle(color: Themes.textGrey)),
+      appBarTheme: AppBarTheme(
+        elevation: 0.7,
+        titleSpacing: 0,
+        shadowColor: Color(0x50000000),
+        foregroundColor: Themes.text,
+        backgroundColor: Themes.appBar,
+        titleTextStyle: TextStyle(fontSize: 16, color: Themes.text, fontFamily: "IranSansMedium"),
+        iconTheme: IconThemeData(color: Themes.icon),
+        actionsIconTheme: IconThemeData(color: Themes.icon),
+      ),
       textTheme: TextTheme(
         bodyText1: TextStyle(),
         bodyText2: TextStyle(),

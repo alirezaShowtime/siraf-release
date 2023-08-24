@@ -157,7 +157,7 @@ class App extends State<AppStf> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    
+
     isDark = false;
 
     theme = isDark ? darkTheme : lightTheme;

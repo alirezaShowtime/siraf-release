@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/bloc/estate_profile/comment/send/estate_profile_comment_rate_bloc.dart';
 import 'package:siraf3/bloc/estate_profile/profile/estate_profile_bloc.dart';
@@ -24,6 +23,7 @@ import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/screens/consultant_profile_without_comment/consultant_profile_screen.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
+import 'package:siraf3/screens/estate_profile/estate_share_screen.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
 import 'package:siraf3/screens/image_view_screen.dart';
@@ -40,14 +40,20 @@ import 'package:siraf3/widgets/my_image.dart';
 import 'package:siraf3/widgets/my_list_view.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_item.dart';
+import "package:siraf3/widgets/my_text_button.dart";
+import 'package:siraf3/widgets/simple_map.dart';
 import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:siraf3/widgets/video_button.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 part 'add_comment_widget.dart';
+
 part 'event_listeners.dart';
+
 part 'profile.dart';
+
 part 'profile_detail.dart';
 part 'search_bar.dart';
 
@@ -151,27 +157,37 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
         BlocProvider(create: (context) => filesBloc),
         BlocProvider(create: (context) => sendCommentRateBloc),
       ],
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        appBar: appBar(),
-        body: BlocConsumer<EstateProfileBloc, EstateProfileState>(
-          bloc: bloc,
-          listener: (context, state) {
-            if (state is EstateProfileSuccessState) {
-              setState(() {
-                title = state.estateProfile.name!;
-                estateProfile = state.estateProfile;
-                comments = state.estateProfile.comments ?? [];
-              });
-            }
-          },
-          builder: (context, state) {
-            scaffoldContext = context;
-            if (state is EstateProfileLoading || state is EstateProfileInitial) return Center(child: Loading());
-            if (state is EstateProfileErrorState) return retryWidget(context, state.message);
-            if (state is EstateProfileSuccessState) return profile(context, state.estateProfile);
-            return Container();
-          },
+      child: WillPopScope(
+        onWillPop: () async {
+          if (moreDetail) {
+            setState(() => moreDetail = false);
+            return false;
+          }
+
+          return true;
+        },
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: myAppBar(),
+          body: BlocConsumer<EstateProfileBloc, EstateProfileState>(
+            bloc: bloc,
+            listener: (context, state) {
+              if (state is EstateProfileSuccessState) {
+                setState(() {
+                  title = state.estateProfile.name!;
+                  estateProfile = state.estateProfile;
+                  comments = state.estateProfile.comments ?? [];
+                });
+              }
+            },
+            builder: (context, state) {
+              scaffoldContext = context;
+              if (state is EstateProfileLoading || state is EstateProfileInitial) return Center(child: Loading());
+              if (state is EstateProfileErrorState) return retryWidget(context, state.message);
+              if (state is EstateProfileSuccessState) return profile(context, state.estateProfile);
+              return Container();
+            },
+          ),
         ),
       ),
     );
@@ -183,16 +199,25 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
     );
   }
 
-  AppBar appBar() {
+  AppBar myAppBar() {
     return AppBar(
       elevation: 0.7,
       automaticallyImplyLeading: false,
-      leading: MyBackButton(),
+      leading: MyBackButton(
+        onPressed: () {
+          if (moreDetail) {
+            setState(() => moreDetail = false);
+            return;
+          }
+          back(context);
+        },
+      ),
       titleSpacing: 0,
       title: AppBarTitle(title),
       actions: [
         IconButton(
-          onPressed: share,
+          onPressed: estateProfile?.shareLink == null ? null : share,
+          disabledColor: estateProfile?.shareLink == null ? Colors.grey : Themes.text,
           icon: icon(Icons.share_rounded, size: 22),
         ),
         MyPopupMenuButton(
@@ -248,46 +273,59 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
     );
   }
 
-  Widget card({required String title, required String value}) {
+  Widget card({required String title, required int? value, void Function()? onTap}) {
     return Expanded(
-      child: Container(
-        height: 60,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontFamily: "IranSansBold",
-                color: App.theme.textTheme.bodyLarge?.color,
-                fontSize: 11,
+      child: MyTextButton(
+        onPressed: onTap,
+        rippleColor: Colors.grey,
+        child: Container(
+          height: 60,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: Themes.text,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 10,
+                ),
               ),
-            ),
-            SizedBox(height: 2),
-            Text(
-              value,
-              style: TextStyle(
-                color: App.theme.tooltipTheme.textStyle?.color,
-                fontSize: 10,
+              SizedBox(height: 2),
+              Text(
+                (value ?? 0).toString(),
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Themes.text,
+                  fontFamily: "IranSansBold",
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget estateImageItem(estateProfileModel.Images image) {
+  Widget estateImageItem(List<estateProfileModel.Images> images, {required int index}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 3),
       child: GestureDetector(
         onTap: () {
-          push(context, ImageViewScreen(imageUrl: image.image));
+          if (!images[index].image.isFill()) return;
+          push(
+            context,
+            ImageViewScreen(
+              imageUrls: images.map((e) => e.image!).toList(),
+              index: index,
+              title: widget.estateName,
+            ),
+          );
         },
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: MyImage(
-            image: NetworkImage(image.image ?? ""),
+            image: NetworkImage(images[index].image ?? ""),
             height: 50,
             width: 70,
             fit: BoxFit.fill,

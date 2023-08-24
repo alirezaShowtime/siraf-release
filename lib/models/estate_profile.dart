@@ -19,12 +19,37 @@ class EstateProfile {
   List<Comment>? comments;
   List<Consultants>? consultants;
 
+  String? phoneNumber;
+  String? telephoneNumber;
+  String? statusString;
+  double? lat;
+  double? long;
+  String? managerName;
+
   EstateProfile.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
       id = json["id"];
     }
+    if (json["phoneNumber"] is String) {
+      phoneNumber = json["phoneNumber"];
+    }
+    if (json["telephoneNumber"] is String) {
+      telephoneNumber = json["telephoneNumber"];
+    }
+    if (json["statusString"] is String) {
+      statusString = json["statusString"];
+    }
+    if (json["lat"] is String) {
+      lat = double.parse(json["lat"]);
+    }
+    if (json["long"] is String) {
+      long = double.parse(json["long"]);
+    }
     if (json["countConstruction"] is int) {
       countConstruction = json["countConstruction"];
+    }
+    if (json["managerName"] is String) {
+      managerName = json["managerName"];
     }
     if (json["countRent"] is int) {
       countRent = json["countRent"];
@@ -71,32 +96,6 @@ class EstateProfile {
     if (json["consultants"] is List) {
       consultants = json["consultants"] == null ? null : (json["consultants"] as List).map((e) => Consultants.fromJson(e)).toList();
     }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["id"] = id;
-    _data["countConstruction"] = countConstruction;
-    _data["countRent"] = countRent;
-    _data["countOnSale"] = countOnSale;
-    _data["status"] = status;
-    _data["guildCode"] = guildCode;
-    _data["name"] = name;
-    _data["bio"] = bio;
-    _data["logoFile"] = logoFile;
-    _data["address"] = address;
-    _data["video"] = video;
-    _data["images"] = images;
-    _data["rate"] = rate;
-    _data["shareLink"] = shareLink;
-    _data["description"] = description;
-    if (comments != null) {
-      _data["comment"] = comments?.map((e) => e.toJson()).toList();
-    }
-    if (consultants != null) {
-      _data["consultants"] = consultants?.map((e) => e.toJson()).toList();
-    }
-    return _data;
   }
 }
 

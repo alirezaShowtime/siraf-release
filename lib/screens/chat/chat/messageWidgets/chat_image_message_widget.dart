@@ -100,7 +100,7 @@ class ChatImageMessageWidgetState extends ChatMessageWidgetState {
 
   Widget _imageView() {
     return InkWell(
-      onTap: () => push(context, ImageViewScreen(imageUrl: widget.fileMessages[0].path!)),
+      onTap: () => push(context, ImageViewScreen(imageUrls: widget.fileMessages.map((e) => e.path!).toList())),
       child: MyImage(
         borderRadius: BorderRadius.circular(7),
         image: getImageProvider(),
@@ -161,7 +161,7 @@ class ChatImageMessageWidgetState extends ChatMessageWidgetState {
             mainAxisCellCount: 1,
             crossAxisCellCount: i == widget.fileMessages.length - 1 && i.isEven ? 2 : 1,
             child: InkWell(
-              onTap: () => push(context, ImageViewScreen(imageUrl: widget.fileMessages[i].path!)),
+              onTap: () => push(context, ImageViewScreen(imageUrls: widget.fileMessages.map((e) => e.path!).toList())),
               child: MyImage(
                 borderRadius: BorderRadius.circular(3),
                 image: CachedNetworkImageProvider(widget.fileMessages[i].path!),

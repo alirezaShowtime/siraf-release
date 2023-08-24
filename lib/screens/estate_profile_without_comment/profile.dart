@@ -7,75 +7,94 @@ extension Profile on _EstateProfileScreen {
       child: Column(
         children: [
           Container(
-            height: 190,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+            constraints: BoxConstraints(minHeight: 180),
+            padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 5),
             decoration: BoxDecoration(
-              color: App.theme.dialogBackgroundColor,
+              color: Colors.white,
               border: !(showComment || moreDetail) ? null : Border(bottom: BorderSide(color: Colors.grey.shade200, width: 1)),
             ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Avatar(
-                      size: 80,
-                      imagePath: estateProfile.logoFile,
-                      errorWidget: _profileWidget(),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(left: 2),
-                      decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.grey.shade200, width: 1))),
-                      child: Column(
-                        children: [
-                          Text(
-                            estateProfile.name ?? "",
-                            style: TextStyle(fontSize: 12, fontFamily: "IranSansBold"),
-                          ),
-                          Text(
-                            estateProfile.guildCode ?? "",
-                            style: TextStyle(fontSize: 11),
-                          ),
-                          StaticStar(rating: estateProfile.rate ?? 0),
-                        ],
+                Container(
+                  height: 80,
+                  child: Row(
+                    children: [
+                      Avatar(
+                        imagePath: estateProfile.logoFile,
+                        errorWidget: _profileWidget(),
+                        loadingWidget: _profileWidget(),
+                        size: 80,
                       ),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              card(title: "فروشی", value: (estateProfile.countOnSale ?? 0).toString()),
-                              card(title: "اجاره ای", value: (estateProfile.countRent ?? 0).toString()),
-                              card(title: "ساخت و ساز", value: (estateProfile.countConstruction ?? 0).toString()),
-                            ],
-                          ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            card(title: "فروشی", value: estateProfile.countOnSale),
+                            card(title: "اجاره ای", value: estateProfile.countRent),
+                            card(title: "ساخت و ساز", value: estateProfile.countConstruction),
+                          ],
                         ),
-                        Column(
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 88,
+                        margin: EdgeInsets.only(left: 8),
+                        padding: EdgeInsets.only(left: 8),
+                        decoration: BoxDecoration(
+                          border: Border(left: BorderSide(color: Colors.grey.shade200, width: 1)),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              estateProfile.name ?? "بدون نام",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Themes.text,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              estateProfile.guildCode!,
+                              style: TextStyle(color: Themes.text, fontSize: 11),
+                            ),
+                            StaticStar(rating: estateProfile.rate ?? 0),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              estateProfile.bio ?? "",
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(color: App.theme.tooltipTheme.textStyle?.color, fontSize: 10),
+                              "با مدیریت ${estateProfile.managerName}",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontFamily: "IranSansBold",
+                              ),
                             ),
                             Text(
-                              "آدرس : ${estateProfile.address}",
-                              maxLines: 2,
+                              estateProfile.bio ?? "بیو...",
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(color: App.theme.tooltipTheme.textStyle?.color, fontSize: 10),
+                              maxLines: 4,
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontSize: 11,
+                                fontFamily: "IranSansMedium",
+                              ),
                             ),
-                            SizedBox(height: 5),
+                            SizedBox(height: 7),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -101,16 +120,17 @@ extension Profile on _EstateProfileScreen {
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
           if (!moreDetail && !showComment) searchBar(estateProfile.name ?? ""),
-          if (showComment) addCommentWidget(estateProfile.id!),
-          if (!showComment) Expanded(child: BlocBuilder<FilesBloc, FilesState>(builder: (context, state) => _buildEstateFilesBloc(context, state, estateProfile))),
+          if (moreDetail) profileDetail(estateProfile),
+          if (showComment && !moreDetail) addCommentWidget(estateProfile.id!),
+          if (!showComment && !moreDetail) Expanded(child: BlocBuilder<FilesBloc, FilesState>(builder: (context, state) => _buildEstateFilesBloc(context, state, estateProfile))),
         ],
       ),
     );
@@ -143,8 +163,6 @@ extension Profile on _EstateProfileScreen {
       listView: ListView(
         controller: filesListViewController,
         children: [
-          if (moreDetail) profileDetail(estateProfile),
-          if (moreDetail) searchBar(estateProfile.name ?? ""),
           SizedBox(height: 15),
           for (var file in files)
             GestureDetector(
