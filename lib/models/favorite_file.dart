@@ -1,4 +1,5 @@
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/models/city.dart';
 
 class FavoriteFile {
   int? id;
@@ -13,8 +14,7 @@ class FavoriteFile {
       id = json["id"];
     }
     if (json["file_id"] is Map) {
-      fileId =
-          json["file_id"] == null ? null : FileId.fromJson(json["file_id"]);
+      fileId = json["file_id"] == null ? null : FileId.fromJson(json["file_id"]);
     }
     if (json["createDate"] is String) {
       createDate = json["createDate"];
@@ -58,19 +58,9 @@ class FileId {
   Category? category;
   String? city;
   int? viewCount;
+  City? cityObj;
 
-  FileId(
-      {this.id,
-      this.progress,
-      this.name,
-      this.description,
-      this.images,
-      this.favorite,
-      this.publishedAgo,
-      this.propertys,
-      this.category,
-      this.city,
-      this.viewCount});
+  FileId({this.id, this.progress, this.name, this.description, this.images, this.favorite, this.publishedAgo, this.propertys, this.category, this.city, this.viewCount});
 
   FileId.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -86,9 +76,7 @@ class FileId {
       description = json["description"];
     }
     if (json["images"] is List) {
-      images = json["images"] == null
-          ? null
-          : (json["images"] as List).map((e) => Images.fromJson(e)).toList();
+      images = json["images"] == null ? null : (json["images"] as List).map((e) => Images.fromJson(e)).toList();
     }
     if (json["favorite"] is bool) {
       favorite = json["favorite"];
@@ -107,14 +95,17 @@ class FileId {
               .toList();
     }
     if (json["category"] is Map) {
-      category =
-          json["category"] == null ? null : Category.fromJson(json["category"]);
+      category = json["category"] == null ? null : Category.fromJson(json["category"]);
     }
     if (json["city"] is String) {
       city = json["city"];
     }
     if (json["viewCount"] is int) {
       viewCount = json["viewCount"];
+    }
+    if (json['city'] is Map) {
+      cityObj = json['city'] == null ? null : City.fromJson(json['city']);
+      city = cityObj?.name ?? city;
     }
   }
 
@@ -140,27 +131,121 @@ class FileId {
     return _data;
   }
 
+  String getPricePerMeter() {
+    if ((getFirstPriceInt() == -1 || getFirstPriceInt() == 0) || getMeter() == 0) {
+      return "توافقی";
+    }
+    var result = getFirstPriceInt() ~/ getMeter();
+
+    if (result == 0) {
+      return "توافقی";
+    }
+
+    result = (result / 10000).round() * 10000;
+
+    return "قیمت هر متر " + number_format(result);
+  }
+
+  int getPricePerMeterInt() {
+    if ((getFirstPriceInt() == -1 || getFirstPriceInt() == 0) || getMeter() == 0) {
+      return -1;
+    }
+    var result = getFirstPriceInt() ~/ getMeter();
+
+    if (result == 0) {
+      return -1;
+    }
+
+    result = (result / 10000).round() * 10000;
+
+    return result;
+  }
+
+  int getMeter() {
+    if (propertys!.where((element) => element.weightList == 1).isNotEmpty) {
+      var prop = propertys!.firstWhere((element) => element.weightList == 1);
+
+      if (prop.value == null || prop.name == null) return 0;
+
+      return int.parse(prop.value!);
+    } else {
+      return 0;
+    }
+  }
+
+  int getFirstPriceInt() {
+    if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
+      var prop = propertys!.firstWhere((element) => element.weightList == 5);
+
+      if (prop.value == null || prop.name == null) return -1;
+
+      return int.parse(prop.value!);
+    } else {
+      return -1;
+    }
+  }
+
+  int getSecondPriceInt() {
+    if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
+      var prop = propertys!.firstWhere((element) => element.weightList == 6);
+
+      if (prop.value == null || prop.name == null) return -1;
+
+      return int.parse(prop.value!);
+    } else {
+      return -1;
+    }
+  }
+
   String getFirstPrice() {
     if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 5);
 
-      if (prop.value == null || prop.name == null) return "";
+      if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
 
-      return number_format(prop.value!) + " " + prop.name!;
+      return toPrice(prop.value!, prop.name!);
     } else {
-      return "";
+      return adaptivePrice("");
     }
   }
 
   String getSecondPrice() {
+    if (!isRent()) {
+      return getPricePerMeter();
+    }
+    if (fullAdaptive()) return "";
+
     if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 6);
 
-      return number_format(prop.value!) + " " + prop.name!;
+      if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
+
+      return toPrice(prop.value!, prop.name!);
     } else {
-      return "";
+      return adaptivePrice("");
     }
   }
+
+  String adaptivePrice(value, {String? name}) {
+    if (value.toString() == "0") {
+      return name != null ? "$name : رایگان" : "رایگان";
+    }
+    return (name != null && !fullAdaptive() ? "$name توافقی" : "") + "توافقی";
+  }
+
+  String toPrice(dynamic value, String name) {
+    if (value.toString() == "0") {
+      return "$name رایگان";
+    }
+
+    return "$name ${number_format(value)}";
+  }
+
+  bool fullAdaptive() {
+    return (getFirstPriceInt() == -1 && getSecondPriceInt() == -1);
+  }
+
+  bool isRent() => category?.fullCategory?.contains("اجاره") ?? false;
 }
 
 class Category {
@@ -171,13 +256,7 @@ class Category {
   bool? isAll;
   int? parentId;
 
-  Category(
-      {this.id,
-      this.name,
-      this.image,
-      this.fullCategory,
-      this.isAll,
-      this.parentId});
+  Category({this.id, this.name, this.image, this.fullCategory, this.isAll, this.parentId});
 
   Category.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -216,7 +295,7 @@ class Category {
 
 class Propertys {
   String? name;
-  int? value;
+  String? value;
   bool? list;
   int? weightList;
 
@@ -226,8 +305,11 @@ class Propertys {
     if (json["name"] is String) {
       name = json["name"];
     }
-    if (json["value"] is int) {
+    if (json["value"] is String) {
       value = json["value"];
+    }
+    if (json["value"] is int) {
+      value = json["value"].toString();
     }
     if (json["list"] is bool) {
       list = json["list"];
@@ -256,14 +338,7 @@ class Images {
   String? name;
   int? fileId;
 
-  Images(
-      {this.id,
-      this.createDate,
-      this.path,
-      this.status,
-      this.weight,
-      this.name,
-      this.fileId});
+  Images({this.id, this.createDate, this.path, this.status, this.weight, this.name, this.fileId});
 
   Images.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {

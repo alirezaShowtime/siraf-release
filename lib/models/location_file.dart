@@ -1,4 +1,5 @@
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/models/city.dart';
 
 class LocationFile {
   int? id;
@@ -10,16 +11,21 @@ class LocationFile {
   List<Propertys>? propertys;
   bool? favorite;
   String? lat_long;
+  String? publishedAgo;
+  City? city;
 
-  LocationFile(
-      {this.id,
-      this.name,
-      this.category,
-      this.lat,
-      this.long,
-      this.image,
-      this.propertys,
-      this.favorite});
+  LocationFile({
+    this.id,
+    this.name,
+    this.category,
+    this.lat,
+    this.long,
+    this.image,
+    this.propertys,
+    this.favorite,
+    this.publishedAgo,
+    this.city,
+  });
 
   LocationFile.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -29,8 +35,7 @@ class LocationFile {
       name = json["name"];
     }
     if (json["category"] is Map) {
-      category =
-          json["category"] == null ? null : Category.fromJson(json["category"]);
+      category = json["category"] == null ? null : Category.fromJson(json["category"]);
     }
     if (json["lat"] is String) {
       lat = json["lat"];
@@ -53,6 +58,12 @@ class LocationFile {
     }
     if (json["favorite"] is bool) {
       favorite = json["favorite"];
+    }
+    if (json["publishedAgo"] is String) {
+      publishedAgo = json["publishedAgo"];
+    }
+    if (json['city'] is Map) {
+      city = json['city'] == null ? null : City.fromJson(json['city']);
     }
 
     lat_long = lat.toString() + "," + long.toString();
@@ -87,33 +98,122 @@ class LocationFile {
     return list2;
   }
 
+  String getPricePerMeter() {
+    if ((getFirstPriceInt() == -1 || getFirstPriceInt() == 0) || getMeter() == 0) {
+      return "توافقی";
+    }
+    var result = getFirstPriceInt() ~/ getMeter();
+
+    if (result == 0) {
+      return "توافقی";
+    }
+
+    result = (result / 10000).round() * 10000;
+
+    return "قیمت هر متر " + number_format(result);
+  }
+
+  int getPricePerMeterInt() {
+    if ((getFirstPriceInt() == -1 || getFirstPriceInt() == 0) || getMeter() == 0) {
+      return -1;
+    }
+    var result = getFirstPriceInt() ~/ getMeter();
+
+    if (result == 0) {
+      return -1;
+    }
+
+    result = (result / 10000).round() * 10000;
+
+    return result;
+  }
+
+  int getMeter() {
+    if (propertys!.where((element) => element.weightList == 1).isNotEmpty) {
+      var prop = propertys!.firstWhere((element) => element.weightList == 1);
+
+      if (prop.value == null || prop.name == null) return 0;
+
+      return int.parse(prop.value!);
+    } else {
+      return 0;
+    }
+  }
+
+  int getFirstPriceInt() {
+    if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
+      var prop = propertys!.firstWhere((element) => element.weightList == 5);
+
+      if (prop.value == null || prop.name == null) return -1;
+
+      return int.parse(prop.value!);
+    } else {
+      return -1;
+    }
+  }
+
+  int getSecondPriceInt() {
+    if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
+      var prop = propertys!.firstWhere((element) => element.weightList == 6);
+
+      if (prop.value == null || prop.name == null) return -1;
+
+      return int.parse(prop.value!);
+    } else {
+      return -1;
+    }
+  }
+
   String getFirstPrice() {
     if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 5);
 
-      if (prop.value == null || prop.name == null) return "توافقی";
+      if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
 
-      return number_format(int.parse(prop.value!));
+      if (isRent()) return toPrice(prop.value!, prop.name!);
+      return number_format(prop.value!) + " تومان";
     } else {
-      return "توافقی";
+      return adaptivePrice("");
     }
   }
 
   String getSecondPrice() {
+    if (!isRent()) {
+      return getPricePerMeter();
+    }
+    if (fullAdaptive()) return "";
+
     if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 6);
 
-      if (prop.value == null || prop.name == null) return "توافقی";
+      if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
 
-      return number_format(int.parse(prop.value!));
+      return toPrice(prop.value!, prop.name!);
     } else {
-      return "توافقی";
+      return adaptivePrice("");
     }
   }
 
-  bool isRent() {
-    return category?.getMainCategoryName()?.contains("اجاره") ?? false;
+  String adaptivePrice(value, {String? name}) {
+    if (value.toString() == "0") {
+      return name != null ? "$name : رایگان" : "رایگان";
+    }
+    return (name != null && !fullAdaptive() ? "$name توافقی" : "") + "توافقی";
   }
+
+  String toPrice(dynamic value, String name) {
+    if (value.toString() == "0") {
+      return "$name : رایگان";
+    }
+
+    return "$name : ${number_format(value)}";
+  }
+
+  bool fullAdaptive() {
+    return (getFirstPriceInt() == -1 && getSecondPriceInt() == -1);
+  }
+
+  bool isRent() => category?.fullCategory?.contains("اجاره") ?? false;
 }
 
 class Propertys {
@@ -128,9 +228,7 @@ class Propertys {
     if (json["name"] is String) {
       name = json["name"];
     }
-    if (json["value"] is int ||
-        json["value"] is double ||
-        json["value"] is String) {
+    if (json["value"] is int || json["value"] is double || json["value"] is String) {
       value = json["value"].toString();
     }
     if (json["list"] is bool) {
@@ -160,14 +258,7 @@ class Image {
   String? name;
   int? fileId;
 
-  Image(
-      {this.id,
-      this.createDate,
-      this.path,
-      this.status,
-      this.weight,
-      this.name,
-      this.fileId});
+  Image({this.id, this.createDate, this.path, this.status, this.weight, this.name, this.fileId});
 
   Image.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
@@ -214,13 +305,7 @@ class Category {
   bool? isAll;
   int? parentId;
 
-  Category(
-      {this.id,
-      this.name,
-      this.image,
-      this.fullCategory,
-      this.isAll,
-      this.parentId});
+  Category({this.id, this.name, this.image, this.fullCategory, this.isAll, this.parentId});
 
   Category.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {

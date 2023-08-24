@@ -43,6 +43,7 @@ import 'package:siraf3/settings.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/empty.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
+import 'package:siraf3/widgets/file_horizontal_item_2.dart';
 import 'package:siraf3/widgets/file_slide_item.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/try_again.dart';
@@ -488,7 +489,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Padding(
         padding: EdgeInsets.only(top: items.first == file ? 0 : 5),
-        child: viewType == ViewType.List ? FileHorizontalItem(file: file) : FileSlideItem(file: file),
+        child: viewType == ViewType.List ? FileHorizontalItem2(file: file) : FileSlideItem(file: file),
       ),
     );
   }

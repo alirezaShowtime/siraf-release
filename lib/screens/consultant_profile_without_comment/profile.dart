@@ -152,7 +152,7 @@ extension Profile on _ConsultantProfileScreen {
           if (i == 0) return SizedBox(height: 10);
           return GestureDetector(
             onTap: () => push(context, FileScreen(id: files[i - 1].id!)),
-            child: FileHorizontalItem(file: files[i - 1]),
+            child: FileHorizontalItem2(file: files[i - 1]),
           );
         },
       ),

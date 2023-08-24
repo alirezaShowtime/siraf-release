@@ -20,6 +20,7 @@ import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/collapsable.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
+import 'package:siraf3/widgets/file_horizontal_item_2.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_icon_button.dart';
@@ -117,7 +118,7 @@ class _FileScreen extends State<FileScreen> {
           bookmark = Bookmark(
             id: widget.id,
             context: context,
-            isFavorite: state.favorite ?? false,
+            isFavorite: state.favorite,
           );
         },
         builder: (context, state) {
@@ -625,7 +626,7 @@ class _FileScreen extends State<FileScreen> {
                     onTap: () => push(context, FileScreen(id: relatedFile.id!)),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: FileHorizontalItem(file: relatedFile),
+                      child: FileHorizontalItem2(file: relatedFile),
                     ),
                   ),
                 ),

@@ -6,6 +6,7 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/models/location_file.dart';
+import 'package:siraf3/models/user.dart';
 
 class LocationFilesEvent {
   FilterData filterData;
@@ -42,20 +43,29 @@ class LocationFilesBloc extends Bloc<LocationFilesEvent, LocationFilesState> {
   _onEvent(LocationFilesEvent event, Emitter<LocationFilesState> emit) async {
     emit(LocationFilesLoadingState());
 
-    var response = await http2.getWithToken(
-      getFileUrl(
-        "file/locationFiles" +
-            event.filterData.toQueryString() +
-            (event.latLng != null
-                ? "&lat=${event.latLng!.latitude.toString()}&long=${event.latLng!.longitude.toString()}"
-                : "") +
-            (event.search != null ? "&q=${event.search!}" : ""),
-      ),
-      timeout: Duration(seconds: 500),
-    );
+    Response response;
 
-    print(response.statusCode);
-    print(convertUtf8(response.body));
+    if (await User.hasToken()) {
+      response = await http2.getWithToken(
+        getFileUrl(
+          "file/locationFiles" +
+              event.filterData.toQueryString() +
+              (event.latLng != null ? "&lat=${event.latLng!.latitude.toString()}&long=${event.latLng!.longitude.toString()}" : "") +
+              (event.search != null ? "&q=${event.search!}" : ""),
+        ),
+        timeout: Duration(seconds: 500),
+      );
+    } else {
+      response = await http2.get(
+        getFileUrl(
+          "file/locationFiles" +
+              event.filterData.toQueryString() +
+              (event.latLng != null ? "&lat=${event.latLng!.latitude.toString()}&long=${event.latLng!.longitude.toString()}" : "") +
+              (event.search != null ? "&q=${event.search!}" : ""),
+        ),
+        timeout: Duration(seconds: 500),
+      );
+    }
 
     if (isResponseOk(response)) {
       var data = jDecode(response.body)['data'];
@@ -63,11 +73,7 @@ class LocationFilesBloc extends Bloc<LocationFilesEvent, LocationFilesState> {
       if (!(data is String)) {
         files = LocationFile.fromList(data);
       }
-      files = files
-          .where((e) =>
-              (double.parse(e.lat!) <= 90 && double.parse(e.lat!) >= -90) &&
-              (double.parse(e.long!) <= 90 && double.parse(e.long!) >= -90))
-          .toList();
+      files = files.where((e) => (double.parse(e.lat!) <= 90 && double.parse(e.lat!) >= -90) && (double.parse(e.long!) <= 90 && double.parse(e.long!) >= -90)).toList();
       files = files.unique((e) => e.lat_long);
       print(files.length);
       files.forEach((element) {
