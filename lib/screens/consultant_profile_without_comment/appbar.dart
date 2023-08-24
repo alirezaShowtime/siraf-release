@@ -10,7 +10,11 @@ extension AppBarWidget on _ConsultantProfileScreen {
       titleSpacing: 0,
       title: AppBarTitle(title),
       actions: [
-        IconButton(onPressed: share, icon: icon(Icons.share_rounded, size: 22)),
+        IconButton(
+          onPressed: share,
+          disabledColor: consultantInfo?.shareLink == null ? Colors.grey : Themes.text,
+          icon: icon(Icons.share_rounded, size: 22),
+        ),
         MyPopupMenuButton(
           itemBuilder: (_) => [
             MyPopupMenuItem<String>(

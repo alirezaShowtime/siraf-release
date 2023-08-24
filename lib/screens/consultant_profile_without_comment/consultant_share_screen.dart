@@ -67,7 +67,7 @@ class _ConsultantShareScreen extends State<ConsultantShareScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "مشاور املاک, ",
+                            "مشاور, ",
                             style: TextStyle(
                               fontSize: 15,
                               color: Colors.black,

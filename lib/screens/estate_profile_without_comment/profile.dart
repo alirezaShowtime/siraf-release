@@ -58,6 +58,7 @@ extension Profile on _EstateProfileScreen {
                               estateProfile.name ?? "بدون نام",
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Themes.text,
                                 fontSize: 12,
@@ -66,6 +67,9 @@ extension Profile on _EstateProfileScreen {
                             ),
                             Text(
                               estateProfile.guildCode!,
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(color: Themes.text, fontSize: 11),
                             ),
                             StaticStar(rating: estateProfile.rate ?? 0),

@@ -7,110 +7,135 @@ extension Profile on _ConsultantProfileScreen {
       child: Column(
         children: [
           Container(
-            height: 160,
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
+            constraints: BoxConstraints(minHeight: 180),
+            padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 5),
             decoration: BoxDecoration(
               color: Colors.white,
               border: !(moreDetail || showComment) ? null : Border(bottom: BorderSide(width: 1, color: Colors.grey.shade200)),
             ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Avatar(size: 80, imagePath: consultantInfo.avatar, errorWidget: _profileWidget()),
-                    SizedBox(height: 5),
-                    Container(
-                      padding: const EdgeInsets.only(left: 2),
-                      decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.grey.shade200, width: 1))),
-                      child: Column(
-                        children: [
-                          Text(
-                            consultantInfo.name!,
-                            style: TextStyle(
-                              color: Themes.text,
-                              fontSize: 12,
-                              fontFamily: "IranSansBold",
+                Container(
+                  height: 80,
+                  child: Row(
+                    children: [
+                      Avatar(
+                        imagePath: consultantInfo.avatar,
+                        errorWidget: _profileWidget(),
+                        loadingWidget: _profileWidget(),
+                        size: 80,
+                      ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            card(title: "فروشی", value: consultantInfo.countOnSale),
+                            card(title: "اجاره ای", value: consultantInfo.countRent),
+                            card(title: "ساخت و ساز", value: consultantInfo.countConstruction),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 88,
+                        margin: EdgeInsets.only(left: 8),
+                        padding: EdgeInsets.only(left: 8),
+                        decoration: BoxDecoration(
+                          border: Border(left: BorderSide(color: Colors.grey.shade200, width: 1)),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              consultantInfo.name ?? "بدون نام",
+                              maxLines: 2,
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Themes.text,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          StaticStar(rating: consultantInfo.rate ?? 0),
-                          InkWell(
-                            onTap: () {
-                              push(
+                            StaticStar(rating: consultantInfo.rate ?? 0.0),
+                            SizedBox(height: 5),
+                            InkWell(
+                              onTap: () {
+                                push(
                                   context,
                                   EstateProfileScreen(
                                     estateId: 1,
                                     estateName: consultantInfo.estateName,
-                                  ));
-                            },
-                            child: Text(
-                              consultantInfo.estateName!,
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                consultantInfo.estateName!,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Themes.primary,
+                                  fontSize: 10,
+                                  fontFamily: "IranSansBold",
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              consultantInfo.bio ?? "بیو...",
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 4,
                               style: TextStyle(
-                                color: Themes.primary,
                                 fontSize: 11,
                                 fontFamily: "IranSansMedium",
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(height: 5),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          card(title: "فروشی", value: consultantInfo.countOnSale.toString()),
-                          card(title: "اجاره ای", value: consultantInfo.countRent.toString()),
-                          card(title: "ساخت و ساز", value: consultantInfo.countConstruction.toString()),
-                        ],
-                      ),
-                      // SizedBox(height: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            consultantInfo.bio ?? "",
-                            maxLines: 2,
-                            style: TextStyle(color: Themes.textGrey, fontSize: 11),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              GestureDetector(
-                                onTap: () => setState(() {
-                                  final bool previousValueOfMoreDetail = moreDetail;
-                                  showComment = !showComment;
+                            SizedBox(height: 7),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                GestureDetector(
+                                  onTap: () => setState(() {
+                                    final bool previousValueOfMoreDetail = moreDetail;
+                                    showComment = !showComment;
 
-                                  viewMoreDetail(force: false);
+                                    viewMoreDetail(force: false);
 
-                                  if (!previousValueOfMoreDetail && !showComment) {
-                                    showSearchBarWidget = true;
-                                  }
+                                    if (!previousValueOfMoreDetail && !showComment) {
+                                      showSearchBarWidget = true;
+                                    }
 
-                                  if (!previousValueOfMoreDetail && showComment) {
-                                    showSearchBarWidget = false;
-                                  }
-                                }),
-                                child: Text(
-                                  !showComment ? "ثبت امتیاز" : "فایل های مشاور",
-                                  style: TextStyle(
-                                    color: Themes.text,
-                                    fontFamily: "IranSansBold",
-                                    fontSize: 9,
+                                    if (!previousValueOfMoreDetail && showComment) {
+                                      showSearchBarWidget = false;
+                                    }
+                                  }),
+                                  child: Text(
+                                    !showComment ? "ثبت امتیاز" : "فایل های مشاور",
+                                    style: TextStyle(
+                                      color: Themes.text,
+                                      fontFamily: "IranSansBold",
+                                      fontSize: 9,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -118,7 +143,7 @@ extension Profile on _ConsultantProfileScreen {
               ],
             ),
           ),
-          if (showSearchBarWidget) searchBar(),
+          if (showSearchBarWidget) searchBar(consultantInfo.estateName ?? ""),
           if (showComment) addCommentWidget(),
           if (!showComment) Expanded(child: BlocBuilder<FilesBloc, FilesState>(builder: _buildFilesBloc)),
         ],

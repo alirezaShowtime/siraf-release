@@ -1,42 +1,35 @@
 part of 'consultant_profile_screen.dart';
 
 extension SearchBar on _ConsultantProfileScreen {
-  Widget searchBar() {
+  Widget searchBar(String estateName) {
     return Container(
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: App.theme.dialogBackgroundColor,
         border: Border(
-          bottom: BorderSide(color: Colors.grey.shade200, width: 1),
-          top: BorderSide(color: Colors.grey.shade200, width: 1),
+          bottom: BorderSide(color: App.isDark ? Colors.grey.shade900 : Colors.grey.shade200, width: 1),
+          top: BorderSide(color: App.isDark ? Colors.grey.shade900 : Colors.grey.shade200, width: 1),
         ),
       ),
       child: Row(
         children: [
           Expanded(
             child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  right: BorderSide(color: Themes.text, width: 1),
-                ),
-              ),
               child: TextField2(
                 controller: searchController,
                 maxLines: 1,
                 decoration: InputDecoration(
-                  hintText: "جستجو در امللاک برج",
+                  hintText: "جستجو در $estateName",
                   border: InputBorder.none,
                   isDense: true,
-                  hintStyle: TextStyle(
-                    color: Colors.grey.shade300,
-                    fontSize: 11,
-                  ),
+                  hintStyle: TextStyle(color: Colors.grey, fontSize: 11, fontFamily: "IranSansMedium"),
                   contentPadding: EdgeInsets.zero,
                 ),
                 style: TextStyle(
-                  color: Themes.text,
+                  color: App.theme.textTheme.bodyLarge?.color,
                   fontSize: 11,
+                  fontFamily: "IranSansMedium",
                 ),
                 textInputAction: TextInputAction.search,
                 onSubmitted: (v) {
@@ -49,11 +42,17 @@ extension SearchBar on _ConsultantProfileScreen {
               ),
             ),
           ),
-          IconButton(
-            onPressed: viewFilterFileWidget,
-            icon: icon(OctIcons.sliders_16, size: 15),
-            constraints: BoxConstraints(),
-            padding: EdgeInsets.zero,
+          badges.Badge(
+            badgeContent: Text(''),
+            showBadge: filterData.hasFilter(),
+            position: badges.BadgePosition.custom(top: -15, end: -6),
+            badgeStyle: badges.BadgeStyle(badgeColor: Themes.primary),
+            child: IconButton(
+              onPressed: viewFilterFileWidget,
+              icon: icon(OctIcons.sliders_16, size: 20),
+              constraints: BoxConstraints(),
+              padding: EdgeInsets.zero,
+            ),
           ),
         ],
       ),

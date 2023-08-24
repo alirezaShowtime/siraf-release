@@ -1,11 +1,7 @@
 part of 'consultant_profile_screen.dart';
 
 extension MyCard on _ConsultantProfileScreen {
-  Widget card({
-    required String title,
-    required String value,
-    void Function()? onTap,
-  }) {
+  Widget card({required String title, required int? value}) {
     return Expanded(
       child: Container(
         height: 60,
@@ -16,17 +12,14 @@ extension MyCard on _ConsultantProfileScreen {
               title,
               style: TextStyle(
                 color: Themes.text,
-                fontFamily: "IranSansBold",
+                fontWeight: FontWeight.bold,
                 fontSize: 11,
               ),
             ),
             SizedBox(height: 2),
             Text(
-              value,
-              style: TextStyle(
-                color: Themes.textGrey,
-                fontSize: 10,
-              ),
+              (value ?? 0).toString(),
+              style: TextStyle(color: Themes.textGrey, fontSize: 10),
             ),
           ],
         ),

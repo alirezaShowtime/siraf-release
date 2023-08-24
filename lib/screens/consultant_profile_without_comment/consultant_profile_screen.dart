@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:siraf3/bloc/files_bloc.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/consultant_info.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
@@ -32,10 +34,15 @@ import 'package:siraf3/widgets/try_again.dart';
 import 'consultant_share_screen.dart';
 
 part 'add_comment_widget.dart';
+
 part 'appbar.dart';
+
 part 'event_listeners.dart';
+
 part 'my_card.dart';
+
 part 'profile.dart';
+
 part 'search_bar.dart';
 
 class ConsultantProfileScreen extends StatefulWidget {
@@ -130,7 +137,7 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> {
         BlocProvider(create: (_) => sendCommentRateBloc),
       ],
       child: Scaffold(
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: false,
         appBar: appBar(),
         body: BlocConsumer<ConsultantProfileBloc, ConsultantProfileState>(
           bloc: bloc,
