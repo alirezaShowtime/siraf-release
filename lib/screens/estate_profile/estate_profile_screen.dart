@@ -32,6 +32,7 @@ import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
+import 'package:siraf3/widgets/file_horizontal_item_2.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_image.dart';
@@ -347,7 +348,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
     );
   }
 
-  Widget fileItem(File file) => FileHorizontalItem(file: file);
+  Widget fileItem(File file) => FileHorizontalItem2(file: file);
 
   void setFilterData() async {
     cities = await city.City.getList();

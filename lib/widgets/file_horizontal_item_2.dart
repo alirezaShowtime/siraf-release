@@ -31,7 +31,7 @@ class _FileHorizontalItemState2 extends State<FileHorizontalItem2> {
           ),
         ],
       ),
-      constraints: BoxConstraints(maxHeight: 140),
+      constraints: BoxConstraints(maxHeight: 120),
       width: double.infinity,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,8 +39,8 @@ class _FileHorizontalItemState2 extends State<FileHorizontalItem2> {
           MyImage(
             borderRadius: BorderRadius.circular(10),
             image: NetworkImage(widget.file.images?.first.path ?? ""),
-            width: 120,
-            height: 120,
+            width: 100,
+            height: 100,
             fit: BoxFit.cover,
             loadingWidget: loadingImage(),
             errorWidget: loadingImage(),
@@ -49,55 +49,53 @@ class _FileHorizontalItemState2 extends State<FileHorizontalItem2> {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 5),
-                    Text(
-                      widget.file.name!,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: App.theme.textTheme.bodyLarge?.color,
-                        fontSize: 14,
-                        fontFamily: 'IranSansBold',
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        widget.file.name!,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: App.theme.textTheme.bodyLarge?.color,
+                          fontSize: 14,
+                          fontFamily: 'IranSansBold',
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 5),
-                    Row(
-                      children: [
-                        Text(
-                          widget.file.fullCategory!.name!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: App.theme.textTheme.bodyLarge?.color,
-                            fontSize: 11,
-                            fontFamily: 'IranSansMedium',
+                      Row(
+                        children: [
+                          Text(
+                            widget.file.fullCategory?.getMainCategoryName() ?? "",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: App.theme.textTheme.bodyLarge?.color,
+                              fontSize: 11,
+                              fontFamily: 'IranSansMedium',
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 5),
-                        Text(
-                          (widget.file.publishedAgo ?? "") + ' | ' + (widget.file.city?.name ?? ""),
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 9,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'IranSans',
+                          SizedBox(width: 5),
+                          Text(
+                            (widget.file.publishedAgo ?? "") + ' | ' + (widget.file.city?.name ?? ""),
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: 'IranSans',
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 5),
                     Text(
                       widget.file.getFirstPrice(),
                       style: TextStyle(
@@ -121,7 +119,7 @@ class _FileHorizontalItemState2 extends State<FileHorizontalItem2> {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -129,8 +127,8 @@ class _FileHorizontalItemState2 extends State<FileHorizontalItem2> {
 
   Widget loadingImage() {
     return Container(
-      width: 120,
-      height: 120,
+      width: 100,
+      height: 100,
       color: Colors.grey.shade100,
       alignment: Alignment.center,
       child: Column(

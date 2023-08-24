@@ -20,6 +20,7 @@ import 'package:siraf3/widgets/static_star.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 
 import 'estate_profile_without_comment/estate_profile_screen.dart';
 
@@ -109,6 +110,8 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
 
   List<Estate> estates = [];
 
+  List<Marker> markers = [];
+
   @override
   void dispose() {
     super.dispose();
@@ -192,6 +195,9 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                   center: defaultLocation,
                   interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                   zoom: 14.0,
+                  plugins: [
+                    MarkerClusterPlugin(),
+                  ],
                 ),
                 children: [
                   TileLayerWidget(
@@ -204,11 +210,34 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                       circles: circles,
                     ),
                   ),
-                  MarkerLayerWidget(
-                    options: MarkerLayerOptions(
-                      markers: _buildEstateMarkers(estates),
+                  MarkerClusterLayerWidget(
+                    options: MarkerClusterLayerOptions(
+                      spiderfyCircleRadius: 80,
+                      spiderfySpiralDistanceMultiplier: 2,
+                      circleSpiralSwitchover: 50,
+                      maxClusterRadius: 120,
+                      rotate: true,
+                      size: const Size(40, 40),
+                      anchor: AnchorPos.align(AnchorAlign.center),
+                      fitBoundsOptions: const FitBoundsOptions(
+                        padding: EdgeInsets.all(50),
+                        maxZoom: 100,
+                      ),
+                      markers: markers,
+                      polygonOptions: const PolygonOptions(borderColor: Colors.blueAccent, color: Colors.black12, borderStrokeWidth: 3),
+                      builder: (context, markers) {
+                        return Container(
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.blue),
+                          child: Center(
+                            child: Text(
+                              markers.length.toString(),
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -391,6 +420,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
       dismissDialog(loadingDialogContext);
       setState(() {
         estates = state.estates;
+        markers = _buildEstateMarkers(estates);
       });
       if (_firstTime) {
         setState(() {

@@ -285,7 +285,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                 onLongPress: () => changeSelection(file),
                 child: MyFileHorizontalItem(
                   file: file,
-                  isSelected: selectedFiles.contains(file),
+                  // isSelected: selectedFiles.contains(file),
                 ),
               ),
             )

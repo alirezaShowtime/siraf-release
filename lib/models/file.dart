@@ -111,14 +111,29 @@ class File {
       return "توافقی";
     }
 
-    result = (result / 100000).round() * 100000;
+    result = (result / 10000).round() * 10000;
 
-    return number_format(result);
+    return "قیمت هر متر " + number_format(result);
+  }
+
+  int getPricePerMeterInt() {
+    if ((getFirstPriceInt() == -1 || getFirstPriceInt() == 0) || getMeter() == 0) {
+      return -1;
+    }
+    var result = getFirstPriceInt() ~/ getMeter();
+
+    if (result == 0) {
+      return -1;
+    }
+
+    result = (result / 10000).round() * 10000;
+
+    return result;
   }
 
   int getMeter() {
-    if (propertys!.where((element) => element.key == "meter").isNotEmpty) {
-      var prop = propertys!.firstWhere((element) => element.key == "meter");
+    if (propertys!.where((element) => element.weightList == 1).isNotEmpty) {
+      var prop = propertys!.firstWhere((element) => element.weightList == 1);
 
       if (prop.value == null || prop.name == null) return 0;
 
@@ -165,7 +180,9 @@ class File {
   }
 
   String getSecondPrice() {
-    if (fullAdaptive() || !isRent()) return "";
+    if (!isRent()) return getPricePerMeter();
+
+    if (fullAdaptive()) return "";
 
     if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 6);
@@ -199,9 +216,7 @@ class File {
     return (getFirstPriceInt() == -1 && getSecondPriceInt() == -1);
   }
 
-  bool isRent() {
-    return fullCategory?.getMainCategoryName().toString().contains("اجاره") ?? false;
-  }
+  bool isRent() => fullCategory?.fullCategory?.contains("اجاره") ?? false;
 }
 
 class FullCategory {

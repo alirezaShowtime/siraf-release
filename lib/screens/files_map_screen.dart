@@ -396,6 +396,11 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                       viewportFraction: 0.9,
                       onPageChanged: (i, _) {
                         animatedMapMove(_controller, LatLng(double.parse(files.elementAt(i).lat!), double.parse(files.elementAt(i).long!)), _controller.zoom, this);
+
+                        setState(() {
+                          selectedFile = files.elementAt(i);
+                          markers = _buildFileMarkers(files);
+                        });
                       }),
                   carouselController: carouselController,
                 ),
@@ -650,10 +655,12 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                 selectedFile = e;
               });
 
-              print(files.indexOf(e));
-
               Future.delayed(Duration(milliseconds: 200), () {
                 carouselController.jumpToPage(files.indexOf(e));
+              });
+
+              setState(() {
+                markers = _buildFileMarkers(files);
               });
             },
             child: Stack(
@@ -675,53 +682,38 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: e.isRent() ? "ودیعه : " : "قیمت کل : ",
-                                style: TextStyle(
-                                  color: Themes.textLight,
-                                  fontSize: 9,
-                                  fontFamily: e.isRent() ? "IranSans" : "IranSansMedium",
-                                ),
+                        SizedBox(
+                          width: 100,
+                          child: Flexible(
+                            child: Text(
+                              e.name!,
+                              style: TextStyle(
+                                color: Themes.textLight,
+                                fontSize: 9,
                               ),
-                              TextSpan(
-                                text: e.getFirstPrice(),
-                                style: TextStyle(color: Themes.textLight, fontSize: e.isRent() ? 9 : 10, fontFamily: e.isRent() ? "IranSans" : "IranSansMedium"),
-                              ),
-                            ],
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          e.getFirstPrice(),
+                          style: TextStyle(
+                            color: Themes.textLight,
+                            fontSize: e.isRent() ? 9 : 10,
+                            fontFamily: e.isRent() ? "IranSans" : "IranSansMedium",
                           ),
                         ),
                         if (e.isRent())
-                          RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: "اجاره : ",
-                                  style: TextStyle(
-                                    color: Themes.textLight,
-                                    fontSize: 9,
-                                    fontFamily: e.isRent() ? "IranSans" : "IranSansMedium",
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: e.getSecondPrice(),
-                                  style: TextStyle(color: Themes.textLight, fontSize: e.isRent() ? 9 : 10, fontFamily: e.isRent() ? "IranSans" : "IranSansMedium"),
-                                ),
-                              ],
+                          Text(
+                            e.getSecondPrice(),
+                            style: TextStyle(
+                              color: Themes.textLight,
+                              fontSize: e.isRent() ? 9 : 10,
+                              fontFamily: e.isRent() ? "IranSans" : "IranSansMedium",
                             ),
                           ),
-                        Text(
-                          e.name!,
-                          style: TextStyle(
-                            color: Themes.textLight,
-                            fontSize: 9,
-                          ),
-                          maxLines: 1,
-                          softWrap: false,
-                          overflow: TextOverflow.fade,
-                        ),
                       ],
                     ),
                   ),

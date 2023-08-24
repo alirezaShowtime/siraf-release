@@ -2,11 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/bookmark.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/location_file.dart';
 import 'package:siraf3/themes.dart';
 import 'package:flutter/material.dart' as m;
+import 'package:siraf3/widgets/my_image.dart';
 
 class LocationFileItem extends StatefulWidget {
   LocationFile locationFile;
@@ -37,162 +39,157 @@ class _LocationFileItemState extends State<LocationFileItem> {
 
   @override
   Widget build(BuildContext context) {
-    double imageSize = (MediaQuery.of(context).size.width - 20) / 3.5;
-    if (imageSize > 140) imageSize = 140;
     return Container(
+      padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: App.theme.dialogBackgroundColor,
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(13),
         boxShadow: [
           BoxShadow(
-            color: Themes.textGrey.withOpacity(0.1),
+            color: Colors.black12,
             blurRadius: 2,
-            spreadRadius: 2,
-            offset: Offset(0, 1),
-          ),
-          BoxShadow(
-            color: Themes.textGrey.withOpacity(0.1),
-            blurRadius: 2,
-            spreadRadius: 2,
-            offset: Offset(1, 0),
+            spreadRadius: -1,
+            offset: Offset(0, 0),
           ),
         ],
-        borderRadius: BorderRadius.circular(5),
       ),
-      padding: EdgeInsets.all(10),
-      constraints: BoxConstraints(maxHeight: 160),
+      constraints: BoxConstraints(maxHeight: 120),
       width: double.infinity,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Stack(
               children: [
-                m.Image(
+                MyImage(
+                  borderRadius: BorderRadius.circular(10),
                   image: NetworkImage(widget.locationFile.image?.path ?? ""),
-                  width: imageSize,
-                  height: imageSize,
+                  width: 100,
+                  height: 100,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => m.Image(
-                    image: AssetImage(IMAGE_NOT_AVAILABLE),
-                    width: imageSize,
-                    height: imageSize,
-                    fit: BoxFit.cover,
-                  ),
+                  loadingWidget: loadingImage(),
+                  errorWidget: loadingImage(),
                 ),
                 Positioned(
                   right: 6,
                   top: 0,
                   child: GestureDetector(
                     onTap: () {
-                      bookmark.addOrRemoveFavorite();
+                      doWithLogin(context, () {
+                        bookmark.addOrRemoveFavorite();
+                      });
                     },
                     child: Icon(
                       CupertinoIcons.bookmark_fill,
-                      color: (widget.locationFile.favorite ?? false)
-                          ? Themes.primary
-                          : Themes.secondary2,
+                      color: (widget.locationFile.favorite ?? false) ? Themes.primary : Themes.secondary2,
                     ),
                   ),
                 ),
               ],
             ),
           ),
-          SizedBox(
-            width: 5,
-          ),
+          SizedBox(width: 10),
           Expanded(
-            child: Wrap(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          (widget.locationFile.isRent()
-                                  ? "ودیعه : "
-                                  : "قیمت کل : ") +
-                              widget.locationFile.getFirstPrice(),
-                          style: TextStyle(
-                            color: App.theme.textTheme.bodyLarge?.color,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'IranSans',
-                          ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        widget.locationFile.name!,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: App.theme.textTheme.bodyLarge?.color,
+                          fontSize: 14,
+                          fontFamily: 'IranSansBold',
                         ),
-                        if (widget.locationFile.isRent())
-                          SizedBox(
-                            height: 3,
-                          ),
-                        if (widget.locationFile.isRent())
+                      ),
+                      Row(
+                        children: [
                           Text(
-                            "اجاره : " + widget.locationFile.getSecondPrice(),
+                            widget.locationFile.category?.getMainCategoryName() ?? "",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: App.theme.textTheme.bodyLarge?.color,
-                              fontSize: 12,
+                              fontSize: 11,
+                              fontFamily: 'IranSansMedium',
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            (widget.locationFile.publishedAgo ?? "") + ' | ' + (widget.locationFile.city?.name ?? ""),
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 9,
                               fontWeight: FontWeight.w400,
                               fontFamily: 'IranSans',
                             ),
                           ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
-                      widget.locationFile.category!.getMainCategoryName()! +
-                          " | " +
-                          widget.locationFile.name!,
+                      widget.locationFile.getFirstPrice(),
                       style: TextStyle(
                         color: App.theme.textTheme.bodyLarge?.color,
-                        fontSize: 12,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
                         fontFamily: 'IranSans',
                       ),
-                      maxLines: 2,
                     ),
-                    Column(
-                      children: [
-                        if (! widget.locationFile.isRent()) Text(
-                          '',
-                          style: TextStyle(
-                            color: App.theme.textTheme.bodyLarge?.color,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'IranSans',
-                          ),
+                    SizedBox(height: 3),
+                    if (widget.locationFile.getSecondPrice().isFill())
+                      Text(
+                        widget.locationFile.getSecondPrice(),
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 11,
+                          fontFamily: 'IranSansMedium',
                         ),
-                        SizedBox(
-                          height: 3,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: widget.locationFile.propertys
-                                  ?.where((element) =>
-                                      element.weightList == 1 ||
-                                      element.weightList == 2 ||
-                                      element.weightList == 3 ||
-                                      element.weightList == 4)
-                                  .take(4)
-                                  .toList()
-                                  .map<Widget>((e) => Text(
-                                        "${e.name} ${nonIfZero(e.value)}",
-                                        style: TextStyle(
-                                          color: App
-                                              .theme.textTheme.bodyLarge?.color,
-                                          fontSize: 10.5,
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: 'IranSans',
-                                        ),
-                                      ))
-                                  .toList() ??
-                              [],
-                        ),
-                      ],
-                    ),
+                      ),
                   ],
                 ),
               ],
             ),
-          )
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget loadingImage() {
+    return Container(
+      width: 100,
+      height: 100,
+      color: Colors.grey.shade100,
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          m.Image.asset(
+            "assets/images/siraf_logo.png",
+            color: Colors.grey.shade300,
+            scale: 8.5,
+          ),
+          SizedBox(height: 4),
+          m.Image.asset(
+            "assets/images/siraf_logo_text.png",
+            color: Colors.grey.shade300,
+            scale: 7,
+          ),
         ],
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/models/city.dart';
 
 class MyFile {
   int? id;
@@ -12,6 +13,7 @@ class MyFile {
   List<Propertys>? propertys;
   Category? category;
   String? city;
+  City? cityObj;
 
   MyFile({this.id, this.progress, this.viewCount, this.name, this.description, this.images, this.favorite, this.publishedAgo, this.propertys, this.category, this.city});
 
@@ -48,6 +50,10 @@ class MyFile {
     }
     if (json["city"] is String) {
       city = json["city"];
+    }
+    if (json['city'] is Map) {
+      cityObj = json['city'] == null ? null : City.fromJson(json['city']);
+      city = cityObj?.name ?? city;
     }
   }
 
@@ -92,14 +98,29 @@ class MyFile {
       return "توافقی";
     }
 
-    result = (result / 100000).round() * 100000;
+    result = (result / 10000).round() * 10000;
 
-    return number_format(result);
+    return "قیمت هر متر " + number_format(result);
+  }
+
+  int getPricePerMeterInt() {
+    if ((getFirstPriceInt() == -1 || getFirstPriceInt() == 0) || getMeter() == 0) {
+      return -1;
+    }
+    var result = getFirstPriceInt() ~/ getMeter();
+
+    if (result == 0) {
+      return -1;
+    }
+
+    result = (result / 10000).round() * 10000;
+
+    return result;
   }
 
   int getMeter() {
-    if (propertys!.where((element) => element.key == "meter").isNotEmpty) {
-      var prop = propertys!.firstWhere((element) => element.key == "meter");
+    if (propertys!.where((element) => element.weightList == 1).isNotEmpty) {
+      var prop = propertys!.firstWhere((element) => element.weightList == 1);
 
       if (prop.value == null || prop.name == null) return 0;
 
@@ -108,7 +129,7 @@ class MyFile {
       return 0;
     }
   }
-  
+
   int getFirstPriceInt() {
     if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 5);
@@ -120,7 +141,7 @@ class MyFile {
       return -1;
     }
   }
-  
+
   int getSecondPriceInt() {
     if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 6);
@@ -146,11 +167,14 @@ class MyFile {
   }
 
   String getSecondPrice() {
+    if (!isRental()) {
+      return getPricePerMeter();
+    }
     if (fullAdaptive()) return "";
-    
+
     if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 6);
-      
+
       if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
 
       return toPrice(prop.value!, prop.name!);
@@ -165,7 +189,7 @@ class MyFile {
     }
     return (name != null && !fullAdaptive() ? "$name " : "") + "توافقی";
   }
-  
+
   String toPrice(dynamic value, String name) {
     if (value.toString() == "0") {
       return "$name رایگان";
@@ -177,6 +201,8 @@ class MyFile {
   bool fullAdaptive() {
     return (getFirstPriceInt() == -1 && getSecondPriceInt() == -1);
   }
+
+  bool isRental() => category?.fullCategory?.contains("اجاره") ?? false;
 }
 
 class Category {

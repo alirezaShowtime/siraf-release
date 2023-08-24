@@ -10,6 +10,7 @@ import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/search_screen.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
+import 'package:siraf3/widgets/file_horizontal_item_2.dart';
 import 'package:siraf3/widgets/file_slide_item.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
@@ -221,7 +222,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                                   padding: EdgeInsets.only(
                                       top: files.first == file ? 0 : 5),
                                   child: viewType == ViewType.List
-                                      ? FileHorizontalItem(file: file)
+                                      ? FileHorizontalItem2(file: file)
                                       : FileSlideItem(file: file),
                                 ),
                               ))
@@ -242,75 +243,6 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
       ),
     );
   }
-
-  // Widget _buildFilesListBloc(BuildContext _, FilesListState state) {
-  //   if (state is FilesListInitState || state is FilesListLoadingState) {
-  //     return Center(
-  //       child: Loading(),
-  //     );
-  //   }
-
-  //   if (state is FilesListErrorState) {
-  //     return Center(
-  //       child: TryAgain(
-  //         onPressed: getFiles,
-  //         message: state.response != null
-  //             ? jDecode(state.response!.body)['message']
-  //             : null,
-  //       ),
-  //     );
-  //   }
-
-  //   state = state as FilesListLoadedState;
-
-  //   files = state.files;
-
-  //   if (files.isEmpty) {
-  //     return Center(
-  //       child: Text(
-  //         "فایلی موجود نیست فیلتر را حدف کنید",
-  //         style: TextStyle(
-  //           color: Themes.text,
-  //           fontSize: 15,
-  //         ),
-  //       ),
-  //     );
-  //   }
-
-  //   return ListView(
-  //     controller: scrollController,
-  //     children: files
-  //             .map<Widget>((file) => GestureDetector(
-  //                   onTap: () {
-  //                     Navigator.push(
-  //                       context,
-  //                       MaterialPageRoute(
-  //                         builder: (_) => FileScreen2(id: file.id!),
-  //                       ),
-  //                     );
-  //                   },
-  //                   child: Padding(
-  //                     padding: EdgeInsets.only(
-  //                         top: (state as FilesListLoadedState).files.first == file
-  //                             ? 0
-  //                             : 5),
-  //                     child: viewType == ViewType.List
-  //                         ? FileHorizontalItem(file: file)
-  //                         : FileSlideItem(file: file),
-  //                   ),
-  //                 ))
-  //             .toList() +
-  //         [
-  //           if (_isLoadingMore)
-  //             Align(
-  //               alignment: Alignment.center,
-  //               child: Loading(
-  //                 backgroundColor: Colors.transparent,
-  //               ),
-  //             )
-  //         ],
-  //   );
-  // }
 
   getFiles() {
     homeScreenBloc.add(
