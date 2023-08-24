@@ -4,11 +4,14 @@ extension EventListener on _EstateProfileScreen {
   void share() {
     if (estateProfile?.shareLink == null) return;
 
-    FlutterShare.share(
-      title: 'اشتراک گذاری',
-      text: estateProfile!.name!,
-      linkUrl: estateProfile!.shareLink,
-      chooserTitle: 'اشتراک گذاری در',
+    push(
+      context,
+      EstateShareScreen(
+        shareLink: estateProfile!.shareLink!,
+        estateName: estateProfile!.name!,
+        managerName: estateProfile!.managerName!,
+        estateLogo: estateProfile!.logoFile,
+      ),
     );
   }
 

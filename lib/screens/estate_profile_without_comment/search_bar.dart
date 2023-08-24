@@ -16,11 +16,6 @@ extension SearchBar on _EstateProfileScreen {
         children: [
           Expanded(
             child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  right: BorderSide(color: App.isDark ? Themes.textGrey : Themes.text, width: 1),
-                ),
-              ),
               child: TextField2(
                 controller: searchController,
                 maxLines: 1,
@@ -29,14 +24,13 @@ extension SearchBar on _EstateProfileScreen {
                   border: InputBorder.none,
                   isDense: true,
                   hintStyle: TextStyle(
-                    color: Colors.grey.shade300,
-                    fontSize: 11,
-                  ),
+                    color: Colors.grey, fontSize: 11, fontFamily: "IranSansMedium"),
                   contentPadding: EdgeInsets.zero,
                 ),
                 style: TextStyle(
                   color: App.theme.textTheme.bodyLarge?.color,
                   fontSize: 11,
+                  fontFamily: "IranSansMedium",
                 ),
                 textInputAction: TextInputAction.search,
                 onSubmitted: (v) {
