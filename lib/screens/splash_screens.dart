@@ -116,126 +116,129 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Themes.primary,
-      statusBarBrightness: Brightness.light,
-      statusBarIconBrightness: Brightness.light,
-    ));
-
-    return Scaffold(
-      backgroundColor: Themes.primary,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: SizedBox(
-                height: 200,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image(
-                      image: AssetImage('assets/images/siraf_logo.png'),
-                      width: 120,
-                      height: 120,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Image(
-                      image: AssetImage('assets/images/logo_shadow.png'),
-                      width: 100,
-                    ),
-                  ],
+    return AnnotatedRegion(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Themes.primary,
+        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: Themes.primary,
+        systemNavigationBarDividerColor: Themes.primary,
+      ),
+      child: Scaffold(
+        backgroundColor: Themes.primary,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: SizedBox(
+                  height: 200,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image(
+                        image: AssetImage('assets/images/siraf_logo.png'),
+                        width: 120,
+                        height: 120,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Image(
+                        image: AssetImage('assets/images/logo_shadow.png'),
+                        width: 100,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: SizedBox(
-                height: activeConnection ? 140 : 180,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Stack(
-                      children: [
-                        SizedBox(height: 100, width: 140),
-                        AnimatedPositioned(
-                          duration: duration,
-                          top: isHidden ? 0 : 35,
-                          left: 0,
-                          right: 0,
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: SizedBox(
+                  height: activeConnection ? 140 : 180,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Stack(
+                        children: [
+                          SizedBox(height: 100, width: 140),
+                          AnimatedPositioned(
+                            duration: duration,
+                            top: isHidden ? 0 : 35,
+                            left: 0,
+                            right: 0,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "پلتفرم دسترسی به املاک شهر",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontFamily: 'KalamehBlack',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Positioned(
+                            right: 0,
+                            left: 0,
+                            top: 0,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  color: Themes.primary,
+                                  child: Image(
+                                    image: AssetImage('assets/images/siraf_logo_text.png'),
+                                    width: 130,
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (activeConnection) SpinKitThreeBounce(size: 15, color: Colors.white, duration: Duration(milliseconds: 800)),
+                      if (!activeConnection)
+                        Text(
+                          "خطا در اتصال به اینترنت!",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                          ),
+                        ),
+                      if (!activeConnection) SizedBox(height: 10),
+                      if (!activeConnection)
+                        GestureDetector(
+                          onTap: checkConnectionAndGoNextScreen,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "پلتفرم دسترسی به املاک شهر",
+                                "تلاش مجدد",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: 'KalamehBlack',
+                                  fontSize: 15,
                                 ),
                               ),
+                              SizedBox(width: 5),
+                              Icon(Icons.refresh, color: Colors.white),
                             ],
                           ),
                         ),
-                        Positioned(
-                          right: 0,
-                          left: 0,
-                          top: 0,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                color: Themes.primary,
-                                child: Image(
-                                  image: AssetImage('assets/images/siraf_logo_text.png'),
-                                  width: 130,
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (activeConnection) SpinKitThreeBounce(size: 15, color: Colors.white, duration: Duration(milliseconds: 800)),
-                    if (!activeConnection)
-                      Text(
-                        "خطا در اتصال به اینترنت!",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                        ),
-                      ),
-                    if (!activeConnection) SizedBox(height: 10),
-                    if (!activeConnection)
-                      GestureDetector(
-                        onTap: checkConnectionAndGoNextScreen,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "تلاش مجدد",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
-                            ),
-                            SizedBox(width: 5),
-                            Icon(Icons.refresh, color: Colors.white),
-                          ],
-                        ),
-                      ),
-                    SizedBox(height: 20)
-                  ],
+                      SizedBox(height: 20)
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
