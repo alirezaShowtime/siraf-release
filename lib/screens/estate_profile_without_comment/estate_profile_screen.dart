@@ -281,7 +281,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 3),
       child: GestureDetector(
         onTap: () {
-          push(context, ImageViewScreen(imageUrl: image.image));
+          push(context, ImageViewScreen(imageUrls: [image.image!]));
         },
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),

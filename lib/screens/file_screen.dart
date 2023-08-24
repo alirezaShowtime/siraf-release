@@ -606,7 +606,7 @@ class _FileScreen extends State<FileScreen> {
         Padding(
           padding: EdgeInsets.only(right: 15),
           child: Text(
-            "فایل های مرتبط",
+            "فایل های مشابه",
             style: TextStyle(fontSize: 12, fontFamily: "IranSansBold"),
           ),
         ),

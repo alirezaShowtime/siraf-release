@@ -167,7 +167,7 @@ class ChatSendingImageMessageWidgetState extends ChatSendingMessageWidgetState {
             mainAxisCellCount: 1,
             crossAxisCellCount: i == widget.files!.length - 1 && i.isEven ? 2 : 1,
             child: InkWell(
-              onTap: () => push(context, ImageViewScreen(imageFile: widget.files![i])),
+              onTap: () => push(context, ImageViewScreen(imageFiles: widget.files!)),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
