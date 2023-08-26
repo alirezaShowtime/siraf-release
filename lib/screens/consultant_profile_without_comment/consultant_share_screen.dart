@@ -67,7 +67,7 @@ class _ConsultantShareScreen extends State<ConsultantShareScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "مشاور, ",
+                            "مشاور ",
                             style: TextStyle(
                               fontSize: 15,
                               color: Colors.black,
@@ -75,21 +75,21 @@ class _ConsultantShareScreen extends State<ConsultantShareScreen> {
                             ),
                           ),
                           Text(
-                            widget.estateName,
+                            widget.consultantName,
                             style: TextStyle(
                               fontSize: 15,
                               fontFamily: "IranSansBold",
-                              color: Themes.primary,
+                              color: Colors.black,
                             ),
                           ),
                         ],
                       ),
                       Text(
-                        widget.consultantName,
+                        widget.estateName,
                         style: TextStyle(
                           fontSize: 15,
-                          color: Colors.black,
                           fontFamily: "IranSansBold",
+                          color: Themes.primary,
                         ),
                       ),
                     ],

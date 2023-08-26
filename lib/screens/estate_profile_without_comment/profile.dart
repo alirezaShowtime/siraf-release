@@ -173,7 +173,7 @@ extension Profile on _EstateProfileScreen {
               onTap: () {
                 push(context, FileScreen(id: file.id!));
               },
-              child: FileHorizontalItem2(file: file),
+              child: FileHorizontalItem(file: file),
             ),
         ],
       ),

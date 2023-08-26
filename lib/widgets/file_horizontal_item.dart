@@ -1,9 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:siraf3/config.dart';
-import 'package:siraf3/helpers.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file.dart';
+import 'package:siraf3/widgets/my_image.dart';
 
 class FileHorizontalItem extends StatefulWidget {
   File file;
@@ -11,145 +10,142 @@ class FileHorizontalItem extends StatefulWidget {
   FileHorizontalItem({required this.file, super.key});
 
   @override
-  State<FileHorizontalItem> createState() => _FileHorizontalItemState();
+  State<FileHorizontalItem> createState() => _FileHorizontalItemState2();
 }
 
-class _FileHorizontalItemState extends State<FileHorizontalItem> {
+class _FileHorizontalItemState2 extends State<FileHorizontalItem> {
   @override
   Widget build(BuildContext context) {
-    double imageSize = (MediaQuery.of(context).size.width - 20) / 3.5;
-    if (imageSize > 140) imageSize = 140;
     return Container(
-      decoration: BoxDecoration(color: App.theme.dialogBackgroundColor, boxShadow: [
-        BoxShadow(
-          color: App.theme.backgroundColor,
-          blurRadius: 1,
-          spreadRadius: 1,
-          offset: Offset(0, -1),
-        ),
-      ]),
       padding: EdgeInsets.all(10),
-      // height: imageSize + 20,
-      constraints: BoxConstraints(maxHeight: 160),
+      margin: EdgeInsets.symmetric(horizontal: 4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(13),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 2,
+            spreadRadius: -1,
+            offset: Offset(0, 0),
+          ),
+        ],
+      ),
+      constraints: BoxConstraints(maxHeight: 120),
       width: double.infinity,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
+          MyImage(
             borderRadius: BorderRadius.circular(10),
-            child: Image(
-              image: NetworkImage(widget.file.images?.first.path ?? ""),
-              width: imageSize,
-              height: imageSize,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Image(
-                image: AssetImage(IMAGE_NOT_AVAILABLE),
-                width: imageSize,
-                height: imageSize,
-                fit: BoxFit.cover,
-              ),
-            ),
+            image: NetworkImage(widget.file.images?.first.path ?? ""),
+            width: 100,
+            height: 100,
+            fit: BoxFit.cover,
+            loadingWidget: loadingImage(),
+            errorWidget: loadingImage(),
           ),
-          SizedBox(
-            width: 5,
-          ),
+          SizedBox(width: 10),
           Expanded(
-            child: Wrap(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.file.getFirstPrice(),
-                              style: TextStyle(
-                                color: App.theme.textTheme.bodyLarge?.color,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'IranSans',
-                              ),
-                            ),
-                            SizedBox(
-                              height: 3,
-                            ),
-                            Text(
-                              widget.file.getSecondPrice(),
-                              style: TextStyle(
-                                color: App.theme.textTheme.bodyLarge?.color,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: 'IranSans',
-                              ),
-                            ),
-                          ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        widget.file.name!,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: App.theme.textTheme.bodyLarge?.color,
+                          fontSize: 14,
+                          fontFamily: 'IranSansBold',
                         ),
-                        Text(
-                          (widget.file.publishedAgo ?? "") + ' | ' + (widget.file.city?.name ?? ""),
-                          style: TextStyle(
-                            color: App.theme.textTheme.bodyLarge?.color,
-                            fontSize: 9,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'IranSans',
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            widget.file.fullCategory?.getMainCategoryName() ?? "",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: App.theme.textTheme.bodyLarge?.color,
+                              fontSize: 11,
+                              fontFamily: 'IranSansMedium',
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                          SizedBox(width: 5),
+                          Text(
+                            (widget.file.publishedAgo ?? "") + ' | ' + (widget.file.city?.name ?? ""),
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: 'IranSans',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
-                      "${widget.file.fullCategory?.getMainCategoryName()} | ${widget.file.name}",
+                      widget.file.getFirstPrice(),
                       style: TextStyle(
                         color: App.theme.textTheme.bodyLarge?.color,
-                        fontSize: 12,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
                         fontFamily: 'IranSans',
                       ),
-                      maxLines: 2,
                     ),
-                    Column(
-                      children: [
-                        Text(
-                          '',
-                          style: TextStyle(
-                            color: App.theme.textTheme.bodyLarge?.color,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'IranSans',
-                          ),
+                    SizedBox(height: 3),
+                    if (widget.file.getSecondPrice().isFill())
+                      Text(
+                        widget.file.getSecondPrice(),
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 11,
+                          fontFamily: 'IranSansMedium',
                         ),
-                        SizedBox(
-                          height: 3,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: widget.file.propertys
-                                  ?.where((element) => element.weightList == 1 || element.weightList == 2 || element.weightList == 3 || element.weightList == 4)
-                                  .toList()
-                                  .take(4)
-                                  .map<Widget>((e) => Flexible(
-                                        child: Text(
-                                          "${e.name} ${nonIfZero(e.value)}",
-                                          style: TextStyle(
-                                            color: App.theme.textTheme.bodyLarge?.color,
-                                            fontSize: 10.5,
-                                            fontWeight: FontWeight.w400,
-                                            fontFamily: 'IranSans',
-                                          ),
-                                        ),
-                                      ))
-                                  .toList() ??
-                              [],
-                        ),
-                      ],
-                    ),
+                      ),
                   ],
                 ),
               ],
             ),
-          )
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget loadingImage() {
+    return Container(
+      width: 100,
+      height: 100,
+      color: Colors.grey.shade100,
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            "assets/images/siraf_logo.png",
+            color: Colors.grey.shade300,
+            scale: 8.5,
+          ),
+          SizedBox(height: 4),
+          Image.asset(
+            "assets/images/siraf_logo_text.png",
+            color: Colors.grey.shade300,
+            scale: 7,
+          ),
         ],
       ),
     );

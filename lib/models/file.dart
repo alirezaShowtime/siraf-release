@@ -111,7 +111,7 @@ class File {
       return "توافقی";
     }
 
-    result = (result / 10000).round() * 10000;
+    result = (result / 100000).round() * 100000;
 
     return "قیمت هر متر " + number_format(result);
   }
@@ -126,7 +126,7 @@ class File {
       return -1;
     }
 
-    result = (result / 10000).round() * 10000;
+    result = (result / 100000).round() * 100000;
 
     return result;
   }

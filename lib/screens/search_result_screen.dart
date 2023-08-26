@@ -10,7 +10,6 @@ import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/search_screen.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
-import 'package:siraf3/widgets/file_horizontal_item_2.dart';
 import 'package:siraf3/widgets/file_slide_item.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
@@ -222,7 +221,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                                   padding: EdgeInsets.only(
                                       top: files.first == file ? 0 : 5),
                                   child: viewType == ViewType.List
-                                      ? FileHorizontalItem2(file: file)
+                                      ? FileHorizontalItem(file: file)
                                       : FileSlideItem(file: file),
                                 ),
                               ))

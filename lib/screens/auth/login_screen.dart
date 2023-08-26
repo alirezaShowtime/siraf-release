@@ -161,39 +161,41 @@ class _LoginScreen extends State<LoginScreen> {
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "با ورود به برنامه ",
-                  style: TextStyle(
-                    color: App.theme.textTheme.bodyLarge?.color,
-                    fontFamily: "IRANSansBold",
-                    fontSize: 10,
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    push(context, RulesScreen());
-                  },
-                  child: Text(
-                    "شرایط استفاده از خدمات، قوانین و حریم خصوصی",
+            Padding(
+              padding: const EdgeInsets.all(4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "با ورود به سیراف، ",
                     style: TextStyle(
-                      color: App.theme.primaryColor,
+                      color: Themes.primary,
                       fontFamily: "IRANSansBold",
                       fontSize: 10,
                     ),
                   ),
-                ),
-                Text(
-                  " را می پذیرید",
-                  style: TextStyle(
-                    color: App.theme.textTheme.bodyLarge?.color,
-                    fontFamily: "IRANSansBold",
-                    fontSize: 10,
+                  GestureDetector(
+                    onTap: () => push(context, RulesScreen()),
+                    child: Text(
+                      "قوانین و حریم خصوصی",
+                      style: TextStyle(
+                        color: Themes.primary,
+                        fontFamily: "IRANSansBold",
+                        fontSize: 10,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                  Text(
+                    " از خدمات آن را می پذیرید",
+                    style: TextStyle(
+                      color: Themes.primary,
+                      fontFamily: "IRANSansBold",
+                      fontSize: 10,
+                    ),
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: 5),
             BlocBuilder<LoginBloc, LoginState>(

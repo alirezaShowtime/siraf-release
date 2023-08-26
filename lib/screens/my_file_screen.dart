@@ -49,7 +49,7 @@ class _MyFileScreenState extends State<MyFileScreen> {
   DeleteFileBloc deleteFileBloc = DeleteFileBloc();
 
   Map<int, String> progress_fa = {
-    1: "در انتظار پذیرش",
+    1: "در انتظار تایید",
     2: "رد شده",
     3: "رد شده",
     4: "تایید شده",

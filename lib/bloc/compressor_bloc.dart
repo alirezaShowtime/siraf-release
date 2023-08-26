@@ -39,19 +39,21 @@ class CompressorBloc extends Bloc<CompressorEvent, CompressorState> {
 
     var newImages = <File>[];
 
-    for (File image in event.images) {
-      var targetPath = (await getTemporaryDirectory()).path + ((await getTemporaryDirectory()).path.endsWith('/') ? '' : '/') + image.fileName;
-      var xfile = await FlutterImageCompress.compressAndGetFile(
-        image.absolute.path,
-        targetPath,
-        quality: 88,
-      );
-      if (xfile == null) {
-        newImages.add(image);
-      } else {
-        newImages.add(File(xfile.path));
+    try {
+      for (File image in event.images) {
+        var targetPath = (await getTemporaryDirectory()).path + ((await getTemporaryDirectory()).path.endsWith('/') ? '' : '/') + image.fileName;
+        var xfile = await FlutterImageCompress.compressAndGetFile(
+          image.absolute.path,
+          targetPath,
+          quality: 88,
+        );
+        if (xfile == null) {
+          newImages.add(image);
+        } else {
+          newImages.add(File(xfile.path));
+        }
       }
-    }
+    } catch (CompressError) {}
 
     var newVideos = <File>[];
 
