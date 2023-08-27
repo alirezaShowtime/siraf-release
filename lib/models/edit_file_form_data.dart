@@ -15,9 +15,9 @@ class EditFileFormData {
   City city;
   LatLng location;
   String address;
-  String visitPhone;
+  String? visitPhone;
   String ownerPhone;
-  String visitName;
+  String? visitName;
   String ownerName;
   Map<String, String> properties;
   String title;
@@ -33,9 +33,9 @@ class EditFileFormData {
     required this.city,
     required this.location,
     required this.address,
-    required this.visitPhone,
+    this.visitPhone,
     required this.ownerPhone,
-    required this.visitName,
+    this.visitName,
     required this.ownerName,
     required this.properties,
     required this.title,
@@ -61,7 +61,7 @@ class EditFileFormData {
       if (visitName.isFill()) 'visitName': visitPhone,
       'ownerName': ownerName,
       if (estates.isNotEmpty) 'estateIds': jsonEncode(estates.map((e) => e.id!).toList()),
-        if (privateMobile) 'privateMobile': privateMobile, 
+      if (privateMobile) 'privateMobile': privateMobile,
     });
   }
 }

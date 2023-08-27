@@ -68,40 +68,42 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0.7,
-          title: Text(
-            "ثبت نهایی",
-            style: TextStyle(
-              fontSize: 15,
-            ),
-          ),
-          automaticallyImplyLeading: false,
-          titleSpacing: 0,
-          actions: [
-            IconButton(
-              onPressed: () {
-                showResetDialog();
-              },
-              icon: Icon(
-                Icons.refresh,
-              ),
-            ),
-          ],
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              CupertinoIcons.back,
-            ),
+      appBar: AppBar(
+        elevation: 0.7,
+        title: Text(
+          "ثبت نهایی",
+          style: TextStyle(
+            fontSize: 15,
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Stack(
-            children: [
-              SingleChildScrollView(
+        automaticallyImplyLeading: false,
+        titleSpacing: 0,
+        actions: [
+          IconButton(
+            onPressed: () {
+              showResetDialog();
+            },
+            icon: Icon(
+              Icons.refresh,
+            ),
+          ),
+        ],
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            CupertinoIcons.back,
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Stack(
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -353,38 +355,43 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
                       controller: _securitySescriptionController,
                       onTap: () {
                         var txtSelection = TextSelection.fromPosition(TextPosition(offset: _securitySescriptionController.text.length - 1));
-
+            
                         if (_securitySescriptionController.selection == txtSelection) {
                           _securitySescriptionController.selection = TextSelection.fromPosition(TextPosition(offset: _securitySescriptionController.text.length));
                         }
                       },
                     ),
-                    SizedBox(height: 70,),
+                    SizedBox(
+                      height: 70,
+                    ),
                   ],
                 ),
               ),
-              Positioned(
-                bottom: 15,
-                left: 10,
-                child: MaterialButton(
-                  onPressed: _finalize,
-                  color: Themes.primary,
-                  child: Text(
-                    "ثبت نهایی",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
+            ),
+            Positioned(
+              bottom: 15,
+              left: 0,
+              right: 0,
+              child: MaterialButton(
+                onPressed: _finalize,
+                color: Themes.primary,
+                child: Text(
+                  "ثبت نهایی",
+                  style: TextStyle(
+                    color: Colors.white,
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  minWidth: 100,
-                  height: 45,
                 ),
-              )
-            ],
-          ),
-        ));
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                minWidth: 100,
+                height: 45,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   BuildContext? resetDialogContext;

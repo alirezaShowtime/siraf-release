@@ -182,9 +182,10 @@ class _EditFileSecondState extends State<EditFileSecond> {
         key: formKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
+          child: Stack(
             children: [
-              Expanded(
+              SizedBox(
+                height: MediaQuery.of(context).size.height,
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -547,7 +548,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         height: 14,
                       ),
                       Text(
-                        "نام و نام خانوادگی جهت هماهنگی بازدید",
+                        "نام و نام خانوادگی جهت هماهنگی بازدید (اختیاری)",
                         style: TextStyle(
                           fontSize: 13,
                           color: Themes.text,
@@ -599,6 +600,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         ),
                         style: TextStyle(fontSize: 14, color: Themes.text),
+                        validator: (v) => null,
                         onChanged: (value) {
                           setState(() {
                             visitName = value;
@@ -618,7 +620,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         height: 14,
                       ),
                       Text(
-                        "شماره تماس بازدید",
+                        "شماره تماس بازدید (اختیاری)",
                         style: TextStyle(
                           fontSize: 14,
                           color: Themes.text,
@@ -677,21 +679,21 @@ class _EditFileSecondState extends State<EditFileSecond> {
                             visitPhone = value;
                           });
                         },
+                        validator: (value) {
+                          if (!value.isFill()) {
+                            return null;
+                          }
+                          if (value!.length != 11) {
+                            return "شماره تماس باید 11 کاراکتر باشد";
+                          }
+                          if (!value.startsWith("09")) {
+                            return "شماره موبایل باید با 09 شروع شود";
+                          }
+                        },
                         maxLength: 11,
                         textInputAction: TextInputAction.next,
                         cursorColor: Themes.primary,
                         maxLines: 1,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return null;
-                          }
-                          if (!value.startsWith("09")) {
-                            return "شماره تماس باید با 09 شروع شود";
-                          }
-                          if (value.length != 11) {
-                            return "شماره تماس باید 11 کاراکتر باشد";
-                          }
-                        },
                         onSaved: ((newValue) {
                           setState(() {
                             visitPhone = newValue;
@@ -699,33 +701,30 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         }),
                         controller: _visitPhoneController,
                       ),
+                      SizedBox(height: 70),
                     ],
                   ),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  MaterialButton(
-                    onPressed: next,
-                    color: Themes.primary,
-                    child: Text(
-                      "بعدی",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
+              Positioned(
+                bottom: 15,
+                left: 0,
+                child: MaterialButton(
+                  onPressed: next,
+                  color: Themes.primary,
+                  child: Text(
+                    "بعدی",
+                    style: TextStyle(
+                      color: Colors.white,
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    minWidth: 100,
-                    height: 45,
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  minWidth: 100,
+                  height: 45,
+                ),
+              )
             ],
           ),
         ),

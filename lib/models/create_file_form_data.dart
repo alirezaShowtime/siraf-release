@@ -44,7 +44,6 @@ class CreateFileFormData {
     this.privateMobile = false,
   });
 
-
   Future<FormData> getFormData() async {
     var videos = files.where((element) => checkVideoExtension((element['file'] as io.File).path)).toList();
 

@@ -103,65 +103,69 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
           ),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(15),
+          padding: EdgeInsets.symmetric(horizontal: 15),
           child: Stack(
             children: [
-              SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "مشخصات کلی",
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Themes.primary,
-                        fontFamily: "IranSansBold",
+              SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 15),
+                      Text(
+                        "مشخصات کلی",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Themes.primary,
+                          fontFamily: "IranSansBold",
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 14,
-                    ),
-                    section(
-                      title: "دسته بندی",
-                      hint: "انتخاب",
-                      value: category != null ? categories.map((e) => e.name).join(' > ') : null,
-                      onTap: _selectCategory,
-                    ),
-                    SizedBox(
-                      height: 14,
-                    ),
-                    section(
-                      title: "شهر",
-                      hint: "انتخاب",
-                      value: city?.name,
-                      onTap: _selectCity,
-                    ),
-                    SizedBox(
-                      height: 14,
-                    ),
-                    section(
-                      title: "موقعیت بر روی نقشه",
-                      hint: "تعیین",
-                      value: location != null ? "تغییر" : "تعیین",
-                      onTap: _chooseLocation,
-                    ),
-                    SizedBox(
-                      height: 14,
-                    ),
-                    section(
-                      title: "آدرس",
-                      hint: "تعیین",
-                      value: address != null ? "تغییر" : "تعیین",
-                      onTap: showAddressDialog,
-                    ),
-                    if (category != null) BlocBuilder<PropertyBloc, PropertyState>(builder: _buildPropertiesBloc),
-                    SizedBox(height: 70),
-                  ],
+                      SizedBox(
+                        height: 14,
+                      ),
+                      section(
+                        title: "دسته بندی",
+                        hint: "انتخاب",
+                        value: category != null ? categories.map((e) => e.name).join(' > ') : null,
+                        onTap: _selectCategory,
+                      ),
+                      SizedBox(
+                        height: 14,
+                      ),
+                      section(
+                        title: "شهر",
+                        hint: "انتخاب",
+                        value: city?.name,
+                        onTap: _selectCity,
+                      ),
+                      SizedBox(
+                        height: 14,
+                      ),
+                      section(
+                        title: "موقعیت بر روی نقشه",
+                        hint: "تعیین",
+                        value: location != null ? "تغییر" : "تعیین",
+                        onTap: _chooseLocation,
+                      ),
+                      SizedBox(
+                        height: 14,
+                      ),
+                      section(
+                        title: "آدرس",
+                        hint: "تعیین",
+                        value: address != null ? "تغییر" : "تعیین",
+                        onTap: showAddressDialog,
+                      ),
+                      if (category != null) BlocBuilder<PropertyBloc, PropertyState>(builder: _buildPropertiesBloc),
+                      SizedBox(height: 70),
+                    ],
+                  ),
                 ),
               ),
               Positioned(
                 bottom: 15,
-                left: 10,
+                left: 0,
                 child: MaterialButton(
                   onPressed: next,
                   color: Themes.primary,

@@ -662,7 +662,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
               ),
               Positioned(
                 bottom: 15,
-                left: 10,
+                left: 0,
                 child: MaterialButton(
                   onPressed: next,
                   color: Themes.primary,

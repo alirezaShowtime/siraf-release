@@ -8,7 +8,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:siraf3/bloc/property_bloc.dart';
 import 'package:siraf3/dialog.dart';
-import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/category.dart' as cat;
 import 'package:siraf3/models/city.dart';
@@ -99,8 +98,8 @@ class _EditFileFirstState extends State<EditFileFirst> {
         description: widget.file.description ?? "",
         title: widget.file.name ?? "",
         ownerPhone: widget.file.ownerPhoneNumber ?? "",
-        visitPhone: widget.file.visitPhoneNumber ?? "",
-        visitName: widget.file.visitName ?? "",
+        visitPhone: widget.file.visitPhoneNumber,
+        visitName: widget.file.visitName,
         ownerName: widget.file.ownerName ?? "",
         secDescription: widget.file.secDescription ?? "",
         estates: widget.file.estates ?? [],
@@ -151,9 +150,10 @@ class _EditFileFirstState extends State<EditFileFirst> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(15),
-          child: Column(
+          child: Stack(
             children: [
-              Expanded(
+              SizedBox(
+                height: MediaQuery.of(context).size.height,
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,29 +203,29 @@ class _EditFileFirstState extends State<EditFileFirst> {
                         onTap: showAddressDialog,
                       ),
                       if (category != null) BlocBuilder<PropertyBloc, PropertyState>(builder: _buildPropertiesBloc),
+                      SizedBox(height: 45),
                     ],
                   ),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  MaterialButton(
-                    onPressed: next,
-                    color: Themes.primary,
-                    child: Text(
-                      "بعدی",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                child: MaterialButton(
+                  onPressed: next,
+                  color: Themes.primary,
+                  child: Text(
+                    "بعدی",
+                    style: TextStyle(
+                      color: Colors.white,
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    minWidth: 100,
-                    height: 45,
-                  )
-                ],
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  minWidth: 100,
+                  height: 45,
+                ),
               )
             ],
           ),
