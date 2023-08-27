@@ -46,42 +46,8 @@ class UFMBloc extends Bloc<UFMEvent, UFMState> {
         "Authorization": await User.getBearerToken(),
       };
 
-      var images = event.media.newImages
-          .where((element) =>
-              checkImageExtension((element['file'] as io.File).path))
-          .toList();
-
-      var videos = event.media.newVideos
-          .where((element) =>
-              checkVideoExtension((element['file'] as io.File).path))
-          .toList();
-
-      var formData = FormData.fromMap({
-        'labelImages': jsonEncode(
-            images.map((e) => (e['title'] as String?) ?? "").toList()),
-        'labelVideos': jsonEncode(
-            videos.map((e) => (e['title'] as String?) ?? "").toList()),
-        'weightImages': jsonEncode(event.media.imagesWeight),
-        'weightVideos': jsonEncode(event.media.videosWeight),
-        'deleteImages': jsonEncode(event.media.deleteImages),
-        'deleteVideos': jsonEncode(event.media.deleteVideos),
-      });
-
-      formData.files.addAll([
-        for (Map<String, dynamic> item in images)
-          MapEntry<String, MultipartFile>("images",
-              await MultipartFile.fromFile((item['file'] as io.File).path)),
-        for (Map<String, dynamic> item in videos)
-          MapEntry<String, MultipartFile>("videos",
-              await MultipartFile.fromFile((item['file'] as io.File).path)),
-      ]);
 
       var url = getFileUrl("file/uploadFile/${event.id}/").toString();
-
-      print(url);
-      print(headers);
-      print(formData.fields);
-      print(formData.files);
 
       response = await Dio().post(
         url,
@@ -91,7 +57,7 @@ class UFMBloc extends Bloc<UFMEvent, UFMState> {
           },
           headers: headers,
         ),
-        data: formData,
+        data: await event.media.getFormData(),
       );
     } on HttpException catch (e) {
       emit(UFMErrorState());

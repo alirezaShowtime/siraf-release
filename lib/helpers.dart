@@ -17,8 +17,8 @@ import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/auth/login_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-const image_extensions = <String>["png", "jpg", "jpeg", "tif", 'webp'];
-const video_extensions = <String>["mp4", "mov", "3gp", "avi", "mkv"];
+const image_extensions = <String>["png", "jpg", "jpeg"];
+const video_extensions = <String>["mp4", "avi"];
 
 copy(String text) async {
   await Clipboard.setData(ClipboardData(text: text));

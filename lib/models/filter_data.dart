@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/category.dart';
 
@@ -29,8 +30,17 @@ class FilterData {
     this.propFilters = const {},
   });
 
-  String toQueryString() {
+  String toQueryString({String? delimiter}) {
     var str = "";
+
+    String Function(String) getDelimiter = (String str) {
+      if (delimiter.isFill()) return delimiter!;
+      
+      if (str.isEmpty) {
+        return "?";
+      }
+      return "&";
+    };
 
     if (category != null) {
       if (category!.isAll ?? false) {
@@ -64,8 +74,9 @@ class FilterData {
       str += getDelimiter(str) + "consultantId=$consultantId";
     }
 
-    if (search != null && search!.trim().isNotEmpty) {
-      str += getDelimiter(str) + "title=" + search;
+    if (search.isFill()) {
+      str += getDelimiter(str) + "title=" + search!;
+      str += getDelimiter(str) + "q=" + search!;
     }
 
     // if (canConvert(filters)) {
@@ -102,37 +113,37 @@ class FilterData {
       if (filters!.mater!.asMap().containsKey(0)) {
         str += getDelimiter(str) + "minMeter=${filters!.mater![0]}";
       }
-      
+
       if (filters!.mater!.asMap().containsKey(1)) {
         str += getDelimiter(str) + "maxMeter=${filters!.mater![1]}";
       }
     }
-    
+
     if (filters?.price != null) {
       if (filters!.price!.asMap().containsKey(0)) {
         str += getDelimiter(str) + "minPrice=${filters!.price![0]}";
       }
-      
+
       if (filters!.price!.asMap().containsKey(1)) {
         str += getDelimiter(str) + "maxPrice=${filters!.price![1]}";
       }
     }
-    
+
     if (filters?.prices != null) {
       if (filters!.prices!.asMap().containsKey(0)) {
         str += getDelimiter(str) + "minPrices=${filters!.prices![0]}";
       }
-      
+
       if (filters!.prices!.asMap().containsKey(1)) {
         str += getDelimiter(str) + "maxPrices=${filters!.prices![1]}";
       }
     }
-    
+
     if (filters?.rent != null) {
       if (filters!.rent!.asMap().containsKey(0)) {
         str += getDelimiter(str) + "minRent=${filters!.rent![0]}";
       }
-      
+
       if (filters!.rent!.asMap().containsKey(1)) {
         str += getDelimiter(str) + "maxRent=${filters!.rent![1]}";
       }
@@ -165,10 +176,7 @@ class FilterData {
   }
 
   bool hasFilter() {
-    return this.category?.id != null ||
-        (this.hasImage ?? false) ||
-        (this.hasVideo ?? false) ||
-        (this.hasTour ?? false);
+    return this.category?.id != null || (this.hasImage ?? false) || (this.hasVideo ?? false) || (this.hasTour ?? false);
   }
 
   int filterCount() {
@@ -180,9 +188,7 @@ class FilterData {
 
     if (filters?.mater.isNotNullOrEmpty() ?? false) count++;
 
-    if ((filters?.price.isNotNullOrEmpty() ?? false) ||
-        (filters?.prices.isNotNullOrEmpty() ?? false) ||
-        (filters?.rent.isNotNullOrEmpty() ?? false)) count++;
+    if ((filters?.price.isNotNullOrEmpty() ?? false) || (filters?.prices.isNotNullOrEmpty() ?? false) || (filters?.rent.isNotNullOrEmpty() ?? false)) count++;
 
     if (category != null || mainCategory != null) count++;
 

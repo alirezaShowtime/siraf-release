@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as m;
 import 'package:siraf3/config.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/themes.dart';
@@ -55,12 +56,12 @@ class _BookmarkItem extends State<BookmarkItem> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image(
+                child: m.Image(
                   image: NetworkImage(widget.file.images?.first.path ?? ""),
                   width: imageSize,
                   height: imageSize,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Image(
+                  errorBuilder: (context, error, stackTrace) => m.Image(
                     image: AssetImage(IMAGE_NOT_AVAILABLE),
                     width: imageSize,
                     height: imageSize,

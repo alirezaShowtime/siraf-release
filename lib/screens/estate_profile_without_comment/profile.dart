@@ -134,7 +134,7 @@ extension Profile on _EstateProfileScreen {
           if (!moreDetail && !showComment) searchBar(estateProfile.name ?? ""),
           if (moreDetail) profileDetail(estateProfile),
           if (showComment && !moreDetail) addCommentWidget(estateProfile.id!),
-          if (!showComment && !moreDetail) Expanded(child: BlocBuilder<FilesBloc, FilesState>(builder: (context, state) => _buildEstateFilesBloc(context, state, estateProfile))),
+          if (!showComment && !moreDetail) Expanded(child: BlocBuilder<EstateFilesBloc, FilesState>(builder: (context, state) => _buildEstateFilesBloc(context, state, estateProfile))),
         ],
       ),
     );
@@ -182,7 +182,7 @@ extension Profile on _EstateProfileScreen {
 
   getFiles() {
     if (filesBloc.isClosed) {
-      filesBloc = FilesBloc();
+      filesBloc = EstateFilesBloc();
     }
     filesBloc.add(FilesLoadEvent(filterData: filterData));
   }

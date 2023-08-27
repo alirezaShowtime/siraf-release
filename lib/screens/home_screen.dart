@@ -340,7 +340,6 @@ class _HomeScreenState extends State<HomeScreen> {
       systemNavigationBarIconBrightness: darkMode ? Brightness.light : Brightness.dark,
       systemNavigationBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
     ));
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0.7,

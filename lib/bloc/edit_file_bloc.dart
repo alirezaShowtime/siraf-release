@@ -45,30 +45,7 @@ class EditFileBloc extends Bloc<EditFileEvent, EditFileState> {
         "Authorization": await User.getBearerToken(),
       };
 
-      var formData = FormData.fromMap({
-        'name': event.data.title,
-        'long': event.data.location.longitude.toString(),
-        'lat': event.data.location.latitude.toString(),
-        'address': event.data.address,
-        'city_id': event.data.city.id!.toString(),
-        'category_id': event.data.category.id!.toString(),
-        'fetcher': jsonEncode(event.data.properties),
-        'description': event.data.description,
-        if (event.data.visitPhone.isFill()) 'visitPhoneNumber': event.data.visitPhone,
-        'ownerPhoneNumber': event.data.ownerPhone,
-        if (event.data.visitName.isFill()) 'visitName': event.data.visitPhone,
-        'ownerName': event.data.ownerName,
-        if (event.data.estates.isNotEmpty)
-          'estateIds':
-              jsonEncode(event.data.estates.map((e) => e.id!).toList()),
-      });
-
       var url = getFileUrl("file/editFile/${event.data.id}/").toString();
-
-      print(url);
-      print(headers);
-      print(formData.fields);
-      print(formData.files);
 
       response = await Dio().post(
         url,
@@ -78,7 +55,7 @@ class EditFileBloc extends Bloc<EditFileEvent, EditFileState> {
           },
           headers: headers,
         ),
-        data: formData,
+        data: await event.data.getFormData(),
       );
     } on HttpException catch (e) {
       emit(EditFileErrorState());

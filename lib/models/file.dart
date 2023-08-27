@@ -1,3 +1,4 @@
+import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 
 class File {
@@ -38,6 +39,13 @@ class File {
     if (json["images"] is List) {
       images = json["images"] == null ? null : (json["images"] as List).map((e) => Images.fromJson(e)).toList();
     }
+    
+    if (json["media"] is Map) {
+      Media? media = json["media"] == null ? null : Media.fromJson(json["media"]);
+      if (media != null && media.image.isFill()) {
+        images = media.image!.map((e) => Images.fromJson(e.toJson())).toList();
+      }
+    }
     if (json["favorite"] is bool) {
       favorite = json["favorite"];
     }
@@ -54,6 +62,16 @@ class File {
               )
               .toList();
     }
+    if (json["property"] is List) {
+      propertys = json["property"] == null
+          ? null
+          : (json["property"] as List)
+              .map((e) => Property.fromJson(e))
+              .where(
+                (element) => element.name != null,
+              )
+              .toList();
+    }
     if (json["category"] is Map) {
       fullCategory = json["category"] == null ? null : FullCategory.fromJson(json["category"]);
     }
@@ -62,6 +80,7 @@ class File {
     }
 
     if (propertys != null) {
+      propertys = propertys!.where((element) => element.weightList != null).toList();
       propertys!.sort((a, b) => a.weightList!.compareTo(b.weightList!));
     }
 
@@ -173,7 +192,7 @@ class File {
 
       if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
 
-      return toPrice(prop.value!, isRent() ? prop.name! : "");
+      return toPrice(prop.value!, prop.name!);
     } else {
       return adaptivePrice("");
     }
@@ -217,6 +236,134 @@ class File {
   }
 
   bool isRent() => fullCategory?.fullCategory?.contains("اجاره") ?? false;
+}
+
+class Media {
+  List<Video>? video;
+  List<Image>? image;
+  String? virtualTour;
+
+  Media({this.video, this.image, this.virtualTour});
+
+  Media.fromJson(Map<String, dynamic> json) {
+    if (json["Video"] is List) {
+      video = json["Video"] == null ? null : (json["Video"] as List).map((e) => Video.fromJson(e)).toList();
+    }
+    if (json["Image"] is List) {
+      image = json["Image"] == null ? null : (json["Image"] as List).map((e) => Image.fromJson(e)).toList();
+    }
+    if (json["virtualTour"] is String) {
+      virtualTour = json["virtualTour"];
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    if (video != null) {
+      _data["Video"] = video?.map((e) => e.toJson()).toList();
+    }
+    if (image != null) {
+      _data["Image"] = image?.map((e) => e.toJson()).toList();
+    }
+    _data["virtualTour"] = virtualTour;
+    return _data;
+  }
+}
+
+class Image {
+  int? id;
+  String? createDate;
+  String? path;
+  bool? status;
+  int? weight;
+  String? name;
+  int? fileId;
+
+  Image({this.id, this.createDate, this.path, this.status, this.weight, this.name, this.fileId});
+
+  Image.fromJson(Map<String, dynamic> json) {
+    if (json["id"] is int) {
+      id = json["id"];
+    }
+    if (json["createDate"] is String) {
+      createDate = json["createDate"];
+    }
+    if (json["path"] is String) {
+      path = json["path"];
+    }
+    if (json["status"] is bool) {
+      status = json["status"];
+    }
+    if (json["weight"] is int) {
+      weight = json["weight"];
+    }
+    if (json["name"] is String) {
+      name = json["name"];
+    }
+    if (json["file_id"] is int) {
+      fileId = json["file_id"];
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["id"] = id;
+    _data["createDate"] = createDate;
+    _data["path"] = path;
+    _data["status"] = status;
+    _data["weight"] = weight;
+    _data["name"] = name;
+    _data["file_id"] = fileId;
+    return _data;
+  }
+}
+
+class Video {
+  int? id;
+  String? name;
+  String? path;
+  String? createData;
+  bool? status;
+  int? weight;
+  int? fileId;
+
+  Video({this.id, this.name, this.path, this.createData, this.status, this.weight, this.fileId});
+
+  Video.fromJson(Map<String, dynamic> json) {
+    if (json["id"] is int) {
+      id = json["id"];
+    }
+    if (json["name"] is String) {
+      name = json["name"];
+    }
+    if (json["path"] is String) {
+      path = json["path"];
+    }
+    if (json["createData"] is String) {
+      createData = json["createData"];
+    }
+    if (json["status"] is bool) {
+      status = json["status"];
+    }
+    if (json["weight"] is int) {
+      weight = json["weight"];
+    }
+    if (json["file_id"] is int) {
+      fileId = json["file_id"];
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["id"] = id;
+    _data["name"] = name;
+    _data["path"] = path;
+    _data["createData"] = createData;
+    _data["status"] = status;
+    _data["weight"] = weight;
+    _data["file_id"] = fileId;
+    return _data;
+  }
 }
 
 class FullCategory {

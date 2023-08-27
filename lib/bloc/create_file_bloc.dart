@@ -46,38 +46,6 @@ class CreateFileBloc extends Bloc<CreateFileEvent, CreateFileState> {
         "Authorization": await User.getBearerToken(),
       };
 
-      var videos = event.data.files.where((element) => checkVideoExtension((element['file'] as io.File).path)).toList();
-
-      var images = event.data.files.where((element) => checkImageExtension((element['file'] as io.File).path)).toList();
-
-      var tours = event.data.files.where((element) => (element['file'] as io.File).path.endsWith("zip")).toList();
-      var tour = tours.isNotEmpty ? tours.first : null;
-
-      var formData = FormData.fromMap({
-        'name': event.data.title,
-        'long': event.data.location.longitude.toString(),
-        'lat': event.data.location.latitude.toString(),
-        'address': event.data.address,
-        'city_id': event.data.city.id!.toString(),
-        'category_id': event.data.category.id!.toString(),
-        'fetcher': jsonEncode(event.data.properties),
-        if (videos.isNotEmpty) 'videosName': jsonEncode(videos.map((e) => (e['title'] as String?) ?? "").toList()),
-        if (images.isNotEmpty) 'imagesName': jsonEncode(images.map((e) => (e['title'] as String?) ?? "").toList()),
-        'description': event.data.description,
-        'securityDescription': event.data.secDescription,
-        if (event.data.visitPhone.isFill()) 'visitPhoneNumber': event.data.visitPhone,
-        'ownerPhoneNumber': event.data.ownerPhone,
-        'ownerName': event.data.ownerName,
-        if (event.data.visitName.isFill()) 'visitName': event.data.visitName,
-        if (event.data.estates.isNotEmpty) 'estateIds': jsonEncode(event.data.estates.map((e) => e.id!).toList()),
-      });
-
-      formData.files.addAll([
-        for (Map<String, dynamic> item in images) MapEntry<String, MultipartFile>("images", await MultipartFile.fromFile((item['file'] as io.File).path)),
-        for (Map<String, dynamic> item in videos) MapEntry<String, MultipartFile>("videos", await MultipartFile.fromFile((item['file'] as io.File).path)),
-        if (tour != null) MapEntry("virtualTour", await MultipartFile.fromFile((tour['file'] as io.File).path)),
-      ]);
-
       var url = event.data.estates.isEmpty ? getFileUrl("file/addFileSiraf/").toString() : getFileUrl("file/addFileEstate/").toString();
 
       response = await Dio().post(
@@ -88,7 +56,7 @@ class CreateFileBloc extends Bloc<CreateFileEvent, CreateFileState> {
           },
           headers: headers,
         ),
-        data: formData,
+        data: await event.data.getFormData(),
       );
     } on HttpException catch (e) {
       emit(CreateFileErrorState());

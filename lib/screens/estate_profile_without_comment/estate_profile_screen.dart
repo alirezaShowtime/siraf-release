@@ -7,9 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:siraf3/bloc/estate_files_bloc.dart';
 import 'package:siraf3/bloc/estate_profile/comment/send/estate_profile_comment_rate_bloc.dart';
 import 'package:siraf3/bloc/estate_profile/profile/estate_profile_bloc.dart';
-import 'package:siraf3/bloc/files_bloc.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
@@ -90,8 +90,8 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
   TextEditingController searchController = TextEditingController();
   TextEditingController commentController = TextEditingController();
 
-  FilesBloc filesBloc = FilesBloc();
-  FilesBloc _moreFilesBloc = FilesBloc();
+  EstateFilesBloc filesBloc = EstateFilesBloc();
+  EstateFilesBloc _moreFilesBloc = EstateFilesBloc();
   EstateProfileBloc bloc = EstateProfileBloc();
   EstateProfileCommentRateBloc sendCommentRateBloc = EstateProfileCommentRateBloc();
   FocusNode focusNode = FocusNode();

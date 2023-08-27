@@ -14,6 +14,7 @@ import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:flutter/material.dart' as m;
 
 class CompareScreen extends StatefulWidget {
   @override
@@ -250,12 +251,12 @@ class _CompareItemState extends State<_CompareItem> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image(
+                    child: m.Image(
                       image: NetworkImage((file.images != null && file.images!.isNotEmpty) ? file.images!.first.path ?? "" : ""),
                       width: 100,
                       height: 100,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Image(
+                      errorBuilder: (context, error, stackTrace) => m.Image(
                         image: AssetImage(IMAGE_NOT_AVAILABLE),
                         width: 100,
                         height: 100,

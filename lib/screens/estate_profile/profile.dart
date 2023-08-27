@@ -124,7 +124,7 @@ extension Profile on _EstateProfileScreen {
                 ],
               ),
             ),
-          if (!showComment) Expanded(child: BlocBuilder<FilesBloc, FilesState>(builder: (context, state) => _buildEstateFilesBloc(context, state, estateProfile))),
+          if (!showComment) Expanded(child: BlocBuilder<EstateFilesBloc, FilesState>(builder: (context, state) => _buildEstateFilesBloc(context, state, estateProfile))),
         ],
       ),
     );
@@ -174,7 +174,7 @@ extension Profile on _EstateProfileScreen {
 
   getFiles() {
     if (filesBloc.isClosed) {
-      filesBloc = FilesBloc();
+      filesBloc = EstateFilesBloc();
     }
     filesBloc.add(
       FilesLoadEvent(

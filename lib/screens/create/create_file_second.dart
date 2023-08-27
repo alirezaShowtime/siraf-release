@@ -20,6 +20,7 @@ import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/text_form_field_2.dart';
+import 'package:switcher_button/switcher_button.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 class CreateFileSecond extends StatefulWidget {
@@ -62,6 +63,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   TextEditingController _ownerNameController = TextEditingController();
   TextEditingController _visitNameController = TextEditingController();
 
+  bool isMobilePrivate = false;
+
   @override
   void initState() {
     super.initState();
@@ -103,541 +106,579 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
         key: formKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
+          child: Stack(
             children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 10,
-                      ),
-                      GestureDetector(
-                        onTap: _openHelp,
-                        child: Container(
-                          color: Colors.transparent,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "راهنما",
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontFamily: "IranSansMedium",
-                                ),
+              SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    GestureDetector(
+                      onTap: _openHelp,
+                      child: Container(
+                        color: Colors.transparent,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "راهنما",
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontFamily: "IranSansMedium",
                               ),
-                              Icon(
-                                CupertinoIcons.right_chevron,
-                                size: 17,
-                              ),
-                            ],
-                          ),
+                            ),
+                            Icon(
+                              CupertinoIcons.right_chevron,
+                              size: 17,
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(
-                        height: 10,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Divider(
+                      color: Themes.textGrey.withOpacity(0.5),
+                      height: 1,
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Text(
+                      "آپلود فایل های تصویری",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Themes.primary,
+                        fontFamily: "IranSansBold",
                       ),
-                      Divider(
-                        color: Themes.textGrey.withOpacity(0.5),
-                        height: 1,
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    Text(
+                      "(عکس، نقشه، ویدیو و تور مجازی)",
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        fontFamily: "IranSansMedium",
                       ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Text(
-                        "آپلود فایل های تصویری",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Themes.primary,
-                          fontFamily: "IranSansBold",
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Container(
+                      child: GridView(
+                        shrinkWrap: true,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: MediaQuery.of(context).size.width < 330 ? 4 : 5,
                         ),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      Text(
-                        "(عکس، نقشه، ویدیو و تور مجازی)",
-                        style: TextStyle(
-                          fontSize: 11.5,
-                          fontFamily: "IranSansMedium",
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Container(
-                        child: GridView(
-                          shrinkWrap: true,
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: MediaQuery.of(context).size.width < 330 ? 4 : 5,
-                          ),
-                          children: <Widget>[
-                                Container(
-                                  padding: EdgeInsets.all(5),
-                                  alignment: Alignment.center,
-                                  child: DottedBorder(
-                                    color: Themes.iconGrey,
-                                    borderType: BorderType.RRect,
-                                    radius: Radius.circular(5),
-                                    child: Container(
-                                      color: Colors.transparent,
-                                      alignment: Alignment.center,
-                                      child: IconButton(
-                                        highlightColor: Colors.transparent,
-                                        splashColor: Colors.transparent,
-                                        onPressed: _addMedia,
-                                        icon: Icon(
-                                          CupertinoIcons.plus,
-                                          size: 28,
-                                          color: Themes.iconGrey,
-                                        ),
+                        children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.center,
+                                child: DottedBorder(
+                                  color: Themes.iconGrey,
+                                  borderType: BorderType.RRect,
+                                  radius: Radius.circular(5),
+                                  child: Container(
+                                    color: Colors.transparent,
+                                    alignment: Alignment.center,
+                                    child: IconButton(
+                                      highlightColor: Colors.transparent,
+                                      splashColor: Colors.transparent,
+                                      onPressed: _addMedia,
+                                      icon: Icon(
+                                        CupertinoIcons.plus,
+                                        size: 28,
+                                        color: Themes.iconGrey,
                                       ),
                                     ),
                                   ),
                                 ),
-                              ] +
-                              mediaBoxes
-                                  .map<Widget>(
-                                    (e) => InkWell(
-                                      onTap: () {
-                                        showOptionsDialog(mediaBoxes.indexOf(e));
-                                      },
-                                      child: e,
-                                    ),
-                                  )
-                                  .toList(),
+                              ),
+                            ] +
+                            mediaBoxes
+                                .map<Widget>(
+                                  (e) => InkWell(
+                                    onTap: () {
+                                      showOptionsDialog(mediaBoxes.indexOf(e));
+                                    },
+                                    child: e,
+                                  ),
+                                )
+                                .toList(),
+                      ),
+                    ),
+                    Text(
+                      "عنوان",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Themes.primary,
+                        fontFamily: "IranSansBold",
+                      ),
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    Text(
+                      "در عنوان فایل، به موارد مهمی مانند نوع ملک، متراژ و محله اشاره کنید.",
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        fontFamily: "IranSansMedium",
+                      ),
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    TextFormField2(
+                      decoration: InputDecoration(
+                        hintText: hints.containsKey(widget.formData.category.id!) ? hints[widget.formData.category.id!] : "مثال : آپارتمان 120 متری، میدان ونک",
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Themes.icon,
+                            width: 0.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
                         ),
-                      ),
-                      Text(
-                        "عنوان",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Themes.primary,
-                          fontFamily: "IranSansBold",
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
                         ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Themes.primary,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        disabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Themes.textGrey,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        hintStyle: TextStyle(fontSize: 14, color: Themes.textGrey),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                       ),
-                      SizedBox(
-                        height: 4,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: App.theme.textTheme.bodyLarge?.color,
                       ),
-                      Text(
-                        "در عنوان فایل، به موارد مهمی مانند نوع ملک، متراژ و محله اشاره کنید.",
+                      onChanged: (value) {
+                        setState(() {
+                          title = value;
+                        });
+                      },
+                      textInputAction: TextInputAction.next,
+                      cursorColor: Themes.primary,
+                      maxLines: 1,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "عنوان فایل را وارد کنید";
+                        }
+                        if (value.length <= 10) {
+                          return "حداقل باید 10 کاراکتر بنویسید";
+                        }
+                      },
+                      onSaved: ((newValue) {
+                        setState(() {
+                          title = newValue;
+                        });
+                      }),
+                      controller: _titleController,
+                    ),
+                    SizedBox(height: 14),
+                    Text(
+                      "نام و نام خانوادگی مالک",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Themes.text,
+                        fontFamily: "IranSansBold",
+                      ),
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    TextFormField2(
+                      decoration: InputDecoration(
+                        hintText: "نام و نام خانوادگی صاحب ملک را بنویسید.",
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Themes.icon,
+                            width: 0.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Themes.primary,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        disabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Themes.textGrey,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        hintStyle: TextStyle(fontSize: 14),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      ),
+                      style: TextStyle(fontSize: 14, color: Themes.text),
+                      onChanged: (value) {
+                        setState(() {
+                          ownerName = value;
+                        });
+                      },
+                      textInputAction: TextInputAction.next,
+                      cursorColor: Themes.primary,
+                      maxLines: 1,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "لطفا نام و نام خانوادگی مالک را وارد نمایید";
+                        }
+                      },
+                      onSaved: ((newValue) {
+                        setState(() {
+                          ownerName = newValue;
+                        });
+                      }),
+                      controller: _ownerNameController,
+                    ),
+                    SizedBox(height: 14),
+                    Text(
+                      "شماره تماس مالک",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Themes.text,
+                        fontFamily: "IranSansBold",
+                      ),
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    TextFormField2(
+                      decoration: InputDecoration(
+                        hintText: "شماره تماس صاحب ملک را بنویسید.",
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Themes.icon,
+                            width: 0.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Themes.primary,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        disabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Themes.textGrey,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        hintStyle: TextStyle(fontSize: 14),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        helperStyle: TextStyle(fontSize: 0.01),
+                      ),
+                      maxLength: 11,
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(fontSize: 14, color: Themes.text),
+                      onChanged: (value) {
+                        setState(() {
+                          ownerPhone = value;
+                        });
+                      },
+                      textInputAction: TextInputAction.next,
+                      cursorColor: Themes.primary,
+                      maxLines: 1,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "شماره تماس مالک را وارد کنید";
+                        }
+                        if (!value.startsWith("09")) {
+                          return "شماره تماس باید با 09 شروع شود";
+                        }
+                        if (value.length != 11) {
+                          return "شماره تماس باید 11 کاراکتر باشد";
+                        }
+                      },
+                      onSaved: ((newValue) {
+                        setState(() {
+                          ownerPhone = newValue;
+                        });
+                      }),
+                      controller: _ownerPhoneController,
+                    ),
+                    SizedBox(
+                      height: 14,
+                    ),
+                    Text(
+                      "نام و نام خانوادگی جهت هماهنگی بازدید",
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Themes.text,
+                        fontFamily: "IranSansBold",
+                      ),
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    TextFormField2(
+                      decoration: InputDecoration(
+                        hintText: "نام و نام خانوادگی جهت هماهنگی بازدید را بنویسید.",
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Themes.icon,
+                            width: 0.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Themes.primary,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        disabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Themes.textGrey,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        hintStyle: TextStyle(fontSize: 14),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      ),
+                      style: TextStyle(fontSize: 14, color: Themes.text),
+                      onChanged: (value) {
+                        setState(() {
+                          visitName = value;
+                        });
+                      },
+                      textInputAction: TextInputAction.next,
+                      cursorColor: Themes.primary,
+                      maxLines: 1,
+                      onSaved: ((newValue) {
+                        setState(() {
+                          visitName = newValue;
+                        });
+                      }),
+                      controller: _visitNameController,
+                    ),
+                    SizedBox(
+                      height: 14,
+                    ),
+                    Text(
+                      "شماره تماس بازدید",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Themes.text,
+                        fontFamily: "IranSansBold",
+                      ),
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    TextFormField2(
+                      decoration: InputDecoration(
+                        hintText: "شماره تماس جهت هماهنگی بازدید را بنویسید.",
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Themes.icon,
+                            width: 0.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Themes.primary,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        disabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Themes.textGrey,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        hintStyle: TextStyle(fontSize: 14),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        helperStyle: TextStyle(fontSize: 0.01),
+                      ),
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(fontSize: 14, color: Themes.text),
+                      onChanged: (value) {
+                        setState(() {
+                          visitPhone = value;
+                        });
+                      },
+                      maxLength: 11,
+                      textInputAction: TextInputAction.next,
+                      cursorColor: Themes.primary,
+                      maxLines: 1,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return null;
+                        }
+                        if (!value.startsWith("09")) {
+                          return "شماره تماس باید با 09 شروع شود";
+                        }
+                        if (value.length != 11) {
+                          return "شماره تماس باید 11 کاراکتر باشد";
+                        }
+                      },
+                      onSaved: ((newValue) {
+                        setState(() {
+                          visitPhone = newValue;
+                        });
+                      }),
+                      controller: _visitPhoneController,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "عدم نمایش شماره موبایل",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Themes.text,
+                            ),
+                          ),
+                          SwitcherButton(
+                            onColor: Themes.blue,
+                            offColor: Colors.grey.shade300,
+                            size: 40,
+                            value: isMobilePrivate,
+                            onChange: (value) {
+                              setState(() {
+                                isMobilePrivate = value;
+                              });
+                            },
+                          )
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 8,
+                        left: 5,
+                        right: 5,
+                      ),
+                      child: Text(
+                        isMobilePrivate ? "شماره موبایل به مشاوران نمایش داده نمی شود" : "شماره موبایل به مشاوران نمایش داده می شود",
                         style: TextStyle(
                           fontSize: 11.5,
                           fontFamily: "IranSansMedium",
-                        ),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      TextFormField2(
-                        decoration: InputDecoration(
-                          hintText: hints.containsKey(widget.formData.category.id!) ? hints[widget.formData.category.id!] : "مثال : آپارتمان 120 متری، میدان ونک",
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.icon,
-                              width: 0.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.primary,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.textGrey,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          hintStyle: TextStyle(fontSize: 14, color: Themes.textGrey),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                        ),
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: App.theme.textTheme.bodyLarge?.color,
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            title = value;
-                          });
-                        },
-                        textInputAction: TextInputAction.next,
-                        cursorColor: Themes.primary,
-                        maxLines: 1,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "عنوان فایل را وارد کنید";
-                          }
-                          if (value.length <= 10) {
-                            return "حداقل باید 10 کاراکتر بنویسید";
-                          }
-                        },
-                        onSaved: ((newValue) {
-                          setState(() {
-                            title = newValue;
-                          });
-                        }),
-                        controller: _titleController,
-                      ),
-                      SizedBox(height: 14),
-                      Text(
-                        "نام و نام خانوادگی مالک",
-                        style: TextStyle(
-                          fontSize: 14,
                           color: Themes.text,
-                          fontFamily: "IranSansBold",
                         ),
                       ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      TextFormField2(
-                        decoration: InputDecoration(
-                          hintText: "نام و نام خانوادگی صاحب ملک را بنویسید.",
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.icon,
-                              width: 0.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.primary,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.textGrey,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          hintStyle: TextStyle(fontSize: 14),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                        ),
-                        style: TextStyle(fontSize: 14, color: Themes.text),
-                        onChanged: (value) {
-                          setState(() {
-                            ownerName = value;
-                          });
-                        },
-                        textInputAction: TextInputAction.next,
-                        cursorColor: Themes.primary,
-                        maxLines: 1,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "لطفا نام و نام خانوادگی مالک را وارد نمایید";
-                          }
-                        },
-                        onSaved: ((newValue) {
-                          setState(() {
-                            ownerName = newValue;
-                          });
-                        }),
-                        controller: _ownerNameController,
-                      ),
-                      SizedBox(height: 14),
-                      Text(
-                        "شماره تماس مالک",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Themes.text,
-                          fontFamily: "IranSansBold",
-                        ),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      TextFormField2(
-                        decoration: InputDecoration(
-                          hintText: "شماره تماس صاحب ملک را بنویسید.",
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.icon,
-                              width: 0.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.primary,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.textGrey,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          hintStyle: TextStyle(fontSize: 14),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                          helperStyle: TextStyle(fontSize: 0.01),
-                        ),
-                        maxLength: 11,
-                        keyboardType: TextInputType.number,
-                        style: TextStyle(fontSize: 14, color: Themes.text),
-                        onChanged: (value) {
-                          setState(() {
-                            ownerPhone = value;
-                          });
-                        },
-                        textInputAction: TextInputAction.next,
-                        cursorColor: Themes.primary,
-                        maxLines: 1,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "شماره تماس مالک را وارد کنید";
-                          }
-                          if (!value.startsWith("09")) {
-                            return "شماره تماس باید با 09 شروع شود";
-                          }
-                          if (value.length != 11) {
-                            return "شماره تماس باید 11 کاراکتر باشد";
-                          }
-                        },
-                        onSaved: ((newValue) {
-                          setState(() {
-                            ownerPhone = newValue;
-                          });
-                        }),
-                        controller: _ownerPhoneController,
-                      ),
-                      SizedBox(
-                        height: 14,
-                      ),
-                      Text(
-                        "نام و نام خانوادگی جهت هماهنگی بازدید",
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Themes.text,
-                          fontFamily: "IranSansBold",
-                        ),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      TextFormField2(
-                        decoration: InputDecoration(
-                          hintText: "نام و نام خانوادگی جهت هماهنگی بازدید را بنویسید.",
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.icon,
-                              width: 0.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.primary,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.textGrey,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          hintStyle: TextStyle(fontSize: 14),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                        ),
-                        style: TextStyle(fontSize: 14, color: Themes.text),
-                        onChanged: (value) {
-                          setState(() {
-                            visitName = value;
-                          });
-                        },
-                        textInputAction: TextInputAction.next,
-                        cursorColor: Themes.primary,
-                        maxLines: 1,
-                        onSaved: ((newValue) {
-                          setState(() {
-                            visitName = newValue;
-                          });
-                        }),
-                        controller: _visitNameController,
-                      ),
-                      SizedBox(
-                        height: 14,
-                      ),
-                      Text(
-                        "شماره تماس بازدید",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Themes.text,
-                          fontFamily: "IranSansBold",
-                        ),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      TextFormField2(
-                        decoration: InputDecoration(
-                          hintText: "شماره تماس جهت هماهنگی بازدید را بنویسید.",
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.icon,
-                              width: 0.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.primary,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Themes.textGrey,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          hintStyle: TextStyle(fontSize: 14),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                          helperStyle: TextStyle(fontSize: 0.01),
-                        ),
-                        keyboardType: TextInputType.number,
-                        style: TextStyle(fontSize: 14, color: Themes.text),
-                        onChanged: (value) {
-                          setState(() {
-                            visitPhone = value;
-                          });
-                        },
-                        maxLength: 11,
-                        textInputAction: TextInputAction.next,
-                        cursorColor: Themes.primary,
-                        maxLines: 1,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return null;
-                          }
-                          if (!value.startsWith("09")) {
-                            return "شماره تماس باید با 09 شروع شود";
-                          }
-                          if (value.length != 11) {
-                            return "شماره تماس باید 11 کاراکتر باشد";
-                          }
-                        },
-                        onSaved: ((newValue) {
-                          setState(() {
-                            visitPhone = newValue;
-                          });
-                        }),
-                        controller: _visitPhoneController,
-                      ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(
+                      height: 70,
+                    ),
+                  ],
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  MaterialButton(
-                    onPressed: next,
-                    color: Themes.primary,
-                    child: Text(
-                      "بعدی",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
+              Positioned(
+                bottom: 15,
+                left: 10,
+                child: MaterialButton(
+                  onPressed: next,
+                  color: Themes.primary,
+                  child: Text(
+                    "بعدی",
+                    style: TextStyle(
+                      color: Colors.white,
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    minWidth: 100,
-                    height: 45,
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  minWidth: 100,
+                  height: 45,
+                ),
+              )
             ],
           ),
         ),
@@ -694,6 +735,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
     widget.formData.visitPhone = visitPhone ?? "";
     widget.formData.ownerName = ownerName!;
     widget.formData.visitName = visitName ?? "";
+    widget.formData.privateMobile = isMobilePrivate;
 
     await Navigator.push(
       context,

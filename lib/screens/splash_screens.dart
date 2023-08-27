@@ -7,8 +7,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/check_version_bloc.dart';
+import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/group.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/home_screen.dart';
@@ -246,9 +248,19 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   void dispose() {
-    super.dispose();
-
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+    
+    var darkMode = App.isDark;
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
+      statusBarBrightness: darkMode ? Brightness.light : Brightness.dark,
+      statusBarIconBrightness: darkMode ? Brightness.light : Brightness.dark,
+      systemNavigationBarIconBrightness: darkMode ? Brightness.light : Brightness.dark,
+      systemNavigationBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
+      systemNavigationBarDividerColor: darkMode ? DarkThemes.appBar : Themes.appBar
+    ));
+
+    super.dispose();
   }
 
   Future refreshToken() async {

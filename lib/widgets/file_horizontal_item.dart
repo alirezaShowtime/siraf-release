@@ -3,6 +3,7 @@ import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/widgets/my_image.dart';
+import 'package:flutter/material.dart' as m;
 
 class FileHorizontalItem extends StatefulWidget {
   File file;
@@ -135,13 +136,13 @@ class _FileHorizontalItemState2 extends State<FileHorizontalItem> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(
+          m.Image.asset(
             "assets/images/siraf_logo.png",
             color: Colors.grey.shade300,
             scale: 8.5,
           ),
           SizedBox(height: 4),
-          Image.asset(
+          m.Image.asset(
             "assets/images/siraf_logo_text.png",
             color: Colors.grey.shade300,
             scale: 7,

@@ -145,7 +145,7 @@ extension Profile on _ConsultantProfileScreen {
           ),
           if (showSearchBarWidget) searchBar(consultantInfo.estateName ?? ""),
           if (showComment) addCommentWidget(),
-          if (!showComment) Expanded(child: BlocBuilder<FilesBloc, FilesState>(builder: _buildFilesBloc)),
+          if (!showComment) Expanded(child: BlocBuilder<ConsultantFilesBloc, FilesState>(builder: _buildFilesBloc)),
         ],
       ),
     );
@@ -186,7 +186,7 @@ extension Profile on _ConsultantProfileScreen {
 
   getFiles() {
     if (filesBloc.isClosed) {
-      filesBloc = FilesBloc();
+      filesBloc = ConsultantFilesBloc();
     }
     filesBloc.add(
       FilesLoadEvent(filterData: filterData),

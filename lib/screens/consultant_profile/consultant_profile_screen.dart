@@ -6,7 +6,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/bloc/consultant_profile/comment/send/consultant_profile_comment_rate_bloc.dart';
 import 'package:siraf3/bloc/consultant_profile/profile/consultant_profile_bloc.dart';
-import 'package:siraf3/bloc/files_bloc.dart';
+import 'package:siraf3/bloc/consultant_files_bloc.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
@@ -67,7 +67,7 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> {
 
   ConsultantProfileBloc bloc = ConsultantProfileBloc();
   ConsultantProfileCommentRateBloc sendCommentRateBloc = ConsultantProfileCommentRateBloc();
-  FilesBloc filesBloc = FilesBloc();
+  ConsultantFilesBloc filesBloc = ConsultantFilesBloc();
 
   FilterData filterData = FilterData();
 
