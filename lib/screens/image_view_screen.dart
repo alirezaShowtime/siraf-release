@@ -82,7 +82,7 @@ class _ImageViewScreen extends State<ImageViewScreen> {
                 children: [
                   MyBackButton(color: Colors.white),
                   SizedBox(width: 10),
-                  if (widget.title.isFill()) AppBarTitle(widget.title!, color: Colors.white),
+                  if (widget.title.isFill()) Flexible(child: AppBarTitle(widget.title!, color: Colors.white, fontSize: 14,)),
                 ],
               ),
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/screens/video_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -16,9 +17,9 @@ class _UploadMediaGuideState extends State<UploadMediaGuide> {
   String video_guide = "";
   String tour_guide = "";
 
-  String learn_video_url = "https://siraf.app";
-  String googleStreatViewDownloadLink = "https://siraf.app";
-  String krpanoDownloadLink = "https://siraf.app";
+  String learn_video_url = "https://minio.siraf.app/auth/static/baseFile/Introduction.mp4";
+  String googleStreatViewDownloadLink = "https://minio.siraf.app/auth/static/baseFile/p2.rar";
+  String krpanoDownloadLink = "https://minio.siraf.app/auth/static/baseFile/p1.rar";
 
   @override
   void initState() {
@@ -28,12 +29,9 @@ class _UploadMediaGuideState extends State<UploadMediaGuide> {
   }
 
   setTexts() async {
-    var imageGuide = await DefaultAssetBundle.of(context)
-        .loadString('assets/images/image_guide.txt');
-    var videoGuide = await DefaultAssetBundle.of(context)
-        .loadString('assets/images/video_guide.txt');
-    var tourGuide = await DefaultAssetBundle.of(context)
-        .loadString('assets/images/tour_guide.txt');
+    var imageGuide = await DefaultAssetBundle.of(context).loadString('assets/images/image_guide.txt');
+    var videoGuide = await DefaultAssetBundle.of(context).loadString('assets/images/video_guide.txt');
+    var tourGuide = await DefaultAssetBundle.of(context).loadString('assets/images/tour_guide.txt');
 
     setState(() {
       image_guide = imageGuide;
@@ -132,13 +130,17 @@ class _UploadMediaGuideState extends State<UploadMediaGuide> {
               SizedBox(height: 20),
               GestureDetector(
                 onTap: () async {
-                  if (await canLaunchUrl(Uri.parse(learn_video_url))) {
-                    launchUrl(Uri.parse(learn_video_url),
-                        mode: LaunchMode.externalApplication);
-                  } else {
-                    notify(
-                        "متاسفانه نتوانستیم لینک را بازکنیم به پشتیبانی اطلاع دهید تا شما را راهنمایی کند.");
-                  }
+                  // if (await canLaunchUrl(Uri.parse(learn_video_url))) {
+                  //   launchUrl(Uri.parse(learn_video_url),
+                  //       mode: LaunchMode.externalApplication);
+                  // } else {
+                  //   notify(
+                  //       "متاسفانه نتوانستیم لینک را بازکنیم به پشتیبانی اطلاع دهید تا شما را راهنمایی کند.");
+                  // }
+                  push(
+                    context,
+                    VideoScreen(videoUrl: learn_video_url, title: "آموزش ساخت تور مجازی"),
+                  );
                 },
                 child: Text(
                   "جهت مشاهده آموزش ساخت تور مجازی کلیک کنید.",
@@ -153,13 +155,10 @@ class _UploadMediaGuideState extends State<UploadMediaGuide> {
               SizedBox(height: 20),
               GestureDetector(
                 onTap: () async {
-                  if (await canLaunchUrl(
-                      Uri.parse(googleStreatViewDownloadLink))) {
-                    launchUrl(Uri.parse(googleStreatViewDownloadLink),
-                        mode: LaunchMode.externalApplication);
+                  if (await canLaunchUrl(Uri.parse(googleStreatViewDownloadLink))) {
+                    launchUrl(Uri.parse(googleStreatViewDownloadLink), mode: LaunchMode.externalApplication);
                   } else {
-                    notify(
-                        "متاسفانه نتوانستیم لینک را بازکنیم به پشتیبانی اطلاع دهید تا شما را راهنمایی کند.");
+                    notify("متاسفانه نتوانستیم لینک را بازکنیم به پشتیبانی اطلاع دهید تا شما را راهنمایی کند.");
                   }
                 },
                 child: Text(
@@ -176,11 +175,9 @@ class _UploadMediaGuideState extends State<UploadMediaGuide> {
               GestureDetector(
                 onTap: () async {
                   if (await canLaunchUrl(Uri.parse(krpanoDownloadLink))) {
-                    launchUrl(Uri.parse(krpanoDownloadLink),
-                        mode: LaunchMode.externalApplication);
+                    launchUrl(Uri.parse(krpanoDownloadLink), mode: LaunchMode.externalApplication);
                   } else {
-                    notify(
-                        "متاسفانه نتوانستیم لینک را بازکنیم به پشتیبانی اطلاع دهید تا شما را راهنمایی کند.");
+                    notify("متاسفانه نتوانستیم لینک را بازکنیم به پشتیبانی اطلاع دهید تا شما را راهنمایی کند.");
                   }
                 },
                 child: Text(

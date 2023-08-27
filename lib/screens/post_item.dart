@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:siraf3/bloc/post_bookmark_bloc.dart';
 import 'package:siraf3/dialog.dart';
+import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/post.dart';
+import 'package:siraf3/screens/image_view_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
@@ -112,23 +114,32 @@ class _PostItemState extends State<PostItem> with AutomaticKeepAliveClientMixin 
                       .map<s.Slider>(
                         (e) => s.Slider(
                           image: NetworkImage(e),
-                            type: s.SliderType.video,
-                            link: e,
-                          ),
-                        )
-                        .toList(),
-                height: postItemHeight,
-                autoPlay: false,
-                indicatorsCenterAlign: true,
-                viewportFraction: 1.0,
-                itemMargin: EdgeInsets.only(bottom: 5),
-                float: true,
-                indicatorMargin: EdgeInsets.only(left: 0, right: 0, bottom: 18),
-                itemBorderRadius: BorderRadius.zero,
-                imageFit: BoxFit.fitHeight,
-                indicatorSelectedColor: Themes.blue,
-                indicatorColor: Colors.grey,
-                onStartVideo: widget.onStartVideo),
+                          type: s.SliderType.video,
+                          link: e,
+                        ),
+                      )
+                      .toList(),
+              height: postItemHeight,
+              autoPlay: false,
+              indicatorsCenterAlign: true,
+              viewportFraction: 1.0,
+              itemMargin: EdgeInsets.only(bottom: 5),
+              float: true,
+              indicatorMargin: EdgeInsets.only(left: 0, right: 0, bottom: 18),
+              itemBorderRadius: BorderRadius.zero,
+              imageFit: BoxFit.fitHeight,
+              indicatorSelectedColor: Themes.blue,
+              indicatorColor: Colors.grey,
+              onStartVideo: widget.onStartVideo,
+              onImageTap: (slide) {
+                var urls = <String>[];
+                if (widget.post.images.isFill()) {
+                  urls = widget.post.images!.map((e) => e.path!).toList();
+                }
+
+                push(context, ImageViewScreen(imageUrls: urls, title: widget.post.title!,));
+              },
+            ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,

@@ -11,8 +11,6 @@ listenNotification({Future<dynamic> Function(String?)? onSelectNotification}) {
 }
 
 firebaseMessageListener(RemoteMessage message, {Future<dynamic> Function(String?)? onSelectNotification}) async {
-  if (message.data.isEmpty) return;
-
   RemoteNotification? notification = message.notification;
 
   flutterLocalNotificationsPlugin.initialize(

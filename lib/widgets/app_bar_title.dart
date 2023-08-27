@@ -15,6 +15,6 @@ class AppBarTitle extends StatefulWidget {
 class _AppBarTitle extends State<AppBarTitle> {
   @override
   Widget build(BuildContext context) {
-    return Text(widget.title, style: TextStyle(fontSize: widget.fontSize, color: widget.color, fontFamily: "IranSansBold"));
+    return Text(widget.title, style: TextStyle(fontSize: widget.fontSize, color: widget.color, fontFamily: "IranSansBold",), maxLines: 1, overflow: TextOverflow.ellipsis,);
   }
 }

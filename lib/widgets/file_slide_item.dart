@@ -7,6 +7,7 @@ import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file.dart';
+import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
@@ -22,7 +23,10 @@ class FileSlideItem extends StatefulWidget {
   State<FileSlideItem> createState() => _FileSlideItemState();
 }
 
-class _FileSlideItemState extends State<FileSlideItem> {
+class _FileSlideItemState extends State<FileSlideItem> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+  
   late String description = "";
 
   late String summary = "";
@@ -93,11 +97,15 @@ class _FileSlideItemState extends State<FileSlideItem> {
                   indicatorsCenterAlign: true,
                   viewportFraction: 1.0,
                   itemMargin: EdgeInsets.only(bottom: 15),
+                  indicatorMargin: EdgeInsets.only(bottom: 15),
                   float: true,
                   itemBorderRadius: BorderRadius.zero,
                   imageFit: BoxFit.cover,
                   indicatorSelectedColor: Themes.blue,
                   indicatorColor: Colors.grey,
+                  onImageTap: (slide) {
+                    push(context, FileScreen(id: widget.file.id!),);
+                  },
                 ),
               if (widget.file.getFirstPrice().isNotEmpty || widget.file.getSecondPrice().isNotEmpty)
                 Positioned(

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as m;
+import 'package:siraf3/helpers.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/mini_video.dart';
 import 'package:video_player/video_player.dart';
@@ -63,7 +64,10 @@ class CarouselSliderCustom extends StatefulWidget {
   State<CarouselSliderCustom> createState() => _CarouselSliderCustomState();
 }
 
-class _CarouselSliderCustomState extends State<CarouselSliderCustom> {
+class _CarouselSliderCustomState extends State<CarouselSliderCustom> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   int _current = 0;
   final CarouselController _controller = CarouselController();
 
@@ -78,13 +82,19 @@ class _CarouselSliderCustomState extends State<CarouselSliderCustom> {
         children: [
           _content(),
           if (widget.sliders.length > 1)
-            Align(
-              alignment: widget.indicatorAlignment,
-              child: Padding(
-                padding: widget.indicatorMargin,
-                child: _indicator(),
-              ),
-            ),
+            // Align(
+            //   alignment: widget.indicatorAlignment,
+            //   child: Padding(
+            //     padding: widget.indicatorMargin,
+            //     child: _indicator(),
+            //   ),
+            // ),
+          Positioned(
+            child: _indicator(),
+            left: 0,
+            right: 0,
+            bottom: widget.indicatorMargin.bottom,
+          ),
         ],
       );
 
@@ -131,7 +141,7 @@ class _CarouselSliderCustomState extends State<CarouselSliderCustom> {
             builder: (BuildContext context) {
               var sliders = widget.sliders.where((element) => image.image == element.image);
               return GestureDetector(
-                onTap: sliders.isNotEmpty && sliders.first.link != null ? () {} : null,
+                onTap: () => widget.onImageTap?.call(image),
                 child: CarouselSliderItemCustom(
                   pageChangeStream: pageChangeStreams[widget.sliders.indexOf(image)],
                   image: image.image,
@@ -202,7 +212,10 @@ class CarouselSliderItemCustom extends StatefulWidget {
   State<CarouselSliderItemCustom> createState() => _CarouselSliderItemCustomState();
 }
 
-class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> {
+class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+  
   @override
   void initState() {
     super.initState();
@@ -261,6 +274,7 @@ class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> {
             color: Colors.grey.shade50,
             alignment: Alignment.center,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.error_outline_rounded, size: 35, color: Colors.grey.shade400),
                 Text(

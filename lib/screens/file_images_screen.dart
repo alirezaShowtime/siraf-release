@@ -76,7 +76,7 @@ class _FileImagesScreenState extends State<FileImagesScreen> {
                 children: [
                   MyBackButton(color: Colors.white),
                   SizedBox(width: 15),
-                  AppBarTitle(widget.file.name ?? "ناشناس", color: Colors.white),
+                  Flexible(child: AppBarTitle(widget.file.name ?? "ناشناس", color: Colors.white, fontSize: 14,)),
                 ],
               ),
             ),

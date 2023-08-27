@@ -201,12 +201,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                             ] +
                             mediaBoxes
                                 .map<Widget>(
-                                  (e) => InkWell(
-                                    onTap: () {
-                                      showOptionsDialog(mediaBoxes.indexOf(e));
-                                    },
-                                    child: e,
-                                  ),
+                                  (e) => buildClickableMediaBox(e),
                                 )
                                 .toList(),
                       ),
@@ -876,7 +871,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       children: [
                         if (!checkVirtualTourExtension((files[index]["file"] as io.File).path))
                           optionItem(
-                            value: "عنوان را وارد کنید (اختیاری)",
+                            value: files[index]["title"] != null ? files[index]["title"] + " (ویرایش)" : "عنوان را وارد کنید (اختیاری)",
                             isLast: false,
                             onTap: () => _showAddTitleDialog(index),
                           ),
@@ -1216,6 +1211,42 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
       });
       mediaBoxes.add(mediaBox);
     });
+  }
+
+  buildClickableMediaBox(Widget e) {
+    return GestureDetector(
+      onTap: () {
+        showOptionsDialog(mediaBoxes.indexOf(e));
+      },
+      child: Container(
+        padding: EdgeInsets.all(3),
+        child: Stack(
+          children: [
+            e,
+            if (files[mediaBoxes.indexOf(e)].containsKey('title') && files[mediaBoxes.indexOf(e)]['title'] != null)
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Themes.background.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    files[mediaBoxes.indexOf(e)]['title'] ?? "",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: "IranSansBold",
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
