@@ -366,7 +366,15 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: province.cities.map<Widget>((e) => _accordionCityItem(e)).toList(),
+            children: ([City(id: -3)] + province.cities).map<Widget>((e) {
+              if (widget.max == 1 && e.id == -3) {
+                return SizedBox();
+              }
+              if (e.id == -3) {
+                return _accordionProvinceItem(province);
+              }
+              return _accordionCityItem(e);
+            }).toList(),
           ),
         ),
       ),
