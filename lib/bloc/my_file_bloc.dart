@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:http/http.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
-import 'package:siraf3/models/file_consulant.dart';
+import 'package:siraf3/models/file_consultant.dart';
 import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/models/user.dart';
+import 'package:http/http.dart';
 
 class MyFileEvent {}
 
@@ -26,15 +26,19 @@ class MyFileLoadingState extends MyFileState {}
 class MyFileLoadedState extends MyFileState {
   MyFileDetail file;
   bool? favorite;
-  List<FileConsultant> consulants;
+  List<FileConsultant> consultants;
 
-  MyFileLoadedState({required this.file, required this.favorite, required this.consulants});
+  MyFileLoadedState({required this.file, required this.favorite, required this.consultants});
 }
 
 class MyFileErrorState extends MyFileState {
-  Response? response;
+  String? message;
 
-  MyFileErrorState({required this.response});
+  MyFileErrorState([Response? res]) {
+    if (res != null) {
+      message = jDecode(res.body)["message"];
+    }
+  }
 }
 
 class MyFileBloc extends Bloc<MyFileEvent, MyFileState> {
@@ -53,18 +57,16 @@ class MyFileBloc extends Bloc<MyFileEvent, MyFileState> {
 
         response = await http2.getWithToken(url);
 
-        List<FileConsultant> consulants = [];
+        List<FileConsultant> consultants = [];
 
-        print(event.progress);
+        if (event.progress == 7) {
+          var response2 = await http2.get(getEstateUrl("consultant/consultantsFile?fileId=${event.id}"));
 
-        var response2 = await http2.get(getEstateUrl("consultant/consultantsFile?fileId=${event.id}"));
-
-        if (isResponseOk(response2)) {
-          var json2 = jDecode(response2.body);
-          consulants = !(json2['data'] is String) ? FileConsultant.fromList(json2['data']) : [];
+          if (isResponseOk(response2)) {
+            var json2 = jDecode(response2.body);
+            consultants = !(json2['data'] is String) ? FileConsultant.fromList(json2['data']) : [];
+          }
         }
-
-        print(consulants.length);
 
         if (isResponseOk(response)) {
           var json = jDecode(response.body);
@@ -75,7 +77,7 @@ class MyFileBloc extends Bloc<MyFileEvent, MyFileState> {
             MyFileLoadedState(
               file: fileDetail,
               favorite: json['data']['favorite'],
-              consulants: consulants,
+              consultants: consultants,
             ),
           );
         } else {
@@ -93,22 +95,22 @@ class MyFileBloc extends Bloc<MyFileEvent, MyFileState> {
                 MyFileLoadedState(
                   file: MyFileDetail.fromJson(json['data']),
                   favorite: json['data']['favorite'],
-                  consulants: consulants,
+                  consultants: consultants,
                 ),
               );
             } else {
-              emit(MyFileErrorState(response: response));
+              emit(MyFileErrorState(response));
             }
           } else {
-            emit(MyFileErrorState(response: response));
+            emit(MyFileErrorState(response));
           }
         }
       } on HttpException catch (e) {
         print(e);
-        emit(MyFileErrorState(response: null));
+        emit(MyFileErrorState());
       } on SocketException catch (e) {
         print(e);
-        emit(MyFileErrorState(response: null));
+        emit(MyFileErrorState());
       }
     }
   }

@@ -138,6 +138,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                 borderRadius: BorderRadius.circular(100),
                               ),
                             ),
+                            if (user?.token == null) SizedBox(height: 10),
                             GestureDetector(
                               onTap: () async {
                                 if (user == null || user!.phone == null) {
@@ -170,7 +171,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                 closeRabbit();
                                 Navigator.pop(context);
                               },
-                              icon: Icon(CupertinoIcons.back, color: Themes.iconLight, size: 20),
+                              icon: Icon(CupertinoIcons.home, color: Themes.iconLight, size: 20),
                             ),
                             MyIconButton(
                               onTap: () async {
@@ -229,7 +230,10 @@ class _MenuScreenState extends State<MenuScreen> {
                                     _item(
                                       title: "نشان ها",
                                       icon: CupertinoIcons.bookmark,
-                                      onClick: () => doWithLogin(context, () => push(context, BookmarkScreen())),
+                                      onClick: () async {
+                                        await doWithLogin(context, () => push(context, BookmarkScreen()));
+                                        getUser();
+                                      },
                                     ),
                                   ],
                                 ),
@@ -311,41 +315,34 @@ class _MenuScreenState extends State<MenuScreen> {
                             ),
                           ),
                           Accordion(
-                            title: _accordionTitle("محاسبات"),
-                            onClick: () => _onClickAccordion(3),
-                            open: openedItem == 3,
-                            content: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AccordionItem(
-                                  title: "محاسبه کمیسیون",
-                                  onClick: () => push(context, CommissionCalculatorScreen()),
-                                ),
-                                // AccordionItem(
-                                //   title: "تبدیل رهن به اجاره",
-                                //   onClick: () => push(context, CommissionCalculatorScreen()),
-                                // ),
-                              ],
-                            ),
+                            title: _accordionTitle("محاسبه کمیسیون"),
+                            onClick: () => push(context, CommissionCalculatorScreen()),
                           ),
                           Accordion(
                             title: _accordionTitle("پشتیبانی"),
-                            onClick: () => _onClickAccordion(4),
-                            open: openedItem == 4,
-                            content: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                AccordionItem(
-                                  title: "تیکت های من",
-                                  onClick: () async {
-                                    await doWithLogin(context, () => push(context, TicketListScreen()));
-                                    getUser();
-                                  },
-                                ),
-                              ],
-                            ),
-                            // content: BlocBuilder<GetGroupsBloc, GetGroupsState>(builder: _buildTicketAccordionContent),
+                            onClick: () async {
+                              await doWithLogin(context, () => push(context, TicketListScreen()));
+                              getUser();
+                            },
                           ),
+                          // Accordion(
+                          //   title: _accordionTitle("پشتیبانی"),
+                          //   onClick: () => _onClickAccordion(4),
+                          //   open: openedItem == 4,
+                          //   content: Column(
+                          //     crossAxisAlignment: CrossAxisAlignment.start,
+                          //     children: <Widget>[
+                          //       AccordionItem(
+                          //         title: "تیکت های من",
+                          //         onClick: () async {
+                          //           await doWithLogin(context, () => push(context, TicketListScreen()));
+                          //           getUser();
+                          //         },
+                          //       ),
+                          //     ],
+                          //   ),
+                          //   // content: BlocBuilder<GetGroupsBloc, GetGroupsState>(builder: _buildTicketAccordionContent),
+                          // ),
                           Accordion(
                             title: _accordionTitle("آموزش ها"),
                             onClick: () => push(context, LearnScreen()),
@@ -496,8 +493,9 @@ class _MenuScreenState extends State<MenuScreen> {
             state.groups.map<Widget>((e) {
               return AccordionItem(
                 title: e.name ?? "",
-                onClick: () {
-                  doWithLogin(context, () => push(context, TicketCreationScreen(group: e)));
+                onClick: () async {
+                  await doWithLogin(context, () => push(context, TicketCreationScreen(group: e)));
+                  getUser();
                 },
               );
             }).toList(),
@@ -508,8 +506,9 @@ class _MenuScreenState extends State<MenuScreen> {
       children: <Widget>[
         AccordionItem(
           title: "تیکت های من",
-          onClick: () {
-            doWithLogin(context, () => push(context, TicketListScreen()));
+          onClick: () async {
+            await doWithLogin(context, () => push(context, TicketListScreen()));
+            getUser();
           },
         ),
       ],

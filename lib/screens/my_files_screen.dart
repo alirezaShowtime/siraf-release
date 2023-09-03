@@ -6,7 +6,6 @@ import 'package:siraf3/bloc/my_files_bloc.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/main.dart';
 import 'package:siraf3/models/my_file.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
@@ -285,7 +284,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                 onLongPress: () => changeSelection(file),
                 child: MyFileHorizontalItem(
                   file: file,
-                  // isSelected: selectedFiles.contains(file),
+                  isSelected: selectedFiles.contains(file),
                 ),
               ),
             )

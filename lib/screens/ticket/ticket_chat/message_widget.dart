@@ -73,13 +73,14 @@ class MessageWidgetState extends State<MessageWidget> {
           Padding(
             padding: const EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 10),
             child: Text(
-              widget.message.createDate ?? "",
+              "${widget.message.createDate} ${widget.message.createTime}",
               style: TextStyle(
                 color: Colors.grey.shade500,
                 fontSize: 9,
                 height: 1,
                 fontFamily: "sans-serif",
               ),
+              textDirection: TextDirection.ltr,
             ),
           ),
         ],

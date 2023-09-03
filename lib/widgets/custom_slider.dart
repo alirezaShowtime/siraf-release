@@ -30,6 +30,7 @@ class CarouselSliderCustom extends StatefulWidget {
   Function(s.Slider)? onImageTap;
   Function(int)? onPageChanged;
   void Function(VideoPlayerController p1)? onStartVideo;
+  bool directPlay;
   bool float;
 
   EdgeInsets indicatorMargin;
@@ -52,6 +53,7 @@ class CarouselSliderCustom extends StatefulWidget {
     this.enableInfiniteScroll = true,
     this.initialPage = 0,
     this.enlargeCenterPage = false,
+    this.directPlay = false,
     this.viewportFraction,
     this.onPageChanged,
     this.indicatorAlignment = Alignment.bottomCenter,
@@ -151,6 +153,7 @@ class _CarouselSliderCustomState extends State<CarouselSliderCustom> with Automa
                   borderRadius: widget.itemBorderRadius,
                   onImageTap: widget.onImageTap,
                   index: widget.sliders.indexOf(image),
+                  directPlay: widget.directPlay,
                 ),
               );
             },
@@ -194,6 +197,7 @@ class CarouselSliderItemCustom extends StatefulWidget {
   s.Slider slide;
   StreamController<bool> pageChangeStream;
   Function(VideoPlayerController)? onStartVideo;
+  bool directPlay;
 
   CarouselSliderItemCustom({
     required this.image,
@@ -205,6 +209,7 @@ class CarouselSliderItemCustom extends StatefulWidget {
     this.onImageTap,
     this.onStartVideo,
     this.imageFit,
+    this.directPlay = false,
     Key? key,
   }) : super(key: key);
 
@@ -304,6 +309,7 @@ class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> wit
         videoUrl: widget.slide.link!,
         key: videoKey,
         onStartVideo: widget.onStartVideo,
+        directPlay: widget.directPlay,
       ),
     );
   }

@@ -14,6 +14,8 @@ class AddFileRequestEvent {
   int city_id;
   int minPrice;
   int maxPrice;
+  int? minRent;
+  int? maxRent;
   int minMeter;
   int maxMeter;
   String title;
@@ -27,6 +29,8 @@ class AddFileRequestEvent {
     required this.maxPrice,
     required this.minMeter,
     required this.maxMeter,
+    this.minRent,
+    this.maxRent,
     required this.title,
     required this.description,
     this.estates,
@@ -39,6 +43,8 @@ class AddFileRequestEvent {
         "maxPrice": maxPrice,
         "minMeter": minMeter,
         "maxMeter": maxMeter,
+        if (minRent != null) "minRent": minRent,
+        if (maxRent != null) "maxRent": maxRent,
         "title": title,
         "description": description,
         if (estates != null)

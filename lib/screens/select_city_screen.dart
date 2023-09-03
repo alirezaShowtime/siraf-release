@@ -27,6 +27,7 @@ class SelectCityScreen extends StatefulWidget {
   int? max;
   bool force;
   List<City>? selectedCities;
+  bool isAdding;
 
   SelectCityScreen({
     super.key,
@@ -35,6 +36,7 @@ class SelectCityScreen extends StatefulWidget {
     this.force = false,
     this.max = null,
     this.selectedCities,
+    this.isAdding = false,
   });
 
   @override
@@ -52,6 +54,8 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
   List<Province> provinces = [];
   List<Province> allProvinces = [];
   List<City> selectedCities = [];
+
+  FocusNode searchFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -111,6 +115,12 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                       setState(() {
                         onSearching = true;
                       });
+                      Future.delayed(
+                          Duration(
+                            milliseconds: 300,
+                          ), () {
+                        FocusScope.of(context).requestFocus(searchFocusNode);
+                      });
                     },
                     icon: Icon(CupertinoIcons.search),
                   ),
@@ -120,7 +130,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
           title: !onSearching
               ? TextTitle("انتخاب شهر")
               : TextField2(
-            decoration: InputDecoration(
+                  decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "جستجو در شهر ها",
                     hintStyle: TextStyle(
@@ -133,9 +143,10 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                     color: App.theme.textTheme.bodyLarge?.color,
                     fontFamily: "IranSansMedium",
                   ),
+                  focusNode: searchFocusNode,
                   controller: _searchFieldCtrl,
                   onChanged: doSearch,
-          ),
+                ),
           automaticallyImplyLeading: false,
           titleSpacing: 0,
           leading: MyBackButton(
@@ -154,7 +165,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
   doSearch(String q) async {
     bloc.add(GetCitiesEmitState(state: GetCitiesLoadingState()));
 
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(Duration(milliseconds: 250));
 
     RegExp regExp = new RegExp(
       r".*(" + q + ").*",
@@ -177,7 +188,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
           .toList();
 
       p.forEach((element) {
-        cities += element.cities;
+        cities += element.cities.where((element) => element.id != -3).toList();
       });
     } else {
       p = p.where((Province province) {
@@ -195,7 +206,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
           .toList();
 
       p.forEach((element) {
-        cities += element.cities.where((City city) => regExp.hasMatch(city.name ?? "")).toList();
+        cities += element.cities.where((City city) => city.id != -3 && regExp.hasMatch(city.name ?? "")).toList();
       });
     }
 
@@ -230,6 +241,23 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
               ))
           .toList();
 
+      provinces = provinces.map((e) {
+        if (!e.cities.any((element) => element.id == -3)) {
+          e.cities = [
+                City(
+                  id: -3,
+                  name: e.name,
+                  countFile: e.countFile,
+                  weight: e.weight,
+                  parentId: e.parentId,
+                )
+              ] +
+              e.cities;
+        }
+
+        return e;
+      }).toList();
+
       if (!(state as GetCitiesLoadedState).searching) {
         allProvinces = provinces;
       }
@@ -262,43 +290,52 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
     if (state is GetCitiesLoadedState) {
       return Stack(
         children: [
-          ListView(
-            children: <Widget>[
-              if (selectedCities.isFill())
-                Container(
-                  margin: EdgeInsets.only(top: 10),
-                  width: double.infinity,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SizedBox(width: 5),
-                            for (var selectedCity in selectedCities) _createSelectedCityBadge(selectedCity),
-                            SizedBox(width: 5),
-                          ],
-                        ),
-                        if (selectedCities.isNotEmpty)
-                          Padding(
-                            padding: EdgeInsets.only(left: 10),
-                            child: MyTextButton(
-                              borderRadius: BorderRadius.circular(100),
-                              text: "حذف همه",
-                              onPressed: () => setState(() => selectedCities.clear()),
-                            ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              children: [
+                if (selectedCities.isFill())
+                  Container(
+                    margin: EdgeInsets.only(top: 10),
+                    width: double.infinity,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(width: 5),
+                              for (var selectedCity in selectedCities) _createSelectedCityBadge(selectedCity),
+                              SizedBox(width: 5),
+                            ],
                           ),
-                      ],
+                          if (selectedCities.isNotEmpty)
+                            Padding(
+                              padding: EdgeInsets.only(left: 10),
+                              child: MyTextButton(
+                                borderRadius: BorderRadius.circular(100),
+                                text: "حذف همه",
+                                onPressed: () => setState(() => selectedCities.clear()),
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
+                SizedBox(height: 10),
+                Expanded(
+                  child: ListView(
+                    children: <Widget>[
+                      for (var province in provinces) _accordionItem(province),
+                      SizedBox(height: 60),
+                    ],
+                  ),
                 ),
-              SizedBox(height: 10),
-              for (var province in provinces) _accordionItem(province),
-              SizedBox(height: 60),
-            ],
+              ],
+            ),
           ),
           Positioned(
             bottom: 0,
@@ -366,7 +403,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: ([City(id: -3)] + province.cities).map<Widget>((e) {
+            children: province.cities.map<Widget>((e) {
               if (widget.max == 1 && e.id == -3) {
                 return SizedBox();
               }
@@ -392,6 +429,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
               notify("حداکثر " + widget.max.toString() + " شهر میتوانید انتخاب کنید");
             } else {
               selectedCities.add(city);
+              if (!widget.isAdding && city.countFile == 0) notify("در این شهر فایلی ثبت نشده است");
             }
           }
         });
@@ -403,7 +441,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
             TextNormal(
               city.name!,
               fontFamily: selectedCities.any((e) => e.id == city.id) ? "IranSansBold" : "IranSans",
-              color: selectedCities.any((e) => e.id == city.id) ? Themes.primary : Themes.textGrey,
+              color: (selectedCities.any((e) => e.id == city.id) ? Themes.primary.withOpacity(city.countFile == 0 ? 0.5 : 1) : Themes.textGrey.withOpacity(city.countFile == 0 ? 0.5 : 1)),
             ),
           ],
         ),
@@ -412,7 +450,10 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
   }
 
   Widget _accordionProvinceItem(Province province) {
-    bool isFullSelected = selectedCities.where((element) => element.parentId == province.id).length == province.cities.length;
+    province = allProvinces.firstWhere((element) => element.id == province.id);
+
+    var isFullSelected = selectedCities.where((element) => element.parentId == province.id).length == province.cities.where((e) => e.id != -3).length;
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -422,7 +463,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
             if (widget.max != null && selectedCities.length == widget.max) {
               notify("حداکثر " + widget.max.toString() + " شهر میتوانید انتخاب کنید");
             } else {
-              province.cities.forEach((city) {
+              province.cities.where((e) => e.id != -3).forEach((city) {
                 if (!selectedCities.any((e) => e.id == city.id)) selectedCities.add(city);
               });
             }
@@ -434,8 +475,8 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
         child: Row(
           children: [
             TextNormal(
-              "همه شهر های  ${province.name}",
-              fontFamily: "IranSansMedium",
+              "همه شهر های ${province.name}",
+              fontFamily: isFullSelected ? "IranSansBold" : "IranSansMedium",
               color: isFullSelected ? Themes.primary : App.theme.tooltipTheme.textStyle?.color,
             ),
           ],

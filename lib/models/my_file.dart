@@ -55,6 +55,10 @@ class MyFile {
       cityObj = json['city'] == null ? null : City.fromJson(json['city']);
       city = cityObj?.name ?? city;
     }
+
+    if (progress != 7) {
+      viewCount = 0;
+    }
   }
 
   Map<String, dynamic> toJson() {

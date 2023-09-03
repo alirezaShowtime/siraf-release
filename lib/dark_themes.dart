@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class DarkThemes {
   static const primary = Color(0xff0067A5);
@@ -28,6 +29,25 @@ class DarkThemes {
   static const inputBorderNormal = Color(0xffeae7e7);
 
   static const blueSky = Color(0x704abbff);
+  
+  static SystemUiOverlayStyle getSystemUiOverlayStyle() => SystemUiOverlayStyle(
+        statusBarColor: DarkThemes.appBar,
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: DarkThemes.appBar,
+        systemNavigationBarDividerColor: Color(0x00EEEEEE),
+        systemNavigationBarIconBrightness: Brightness.dark,
+      );
+
+  static SystemUiOverlayStyle getSystemUiOverlayStyleTransparent({Brightness? statusBarIconBrightness}) => SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: statusBarIconBrightness ?? Brightness.dark,
+        systemNavigationBarColor: DarkThemes.appBar,
+        systemNavigationBarDividerColor: Color(0x00EEEEEE),
+        systemNavigationBarIconBrightness: Brightness.dark,
+        systemStatusBarContrastEnforced: false,
+      );
 
   static ThemeData darkThemeData() {
     return ThemeData(

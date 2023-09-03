@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/main.dart';
+import 'package:siraf3/models/user.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:dio/dio.dart' as dio;
@@ -225,6 +227,7 @@ class Bookmark {
         options: dio.Options(
           headers: {
             "Content-Type": "application/json",
+            "Authorization": await User.getBearerToken(),
           },
         ),
       );
@@ -242,7 +245,7 @@ class Bookmark {
 
     Navigator.of(context, rootNavigator: true).pop();
 
-    // dismissLoadingDialog();
+    dismissLoadingDialog();
 
     if (result) {
       isFavorite = !isFavorite;
@@ -256,5 +259,41 @@ class Bookmark {
 
   dismissLoadingDialog() {
     dismissDialog(loadingDialogContext);
+  }
+
+  static Future<bool> removeFavoriteList({required BuildContext context, required List<int> ids}) async {
+    loadingDialog(context: context, showMessage: false);
+
+    var result = false;
+
+    var response = await dio.Dio().delete(
+      getFileUrl('file/deleteFileFavorite/?fileIds=' + jsonEncode(ids)).toString(),
+      options: dio.Options(
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": await User.getBearerToken(),
+        },
+        validateStatus: (status) {
+          return true;
+        },
+      ),
+    );
+
+    print(response.statusCode);
+    print(response.data);
+
+    if (response.statusCode == 200) {
+      result = true;
+    } else {
+      var json = response.data;
+      notify(json['message'] ?? "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
+      result = false;
+    }
+
+    Navigator.of(context, rootNavigator: true).pop();
+
+    // dismissDialog(loadingDialogContext);
+
+    return result;
   }
 }

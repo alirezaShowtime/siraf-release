@@ -13,6 +13,7 @@ import 'package:siraf3/main.dart';
 import 'package:siraf3/map_utilities.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/estate.dart';
+import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/request_file/request_file_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
 import 'package:siraf3/themes.dart';
@@ -195,6 +196,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                   center: defaultLocation,
                   interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                   zoom: 14.0,
+                  minZoom: 9,
                   plugins: [
                     MarkerClusterPlugin(),
                   ],
@@ -533,14 +535,14 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
           borderColor: Colors.white,
         ),
       ];
-      animatedMapMove(_controller, position, getMapZoomLevel(3000), this);
+      animatedMapMove(_controller, position, getMapZoomLevel(1000), this);
     });
 
     if (_showFileOnMyLocation) {
       setState(() {
         circles.add(CircleMarker(
           point: position,
-          radius: 3000,
+          radius: 1000,
           useRadiusInMeter: true,
           color: Colors.blue.withOpacity(0.15),
           borderStrokeWidth: 0,
@@ -671,10 +673,32 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                               elevation: 1,
                               height: 50,
                               child: Text(
-                                "سپردن فایل / درخواست",
+                                "ثبت درخواست",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 12,
+                                  fontSize: 10.5,
+                                  fontFamily: "IranSansBold",
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(vertical: 9),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 0.5,
+                          ),
+                          Expanded(
+                            child: MaterialButton(
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (_) => CreateFileFirst(estates: [estate])));
+                              },
+                              color: Themes.primary,
+                              elevation: 1,
+                              height: 50,
+                              child: Text(
+                                "ثبت فایل",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
                                   fontFamily: "IranSansBold",
                                 ),
                               ),
@@ -701,10 +725,10 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                               elevation: 1,
                               height: 50,
                               child: Text(
-                                "مشاهده پروفایل",
+                                "پروفایل",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 12,
+                                  fontSize: 11,
                                   fontFamily: "IranSansBold",
                                 ),
                               ),

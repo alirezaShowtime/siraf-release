@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:siraf3/bloc/property_bloc.dart';
 import 'package:siraf3/dialog.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/category.dart';
@@ -475,6 +477,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
           max: 1,
           saveCity: false,
           selectedCities: city != null ? [city!] : null,
+          isAdding: true,
         ),
       ),
     );
@@ -813,13 +816,17 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                               fontSize: 13,
                               fontFamily: "IranSans",
                             ),
+                            counterStyle: TextStyle(fontSize: 0.1),
                           ),
+                          maxLength: property.value == "age" ? 4 : null,
                           onChanged: (v) {
                             persianNumberText.add(v.toWord());
                             value.add(v);
                           },
                           inputFormatters: [
                             if (property.value != "age") MoneyInputFormatter(mantissaLength: 0),
+                            if (property.value == "age") FilteringTextInputFormatter(RegExp("^[0,2,3,4,5,6,7,8,9]"), allow: false),
+                            if (property.value == "age") FilteringTextInputFormatter(RegExp("^1[0,1,2,5,6,7,8,9]"), allow: false, replacementString: '1'),
                           ],
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,

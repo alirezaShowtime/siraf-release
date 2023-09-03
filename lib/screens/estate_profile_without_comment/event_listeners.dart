@@ -74,19 +74,22 @@ extension EventListener on _EstateProfileScreen {
     String comment = commentController.value.text;
 
     bool rateIsValid = (rate ?? 0) > 0;
-    bool commentIsValid = comment.isNotEmpty;
+    /* bool commentIsValid = comment.isNotEmpty;
 
     if (commentIsValid && rateIsValid) {
       sendCommentRateBloc.add(EstateProfileCommentRateSendCommentAndRateEvent(estateId, rate!, comment));
     } else if (commentIsValid && !rateIsValid) {
       sendCommentRateBloc.add(EstateProfileCommentRateSendCommentEvent(estateId, comment));
-    } else if (!commentIsValid && rateIsValid) {
+    } else 
+    if (!commentIsValid && rateIsValid) {
+
+    */
+    if (rateIsValid) {
       sendCommentRateBloc.add(EstateProfileCommentRateSendRateEvent(estateId, rate!));
     } else {
       notify("امتیاز یا نظری وارد نکرده اید.");
     }
     focusNode.unfocus();
-    // rate = null;
   }
 
   void retry(BuildContext context) {

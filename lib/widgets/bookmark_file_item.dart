@@ -60,6 +60,9 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
           ),
         ],
       ),
+      foregroundDecoration: BoxDecoration(
+        color: widget.isSelected ? Themes.primary.withOpacity(0.3) : Colors.transparent,
+      ),
       constraints: BoxConstraints(maxHeight: 120),
       width: double.infinity,
       child: Row(

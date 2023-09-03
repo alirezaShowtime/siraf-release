@@ -25,7 +25,7 @@ extension AddCommentWidget on _ConsultantProfileScreen {
               itemPadding: EdgeInsets.symmetric(horizontal: 10),
               itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
               itemSize: 35,
-              allowHalfRating: true,
+              allowHalfRating: false,
               onRatingUpdate: (double value) => rate = value,
               glow: false,
               unratedColor: Colors.grey.shade200,
@@ -34,7 +34,11 @@ extension AddCommentWidget on _ConsultantProfileScreen {
           Align(
             alignment: Alignment.centerLeft,
             child: MaterialButton(
-              onPressed: () => sendCommentOrRate(widget.consultantId),
+              onPressed: () {
+                doWithLogin(context, () {
+                  sendCommentOrRate(widget.consultantId);
+                });
+              },
               color: Themes.primary,
               elevation: 3,
               shape: RoundedRectangleBorder(

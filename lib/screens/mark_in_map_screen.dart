@@ -85,7 +85,7 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
           ),
           leading: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              _popAndSendResult();
             },
             icon: Icon(
               CupertinoIcons.back,
@@ -141,6 +141,7 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
                 options: MapOptions(
                   center: defaultLocation,
                   zoom: 13.0,
+                  minZoom: 9,
                   onTap: _setMarker,
                 ),
                 children: [

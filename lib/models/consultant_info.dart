@@ -9,6 +9,7 @@ class ConsultantInfo {
   int? countOnSale;
   int? cityId;
   String? shareLink;
+  int? estateId;
   String? estateName;
   String? bio;
 
@@ -45,6 +46,9 @@ class ConsultantInfo {
     }
     if (json["bio"] is String) {
       bio = json["bio"];
+    }
+    if (json["estateId"] is int) {
+      estateId = json["estateId"];
     }
     if (json["estateName"] is String) {
       estateName = json["estateName"];

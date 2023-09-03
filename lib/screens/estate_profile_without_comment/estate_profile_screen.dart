@@ -14,6 +14,7 @@ import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
+import 'package:siraf3/models/category.dart';
 import 'package:siraf3/models/city.dart' as city;
 import 'package:siraf3/models/consultant_info.dart';
 import 'package:siraf3/models/estate.dart';
@@ -24,6 +25,7 @@ import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/screens/consultant_profile_without_comment/consultant_profile_screen.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/estate_profile/estate_share_screen.dart';
+import 'package:siraf3/screens/estate_profile_without_comment/estate_files_screen.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
 import 'package:siraf3/screens/image_view_screen.dart';
@@ -383,10 +385,8 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
 
   Widget fileItem(File file) => FileHorizontalItem(file: file);
 
-  void setFilterData() async {
-    cities = await city.City.getList();
-
-    filterData = FilterData(cityIds: cities.map<int>((e) => e.id!).toList(), estateId: widget.estateId);
+  void setFilterData() {
+    filterData = FilterData(estateId: widget.estateId);
     getFiles();
   }
 

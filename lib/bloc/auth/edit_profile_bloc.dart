@@ -9,8 +9,9 @@ class EditProfileEvent {
   String? name;
   String? bio;
   FileImage? avatar;
+  bool? mobilePrivate;
 
-  EditProfileEvent({this.name, this.bio, this.avatar});
+  EditProfileEvent({this.name, this.bio, this.avatar, this.mobilePrivate});
 }
 
 class EditProfileState {}
@@ -54,6 +55,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
       var formData = FormData.fromMap({
         if (event.name != null) 'name': event.name,
         if (event.bio != null) 'bio': event.bio,
+        if (event.mobilePrivate != null) 'mobilePrivate': event.mobilePrivate,
       });
 
       formData.files.addAll([
@@ -72,6 +74,10 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
         ),
         data: formData,
       );
+      
+      print(response.statusCode);
+      print(response.data);
+
     } on HttpException catch (_) {
       emit(EditProfileErrorState(message: message));
       return;

@@ -41,6 +41,8 @@ class _EditRequestScreen extends State<EditRequestScreen> {
 
   int? minPrice;
   int? maxPrice;
+  int? minRent;
+  int? maxRent;
   int? minMeter;
   int? maxMeter;
 
@@ -77,16 +79,24 @@ class _EditRequestScreen extends State<EditRequestScreen> {
 
     if (widget.request.maxPrice != null) maxPrice = widget.request.maxPrice;
 
+    if (widget.request.minRent != null) minRent = widget.request.minRent;
+
+    if (widget.request.maxRent != null) maxRent = widget.request.maxRent;
+
     if (widget.request.title != null) _titleController.text = widget.request.title!;
 
     if (widget.request.description != null) _descriptionController.text = widget.request.description!;
 
     if (widget.request.estates != null) selectedEstates = widget.request.estates!;
 
+    isRent = widget.request.isRent();
+
     setState(() {});
   }
 
   BuildContext? buildContext;
+
+  bool isRent = false;
 
   @override
   Widget build(BuildContext context) {
@@ -142,11 +152,18 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                   onTap: onClickMeterageItem,
                 ),
                 Section(
-                  title: "محدوده قیمت",
+                  title: "محدوده " + (isRent ? "ودیعه" : "قیمت"),
                   hint: "تعیین",
                   value: createLabel(minPrice, maxPrice, 'تومان'),
                   onTap: onClickPriceItem,
                 ),
+                if (isRent)
+                  Section(
+                    title: "محدوده اجاره",
+                    hint: "تعیین",
+                    value: createLabel(minRent, maxRent, 'تومان'),
+                    onTap: onClickRentItem,
+                  ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 5, top: 20),
                   child: SizedBox(
@@ -326,6 +343,8 @@ class _EditRequestScreen extends State<EditRequestScreen> {
         setState(() {
           categories = result;
           category = result.last;
+
+          isRent = categories.any((element) => element.name.toString().contains("اجاره"));
         });
       }
     });
@@ -338,8 +357,8 @@ class _EditRequestScreen extends State<EditRequestScreen> {
         builder: (context) => SelectCityScreen(
           max: 1,
           saveCity: false,
-          force: true,
           selectedCities: city != null ? [city!] : null,
+          isAdding: true,
         ),
       ),
     );
@@ -390,7 +409,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
     showNumberDialog(
       minPrice != null ? minPrice.toString() : "",
       maxPrice != null ? maxPrice.toString() : "",
-      "قیمت به تومان",
+      (isRent ? "ودیعه" : "قیمت") + " به تومان",
       "تومان",
       (p0, p1) {
         setState(() {
@@ -415,6 +434,43 @@ class _EditRequestScreen extends State<EditRequestScreen> {
           }
           if (maxOk) {
             maxPrice = int.parse(p1.replaceAll(',', ''));
+          }
+
+          dismissNumberDialog();
+        });
+      },
+    );
+  }
+
+  void onClickRentItem() {
+    showNumberDialog(
+      minRent != null ? minRent.toString() : "",
+      maxRent != null ? maxRent.toString() : "",
+      "اجاره به تومان",
+      "تومان",
+      (p0, p1) {
+        setState(() {
+          if (p0.isEmpty) {
+            minRent = null;
+          }
+          if (p1.isEmpty) {
+            maxRent = null;
+          }
+          var minOk = (p0.isNotEmpty && isNumeric(p0.replaceAll(',', '')));
+          var maxOk = (p1.isNotEmpty && isNumeric(p1.replaceAll(',', '')));
+          if (minOk && maxOk) {
+            var min = int.parse(p0.replaceAll(',', ''));
+            var max = int.parse(p1.replaceAll(',', ''));
+
+            if (min >= max) {
+              return notify("مقدار حداقل قیمت باید کمتر از حداکثر باشد");
+            }
+          }
+          if (minOk) {
+            minRent = int.parse(p0.replaceAll(',', ''));
+          }
+          if (maxOk) {
+            maxRent = int.parse(p1.replaceAll(',', ''));
           }
 
           dismissNumberDialog();
@@ -786,6 +842,8 @@ class _EditRequestScreen extends State<EditRequestScreen> {
       maxPrice: maxPrice ?? 0,
       minMeter: minMeter ?? 0,
       maxMeter: maxMeter ?? 0,
+      minRent: minRent,
+      maxRent: maxRent,
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
       estateIds: selectedEstates.map((e) => e.id!).toList(),

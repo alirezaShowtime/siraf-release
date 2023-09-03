@@ -47,7 +47,7 @@ class EstateFilesBloc extends Bloc<FilesEvent, FilesState> {
     if (event is FilesLoadEvent) {
       emit(FilesLoadingState());
 
-      var url = getFileUrl('file/filesEstate?estateId=${event.filterData.estateId}${event.filterData.toQueryString(delimiter: "&")}&lastId=${event.lastId}');
+      var url = getFileUrl('file/filesEstate?lastId=${event.lastId}${event.filterData.toQueryString(delimiter: "&")}');
 
       Response response = await http2.get(url, timeout: Duration(seconds: 60));
 
