@@ -29,9 +29,10 @@ extension EventListener on _ConsultantProfileScreen {
     String comment = commentController.value.text;
 
     bool rateIsValid = (rate ?? 0) > 0;
-    bool commentIsValid = comment.isNotEmpty;
+    // bool commentIsValid = comment.isNotEmpty;
 
-    if (commentIsValid && rateIsValid) {
+    // if (commentIsValid && rateIsValid) {
+    if (rateIsValid) {
       sendCommentRateBloc.add(ConsultantProfileCommentRateSendRateEvent(consultantId, rate!));
     } else {
       notify("امتیاز یا نظری وارد نکرده اید.");

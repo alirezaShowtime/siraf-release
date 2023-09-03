@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:siraf3/bloc/ticket/sendMessage/send_message_bloc.dart';
 import 'package:siraf3/extensions/file_extension.dart';
 import 'package:siraf3/extensions/list_extension.dart';
@@ -127,6 +128,11 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
   }
 
   Future<void> attachFile() async {
+    var status = await Permission.storage.status;
+    if (status != PermissionStatus.granted) {
+      await Permission.storage.request();
+    }
+
     FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false);
 
     if (result == null) return;

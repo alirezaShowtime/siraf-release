@@ -40,7 +40,7 @@ extension Profile on _ConsultantProfileScreen {
                               push(
                                   context,
                                   EstateProfileScreen(
-                                    estateId: 1,
+                                    estateId: consultantInfo.estateId!,
                                     estateName: consultantInfo.estateName,
                                   ));
                             },

@@ -26,7 +26,7 @@ class MiniVideo extends StatefulWidget {
 class MiniVideoState extends State<MiniVideo> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  
+
   late VideoPlayerController _controller;
 
   VideoPlayerController getVideoController() => _controller;

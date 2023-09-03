@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:latlong2/latlong.dart';
@@ -593,6 +594,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
           max: 1,
           saveCity: false,
           selectedCities: city != null ? [city!] : null,
+          isAdding: true,
         ),
       ),
     );
@@ -930,6 +932,8 @@ class _EditFileFirstState extends State<EditFileFirst> {
                           },
                           inputFormatters: [
                             if (property.value != "age") MoneyInputFormatter(mantissaLength: 0),
+                            if (property.value == "age") FilteringTextInputFormatter(RegExp("^[0,2,3,4,5,6,7,8,9]"), allow: false),
+                            if (property.value == "age") FilteringTextInputFormatter(RegExp("^1[0,1,2,5,6,7,8,9]"), allow: false, replacementString: '1'),
                           ],
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,

@@ -2,8 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:siraf3/bloc/auth/edit_profile_bloc.dart';
 import 'package:siraf3/bloc/check_version_bloc.dart';
 import 'package:siraf3/dark_theme_provider.dart';
 import 'package:siraf3/dark_themes.dart';
@@ -40,6 +42,7 @@ class _SettingsScreen extends State<SettingsScreen> {
   late DarkThemeProvider darkThemeProvider;
 
   Settings settings = Settings();
+  EditProfileBloc editProfileBloc = EditProfileBloc();
 
   @override
   void initState() {
@@ -81,10 +84,25 @@ class _SettingsScreen extends State<SettingsScreen> {
         }
       }
     });
+
+    editProfileBloc.stream.listen((event) {
+      if (event is EditProfileLoadingState) {
+        loadingDialog(context: context, showMessage: false);
+      } else if (event is EditProfileErrorState) {
+        dismissDialog(loadingDialogContext);
+
+        notify("خطایی پیش آمد مجدد تلاش کنید");
+        setState(() {
+          showNumberPhoneForConsultant = !showNumberPhoneForConsultant;
+        });
+      } else if (event is EditProfileSuccessState) {
+        dismissDialog(loadingDialogContext);
+      }
+    });
   }
 
   setData() async {
-    showNumberPhoneForConsultant = await settings.showNumberPhoneForConsultant();
+    showNumberPhoneForConsultant = !((await User.fromLocal()).privateMobile ?? false);
     showNotification = await settings.showNotification();
     darkMode = await settings.darkMode();
 
@@ -147,28 +165,29 @@ class _SettingsScreen extends State<SettingsScreen> {
               ),
             ),
           if (widget.user?.phone != null) item(title: "شماره همراه", text: phoneFormat(widget.user!.phone!)),
-          // item(
-          //   title: "نمایش شماره همراه برای مشاوران",
-          //   widget: FlutterSwitch(
-          //     height: 20.0,
-          //     width: 40.0,
-          //     padding: 4.0,
-          //     toggleSize: 10.0,
-          //     borderRadius: 10.0,
-          //     activeColor: Themes.blue,
-          //     inactiveColor: Colors.grey.shade300,
-          //     value: showNumberPhoneForConsultant,
-          //     activeToggleColor: Colors.white,
-          //     inactiveToggleColor: Themes.blue,
-          //     onToggle: (value) {
-          //       setState(() {
-          //         showNumberPhoneForConsultant = value;
-          //       });
-          //       settings.setShowNumberPhoneForConsultant(value);
-          //     },
-          //   ),
-          // ),
+          if (widget.user?.phone != null)
+            item(
+              title: "نمایش شماره همراه برای مشاوران",
+              widget: FlutterSwitch(
+                height: 20.0,
+                width: 40.0,
+                padding: 4.0,
+                toggleSize: 10.0,
+                borderRadius: 10.0,
+                activeColor: Themes.blue,
+                inactiveColor: Colors.grey.shade300,
+                value: showNumberPhoneForConsultant,
+                activeToggleColor: Colors.white,
+                inactiveToggleColor: Themes.blue,
+                onToggle: (value) {
+                  setState(() {
+                    showNumberPhoneForConsultant = value;
+                  });
 
+                  editProfileBloc.add(EditProfileEvent(mobilePrivate: !value));
+                },
+              ),
+            ),
           if (widget.user?.id != null)
             item(
               title: "اعلان برنامه",
@@ -295,10 +314,11 @@ class _SettingsScreen extends State<SettingsScreen> {
       context: context,
       builder: (_) => ConfirmDialog(
         dialogContext: context,
-        content: "از مایل به خروج از حساب هستید؟",
+        content: "آیا مایل به خروج از حساب خود هستید؟",
         title: "خروج",
         titleColor: Colors.red,
-        applyText: "خروج",
+        applyText: "بله",
+        cancelText: "خیر",
         onApply: () {
           Navigator.pop(_);
           User.remove();

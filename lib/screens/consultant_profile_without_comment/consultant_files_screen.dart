@@ -1,14 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:siraf3/bloc/files_list_bloc.dart';
+import 'package:siraf3/bloc/consultant_files_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/screens/file_screen.dart';
-import 'package:siraf3/screens/search_screen.dart';
 import 'package:siraf3/widgets/empty.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
 import 'package:siraf3/widgets/file_slide_item.dart';
@@ -16,18 +13,18 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/try_again.dart';
 
-class SearchResultScreen extends StatefulWidget {
+class ConsultantFilesScreen extends StatefulWidget {
   FilterData filterData;
-  FilterData originalFilterData;
+  String? appBarTitle;
 
-  SearchResultScreen({required this.originalFilterData, required this.filterData, super.key});
+  ConsultantFilesScreen({required this.filterData, this.appBarTitle, super.key});
 
   @override
-  State<SearchResultScreen> createState() => _SearchResultScreenState();
+  State<ConsultantFilesScreen> createState() => _ConsultantFilesScreenState();
 }
 
-class _SearchResultScreenState extends State<SearchResultScreen> {
-  FilesListState currentBlocState = FilesListInitState();
+class _ConsultantFilesScreenState extends State<ConsultantFilesScreen> {
+  FilesState currentBlocState = FilesInitState();
 
   @override
   void initState() {
@@ -37,12 +34,12 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
 
     scrollController.addListener(pagination);
 
-    homeScreenBloc.stream.listen((event) {
+    consultantFilesBloc.stream.listen((event) {
       setState(() {
         currentBlocState = event;
       });
 
-      if (event is FilesListLoadedState) {
+      if (event is FilesLoadedState) {
         setState(() {
           _hasNewFiles = event.files.isNotEmpty;
           lastId = event.lastId;
@@ -62,16 +59,16 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
 
   void pagination() async {
     if (_canLoadMore()) {
-      _moreBloc.add(FilesListLoadEvent(filterData: widget.filterData, lastId: lastId!));
+      _moreBloc.add(FilesLoadEvent(filterData: widget.filterData, lastId: lastId!));
     }
   }
 
-  void _loadMoreEvent(FilesListState event) {
+  void _loadMoreEvent(FilesState event) {
     setState(() {
-      _isLoadingMore = event is FilesListLoadingState;
+      _isLoadingMore = event is FilesLoadingState;
     });
 
-    if (event is FilesListLoadedState) {
+    if (event is FilesLoadedState) {
       setState(() {
         _hasNewFiles = event.files.isNotEmpty;
 
@@ -79,18 +76,18 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
 
         lastId = event.lastId;
       });
-    } else if (event is FilesListErrorState) {
+    } else if (event is FilesErrorState) {
       notify("خطا در بارگزاری ادامه فایل ها رخ داد لطفا مجدد تلاش کنید");
     }
   }
 
-  FilesListBloc _moreBloc = FilesListBloc();
+  ConsultantFilesBloc _moreBloc = ConsultantFilesBloc();
 
   @override
   void dispose() {
     super.dispose();
 
-    homeScreenBloc.close();
+    consultantFilesBloc.close();
     _moreBloc.close();
   }
 
@@ -104,7 +101,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
 
   ScrollController scrollController = ScrollController();
 
-  FilesListBloc homeScreenBloc = FilesListBloc();
+  ConsultantFilesBloc consultantFilesBloc = ConsultantFilesBloc();
 
   ViewType viewType = ViewType.List;
 
@@ -123,12 +120,12 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => homeScreenBloc,
+      create: (context) => consultantFilesBloc,
       child: Scaffold(
         appBar: AppBar(
           elevation: 0.7,
           title: Text(
-            "جستجوی \"${widget.filterData.search}\"",
+            widget.appBarTitle ?? "لیست فایل های مشاور",
             style: TextStyle(
               fontSize: 13,
             ),
@@ -143,48 +140,27 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
               icon: MyBackButton(),
             ),
           ),
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => SearchScreen(
-                      originalFilterData: widget.originalFilterData,
-                      filterData: widget.filterData,
-                    ),
-                  ),
-                );
-              },
-              icon: FaIcon(
-                CupertinoIcons.search,
-              ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-          ],
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (currentBlocState is FilesListInitState || currentBlocState is FilesListLoadingState)
+            if (currentBlocState is FilesInitState || currentBlocState is FilesLoadingState)
               Center(
                 child: Loading(),
               ),
-            if (currentBlocState is FilesListErrorState)
+            if (currentBlocState is FilesErrorState)
               Center(
                 child: TryAgain(
                   onPressed: getFiles,
-                  message: (currentBlocState as FilesListErrorState).response != null ? jDecode((currentBlocState as FilesListErrorState).response!.body)['message'] : null,
+                  message: (currentBlocState as FilesErrorState).response != null ? jDecode((currentBlocState as FilesErrorState).response!.body)['message'] : null,
                 ),
               ),
-            if (currentBlocState is FilesListLoadedState && (currentBlocState as FilesListLoadedState).files.isEmpty)
+            if (currentBlocState is FilesLoadedState && (currentBlocState as FilesLoadedState).files.isEmpty)
               Center(
                 child: Empty(),
               ),
-            if (currentBlocState is FilesListLoadedState && (currentBlocState as FilesListLoadedState).files.isNotEmpty)
+            if (currentBlocState is FilesLoadedState && (currentBlocState as FilesLoadedState).files.isNotEmpty)
               Expanded(
                 child: ListView(
                   controller: scrollController,
@@ -200,7 +176,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                                 },
                                 child: Padding(
                                   padding: EdgeInsets.only(top: files.first == file ? 0 : 5),
-                                  child: viewType == ViewType.List ? FileHorizontalItem(file: file) : FileSlideItem(file: file),
+                                  child: FileHorizontalItem(file: file),
                                 ),
                               ))
                           .toList() +
@@ -222,8 +198,8 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
   }
 
   getFiles() {
-    homeScreenBloc.add(
-      FilesListLoadEvent(
+    consultantFilesBloc.add(
+      FilesLoadEvent(
         filterData: widget.filterData,
       ),
     );

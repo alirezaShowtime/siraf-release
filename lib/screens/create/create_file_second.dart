@@ -63,8 +63,6 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
   TextEditingController _ownerNameController = TextEditingController();
   TextEditingController _visitNameController = TextEditingController();
 
-  bool isMobilePrivate = false;
-
   @override
   void initState() {
     super.initState();
@@ -176,7 +174,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                         ),
                         children: <Widget>[
                               Container(
-                                padding: EdgeInsets.all(5),
+                                padding: EdgeInsets.all(3),
                                 alignment: Alignment.center,
                                 child: DottedBorder(
                                   color: Themes.iconGrey,
@@ -456,7 +454,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       height: 14,
                     ),
                     Text(
-                      "نام و نام خانوادگی جهت هماهنگی بازدید",
+                      "نام و نام خانوادگی جهت هماهنگی بازدید (اختیاری)",
                       style: TextStyle(
                         fontSize: 13,
                         color: Themes.text,
@@ -527,7 +525,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                       height: 14,
                     ),
                     Text(
-                      "شماره تماس بازدید",
+                      "شماره تماس بازدید (اختیاری)",
                       style: TextStyle(
                         fontSize: 14,
                         color: Themes.text,
@@ -607,47 +605,6 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                         });
                       }),
                       controller: _visitPhoneController,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "عدم نمایش شماره موبایل",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Themes.text,
-                            ),
-                          ),
-                          SwitcherButton(
-                            onColor: Themes.blue,
-                            offColor: Colors.grey.shade300,
-                            size: 40,
-                            value: isMobilePrivate,
-                            onChange: (value) {
-                              setState(() {
-                                isMobilePrivate = value;
-                              });
-                            },
-                          )
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: 8,
-                        left: 5,
-                        right: 5,
-                      ),
-                      child: Text(
-                        isMobilePrivate ? "شماره موبایل به مشاوران نمایش داده نمی شود" : "شماره موبایل به مشاوران نمایش داده می شود",
-                        style: TextStyle(
-                          fontSize: 11.5,
-                          fontFamily: "IranSansMedium",
-                          color: Themes.text,
-                        ),
-                      ),
                     ),
                     SizedBox(
                       height: 70,
@@ -730,7 +687,6 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
     widget.formData.visitPhone = visitPhone ?? "";
     widget.formData.ownerName = ownerName!;
     widget.formData.visitName = visitName ?? "";
-    widget.formData.privateMobile = isMobilePrivate;
 
     await Navigator.push(
       context,
@@ -761,17 +717,21 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
         builder: (_) {
           addMediaBottmSheetContext = _;
           return Container(
-            height: 120,
+            height: 140,
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Column(
               children: [
                 InkWell(
                   onTap: _chooseFromGallery,
                   child: Container(
-                    height: 50,
+                    height: 40,
                     child: Row(
                       children: [
-                        Icon(CupertinoIcons.photo),
+                        Icon(
+                          CupertinoIcons.photo,
+                          color: Themes.text,
+                          size: 26,
+                        ),
                         SizedBox(
                           width: 5,
                         ),
@@ -780,7 +740,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                           style: TextStyle(
                             fontSize: 14,
                             fontFamily: "IranSansMedium",
-                            color: App.theme.textTheme.bodyLarge?.color,
+                            color: Themes.text,
                           ),
                         ),
                       ],
@@ -790,10 +750,14 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                 InkWell(
                   onTap: _takePhotoFromCamera,
                   child: Container(
-                    height: 50,
+                    height: 40,
                     child: Row(
                       children: [
-                        Icon(CupertinoIcons.photo_camera),
+                        Icon(
+                          CupertinoIcons.photo_camera,
+                          color: Themes.text,
+                          size: 26,
+                        ),
                         SizedBox(
                           width: 5,
                         ),
@@ -802,7 +766,33 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                           style: TextStyle(
                             fontSize: 14,
                             fontFamily: "IranSansMedium",
-                            color: App.theme.textTheme.bodyLarge?.color,
+                            color: Themes.text,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: _takeVideoFromCamera,
+                  child: Container(
+                    height: 40,
+                    child: Row(
+                      children: [
+                        Icon(
+                          CupertinoIcons.video_camera,
+                          color: Themes.text,
+                          size: 26,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          "فیلمبرداری",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: "IranSansMedium",
+                            color: Themes.text,
                           ),
                         ),
                       ],
@@ -929,7 +919,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
           video: tempVideo.path,
           thumbnailPath: (await getTemporaryDirectory()).path,
           imageFormat: ImageFormat.PNG,
-          quality: 100,
+          quality: 1,
         );
         image = FileImage(io.File(fileName!));
         icon = Icon(
@@ -950,7 +940,6 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
     }
 
     return Container(
-      padding: EdgeInsets.all(5),
       alignment: Alignment.center,
       child: Container(
         decoration: BoxDecoration(
@@ -1203,6 +1192,25 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
     var file = File(photo.path);
 
     var mediaBox = await buildMediaBox(file, FileType2.image);
+
+    setState(() {
+      files.add({
+        "file": file,
+        "title": null,
+      });
+      mediaBoxes.add(mediaBox);
+    });
+  }
+  
+  void _takeVideoFromCamera() async {
+    dismissDialog(addMediaBottmSheetContext);
+    var video = await ImagePicker().pickVideo(source: ImageSource.camera);
+
+    if (video == null) return;
+
+    var file = File(video.path);
+
+    var mediaBox = await buildMediaBox(file, FileType2.video);
 
     setState(() {
       files.add({

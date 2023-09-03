@@ -8,8 +8,9 @@ import 'package:siraf3/widgets/my_image.dart';
 
 class MyFileHorizontalItem extends StatefulWidget {
   MyFile file;
+  bool isSelected;
 
-  MyFileHorizontalItem({required this.file, super.key});
+  MyFileHorizontalItem({required this.file, this.isSelected = false, super.key});
 
   @override
   State<MyFileHorizontalItem> createState() => _MyFileHorizontalItemState();
@@ -52,6 +53,9 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
             offset: Offset(0, 0),
           ),
         ],
+      ),
+      foregroundDecoration: BoxDecoration(
+        color: widget.isSelected ? Themes.primary.withOpacity(0.3) : Colors.transparent,
       ),
       constraints: BoxConstraints(maxHeight: 140),
       width: double.infinity,
@@ -125,7 +129,7 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                           widget.file.getFirstPrice(),
                           style: TextStyle(
                             color: App.theme.textTheme.bodyLarge?.color,
-                            fontSize: 14,
+                            fontSize: 13,
                             fontWeight: FontWeight.w600,
                             fontFamily: 'IranSans',
                           ),
@@ -136,7 +140,7 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                             widget.file.getSecondPrice(),
                             style: TextStyle(
                               color: Colors.grey.shade600,
-                              fontSize: 11,
+                              fontSize: 10.5,
                               fontFamily: 'IranSansMedium',
                             ),
                           ),
@@ -150,6 +154,39 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                         color: progress_color[widget.file.progress],
                         fontSize: 11,
                         fontFamily: 'IranSansMedium',
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 3),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      widget.file.publishedAgo ?? "",
+                      style: TextStyle(
+                        color: Themes.text,
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: 'IranSans',
+                      ),
+                    ),
+                    Text(
+                      "کد فایل : ${widget.file.id}",
+                      style: TextStyle(
+                        color: Themes.text,
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: 'IranSans',
+                      ),
+                    ),
+                    Text(
+                      "بازدید : ${widget.file.viewCount}",
+                      style: TextStyle(
+                        color: Themes.text,
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: 'IranSans',
                       ),
                     ),
                   ],

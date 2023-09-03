@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:siraf3/bloc/request_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/chat_message.dart';
@@ -25,6 +26,11 @@ class DownloadFileBloc extends RequestBloc<DownloadFileEvent, DownloadFileState>
     required dio.CancelToken cancelToken,
     required void Function(int, int) onReceiveProgress,
   }) async {
+    var status = await Permission.storage.status;
+    if (status != PermissionStatus.granted) {
+      await Permission.storage.request();
+    }
+    
     try {
       await dio.Dio().download(
         url,
@@ -51,6 +57,11 @@ class DownloadFileBloc extends RequestBloc<DownloadFileEvent, DownloadFileState>
   }
 
   FutureOr<void> _download(DownloadFileRequest event, Emitter<DownloadFileState> emit) async {
+    var status = await Permission.storage.status;
+    if (status != PermissionStatus.granted) {
+      await Permission.storage.request();
+    }
+    
     dio.Options options = dio.Options(
       responseType: dio.ResponseType.bytes,
       followRedirects: false,

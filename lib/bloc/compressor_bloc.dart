@@ -58,11 +58,19 @@ class CompressorBloc extends Bloc<CompressorEvent, CompressorState> {
     var newVideos = <File>[];
 
     for (File video in event.videos) {
-      MediaInfo? mediaInfo = await VideoCompressor.compressVideo(
-        video.path,
-        quality: VideoQuality.NormalResQuality,
-        deleteOrigin: false,
-      );
+      MediaInfo? mediaInfo;
+      // try {
+      //   VideoCompressor.setLogLevel(0);
+      //   mediaInfo = await VideoCompressor.compressVideo(
+      //     video.path,
+      //     quality: VideoQuality.LowResQuality,
+      //     deleteOrigin: false,
+      //     includeAudio: true,
+      //   );
+      // } catch (e) {
+      //   VideoCompressor.cancelCompression();
+      //   emit(CompressorFailState());
+      // }
 
       if (mediaInfo == null) {
         newVideos.add(video);

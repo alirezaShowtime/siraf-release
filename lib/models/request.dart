@@ -10,6 +10,8 @@ class Request {
   City? city;
   int? minPrice;
   int? maxPrice;
+  int? minRent;
+  int? maxRent;
   String? title;
   int? maxMeter;
   int? minMeter;
@@ -29,6 +31,8 @@ class Request {
     this.cityId,
     this.minPrice,
     this.maxPrice,
+    this.minRent,
+    this.maxRent,
     this.title,
     this.maxMeter,
     this.minMeter,
@@ -74,6 +78,12 @@ class Request {
     }
     if (json["maxPrice"] is int) {
       maxPrice = json["maxPrice"];
+    }
+    if (json["minRent"] is int) {
+      minRent = json["minRent"];
+    }
+    if (json["maxRent"] is int) {
+      maxRent = json["maxRent"];
     }
     if (json["title"] is String) {
       title = json["title"];
@@ -124,6 +134,8 @@ class Request {
     _data["title"] = title;
     _data["maxMeter"] = maxMeter;
     _data["minMeter"] = minMeter;
+    _data["maxRent"] = maxRent;
+    _data["minRent"] = minRent;
     _data["status"] = status;
     _data["description"] = description;
     _data["commentOperator"] = commentOperator;
@@ -133,6 +145,10 @@ class Request {
     _data['city'] = city?.toJson();
     _data['estates'] = estates?.map((e) => e.toJson()).toList();
     return _data;
+  }
+
+  bool isRent() {
+    return categoryId?.fullCategory.toString().contains("اجاره") ?? false;
   }
 }
 

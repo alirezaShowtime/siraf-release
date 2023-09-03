@@ -113,8 +113,8 @@ class _InquiryScreenState extends State<InquiryScreen> {
         child: Text(
           title,
           style: TextStyle(
-            fontSize: 13,
-            fontFamily: "IranSansBold",
+            fontSize: 14,
+            fontFamily: "IranSansMedium",
           ),
         ),
       ),

@@ -37,7 +37,7 @@ class FileScreen extends StatefulWidget {
 }
 
 class _FileScreen extends State<FileScreen> {
-  bool expand = true;
+  bool expand = false;
   bool secDescExpand = false;
   late ScrollController _scrollController;
   late String imageName;
@@ -105,6 +105,8 @@ class _FileScreen extends State<FileScreen> {
     super.dispose();
   }
 
+  bool isBookmark = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,6 +121,16 @@ class _FileScreen extends State<FileScreen> {
             context: context,
             isFavorite: state.favorite,
           );
+
+          setState(() {
+            isBookmark = state.favorite;
+          });
+
+          bookmark.favoriteStream.stream.listen((event) {
+            setState(() {
+              isBookmark = event;
+            });
+          });
         },
         builder: (context, state) {
           if (state is FileLoadingState || state is FileInitState) return Center(child: Loading());
@@ -195,7 +207,7 @@ class _FileScreen extends State<FileScreen> {
                       ),
                       IconButton(
                         onPressed: () => bookmark.addOrRemoveFavorite(),
-                        icon: icon(CupertinoIcons.bookmark),
+                        icon: icon(isBookmark ? CupertinoIcons.bookmark_fill : CupertinoIcons.bookmark),
                       ),
                     ],
                   );
@@ -454,10 +466,11 @@ class _FileScreen extends State<FileScreen> {
               imageFit: BoxFit.cover,
               indicatorSelectedColor: Themes.blue,
               indicatorColor: Colors.white,
+              directPlay: true,
               onPageChanged: (i) {
                 setState(() {
                   if (file.media!.images!.asMap().containsKey(i) && file.media!.images![i].name.isFill()) {
-                    imageName = " | ${file.media!.images![i].name!.trim()}";
+                    imageName = file.media!.images![i].name!.trim();
                   } else {
                     imageName = "";
                   }
@@ -598,6 +611,10 @@ class _FileScreen extends State<FileScreen> {
     }
 
     if (state is RelatedFilesErrorState) return Container();
+
+    if (relatedFiles.isEmpty) return SizedBox();
+
+    // return Container(color: Colors.red, width: 100, height: 100,);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

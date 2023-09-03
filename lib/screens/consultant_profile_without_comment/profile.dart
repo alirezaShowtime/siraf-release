@@ -30,9 +30,24 @@ extension Profile on _ConsultantProfileScreen {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            card(title: "فروشی", value: consultantInfo.countOnSale),
-                            card(title: "اجاره ای", value: consultantInfo.countRent),
-                            card(title: "ساخت و ساز", value: consultantInfo.countConstruction),
+                            card(
+                                title: "فروشی",
+                                value: consultantInfo.countOnSale,
+                                onTap: () {
+                                  goToFiles(category: Category(id: 1, name: 'فروشی'), appBarTitle: "فایل های ${consultantInfo.name}");
+                                }),
+                            card(
+                                title: "اجاره ای",
+                                value: consultantInfo.countRent,
+                                onTap: () {
+                                  goToFiles(category: Category(id: 2, name: 'اجاره ای'), appBarTitle: "فایل های ${consultantInfo.name}");
+                                }),
+                            card(
+                                title: "ساخت و ساز",
+                                value: consultantInfo.countConstruction,
+                                onTap: () {
+                                  goToFiles(category: Category(id: 3, name: 'ساخت و ساز'), appBarTitle: "فایل های ${consultantInfo.name}");
+                                }),
                           ],
                         ),
                       ),
@@ -72,7 +87,7 @@ extension Profile on _ConsultantProfileScreen {
                                 push(
                                   context,
                                   EstateProfileScreen(
-                                    estateId: 1,
+                                    estateId: consultantInfo.estateId!,
                                     estateName: consultantInfo.estateName,
                                   ),
                                 );
@@ -180,6 +195,20 @@ extension Profile on _ConsultantProfileScreen {
             child: FileHorizontalItem(file: files[i - 1]),
           );
         },
+      ),
+    );
+  }
+
+  goToFiles({String? appBarTitle, Category? category, FilterData? filterData}) async {
+    return push(
+      context,
+      ConsultantFilesScreen(
+        filterData: filterData ??
+            FilterData(
+              category: category,
+              consultantId: widget.consultantId,
+            ),
+        appBarTitle: appBarTitle,
       ),
     );
   }

@@ -30,6 +30,8 @@ class _LoginScreen extends State<LoginScreen> {
 
   late Size size;
 
+  bool _checkRules = false;
+
   void _blocListener() {
     _bloc.stream.listen((state) {
       setState(() => numberPhoneFieldEnabled = state is! LoginLoading);
@@ -92,11 +94,11 @@ class _LoginScreen extends State<LoginScreen> {
                       ),
                       SizedBox(height: 25),
                       Text(
-                        "ورود|ثبت نام",
+                        "ورود | ثبت نام",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 25,
-                          fontFamily: "KalamehBlack",
+                          fontSize: 20,
+                          fontFamily: "IranSansBold",
                         ),
                       ),
                     ],
@@ -140,6 +142,12 @@ class _LoginScreen extends State<LoginScreen> {
                       autocorrect: false,
                       maxLength: 11,
                       maxLines: 1,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
+                      onFieldSubmitted: (_) {
+                        _login();
+                      },
                       style: TextStyle(
                         fontSize: 20,
                         fontFamily: "IranSansBold",
@@ -163,36 +171,48 @@ class _LoginScreen extends State<LoginScreen> {
             ),
             Padding(
               padding: const EdgeInsets.all(4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Column(
                 children: [
-                  Text(
-                    "با ورود به سیراف، ",
-                    style: TextStyle(
-                      color: Themes.primary,
-                      fontFamily: "IRANSansBold",
-                      fontSize: 10,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => push(context, RulesScreen()),
-                    child: Text(
-                      "قوانین و حریم خصوصی",
-                      style: TextStyle(
-                        color: Themes.primary,
-                        fontFamily: "IRANSansBold",
-                        fontSize: 10,
-                        decoration: TextDecoration.underline,
+                  InkWell(
+                    borderRadius: BorderRadius.circular(7),
+                    onTap: () {
+                      push(context, RulesScreen());
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Text(
+                        "شرایط استفاده از خدمات، قوانین و حریم خصوصی",
+                        style: TextStyle(
+                          color: App.theme.primaryColor,
+                          fontFamily: "IRANSansBold",
+                          fontSize: 10,
+                        ),
                       ),
                     ),
                   ),
-                  Text(
-                    " از خدمات آن را می پذیرید",
-                    style: TextStyle(
-                      color: Themes.primary,
-                      fontFamily: "IRANSansBold",
-                      fontSize: 10,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 25,
+                        width: 25,
+                        child: Checkbox(
+                            value: _checkRules,
+                            onChanged: (v) {
+                              setState(() {
+                                _checkRules = v ?? false;
+                              });
+                            }),
+                      ),
+                      Text(
+                        "قوانین را مطالعه نموده و می پذیرم",
+                        style: TextStyle(
+                          color: App.theme.textTheme.bodyLarge?.color,
+                          fontFamily: "IRANSansBold",
+                          fontSize: 10,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -219,6 +239,10 @@ class _LoginScreen extends State<LoginScreen> {
 
     if (!numberPhone.isNotNullOrEmpty()) {
       return notify("شماره وارد نشده است.");
+    }
+
+    if (!_checkRules) {
+      return notify("لطفا شرایط استفاده، قوانین و حریم خصوصی را مطالعه کنید");
     }
 
     _bloc.add(LoginRequestEvent(numberPhone));

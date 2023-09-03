@@ -19,6 +19,7 @@ class MyFileDetail {
   String? ownerName;
   String? visitName;
   String? secDescription;
+  String? rejectionDesc;
   Media? media;
   String? publishedAgo;
   String? createDateTimeAgo;
@@ -59,6 +60,9 @@ class MyFileDetail {
     }
     if (json["name"] is String) {
       name = json["name"];
+    }
+    if (json["comment"] is String) {
+      rejectionDesc = json["comment"];
     }
     if (json["description"] is String) {
       description = json["description"];
@@ -235,11 +239,7 @@ class MyFileDetail {
   }
 
   bool isRental() {
-    return category?.getMainCategoryName().toString().contains("اجاره") ?? false;
-
-    var prices = getPrices();
-
-    return prices.length >= 2;
+    return category?.fullCategory.toString().contains("اجاره") ?? false;
   }
 
   Propertys? getPrice() {
@@ -258,7 +258,7 @@ class MyFileDetail {
       propertys?.where((element) => element.section == 3).toList() ??
       <Propertys>[];
 
-  String getPricePermater() {
+  String getPricePerMater() {
     var mater =
         (propertys?.where((element) => element.weightSection == 1).length ??
                     0) >
@@ -280,6 +280,14 @@ class MyFileDetail {
     }
 
     return number_format(int.parse(getPrice()!.value!) / int.parse(mater.toString()));
+  }
+  
+  String getPriceStr() {
+    return getPrice()?.value != null ? number_format(getPrice()!.value) : "توافقی";
+  }
+
+  String getRentStr() {
+    return getRent()?.value != null ? number_format(getRent()?.value) : "توافقی";
   }
 }
 

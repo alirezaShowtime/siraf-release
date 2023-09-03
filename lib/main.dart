@@ -76,7 +76,7 @@ void main() async {
           ),
           BlocProvider<FilesListBloc>(
             create: (_) => FilesListBloc(),
-          ),
+        ),
           BlocProvider<HSBloc>(
             create: (_) => HSBloc(),
           ),

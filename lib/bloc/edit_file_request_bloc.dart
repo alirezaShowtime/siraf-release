@@ -14,6 +14,8 @@ class EditRequestFileEvent {
   int maxPrice;
   int minMeter;
   int maxMeter;
+  int? minRent;
+  int? maxRent;
   String title;
   String description;
   List<int> estateIds;
@@ -26,6 +28,8 @@ class EditRequestFileEvent {
     required this.maxPrice,
     required this.minMeter,
     required this.maxMeter,
+    this.minRent,
+    this.maxRent,
     required this.title,
     required this.description,
     required this.estateIds,
@@ -38,6 +42,8 @@ class EditRequestFileEvent {
         "maxPrice": maxPrice,
         "minMeter": minMeter,
         "maxMeter": maxMeter,
+        if (minRent != null) "minRent": minRent,
+        if (maxRent != null) "maxRent": maxRent,
         "title": title,
         "description": description,
         "estateIds": estateIds,

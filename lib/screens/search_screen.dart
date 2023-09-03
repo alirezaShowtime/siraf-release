@@ -61,7 +61,7 @@ class _SearchScreen extends State<SearchScreen> {
           },
           decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: "جستجو فایل",
+            hintText: "جستجوی فایل",
             hintStyle: TextStyle(
               fontSize: 14,
               color: App.theme.tooltipTheme.textStyle?.color,
@@ -117,43 +117,40 @@ class _SearchScreen extends State<SearchScreen> {
       body: Column(
         children: [
           Visibility(
-              visible: keywords.length > 0,
-              child: Padding(
-                padding: EdgeInsets.only(left: 5, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Text(
-                    //   "سابقه جستجو",
-                    //   style: TextStyle(
-                    //     fontSize: 12,
-                    //     color: Themes.blue,
-                    //     fontFamily: "IranSansBold",
-                    //   ),
-                    // ),
-                    TextButton(
-                      onPressed: () {
-                        emptyHistory();
-                      },
-                      child: Text(
-                        "پاک کردن سوابق",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Themes.blue,
-                        ),
-                      ),
+            visible: keywords.length > 0,
+            child: Padding(
+              padding: EdgeInsets.only(left: 15, top: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Text(
+                  //   "سابقه جستجو",
+                  //   style: TextStyle(
+                  //     fontSize: 12,
+                  //     color: Themes.blue,
+                  //     fontFamily: "IranSansBold",
+                  //   ),
+                  // ),
+                  InkWell(
+                    onTap: () {
+                      emptyHistory();
+                    },
+                    child: Text(
+                      "پاک کردن سوابق",
+                      style: TextStyle(fontSize: 12, color: Themes.blue, fontFamily: "IranSansBold"),
                     ),
-                  ],
-                ),
-              )),
-          Expanded(
-            child: ListView.builder(
-              itemCount: keywords.length,
-              itemBuilder: (BuildContext context, int i) {
-                return historyItem(keywords[i]);
-              },
+                  ),
+                ],
+              ),
             ),
+          ),
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: keywords.length,
+            itemBuilder: (BuildContext context, int i) {
+              return historyItem(keywords[i]);
+            },
           ),
         ],
       ),
@@ -162,23 +159,18 @@ class _SearchScreen extends State<SearchScreen> {
 
   Widget historyItem(SearchHistory searchHistory) {
     return InkWell(
-      onTap: () {},
-      child: Container(
-        padding: EdgeInsets.only(left: 10, top: 0, bottom: 10, right: 20),
-        child: Expanded(
-          child: GestureDetector(
-            onTap: () {
-              searchController.text = searchHistory.keyword;
+      onTap: () {
+        searchController.text = searchHistory.keyword;
 
-              onSubmittedSearchField(searchController.text);
-            },
-            child: Text(
-              searchHistory.keyword,
-              style: TextStyle(
-                fontSize: 13,
-                // color: Themes.textGrey,
-              ),
-            ),
+        onSubmittedSearchField(searchController.text);
+      },
+      child: Container(
+        padding: EdgeInsets.only(left: 10, top: 10, bottom: 10, right: 20),
+        child: Text(
+          searchHistory.keyword,
+          style: TextStyle(
+            fontSize: 13,
+            color: Themes.textGrey,
           ),
         ),
       ),

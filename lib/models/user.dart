@@ -14,6 +14,7 @@ class User {
   String? phone;
   dynamic birthDate;
   String? avatar;
+  bool? privateMobile;
   List<dynamic>? roles;
 
   User({
@@ -25,6 +26,7 @@ class User {
     this.avatar,
     this.birthDate,
     this.token,
+    this.privateMobile,
   });
 
   User.fromJson(Map<String, dynamic> json) {
@@ -54,8 +56,8 @@ class User {
     if (json["refresh"] is String) {
       refreshToken = json["refresh"];
     }
-    if (json["username"] is String) {
-      token = json["username"];
+    if (json["privateMobile"] is bool) {
+      privateMobile = json["privateMobile"];
     }
   }
 
@@ -73,6 +75,7 @@ class User {
       _data["roles"] = roles;
     }
     _data["token"] = token;
+    _data["privateMobile"] = privateMobile;
     _data["refresh"] = refreshToken;
     return _data;
   }

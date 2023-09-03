@@ -30,9 +30,24 @@ extension Profile on _EstateProfileScreen {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            card(title: "فروشی", value: estateProfile.countOnSale),
-                            card(title: "اجاره ای", value: estateProfile.countRent),
-                            card(title: "ساخت و ساز", value: estateProfile.countConstruction),
+                            card(
+                                title: "فروشی",
+                                value: estateProfile.countOnSale,
+                                onTap: () {
+                                  goToFiles(category: Category(id: 1, name: 'فروشی'), appBarTitle: "${estateProfile.name}");
+                                }),
+                            card(
+                                title: "اجاره ای",
+                                value: estateProfile.countRent,
+                                onTap: () {
+                                  goToFiles(category: Category(id: 2, name: 'اجاره ای'), appBarTitle: "${estateProfile.name}");
+                                }),
+                            card(
+                                title: "ساخت و ساز",
+                                value: estateProfile.countConstruction,
+                                onTap: () {
+                                  goToFiles(category: Category(id: 3, name: 'ساخت و ساز'), appBarTitle: "${estateProfile.name}");
+                                }),
                           ],
                         ),
                       ),
@@ -89,7 +104,7 @@ extension Profile on _EstateProfileScreen {
                               ),
                             ),
                             Text(
-                              estateProfile.bio ?? "بیو...",
+                              estateProfile.bio ?? "",
                               overflow: TextOverflow.ellipsis,
                               maxLines: 4,
                               style: TextStyle(
@@ -185,5 +200,53 @@ extension Profile on _EstateProfileScreen {
       filesBloc = EstateFilesBloc();
     }
     filesBloc.add(FilesLoadEvent(filterData: filterData));
+  }
+
+  goToFiles({String? appBarTitle, Category? category, FilterData? filterData}) async {
+    return push(
+      context,
+      EstateFilesScreen(
+        filterData: filterData ?? FilterData(
+          category: category,
+          estateId: widget.estateId,
+        ),
+        appBarTitle: appBarTitle,
+      ),
+    );
+  }
+
+  Widget viewMoreWidget() {
+    return GestureDetector(
+      onTap: () {
+        goToFiles(filterData: filterData);
+      },
+      child: Container(
+        height: 50,
+        margin: EdgeInsets.only(top: 5),
+        color: Colors.grey.shade200,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 15,
+              height: 15,
+              child: icon(
+                CupertinoIcons.down_arrow,
+              ),
+            ),
+            SizedBox(width: 10),
+            Text(
+              "نمایش موارد بیشتر",
+              style: TextStyle(
+                fontSize: 10,
+                fontFamily: "IranSansBold",
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    ;
   }
 }

@@ -106,14 +106,21 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
               ),
               SizedBox(height: 10),
               Text(
-                "محدوده قیمت: " + ((widget.request.minPrice ?? 0) > 0 ? "از ${widget.request.minPrice} " : "") + ((widget.request.maxPrice ?? 0) > 0 ? "تا ${widget.request.maxPrice} " : "") + "تومان",
+                "محدوده ${widget.request.isRent() ? 'ودیعه' : 'قیمت'} : " + (createLabel(widget.request.minPrice!, widget.request.maxPrice!, "تومان") ?? ""),
                 style: TextStyle(
                   fontSize: 12,
                   fontFamily: "IranSansBold",
                 ),
               ),
               Text(
-                "محدوده متراژ: " + ((widget.request.minMeter ?? 0) > 0 ? "از ${widget.request.minMeter} " : "") + ((widget.request.maxMeter ?? 0) > 0 ? "تا ${widget.request.maxMeter} " : "") + "متر",
+                "محدوده اجاره : " + (createLabel(widget.request.minRent!, widget.request.maxRent!, "تومان") ?? ""),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontFamily: "IranSansBold",
+                ),
+              ),
+              Text(
+                "محدوده متراژ: " + (createLabel(widget.request.minMeter!, widget.request.maxMeter!, "متر") ?? ""),
                 style: TextStyle(
                   fontSize: 12,
                   fontFamily: "IranSansBold",
@@ -186,6 +193,26 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
         ),
       ),
     );
+  }
+
+  String? createLabel(int? min, int? max, String label) {
+    if (min == null && max == null) {
+      return null;
+    }
+
+    String text = "";
+
+    if (min != 0 && min != null) {
+      text += "از " + number_format(min);
+    } else if (min != null) {
+      text += "از صفر";
+    }
+
+    if (max != 0 && max != null) {
+      text += " تا " + number_format(max);
+    }
+
+    return "${text} ${label}";
   }
 
   Widget item(RequestConsultant requestConsultant) {

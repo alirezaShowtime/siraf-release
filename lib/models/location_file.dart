@@ -1,3 +1,4 @@
+import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
 
@@ -7,6 +8,7 @@ class LocationFile {
   Category? category;
   String? lat;
   String? long;
+  List<Image>? images;
   Image? image;
   List<Propertys>? propertys;
   bool? favorite;
@@ -20,6 +22,7 @@ class LocationFile {
     this.category,
     this.lat,
     this.long,
+    this.images,
     this.image,
     this.propertys,
     this.favorite,
@@ -45,6 +48,20 @@ class LocationFile {
     }
     if (json["image"] is Map) {
       image = json["image"] == null ? null : Image.fromJson(json["image"]);
+    }
+    if (json["images"] is List) {
+      images = json["images"] == null
+          ? null
+          : (json["images"] as List)
+              .map((e) => Image.fromJson(e))
+              .where(
+                (element) => element.name != null,
+              )
+              .toList();
+
+      if (images.isFill()) {
+        image = images!.first;
+      }
     }
     if (json["propertys"] is List) {
       propertys = json["propertys"] == null

@@ -238,6 +238,7 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                   center: defaultLocation,
                   interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                   zoom: 14.0,
+                  minZoom: 9,
                   plugins: [
                     MarkerClusterPlugin(),
                   ],
@@ -247,9 +248,6 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                     options: TileLayerOptions(
                       urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
                     ),
-                  ),
-                  CircleLayerWidget(
-                    options: CircleLayerOptions(circles: circles),
                   ),
                   MarkerClusterLayerWidget(
                     options: MarkerClusterLayerOptions(
@@ -278,6 +276,9 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                         );
                       },
                     ),
+                  ),
+                  CircleLayerWidget(
+                    options: CircleLayerOptions(circles: circles),
                   ),
                 ],
               ),
@@ -616,14 +617,14 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
           borderColor: Colors.white,
         ),
       ];
-      animatedMapMove(_controller, position, getMapZoomLevel(2500), this);
+      animatedMapMove(_controller, position, getMapZoomLevel(1000), this);
     });
 
     if (_showFileOnMyLocation) {
       setState(() {
         circles.add(CircleMarker(
           point: position,
-          radius: 2500,
+          radius: 1000,
           useRadiusInMeter: true,
           color: Colors.blue.withOpacity(0.15),
           borderStrokeWidth: 0,
@@ -648,43 +649,44 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
         height: 120,
         point: LatLng(double.parse(e.lat!), double.parse(e.long!)),
         builder: (_) {
-          // return Container(width: 5, height: 5, color: Themes.blue,);
-          return GestureDetector(
-            onTap: () {
-              setState(() {
-                selectedFile = e;
-              });
+          return Container(
+            width: 244,
+            height: 120,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedFile = e;
+                });
 
-              Future.delayed(Duration(milliseconds: 200), () {
-                carouselController.jumpToPage(files.indexOf(e));
-              });
+                Future.delayed(Duration(milliseconds: 200), () {
+                  carouselController.jumpToPage(files.indexOf(e));
+                });
 
-              setState(() {
-                markers = _buildFileMarkers(files);
-              });
-            },
-            child: Stack(
-              children: [
-                Positioned(
-                  bottom: 60,
-                  child: Container(
-                    height: 60,
-                    width: 122,
-                    decoration: BoxDecoration(
-                      color: Color(0xff707070),
-                      border: Border.all(
-                        color: Themes.icon,
-                        width: 2,
+                setState(() {
+                  markers = _buildFileMarkers(files);
+                });
+              },
+              child: Stack(
+                children: [
+                  Positioned(
+                    bottom: 60,
+                    child: Container(
+                      height: 60,
+                      width: 122,
+                      decoration: BoxDecoration(
+                        color: Color(0xff707070),
+                        border: Border.all(
+                          color: Themes.icon,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(5),
                       ),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    alignment: Alignment.center,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        SizedBox(
-                          width: 100,
-                          child: Flexible(
+                      alignment: Alignment.center,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          SizedBox(
+                            width: 100,
                             child: Text(
                               e.name!,
                               style: TextStyle(
@@ -696,40 +698,40 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                        ),
-                        Text(
-                          e.getFirstPrice(),
-                          style: TextStyle(
-                            color: Themes.textLight,
-                            fontSize: e.isRent() ? 9 : 10,
-                            fontFamily: e.isRent() ? "IranSans" : "IranSansMedium",
-                          ),
-                        ),
-                        if (e.isRent())
                           Text(
-                            e.getSecondPrice(),
+                            e.getFirstPrice(),
                             style: TextStyle(
                               color: Themes.textLight,
                               fontSize: e.isRent() ? 9 : 10,
                               fontFamily: e.isRent() ? "IranSans" : "IranSansMedium",
                             ),
                           ),
-                      ],
+                          if (e.isRent())
+                            Text(
+                              e.getSecondPrice(),
+                              style: TextStyle(
+                                color: Themes.textLight,
+                                fontSize: e.isRent() ? 9 : 10,
+                                fontFamily: e.isRent() ? "IranSans" : "IranSansMedium",
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Container(
-                  height: 57,
-                  width: 244,
-                  alignment: Alignment.bottomCenter,
-                  child: m.Image(
-                    image: AssetImage("assets/images/marker_pic.png"),
-                    width: 27,
-                    height: 40,
-                    fit: BoxFit.fill,
+                  Container(
+                    height: 57,
+                    width: 244,
+                    alignment: Alignment.bottomCenter,
+                    child: m.Image(
+                      image: AssetImage("assets/images/marker_pic.png"),
+                      width: 27,
+                      height: 40,
+                      fit: BoxFit.fill,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },

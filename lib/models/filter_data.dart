@@ -15,7 +15,7 @@ class FilterData {
   String? search;
   int? estateId;
   int? consultantId;
-  Map<String, String> propFilters = {};
+  Map<String, String>? propFilters = {};
 
   FilterData({
     this.category,
@@ -27,7 +27,7 @@ class FilterData {
     this.search,
     this.estateId,
     this.consultantId,
-    this.propFilters = const {},
+    this.propFilters,
   });
 
   String toQueryString({String? delimiter}) {
@@ -149,7 +149,7 @@ class FilterData {
       }
     }
 
-    propFilters.forEach((key, value) {
+    propFilters?.forEach((key, value) {
       str += getDelimiter(str) + "$key=$value";
     });
 

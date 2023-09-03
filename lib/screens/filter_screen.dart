@@ -61,7 +61,7 @@ class _FilterScreenState extends State<FilterScreen> {
   void initState() {
     super.initState();
 
-    propFilters = widget.filterData.propFilters;
+    propFilters = widget.filterData.propFilters ?? {};
 
     if (widget.total_url != null) totalFileBloc = TotalFileBloc(url: widget.total_url!);
 
@@ -431,7 +431,7 @@ class _FilterScreenState extends State<FilterScreen> {
                               ),
                               elevation: 0,
                               constraints: BoxConstraints(
-                                minHeight: 45,
+                                minHeight: 50,
                                 minWidth: double.infinity,
                               ),
                               fillColor: Themes.primary,
@@ -1249,7 +1249,7 @@ class _FilterScreenState extends State<FilterScreen> {
     ];
 
     setState(() {
-      totalFilters = conditions.where((element) => element).length + filterData.propFilters.length;
+      totalFilters = conditions.where((element) => element).length + (filterData.propFilters?.length ?? 0);
     });
   }
 }

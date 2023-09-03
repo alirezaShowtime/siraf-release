@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/bookmark_bloc.dart';
 import 'package:siraf3/bloc/notes_bloc.dart';
+import 'package:siraf3/bookmark.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/favorite_file.dart';
@@ -12,6 +13,7 @@ import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/bookmark_file_item.dart';
+import 'package:siraf3/widgets/empty.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
@@ -134,7 +136,7 @@ class _BookmarkScreen extends State<BookmarkScreen> with SingleTickerProviderSta
             ),
             titleSpacing: 0,
             actions: [
-              if (currentTabIndex == 0)
+              if (currentTabIndex == 0 && files.length > 1)
                 InkWell(
                   onTap: _compare,
                   child: Padding(
@@ -161,17 +163,41 @@ class _BookmarkScreen extends State<BookmarkScreen> with SingleTickerProviderSta
                       ),
                       height: 35,
                     ),
+                    if (selectedFiles.isNotEmpty)
+                      PopupMenuItem<int>(
+                        value: 1,
+                        child: Text(
+                          "حذف",
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: App.theme.textTheme.bodyLarge?.color,
+                          ),
+                        ),
+                        height: 35,
+                      ),
                   ],
                   iconData: Icons.more_vert_rounded,
-                  onSelected: (val) {
-                    setState(() {
-                      isSelectable = true;
+                  onSelected: (val) async {
+                    if (val == 0) {
+                      setState(() {
+                        isSelectable = true;
 
-                      selectedFiles.clear();
-                      files.forEach((element) {
-                        selectedFiles.add(element);
+                        selectedFiles.clear();
+                        files.forEach((element) {
+                          selectedFiles.add(element);
+                        });
                       });
-                    });
+                    }
+                    if (val == 1) {
+                      var result = await Bookmark.removeFavoriteList(context: context, ids: selectedFiles.map((e) => e.fileId!.id!).toList());
+                      if (result) {
+                        setState(() {
+                          files.removeWhere((file) => selectedFiles.any((e) => e.id == file.id));
+                          selectedFiles.clear();
+                          isSelectable = false;
+                        });
+                      }
+                    }
                   },
                 ),
             ],
@@ -211,6 +237,14 @@ class _BookmarkScreen extends State<BookmarkScreen> with SingleTickerProviderSta
     state = state as BookmarkLoadedState;
 
     files = state.data;
+
+    if (files.isEmpty) {
+      return Center(
+        child: Empty(
+          message: "موردی نشان نشده است",
+        ),
+      );
+    }
 
     return ListView(
       children: files.map<Widget>(
@@ -326,6 +360,14 @@ class _BookmarkScreen extends State<BookmarkScreen> with SingleTickerProviderSta
 
     notes = state.notes;
 
+    if (notes.isEmpty) {
+      return Center(
+        child: Empty(
+          message: "یادداشتی ثبت نشده است",
+        ),
+      );
+    }
+
     return ListView(
       children: notes.map<Widget>(
         (e) {
@@ -344,7 +386,6 @@ class _BookmarkScreen extends State<BookmarkScreen> with SingleTickerProviderSta
         },
       ).toList(),
     );
-
   }
 
   void getNotes() {

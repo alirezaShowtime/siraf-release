@@ -137,7 +137,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
             type = FileType2.image;
         }
 
-        return buildMediaBoxFromImage(e.image, type, name: e.name);
+        return buildMediaBoxFromImage(e.image, type);
       }).toList();
     });
   }
@@ -815,17 +815,21 @@ class _EditFileSecondState extends State<EditFileSecond> {
         builder: (_) {
           addMediaBottmSheetContext = _;
           return Container(
-            height: 120,
+            height: 140,
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Column(
               children: [
                 InkWell(
                   onTap: _chooseFromGallery,
                   child: Container(
-                    height: 50,
+                    height: 40,
                     child: Row(
                       children: [
-                        Icon(CupertinoIcons.photo),
+                        Icon(
+                          CupertinoIcons.photo,
+                          color: Themes.text,
+                          size: 26,
+                        ),
                         SizedBox(
                           width: 5,
                         ),
@@ -834,7 +838,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           style: TextStyle(
                             fontSize: 14,
                             fontFamily: "IranSansMedium",
-                            color: App.theme.textTheme.bodyLarge?.color,
+                            color: Themes.text,
                           ),
                         ),
                       ],
@@ -844,10 +848,14 @@ class _EditFileSecondState extends State<EditFileSecond> {
                 InkWell(
                   onTap: _takePhotoFromCamera,
                   child: Container(
-                    height: 50,
+                    height: 40,
                     child: Row(
                       children: [
-                        Icon(CupertinoIcons.photo_camera),
+                        Icon(
+                          CupertinoIcons.photo_camera,
+                          color: Themes.text,
+                          size: 26,
+                        ),
                         SizedBox(
                           width: 5,
                         ),
@@ -856,7 +864,33 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           style: TextStyle(
                             fontSize: 14,
                             fontFamily: "IranSansMedium",
-                            color: App.theme.textTheme.bodyLarge?.color,
+                            color: Themes.text,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: _takeVideoFromCamera,
+                  child: Container(
+                    height: 40,
+                    child: Row(
+                      children: [
+                        Icon(
+                          CupertinoIcons.video_camera,
+                          color: Themes.text,
+                          size: 26,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          "فیلمبرداری",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: "IranSansMedium",
+                            color: Themes.text,
                           ),
                         ),
                       ],
@@ -917,6 +951,25 @@ class _EditFileSecondState extends State<EditFileSecond> {
     var file = File(photo.path);
 
     var mediaBox = await buildMediaBox(file, FileType2.image);
+
+    setState(() {
+      files.add({
+        "file": file,
+        "title": null,
+      });
+      mediaBoxes.add(mediaBox);
+    });
+  }
+
+  void _takeVideoFromCamera() async {
+    dismissDialog(addMediaBottmSheetContext);
+    var video = await ImagePicker().pickVideo(source: ImageSource.camera);
+
+    if (video == null) return;
+
+    var file = File(video.path);
+
+    var mediaBox = await buildMediaBox(file, FileType2.video);
 
     setState(() {
       files.add({
@@ -1085,7 +1138,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
     );
   }
 
-  Widget buildMediaBoxFromImage(ImageProvider<Object> image, FileType2 type, {String? name}) {
+  Widget buildMediaBoxFromImage(ImageProvider<Object> image, FileType2 type) {
     Widget? icon;
 
     switch (type) {
@@ -1112,35 +1165,23 @@ class _EditFileSecondState extends State<EditFileSecond> {
     return Container(
       padding: EdgeInsets.all(5),
       alignment: Alignment.center,
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(5),
-              image: DecorationImage(
-                image: image,
-                fit: BoxFit.cover,
-                colorFilter: type != FileType2.image
-                    ? ColorFilter.mode(
-                        Themes.iconGrey,
-                        BlendMode.hardLight,
-                      )
-                    : null,
-              ),
-            ),
-            alignment: Alignment.center,
-            child: icon,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(5),
+          image: DecorationImage(
+            image: image,
+            fit: BoxFit.cover,
+            colorFilter: type != FileType2.image
+                ? ColorFilter.mode(
+                    Themes.iconGrey,
+                    BlendMode.hardLight,
+                  )
+                : null,
           ),
-          if (name.isFill())
-            Text(
-              name!,
-              style: TextStyle(
-                fontSize: 8,
-                fontFamily: "IranSansBold",
-              ),
-            ),
-        ],
+        ),
+        alignment: Alignment.center,
+        child: icon,
       ),
     );
   }

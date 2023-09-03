@@ -47,6 +47,10 @@ class EditFileBloc extends Bloc<EditFileEvent, EditFileState> {
 
       var url = getFileUrl("file/editFile/${event.data.id}/").toString();
 
+      var data = await event.data.getFormData();
+
+      print(data.fields);
+
       response = await Dio().post(
         url,
         options: Options(
@@ -55,7 +59,7 @@ class EditFileBloc extends Bloc<EditFileEvent, EditFileState> {
           },
           headers: headers,
         ),
-        data: await event.data.getFormData(),
+        data: data,
       );
     } on HttpException catch (e) {
       emit(EditFileErrorState());
