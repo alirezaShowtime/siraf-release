@@ -185,19 +185,19 @@ class _RequestListScreen extends State<RequestListScreen> {
   }
 
   Map<int, Color?> statusBadgeColors = {
-    0: Color(0xfffdb713), // عدم پذیرش
-    1: Color(0xff00cc11), // پذیرش شده
+    5: Color(0xfffdb713), // عدم پذیرش
+    1: Color(0xff00cc11), // تایید شده
     2: Color(0xfffd1313), // رد شده
-    3: Colors.grey, // در انتظار پذیرش
-    4: Colors.grey, // در انتظار تایید
+    3: Colors.grey, // در انتظار تایید
+    4: Color(0xff00cc11), // پذیرش شده
   };
 
   Map<int, Color?> statusTextColors = {
-    0: Colors.black, // عدم پذیرش
-    1: Colors.black, // پذیرش شده
-    2: Colors.white, // رد شده
-    3: Colors.black, // در انتظار پذیرش
-    4: Colors.black, // در انتظار تایید
+    5: Colors.black, // عدم پذیرش
+    3: Colors.black, // پذیرش شده
+    1: Colors.white, // رد شده
+    4: Colors.white, // در انتظار پذیرش
+    2: Colors.black, // در انتظار تایید
   };
 
   bool isSelectable = false;
