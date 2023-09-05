@@ -91,8 +91,6 @@ class _SearchScreen extends State<SearchScreen> {
                 setState(() {
                   widget.filterData = result;
                 });
-
-                print(widget.filterData.toQueryString());
               }
             },
             icon: badges.Badge(

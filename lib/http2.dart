@@ -163,7 +163,6 @@ Future<http.Response> handleReq(Future<http.Response> req, {Object? requestBody}
     return generateErrorResponse(message: "خطایی در سمت سرور پیش آمد لطفا بعدا تلاش کنید");
   }
 
-  print("response.headers['content-type'] ${response.headers["content-type"]}");
   if (response.headers["content-type"] != "application/json") {
     return generateErrorResponse(message: "خطایی در سمت سرور پیش آمد لطفا بعدا تلاش کنید");
   }

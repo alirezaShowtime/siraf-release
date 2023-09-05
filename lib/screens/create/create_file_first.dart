@@ -405,8 +405,6 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
     );
 
     if (result is List) {
-      print(result[0]);
-      print(result[1]);
       setState(() {
         selectedOtherProps = result[0];
         selectedOtherFeatures = result[1];
@@ -534,7 +532,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
   }
 
   next() {
-    print(selectedMainProps);
+
     if (category == null) return notify("دسته بندی را انتخاب نمایید");
     if (city == null) return notify("شهر را انتخاب نمایید");
     if (location == null) return notify("موقعیت را روی نقشه انتخاب کنید");

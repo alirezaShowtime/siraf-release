@@ -74,9 +74,6 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
         ),
         data: formData,
       );
-      
-      print(response.statusCode);
-      print(response.data);
 
     } on HttpException catch (_) {
       emit(EditProfileErrorState(message: message));

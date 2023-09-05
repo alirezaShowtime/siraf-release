@@ -52,8 +52,6 @@ class FilesListBloc extends Bloc<FilesListEvent, FilesListState> {
           '&lastId=' +
           event.lastId.toString());
 
-      print(url.toString());
-
       if (await User.hasToken()) {
         response =
             await http2.getWithToken(url, timeout: Duration(seconds: 60));
@@ -69,8 +67,6 @@ class FilesListBloc extends Bloc<FilesListEvent, FilesListState> {
             FilesListLoadedState(files: files, lastId: json['data']["lastId"] as int?));
       } else {
         var json = jDecode(response.body);
-
-        print(convertUtf8(response.body));
 
         if (json['code'] == 205) {
           User.remove();

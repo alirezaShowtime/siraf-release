@@ -56,10 +56,7 @@ class FileConsulantsBloc
       return;
     }
 
-    print(response.statusCode);
-
     if (isResponseOk(response)) {
-      print(response.body);
       var json = jDecode(response.body);
 
       emit(

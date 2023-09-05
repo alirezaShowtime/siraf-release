@@ -45,8 +45,6 @@ class MyFilesBloc extends Bloc<MyFilesEvent, MyFilesState> {
 
     Response response;
 
-    print(await User.getBearerToken());
-
     if (event.sort != "new" && event.sort != "old") {
       event.filter = event.sort;
       event.sort = null;
@@ -65,8 +63,6 @@ class MyFilesBloc extends Bloc<MyFilesEvent, MyFilesState> {
       emit(MyFilesErrorState(response: null));
       return;
     }
-
-    print(convertUtf8(response.body));
 
     if (isResponseOk(response)) {
       var json = jDecode(response.body);

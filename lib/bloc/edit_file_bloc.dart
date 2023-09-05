@@ -49,8 +49,6 @@ class EditFileBloc extends Bloc<EditFileEvent, EditFileState> {
 
       var data = await event.data.getFormData();
 
-      print(data.fields);
-
       response = await Dio().post(
         url,
         options: Options(
@@ -71,10 +69,6 @@ class EditFileBloc extends Bloc<EditFileEvent, EditFileState> {
       emit(EditFileErrorState());
       return;
     }
-
-    print(response.statusCode);
-    print(response.statusMessage);
-    print(response.data);
 
     if (response.data['status'] == 1) {
       emit(EditFileSuccessState());

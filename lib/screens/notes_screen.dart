@@ -288,9 +288,6 @@ class _NotesScreen extends State<NotesScreen> {
       );
     }).toList();
 
-    files.forEach((element) {
-      print(element.toJson());
-    });
 
     await Navigator.push(context,
         MaterialPageRoute(builder: (_) => CompareScreen(files: files)));

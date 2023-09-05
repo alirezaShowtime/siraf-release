@@ -37,9 +37,7 @@ class MiniVideoState extends State<MiniVideo> with AutomaticKeepAliveClientMixin
 
     _controller = VideoPlayerController.network(widget.videoUrl);
 
-    _controller.initialize().then(_onLinkLoaded).onError((error, stackTrace) {
-      print(error);
-    });
+    _controller.initialize().then(_onLinkLoaded);
   }
 
   @override

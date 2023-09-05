@@ -1388,7 +1388,6 @@ class _EditFileSecondState extends State<EditFileSecond> {
     if (mediaTitleDialogContext != null) Navigator.pop(mediaTitleDialogContext!);
     if (optionsDialog != null) Navigator.pop(optionsDialog!);
 
-    print(files);
   }
 }
 

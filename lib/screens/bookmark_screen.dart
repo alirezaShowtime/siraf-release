@@ -297,10 +297,6 @@ class _BookmarkScreen extends State<BookmarkScreen> with SingleTickerProviderSta
       );
     }).toList();
 
-    files.forEach((element) {
-      print(element.toJson());
-    });
-
     await Navigator.push(context, MaterialPageRoute(builder: (_) => CompareScreen(files: files)));
 
     setState(() {

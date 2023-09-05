@@ -88,9 +88,6 @@ class HSBloc extends Bloc<HSEvent, HSState> {
       //   posts_new_last_id = posts.length > 0 ? posts.last.id : null;
       // }
 
-      print("FILES LENGTH : ${files.length}");
-      print("POSTS LENGTH : ${posts.length}");
-
       // todo temporary //array must be empty to combine files and contents
       var items = files.map((e) => HomeItem(type: Type.File, file: e)).toList();
 
@@ -151,8 +148,6 @@ class HSBloc extends Bloc<HSEvent, HSState> {
         items.add(HomeItem(type: Type.Post, post: posts[o]));
       }
     }
-
-    print(items);
 
     return items;
   }

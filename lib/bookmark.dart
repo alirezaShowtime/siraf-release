@@ -279,8 +279,6 @@ class Bookmark {
       ),
     );
 
-    print(response.statusCode);
-    print(response.data);
 
     if (response.statusCode == 200) {
       result = true;

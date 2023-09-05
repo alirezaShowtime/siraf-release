@@ -520,8 +520,6 @@ class _EditFileFirstState extends State<EditFileFirst> {
         selectedOtherProps = Map<String, String>.from(result[0]);
         selectedOtherFeatures = Map<String, String>.from(result[1]);
 
-        print(selectedOtherProps);
-        print(selectedOtherFeatures);
       });
     }
   }

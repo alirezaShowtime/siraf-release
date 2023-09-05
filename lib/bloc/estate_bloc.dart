@@ -66,9 +66,6 @@ class EstateBloc extends Bloc<EstateEvent, EstateState> {
 
       var response = await http2.get(url);
 
-      print(response.statusCode);
-      print(convertUtf8(response.body));
-
       if (isResponseOk(response)) {
         var json = jDecode(response.body);
 

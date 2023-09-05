@@ -51,8 +51,6 @@ class FilesBloc extends Bloc<FilesEvent, FilesState> {
 
       var url = getFileUrl('file/files/' + event.filterData.toQueryString() + '&lastId=' + event.lastId.toString());
 
-      print(url.toString());
-
       if (await User.hasToken()) {
         response = await http2.getWithToken(url, timeout: Duration(seconds: 60));
       } else {
@@ -71,8 +69,6 @@ class FilesBloc extends Bloc<FilesEvent, FilesState> {
         }
       } else {
         var json = jDecode(response.body);
-
-        print(convertUtf8(response.body));
 
         if (json['code'] == 205) {
           User.remove();

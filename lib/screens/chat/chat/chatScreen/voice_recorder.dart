@@ -2,20 +2,16 @@ part of 'chat_screen.dart';
 
 extension VoiceRecorder on _ChatScreen {
   Future<void> startRecording() async {
-    if (await recordPermissionsRequest()) {
-      Directory appFolder = await getTemporaryDirectory();
-      bool appFolderExists = await appFolder.exists();
-      if (!appFolderExists) {
-        await appFolder.create(recursive: true);
-      }
-
-      final filepath = appFolder.path + '/' + DateTime.now().millisecondsSinceEpoch.toString() + ".mp3";
-
-      await _audioRecorder.start(path: filepath);
-      print(await _audioRecorder.isRecording());
-    } else {
-      print('Permissions not granted');
+    if (!await recordPermissionsRequest()) return;
+    Directory appFolder = await getTemporaryDirectory();
+    bool appFolderExists = await appFolder.exists();
+    if (!appFolderExists) {
+      await appFolder.create(recursive: true);
     }
+
+    final filepath = appFolder.path + '/' + DateTime.now().millisecondsSinceEpoch.toString() + ".mp3";
+
+    await _audioRecorder.start(path: filepath);
   }
 
   Future<String?> stopRecording() async {

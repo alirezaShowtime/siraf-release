@@ -361,8 +361,6 @@ class _SettingsScreen extends State<SettingsScreen> {
     var sh = await SharedPreferences.getInstance();
     var t = sh.getString("FILE_VIEW_TYPE") ?? "list";
 
-    print(t);
-
     setState(() {
       isSlideViewType = t == "slide";
     });

@@ -40,9 +40,6 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
         "requestFile/myRequestFiles/" +
             (event.sort != null ? "?sort=${event.sort}" : "")));
 
-    print(response.statusCode);
-    print(convertUtf8(response.body));
-
     if (isResponseOk(response)) {
       emit(
         RequestsLoadedState(

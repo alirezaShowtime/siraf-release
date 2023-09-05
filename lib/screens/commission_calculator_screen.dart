@@ -161,7 +161,6 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
               totalPriceHelpText = value.isNotEmpty ? value.toWord() : null;
             });
 
-            print(totalPriceHelpText);
           },
           onPressed: () {
             if (!totalPriceController.text.isFill()) {

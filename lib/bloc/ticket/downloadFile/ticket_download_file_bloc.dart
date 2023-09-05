@@ -41,7 +41,6 @@ class TicketDownloadFileBloc extends RequestBloc<TicketDownloadFileEvent, Ticket
       );
       return File(savedPath);
     } on FileSystemException catch (e) {
-      print(e);
 
       if (e.osError?.errorCode == 17) {
         return _downloadWithHandler(

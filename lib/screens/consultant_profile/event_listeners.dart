@@ -64,8 +64,6 @@ extension EventListener on _ConsultantProfileScreen {
         filterData = result;
       });
 
-      print(filterData.toQueryString());
-
       getFiles();
     }
   }

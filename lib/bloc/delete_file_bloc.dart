@@ -71,7 +71,6 @@ class DeleteFileBloc extends Bloc<DeleteFileEvent, DeleteFileState> {
     if (isResponseOk(response)) {
       emit(DeleteFileSuccessState(ids: ids));
     } else {
-      print(response.body);
       emit(DeleteFileErrorState(response: response));
     }
   }

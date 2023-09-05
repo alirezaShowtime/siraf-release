@@ -70,10 +70,6 @@ class UFMBloc extends Bloc<UFMEvent, UFMState> {
       return;
     }
 
-    print(response.statusCode);
-    print(response.statusMessage);
-    print(response.data);
-
     if (response.data['status'] == 1) {
       emit(UFMSuccessState());
     } else {

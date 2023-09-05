@@ -106,10 +106,8 @@ class MyFileBloc extends Bloc<MyFileEvent, MyFileState> {
           }
         }
       } on HttpException catch (e) {
-        print(e);
         emit(MyFileErrorState());
       } on SocketException catch (e) {
-        print(e);
         emit(MyFileErrorState());
       }
     }

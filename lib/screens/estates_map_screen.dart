@@ -349,11 +349,6 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
         cities = result;
       });
 
-      print(cities);
-      cities.forEach((element) {
-        print(element.toJson());
-      });
-
       City.saveList(cities, key: "estates");
 
       await getCities();

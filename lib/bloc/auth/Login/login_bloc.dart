@@ -32,7 +32,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     var res = await http2.post(uri, body: body, headers: headers);
 
-    print(res.body);
     if (!isResponseOk(res)) {
       return emit(LoginError(response: res));
     }

@@ -838,7 +838,6 @@ class _RequestFileScreen extends State<RequestFileScreen> {
       );
     }
     if (event is AddFileRequestSuccessState) {
-      print(convertUtf8(event.response.body));
       dismissDialog(loadingDialogContext);
       notify("درخواست فایل با موفقیت ثبت شد");
 

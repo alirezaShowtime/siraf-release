@@ -24,7 +24,6 @@ consumRabbitMq() async {
   Queue queue = await channel.queue(queue_name);
   Consumer consumer = await queue.consume(consumerTag: "app_user_main_consum");
   consumer.listen((AmqpMessage message) {
-    print(message.payloadAsJson);
     if (message.payloadAsJson['type'] == "new_message") {
       hasNewMessage = true;
       hasNewMessageStream.add(hasNewMessage);

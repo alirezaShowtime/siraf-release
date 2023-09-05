@@ -1145,7 +1145,6 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
     if (mediaTitleDialogContext != null) Navigator.pop(mediaTitleDialogContext!);
     if (optionsDialog != null) Navigator.pop(optionsDialog!);
 
-    print(files);
   }
 
   void _chooseFromGallery() async {

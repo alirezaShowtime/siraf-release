@@ -134,7 +134,6 @@ class FileDetail {
   }
 
   String getPricePerMeter() {
-    print("METER : ${getMeter()}");
     if (getFirstPriceInt() == 0 || getMeter() == 0) {
       return "توافقی";
     }

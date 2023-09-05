@@ -139,18 +139,14 @@ bool isNumeric(String? s) {
 }
 
 Uri getFileUrl(String endpoint) {
-  print(endpoint);
-
   return Uri.parse("https://file.siraf.app/api/${endpoint}");
 }
 
 Uri getEstateUrl(String endpoint) {
-  print(endpoint);
   return Uri.parse("https://estate.siraf.app/api/${endpoint}");
 }
 
 Uri getTicketUrl(String endpoint) {
-  print(endpoint);
   return Uri.parse("https://ticket.siraf.app/api/${endpoint}");
 }
 

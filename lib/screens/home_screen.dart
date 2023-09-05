@@ -94,7 +94,6 @@ class _HomeScreenState extends State<HomeScreen> {
             contentLastId = event.contentLastId;
             currentBlocState = event;
             items = event.homeItems;
-            print("ITEMS LENGTH : ${items.length}");
           });
         }
       } catch (e) {}
@@ -118,12 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
       var newList = items.sublist(0, playingPostIndex + 1)
         ..forEach((element) {
-          print("TYPE : ${element.type.toString()}");
           space += element.type == Type.File ? 122 : 340;
         });
-
-      print("TYPE : ${newList.last.type.toString()} ---- NAME : ${newList.last.file != null ? newList.last.file?.name : newList.last.post?.title}");
-      print(space);
 
       if (space - 340 > scrollController.position.pixels + screen_height || space < scrollController.position.pixels) {
         playingVideoController!.pause();
@@ -317,13 +312,13 @@ class _HomeScreenState extends State<HomeScreen> {
     await Navigator.push(context, MaterialPageRoute(builder: (_) => MenuScreen()));
 
     setState(() {});
-    
+
     Future.delayed(Duration(milliseconds: 200), () {
       consumRabbitMq();
       listenRabbitData();
     });
   }
-  
+
   @override
   void dispose() {
     closeRabbit();
@@ -502,8 +497,6 @@ class _HomeScreenState extends State<HomeScreen> {
   onStartVideo(vController, HomeItem e) {
     var index = items.lastIndexWhere((element) => element.post?.id == e.post?.id);
 
-    print("PLAYING VIDEO INDEX : $index");
-
     setState(() {
       playingPostIndex = index;
       playingVideoController = vController;
@@ -544,10 +537,8 @@ class _HomeScreenState extends State<HomeScreen> {
       initialURILinkHandled = true;
       final uri = await getInitialUri();
       if (uri != null) {
-        debugPrint("Initial URI received 0 $uri");
-        if (!mounted) {
-          return;
-        }
+      
+        if (!mounted) return;
 
         RegExp reg = new RegExp(r'https://siraf.app/files/([0-9]+)');
 
@@ -620,11 +611,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void listenLink() {
     uriLinkStream.listen((Uri? uri) {
-      debugPrint('Received URI 1: $uri');
-      if (!mounted) {
-        return;
-      }
-      debugPrint('Received URI: $uri');
+      
+      if (!mounted)  return;
+      
+   
       RegExp reg = new RegExp(r'https://siraf.app/files/([0-9]+)');
 
       if (reg.hasMatch(uri.toString())) {

@@ -25,9 +25,7 @@ class ConsultantShareScreen extends StatefulWidget {
     required this.consultantName,
     this.consultantProfile,
     required this.estateName,
-  }) {
-    print("shareLink: ${shareLink}");
-  }
+  });
 }
 
 class _ConsultantShareScreen extends State<ConsultantShareScreen> {

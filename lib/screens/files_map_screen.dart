@@ -202,8 +202,6 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                     filterData = result;
                   });
 
-                  print(filterData.toQueryString());
-
                   getFiles();
                 }
               },

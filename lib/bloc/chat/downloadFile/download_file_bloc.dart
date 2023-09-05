@@ -41,7 +41,6 @@ class DownloadFileBloc extends RequestBloc<DownloadFileEvent, DownloadFileState>
       );
       return File(savedPath);
     } on FileSystemException catch (e) {
-      print(e);
 
       if (e.osError?.errorCode == 17) {
         return _downloadWithHandler(

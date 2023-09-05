@@ -52,9 +52,6 @@ class CheckVersionBloc extends Bloc<CheckVersionEvent, CheckVersionState> {
       var appV = int.parse(buildNumber);
       var lastV = int.parse(json['data']['version'].toString());
 
-      print("appV $appV");
-      print("lastV $lastV");
-
       emit(
         CheckVersionSuccessState(
           hasUpdate: lastV > appV,

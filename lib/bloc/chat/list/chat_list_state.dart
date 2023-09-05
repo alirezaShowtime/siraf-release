@@ -21,7 +21,6 @@ class ChatListSuccess extends ChatListState {
   List<ChatItem> chatList = [];
 
   ChatListSuccess(Response response) {
-    print(jDecode(response.body)["data"]);
 
     chatList = (jDecode(response.body)["data"] as List).map((e) => ChatItem.fromJson(e)).toList();
   }

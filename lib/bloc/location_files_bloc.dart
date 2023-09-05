@@ -75,10 +75,7 @@ class LocationFilesBloc extends Bloc<LocationFilesEvent, LocationFilesState> {
       }
       files = files.where((e) => (double.parse(e.lat!) <= 90 && double.parse(e.lat!) >= -90) && (double.parse(e.long!) <= 90 && double.parse(e.long!) >= -90)).toList();
       files = files.unique((e) => e.lat_long);
-      print(files.length);
-      files.forEach((element) {
-        print(element.toJson());
-      });
+   
       emit(
         LocationFilesLoadedState(files: files, search: event.search.isFill()),
       );

@@ -36,10 +36,7 @@ class FVCBloc extends Bloc<FVCEvent, FVCState> {
   _onEvent(FVCEvent event, emit) async {
     emit(FVCLoadingState());
 
-    var response =
-        await http2.getWithToken(getFileUrl("fileView/fileView/${event.id}"));
-
-    print(convertUtf8(response.body));
+    var response = await http2.getWithToken(getFileUrl("fileView/fileView/${event.id}"));
 
     if (isResponseOk(response)) {
       var body = jDecode(response.body);
