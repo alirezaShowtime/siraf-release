@@ -9,7 +9,7 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/user.dart';
 
-const LOG_RESPONSE = false;
+const LOG_RESPONSE = true;
 var defaultTimeout = Duration(seconds: 300);
 
 const applicationJsonUTF8 = {HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'};
