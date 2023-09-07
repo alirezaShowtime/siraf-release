@@ -988,28 +988,11 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
   }
 
   void move(EstateLoadedState state) {
-    if (state.search) {
-      if (estates.isNotEmpty) {
-        animatedMapMove(_controller, toLatLng(estates[0].lat!, estates[0].long!), _controller.zoom, this);
-      } else {
-        animatedMapMove(_controller, toLatLng(widget.city.lat, widget.city.long!), 11, this);
-      }
-    } else if (estates.isNotEmpty) {
-      var averageLat = average(
-        estates.map<num>(
-          (e) => num.parse(e.lat!),
-        ),
-      );
-      var averageLng = average(
-        estates.map<num>(
-          (e) => num.parse(e.long!),
-        ),
-      );
-
-      animatedMapMove(_controller, toLatLng(averageLat, averageLng), 12, this);
-    } else {
-      animatedMapMove(_controller, toLatLng(widget.city.lat, widget.city.long!), 11, this);
+    if (state.search && estates.isNotEmpty) {
+      animatedMapMove(_controller, toLatLng(estates[0].lat!, estates[0].long!), _controller.zoom, this);
     }
+
+    animatedMapMove(_controller, toLatLng(widget.city.lat, widget.city.long!), 11, this);
   }
 
   LatLng toLatLng(lat, long) {
