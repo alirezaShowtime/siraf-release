@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
@@ -26,8 +25,10 @@ class FileSlideItem extends StatefulWidget {
 class _FileSlideItemState extends State<FileSlideItem> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  
+
   late String description = "";
+
+  List<s.Slider> sliders = [];
 
   late String summary = "";
 
@@ -61,6 +62,15 @@ class _FileSlideItemState extends State<FileSlideItem> with AutomaticKeepAliveCl
         isFavorite = data;
       });
     });
+
+    setSliders();
+  }
+  
+  void setSliders() async {
+    var data = await widget.file.getSliders();
+    setState(() {
+      sliders = data;
+    });
   }
 
   @override
@@ -83,15 +93,7 @@ class _FileSlideItemState extends State<FileSlideItem> with AutomaticKeepAliveCl
                 ),
               if (widget.file.images != null && widget.file.images!.isNotEmpty)
                 CarouselSliderCustom(
-                  sliders: widget.file.images!
-                      .map<s.Slider>(
-                        (e) => s.Slider(
-                          image: NetworkImage(e.path ?? ""),
-                          type: s.SliderType.image,
-                          link: e.path ?? "",
-                        ),
-                      )
-                      .toList(),
+                  sliders: sliders,
                   height: 250,
                   autoPlay: false,
                   indicatorsCenterAlign: true,
@@ -104,7 +106,10 @@ class _FileSlideItemState extends State<FileSlideItem> with AutomaticKeepAliveCl
                   indicatorSelectedColor: Themes.blue,
                   indicatorColor: Colors.grey,
                   onImageTap: (slide) {
-                    push(context, FileScreen(id: widget.file.id!),);
+                    push(
+                      context,
+                      FileScreen(id: widget.file.id!),
+                    );
                   },
                 ),
               if (widget.file.getFirstPrice().isNotEmpty || widget.file.getSecondPrice().isNotEmpty)
@@ -173,27 +178,14 @@ class _FileSlideItemState extends State<FileSlideItem> with AutomaticKeepAliveCl
                 ),
             ],
           ),
-          SizedBox(height: 4),
-          SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
                 children: [
-                  IconButton(
-                    onPressed: () async {
-                      doWithLogin(context, () async {
-                        bookmark.addOrRemoveFavorite();
-                      });
-                    },
-                    icon: Icon(
-                      isFavorite ? CupertinoIcons.bookmark_fill : CupertinoIcons.bookmark,
-                      color: App.theme.iconTheme.color,
-                    ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width - 100,
+                  Padding(
+                    padding: EdgeInsets.only(right: 15),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -201,8 +193,8 @@ class _FileSlideItemState extends State<FileSlideItem> with AutomaticKeepAliveCl
                           (widget.file.fullCategory != null ? widget.file.fullCategory!.getMainCategoryName().toString().trim() + " | " : "") + widget.file.name!.trim(),
                           style: TextStyle(
                             color: App.theme.textTheme.bodyLarge?.color,
-                            fontFamily: "IranSans",
-                            fontSize: 13,
+                            fontFamily: "IranSansMedium",
+                            fontSize: 14,
                           ),
                           maxLines: 2,
                         ),
@@ -210,7 +202,7 @@ class _FileSlideItemState extends State<FileSlideItem> with AutomaticKeepAliveCl
                           widget.file.publishedAgo! + ' | ' + (widget.file.city?.name ?? ""),
                           style: TextStyle(
                             color: App.theme.tooltipTheme.textStyle?.color,
-                            fontFamily: "IranSans",
+                            fontFamily: "IranSansMedium",
                             fontSize: 11,
                           ),
                         ),
@@ -228,9 +220,8 @@ class _FileSlideItemState extends State<FileSlideItem> with AutomaticKeepAliveCl
                     chooserTitle: 'اشتراک گذاری در',
                   );
                 },
-                icon: Icon(
+                icon: icon(
                   Icons.share_rounded,
-                  color: App.theme.iconTheme.color,
                 ),
               ),
             ],
@@ -239,18 +230,19 @@ class _FileSlideItemState extends State<FileSlideItem> with AutomaticKeepAliveCl
             padding: const EdgeInsets.only(left: 15, right: 15, bottom: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: widget.file.propertys?.where((element) => element.weightList == 1 || element.weightList == 2 || element.weightList == 3 || element.weightList == 4).take(4).toList().map<Widget>((e) {
-                    return Text(
-                      "${e.name} ${nonIfZero(e.value)}",
-                      style: TextStyle(
-                        color: App.theme.textTheme.bodyLarge?.color,
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: 'IranSans',
-                      ),
-                    );
-                  }).toList() ??
-                  [],
+              children:
+                  widget.file.propertys?.where((element) => element.weightList == 1 || element.weightList == 2 || element.weightList == 3 || element.weightList == 4).take(4).toList().map<Widget>((e) {
+                        return Text(
+                          "${e.name} ${nonIfZero(e.value)}",
+                          style: TextStyle(
+                            color: App.theme.textTheme.bodyLarge?.color,
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'IranSans',
+                          ),
+                        );
+                      }).toList() ??
+                      [],
             ),
           ),
           Padding(

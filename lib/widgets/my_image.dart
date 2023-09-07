@@ -31,6 +31,7 @@ class MyImage extends StatefulWidget {
   final BorderRadius? borderRadius;
   final Color background;
   final BoxBorder? border;
+  final bool withSaveState;
 
   MyImage({
     super.key,
@@ -60,6 +61,7 @@ class MyImage extends StatefulWidget {
     this.borderRadius = BorderRadius.zero,
     this.border,
     this.background = Colors.transparent,
+    this.withSaveState = false,
   });
 
   static Widget defaultLoadingImageWidget([double? height, double? width, String? text]) {
@@ -103,7 +105,8 @@ class MyImage extends StatefulWidget {
   }
 }
 
-class _MyImage extends State<MyImage> {
+class _MyImage extends State<MyImage> with AutomaticKeepAliveClientMixin {
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -182,4 +185,7 @@ class _MyImage extends State<MyImage> {
     }
     return null;
   }
+  
+  @override
+  bool get wantKeepAlive => widget.withSaveState;
 }

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:siraf3/helpers.dart';
@@ -131,6 +132,11 @@ class _EstateShareScreen extends State<EstateShareScreen> {
   }
 
   void screenshot() async {
+    var status = await Permission.storage.status;
+    if (status != PermissionStatus.granted) {
+      await Permission.storage.request();
+    }
+    
     if (qrImage != null) {
       final f = DateFormat("yyyy_MM_dd");
       var name = 'siraf_share_qrcode_${f.format(DateTime.now())}.png';

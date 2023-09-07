@@ -31,6 +31,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_share/flutter_share.dart';
 
+import 'consultant_profile_without_comment/consultant_profile_screen.dart';
 import 'file_view_chart_screen.dart';
 
 class MyFileScreen extends StatefulWidget {
@@ -519,35 +520,15 @@ class _MyFileScreen extends State<MyFileScreen> {
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(fontSize: 11, fontFamily: "IranSansMedium"),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  state.file.ownerPhoneNumber.isFill() ? phoneFormat(state.file.ownerPhoneNumber!) : "بدون شماره",
-                                  textDirection: TextDirection.ltr,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: "IranSansBold",
-                                  ),
-                                ),
-                                SizedBox(width: 3),
-                                Opacity(
-                                  opacity: state.file.ownerPhoneNumber.isFill() ? 1 : 0.5,
-                                  child: InkWell(
-                                    onTap: !state.file.ownerPhoneNumber.isFill() ? null : () => callTo(state.file.ownerPhoneNumber!),
-                                    child: Text(
-                                      "تماس",
-                                      style: TextStyle(
-                                        fontFamily: "IranSansBold",
-                                        fontSize: 12,
-                                        color: Themes.primary,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
+                            Text(
+                              state.file.ownerPhoneNumber.isFill() ? phoneFormat(state.file.ownerPhoneNumber!) : "بدون شماره",
+                              textDirection: TextDirection.ltr,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontFamily: "IranSansBold",
+                              ),
                             ),
                           ],
                         ),
@@ -564,35 +545,15 @@ class _MyFileScreen extends State<MyFileScreen> {
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(fontSize: 11, fontFamily: "IranSansMedium"),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  state.file.visitPhoneNumber.isFill() ? phoneFormat(state.file.visitPhoneNumber!) : "بدون شماره",
-                                  textDirection: TextDirection.ltr,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: "IranSansBold",
-                                  ),
-                                ),
-                                SizedBox(width: 3),
-                                Opacity(
-                                  opacity: state.file.visitPhoneNumber.isFill() ? 1 : 0.5,
-                                  child: InkWell(
-                                    onTap: !state.file.visitPhoneNumber.isFill() ? null : () => callTo(state.file.visitPhoneNumber!),
-                                    child: Text(
-                                      "تماس",
-                                      style: TextStyle(
-                                        fontFamily: "IranSansBold",
-                                        fontSize: 12,
-                                        color: Themes.primary,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
+                            Text(
+                              state.file.visitPhoneNumber.isFill() ? phoneFormat(state.file.visitPhoneNumber!) : "بدون شماره",
+                              textDirection: TextDirection.ltr,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontFamily: "IranSansBold",
+                              ),
                             ),
                           ],
                         ),
@@ -714,6 +675,7 @@ class _MyFileScreen extends State<MyFileScreen> {
               child: Container(
                 decoration: BoxDecoration(color: Colors.black.withOpacity(0.6), borderRadius: BorderRadius.circular(7)),
                 padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                width: MediaQuery.of(context).size.width - 100,
                 child: Text(
                   imageName,
                   style: TextStyle(
@@ -787,31 +749,42 @@ class _MyFileScreen extends State<MyFileScreen> {
   }
 
   Widget itemConsultant(FileConsultant consultant) {
-    return Container(
-      child: Row(
-        children: [
-          Avatar(
-            size: 45,
-            imagePath: consultant.consultantId?.avatar ?? "",
-            loadingImage: AssetImage("assets/images/profile.jpg"),
-            errorImage: AssetImage("assets/images/profile.jpg"),
+    return InkWell(
+      onTap: () {
+        push(
+          context,
+          ConsultantProfileScreen(
+            consultantId: consultant.consultantId!.id!,
+            consultantName: consultant.consultantId?.name,
           ),
-          SizedBox(width: 4),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                consultant.consultantId?.name ?? "بدون نام",
-                style: TextStyle(
-                  fontSize: 12,
-                  fontFamily: "IranSansMedium",
+        );
+      },
+      child: Container(
+        child: Row(
+          children: [
+            Avatar(
+              size: 45,
+              imagePath: consultant.consultantId?.avatar ?? "",
+              loadingImage: AssetImage("assets/images/profile.jpg"),
+              errorImage: AssetImage("assets/images/profile.jpg"),
+            ),
+            SizedBox(width: 4),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  consultant.consultantId?.name ?? "بدون نام",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontFamily: "IranSansMedium",
+                  ),
                 ),
-              ),
-              StaticStar(rating: consultant.consultantId?.rate ?? 0),
-            ],
-          ),
-        ],
+                StaticStar(rating: consultant.consultantId?.rate ?? 0),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -853,11 +826,12 @@ class _MyFileScreen extends State<MyFileScreen> {
             label: "ویرایش",
             icon: Icons.edit_outlined,
           ),
-          if (widget.progress == 7) MyPopupMenuItem(
-            value: 1,
-            label: "آمار بازدید",
-            icon: Icons.visibility_outlined,
-          ),
+          if (widget.progress == 7)
+            MyPopupMenuItem(
+              value: 1,
+              label: "آمار بازدید",
+              icon: Icons.visibility_outlined,
+            ),
           MyPopupMenuItem(
             value: 2,
             label: "حذف",

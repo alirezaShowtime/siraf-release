@@ -424,13 +424,13 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
           _firstTime = false;
         });
         _onMyLocationClicked();
+      } else {
+        move(state);
       }
 
       if (estates.isEmpty) {
         notify("موردی یافت نشد");
       }
-
-      move(state);
     }
   }
 
@@ -860,47 +860,25 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
   }
 
   void move(EstateLoadedState state) {
-    if (state.search) {
-      if (estates.isNotEmpty) {
-        animatedMapMove(_controller, toLatLng(estates[0].lat!, estates[0].long!), _controller.zoom, this);
-      } else if (cities.isNotEmpty) {
-        var averageLat = average(
-          cities.map<num>(
-            (e) => num.parse(e.lat!),
-          ),
-        );
-        var averageLng = average(
-          cities.map<num>(
-            (e) => num.parse(e.long!),
-          ),
-        );
-        animatedMapMove(_controller, toLatLng(averageLat, averageLng), 11, this);
-      }
-    } else if (estates.isNotEmpty) {
-      var averageLat = average(
-        estates.map<num>(
-          (e) => num.parse(e.lat!),
-        ),
-      );
-      var averageLng = average(
-        estates.map<num>(
-          (e) => num.parse(e.long!),
-        ),
-      );
+    if (state.search && estates.isNotEmpty) {
+      animatedMapMove(_controller, toLatLng(estates[0].lat!, estates[0].long!), _controller.zoom, this);
+      return;
+    }
 
-      animatedMapMove(_controller, toLatLng(averageLat, averageLng), 12, this);
-    } else if (cities.isNotEmpty) {
-      var averageLat = average(
-        cities.map<num>(
-          (e) => num.parse(e.lat!),
-        ),
-      );
-      var averageLng = average(
-        cities.map<num>(
-          (e) => num.parse(e.long!),
-        ),
-      );
-      animatedMapMove(_controller, toLatLng(averageLat, averageLng), 11, this);
+    if (estates.isNotEmpty) {
+      List<MapEntry<City, int>> data = [];
+
+      cities.forEach((element) {
+        data.add(MapEntry(element, estates.where((e) => e.cityId == element.id).length));
+      });
+
+      data.sort((a, b) => a.value.compareTo(b.value));
+
+      var city = data.last.key;
+
+      animatedMapMove(_controller, toLatLng(city.lat, city.long), 13.5, this);
+
+      return;
     }
   }
 

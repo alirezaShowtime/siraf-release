@@ -24,26 +24,27 @@ extension ProfileDetail on _EstateProfileScreen {
                     ),
                   ),
                 ),
-              Padding(
-                padding: const EdgeInsets.only(top: 12, bottom: 14),
-                child: Text(
-                  "آدرس : ${estateProfile.address ?? "??"}",
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontFamily: "IranSansMedium",
-                  ),
-                ),
-              ),
-              Row(
-                children: [
-                  Text(
-                    "تلفن ثابت : ${estateProfile.telephoneNumber ?? "??"}",
+              if (estateProfile.address.isFill())
+                Padding(
+                  padding: const EdgeInsets.only(top: 12, bottom: 14),
+                  child: Text(
+                    "آدرس : ${estateProfile.address ?? "??"}",
                     style: TextStyle(
                       fontSize: 11,
                       fontFamily: "IranSansMedium",
                     ),
                   ),
-                  if (estateProfile.telephoneNumber != null)
+                ),
+              if (estateProfile.telephoneNumber.isFill())
+                Row(
+                  children: [
+                    Text(
+                      "تلفن ثابت : ${estateProfile.telephoneNumber ?? "??"}",
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontFamily: "IranSansMedium",
+                      ),
+                    ),
                     InkWell(
                       onTap: () => callTo(estateProfile.telephoneNumber!),
                       borderRadius: BorderRadius.circular(5),
@@ -60,36 +61,17 @@ extension ProfileDetail on _EstateProfileScreen {
                         ),
                       ),
                     ),
-                ],
-              ),
-              Row(
-                children: [
-                  Text(
+                  ],
+                ),
+              if (estateProfile.phoneNumber.isFill())
+                InkWell(
+                  onTap: () => callTo(estateProfile.phoneNumber!),
+                  borderRadius: BorderRadius.circular(5),
+                  child: Text(
                     "شماره مدیر : ${estateProfile.phoneNumber ?? "??"}",
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontFamily: "IranSansMedium",
-                    ),
+                    style: TextStyle(fontSize: 11, fontFamily: "IranSansMedium", color: Themes.primary),
                   ),
-                  if (estateProfile.phoneNumber != null)
-                    InkWell(
-                      onTap: () => callTo(estateProfile.phoneNumber!),
-                      borderRadius: BorderRadius.circular(5),
-                      child: Container(
-                        padding: const EdgeInsets.all(2),
-                        margin: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Text(
-                          "تماس",
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Themes.primary,
-                            fontFamily: "IranSansBold",
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+                ),
               if (estateProfile.lat != null && estateProfile.long != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 10, bottom: 30),

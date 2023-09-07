@@ -85,41 +85,40 @@ class _CompareScreen extends State<CompareScreen> {
 
     if (state is CompareLoadedState) {
       var propertiesName = getPropertiesName(state.files);
-      return ListView(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: Stack(
-              children: [
-                ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: state.files.length + 1,
-                  itemBuilder: (BuildContext context, int i) {
-                    if (i == 0) return SizedBox(width: 40);
-                    return _CompareItem(
-                      file: state.files[i - 1],
-                      onClickCloseButton: () {
-                        if (state.files.length <= 2) {
-                          notify("برای مقاسیه حداقل 2 فایل لازم است.");
-                          return;
-                        }
-                        widget.files.remove(widget.files[i - 1]);
-                        setState(() {});
-                      },
-                      propertiesName: propertiesName,
-                    );
-                  },
-                ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: _CompareItem(propertiesName: propertiesName),
-                ),
-              ],
-            ),
+
+      return ListView(children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
+            children: [
+              ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: state.files.length + 1,
+                itemBuilder: (BuildContext context, int i) {
+                  if (i == 0) return SizedBox(width: 40);
+                  return _CompareItem(
+                    file: state.files[i - 1],
+                    onClickCloseButton: () {
+                      if (state.files.length <= 2) {
+                        notify("برای مقاسیه حداقل 2 فایل لازم است.");
+                        return;
+                      }
+                      widget.files.remove(widget.files[i - 1]);
+                      setState(() {});
+                    },
+                    propertiesName: propertiesName,
+                  );
+                },
+              ),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: _CompareItem(propertiesName: propertiesName),
+              ),
+            ],
           ),
-        ],
-      );
+        ),
+      ]);
     }
 
     return Container();
@@ -294,12 +293,13 @@ class _CompareItemState extends State<_CompareItem> {
 
     _propertyColumns = Container(
       width: 70,
-      margin: EdgeInsets.only(top: 198.3),
+      margin: EdgeInsets.only(top: 198.3, right: 5),
       padding: EdgeInsets.only(top: 17),
       decoration: BoxDecoration(
         color: App.theme.backgroundColor,
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: widget.propertiesName!.map((propertyName) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 7.5, horizontal: 6),

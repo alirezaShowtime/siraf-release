@@ -206,7 +206,9 @@ class _FileScreen extends State<FileScreen> {
                         icon: icon(Icons.share_rounded),
                       ),
                       IconButton(
-                        onPressed: () => bookmark.addOrRemoveFavorite(),
+                        onPressed: () => doWithLogin(context, () {
+                          bookmark.addOrRemoveFavorite();
+                        }),
                         icon: icon(isBookmark ? CupertinoIcons.bookmark_fill : CupertinoIcons.bookmark),
                       ),
                     ],
@@ -495,6 +497,7 @@ class _FileScreen extends State<FileScreen> {
               child: Container(
                 decoration: BoxDecoration(color: Colors.black.withOpacity(0.6), borderRadius: BorderRadius.circular(7)),
                 padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                width: MediaQuery.of(context).size.width - 100,
                 child: Text(
                   imageName,
                   style: TextStyle(

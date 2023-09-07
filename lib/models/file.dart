@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/widgets/slider.dart' as s;
 
 class File {
   int? id;
@@ -39,7 +41,7 @@ class File {
     if (json["images"] is List) {
       images = json["images"] == null ? null : (json["images"] as List).map((e) => Images.fromJson(e)).toList();
     }
-    
+
     if (json["media"] is Map) {
       Media? media = json["media"] == null ? null : Media.fromJson(json["media"]);
       if (media != null && media.image.isFill()) {
@@ -122,15 +124,17 @@ class File {
 
   String getPricePerMeter() {
     if ((getFirstPriceInt() == -1 || getFirstPriceInt() == 0) || getMeter() == 0) {
-      return "توافقی";
+      return "";
     }
     var result = getFirstPriceInt() ~/ getMeter();
 
     if (result == 0) {
-      return "توافقی";
+      return "";
     }
 
-    result = (result / 100000).round() * 100000;
+    var rounded_result = (result / 100000).round() * 100000;
+
+    if (rounded_result != 0) result = rounded_result;
 
     return "قیمت هر متر " + number_format(result);
   }
@@ -194,14 +198,16 @@ class File {
 
       return toPrice(prop.value!, prop.name!);
     } else {
-      return adaptivePrice("");
+      var name = "";
+      if (isRent()) name = "ودیعه";
+      if (fullCategory?.name?.contains("روزانه") ?? false) name = "اجاره روزانه";
+      
+      return adaptivePrice("", name: name);
     }
   }
 
   String getSecondPrice() {
     if (!isRent()) return getPricePerMeter();
-
-    if (fullAdaptive()) return "";
 
     if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 6);
@@ -210,7 +216,9 @@ class File {
 
       return toPrice(prop.value!, prop.name!);
     } else {
-      return adaptivePrice("");
+      if (fullCategory?.name?.contains("روزانه") ?? false) return "";
+      
+      return adaptivePrice("", name: "اجاره");
     }
   }
 
@@ -218,7 +226,7 @@ class File {
     if (value.toString() == "0") {
       return "رایگان";
     }
-    return (name != null && !fullAdaptive() ? "$name " : "") + "توافقی";
+    return (name != null ? "$name " : "") + "توافقی";
   }
 
   String toPrice(dynamic value, String name) {
@@ -229,6 +237,49 @@ class File {
     var v = int.parse(value.toString());
 
     return "$name ${number_format(v)}";
+  }
+
+  Future<List<s.Slider>> getSliders() async {
+    var slide_images = images
+            ?.map<s.Slider>(
+              (e) => s.Slider(
+                image: NetworkImage(e.path ?? ""),
+                link: e.path ?? "",
+                type: s.SliderType.image,
+                name: e.name,
+              ),
+            )
+            .toList() ??
+        [];
+
+    // var videos = <s.Slider>[];
+
+    // for (Video video in media!.video!) {
+    //   final fileName = await VideoThumbnail.thumbnailFile(
+    //     video: video.path!,
+    //     thumbnailPath: (await getTemporaryDirectory()).path,
+    //     imageFormat: ImageFormat.PNG,
+    //     quality: 100,
+    //   );
+    //   videos.add(s.Slider(
+    //     image: FileImage(io.File(fileName!)),
+    //     type: s.SliderType.video,
+    //     link: video.path!,
+    //     name: video.name,
+    //   ));
+    // }
+
+    // var virtualTours = <s.Slider>[];
+
+    // if (media?.virtualTour != null) {
+    //   virtualTours.add(s.Slider(
+    //     image: AssetImage("assets/images/blue.png"),
+    //     type: s.SliderType.virtual_tour,
+    //     link: media?.virtualTour,
+    //   ));
+    // }
+
+    return slide_images; // + videos + virtualTours
   }
 
   bool fullAdaptive() {

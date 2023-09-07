@@ -13,6 +13,7 @@ import 'package:location/location.dart';
 import 'package:siraf3/bloc/location_files_bloc.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/dialog.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/map_utilities.dart';
@@ -147,10 +148,28 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
             onSubmitted: (value) {
               getFiles();
             },
+            onChanged: (v) {
+              setState(() {});
+            },
           ),
           automaticallyImplyLeading: false,
           titleSpacing: 0,
           actions: [
+            if (_searchController.text.isFill())
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _searchController.clear();
+                  });
+                  getFiles();
+                },
+                child: Icon(
+                  CupertinoIcons.clear,
+                ),
+              ),
+            SizedBox(
+              width: 5,
+            ),
             GestureDetector(
               onTap: () async {
                 await goSelectCity();
@@ -169,20 +188,6 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            GestureDetector(
-              onTap: () {
-                getFiles();
-              },
-              child: Icon(
-                CupertinoIcons.search,
-              ),
-            ),
-            SizedBox(
-              width: 10,
             ),
             IconButton(
               onPressed: () async {
@@ -509,13 +514,13 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
           _firstTime = false;
         });
         _onMyLocationClicked();
+      } else {
+        move(state);
       }
 
       if (files.isEmpty) {
         notify("فایلی یافت نشد");
       }
-
-      move(state);
     }
   }
 
@@ -746,47 +751,25 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
   }
 
   void move(LocationFilesLoadedState state) {
-    if (state.search) {
-      if (files.isNotEmpty) {
-        animatedMapMove(_controller, toLatLng(files[0].lat!, files[0].long!), _controller.zoom, this);
-      } else if (cities.isNotEmpty) {
-        var averageLat = average(
-          cities.map<num>(
-            (e) => num.parse(e.lat!),
-          ),
-        );
-        var averageLng = average(
-          cities.map<num>(
-            (e) => num.parse(e.long!),
-          ),
-        );
-        animatedMapMove(_controller, toLatLng(averageLat, averageLng), 11, this);
-      }
-    } else if (files.isNotEmpty) {
-      var averageLat = average(
-        files.map<num>(
-          (e) => num.parse(e.lat!),
-        ),
-      );
-      var averageLng = average(
-        files.map<num>(
-          (e) => num.parse(e.long!),
-        ),
-      );
+    if (state.search && files.isNotEmpty) {
+      animatedMapMove(_controller, toLatLng(files[0].lat!, files[0].long!), _controller.zoom, this);
+      return;
+    }
 
-      animatedMapMove(_controller, toLatLng(averageLat, averageLng), 12, this);
-    } else if (cities.isNotEmpty) {
-      var averageLat = average(
-        cities.map<num>(
-          (e) => num.parse(e.lat!),
-        ),
-      );
-      var averageLng = average(
-        cities.map<num>(
-          (e) => num.parse(e.long!),
-        ),
-      );
-      animatedMapMove(_controller, toLatLng(averageLat, averageLng), 11, this);
+    if (files.isNotEmpty) {
+      List<MapEntry<City, int>> data = [];
+
+      cities.forEach((element) {
+        data.add(MapEntry(element, files.where((e) => e.city?.id == element.id).length));
+      });
+
+      data.sort((a, b) => a.value.compareTo(b.value));
+
+      var city = data.last.key;
+
+      animatedMapMove(_controller, toLatLng(city.lat, city.long), 13.5, this);
+
+      return;
     }
   }
 

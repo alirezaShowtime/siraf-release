@@ -20,9 +20,9 @@ class Bookmark {
 
   Bookmark({required this.id, required this.isFavorite, required this.context});
 
-  addOrRemoveFavorite() async {
+  addOrRemoveFavorite({bool withNote = false, int? noteId}) async {
     if (isFavorite) {
-      removeFavorite();
+      removeFavorite(withNote: withNote, noteId: noteId);
     } else {
       showNoteDialog();
     }
@@ -208,7 +208,6 @@ class Bookmark {
     }
 
     Navigator.of(context, rootNavigator: true).pop();
-    // dismissLoadingDialog();
 
     if (result) {
       isFavorite = !isFavorite;
@@ -216,18 +215,45 @@ class Bookmark {
     favoriteStream.add(isFavorite);
   }
 
-  void removeFavorite() async {
+  void removeFavorite({bool withNote = false, int? noteId}) async {
     showLoadingDialog();
 
     var result = false;
 
-    try {
-      var response = await dio.Dio().delete(
-        getFileUrl('file/deleteFileFavorite/?fileIds=[${id}]').toString(),
+    var response = await dio.Dio().delete(
+      getFileUrl('file/deleteFileFavorite/?fileIds=[${id}]').toString(),
+      options: dio.Options(
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": await User.getBearerToken(),
+        },
+        validateStatus: (status) {
+          return true;
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      result = true;
+    } else {
+      if (!withNote) {
+        var json = response.data;
+
+        notify(json['message'] ?? "سرور با خطا مواجه شد لطفا بعدا تلاش کنید");
+      }
+      result = false;
+    }
+
+    if (withNote && noteId != null) {
+      response = await dio.Dio().post(
+        getFileUrl('note/removeNoteFile/${noteId}/').toString(),
         options: dio.Options(
           headers: {
             "Content-Type": "application/json",
             "Authorization": await User.getBearerToken(),
+          },
+          validateStatus: (status) {
+            return true;
           },
         ),
       );
@@ -236,16 +262,13 @@ class Bookmark {
         result = true;
       } else {
         var json = response.data;
-        notify(json['message'] ?? "خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
+
+        notify(json['message'] ?? "سرور با خطا مواجه شد لطفا بعدا تلاش کنید 1");
         result = false;
       }
-    } catch (_) {
-      notify("خطا در ارسال اطلاعات رخ داد لطفا مجدد تلاش کنید");
     }
 
     Navigator.of(context, rootNavigator: true).pop();
-
-    dismissLoadingDialog();
 
     if (result) {
       isFavorite = !isFavorite;
@@ -278,7 +301,6 @@ class Bookmark {
         },
       ),
     );
-
 
     if (response.statusCode == 200) {
       result = true;

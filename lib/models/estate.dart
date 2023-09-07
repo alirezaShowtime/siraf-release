@@ -9,6 +9,7 @@ class Estate {
   String? address;
   String? managerName;
   String? telephoneNumber;
+  int? cityId;
 
   Estate({
     this.id,
@@ -21,6 +22,7 @@ class Estate {
     this.address,
     this.managerName,
     this.telephoneNumber,
+    this.cityId,
   });
 
   Estate.fromJson(Map<String, dynamic> json) {
@@ -53,6 +55,9 @@ class Estate {
     }
     if (json["telephoneNumber"] is String) {
       telephoneNumber = json["telephoneNumber"];
+    }
+    if (json['cityId'] is int) {
+      cityId = json['cityId'];
     }
   }
 
