@@ -142,7 +142,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Themes.icon,
+                  color: App.theme.dividerColor,
                   width: 0.5,
                 ),
                 borderRadius: BorderRadius.circular(5),
@@ -190,7 +190,14 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
               hintText: "چه موضوعی را میخواهید مطرح کنید",
               border: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Themes.icon,
+                  color: App.theme.dividerColor,
+                  width: 0.5,
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: App.theme.dividerColor,
                   width: 0.5,
                 ),
                 borderRadius: BorderRadius.circular(5),
@@ -223,10 +230,13 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
                 ),
                 borderRadius: BorderRadius.circular(5),
               ),
-              hintStyle: TextStyle(fontSize: 13),
+              hintStyle: TextStyle(
+                fontSize: 13,
+                color: App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey,
+              ),
               contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             ),
-            style: TextStyle(fontSize: 13, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
+            style: TextStyle(fontSize: 13, color: (App.theme.textTheme.bodyLarge?.color ?? Themes.text)),
             cursorColor: App.theme.primaryColor,
             maxLines: 1,
             minLines: 1,
@@ -247,7 +257,14 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
               hintText: "پیام خود را بنویسید",
               border: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Themes.icon,
+                  color: App.theme.dividerColor,
+                  width: 0.5,
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: App.theme.dividerColor,
                   width: 0.5,
                 ),
                 borderRadius: BorderRadius.circular(5),
@@ -280,7 +297,10 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
                 ),
                 borderRadius: BorderRadius.circular(5),
               ),
-              hintStyle: TextStyle(fontSize: 13),
+              hintStyle: TextStyle(
+                fontSize: 13,
+                color: App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey,
+              ),
               contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             ),
             style: TextStyle(fontSize: 13, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),

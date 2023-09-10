@@ -9,6 +9,7 @@ import 'package:siraf3/bloc/ticket/close/close_ticket_bloc.dart';
 import 'package:siraf3/bloc/ticket/messages/ticket_messages_bloc.dart';
 import 'package:siraf3/bloc/ticket/sendMessage/send_message_bloc.dart';
 import 'package:siraf3/controller/message_upload_controller.dart';
+import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/helpers.dart';
@@ -148,7 +149,6 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
         providers: [BlocProvider<SendMessageBloc>(create: (_) => sendMessageBloc)],
         child: Scaffold(
           resizeToAvoidBottomInset: true,
-          backgroundColor: Color(0xfffbfbfb),
           appBar: AppBarChat(
             onclickCloseChat: onclickCloseChat,
             ticket: widget.ticket,
@@ -162,13 +162,13 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: App.theme.dialogBackgroundColor,
                   boxShadow: [
                     BoxShadow(
                       offset: Offset(0, 5),
                       spreadRadius: -6,
                       blurRadius: 3,
-                      color: Color.fromRGBO(201, 201, 201, 1.0),
+                      color: App.theme.shadowColor,
                     ),
                   ],
                 ),
@@ -179,7 +179,7 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
                     Text(
                       "موضوع",
                       style: TextStyle(
-                        color: Colors.grey,
+                        color: App.theme.tooltipTheme.textStyle?.color,
                         fontSize: 9,
                         fontFamily: "IranSansBold",
                       ),
@@ -192,9 +192,8 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
                           Text(
                             widget.ticket.title ?? "بدون موضوع",
                             style: TextStyle(
-                              // fontFamily: "IranSansBold",
+                              fontFamily: "IranSansMedium",
                               fontSize: 12,
-                              color: Colors.black,
                               height: 1.2,
                             ),
                           ),
@@ -222,8 +221,8 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
                   height: 60,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    border: Border(top: BorderSide(color: Colors.grey.shade300)),
+                    color: App.isDark ? DarkThemes.background2 : Colors.grey.shade100,
+                    border: Border(top: BorderSide(color: App.theme.shadowColor)),
                   ),
                   child: Text(
                     "تیکت بسته شده است",

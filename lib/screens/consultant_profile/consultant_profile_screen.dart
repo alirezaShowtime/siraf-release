@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -133,34 +134,37 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> {
         BlocProvider(create: (_) => filesBloc),
         BlocProvider(create: (_) => sendCommentRateBloc),
       ],
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        appBar: appBar(),
-        body: BlocConsumer<ConsultantProfileBloc, ConsultantProfileState>(
-          bloc: bloc,
-          listener: (context, state) {
-            if (state is ConsultantProfileSuccessState) {
-              setState(() {
-                consultantInfo = state.consultantInfo;
-                title = state.consultantInfo.name!;
-                comments = state.consultantInfo.comments ?? [];
-              });
-            }
-          },
-          builder: (context, state) {
-            scaffoldContext = context;
-
-            if (state is ConsultantProfileInitState) return Center(child: Loading());
-
-            if (state is ConsultantProfileErrorState) return retryWidget(context, state.message);
-
-            if (state is ConsultantProfileSuccessState) {
-              setFilterData(state.consultantInfo);
-
-              return profile(state.consultantInfo);
-            }
-            return Container();
-          },
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: App.getSystemUiOverlay(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          appBar: appBar(),
+          body: BlocConsumer<ConsultantProfileBloc, ConsultantProfileState>(
+            bloc: bloc,
+            listener: (context, state) {
+              if (state is ConsultantProfileSuccessState) {
+                setState(() {
+                  consultantInfo = state.consultantInfo;
+                  title = state.consultantInfo.name!;
+                  comments = state.consultantInfo.comments ?? [];
+                });
+              }
+            },
+            builder: (context, state) {
+              scaffoldContext = context;
+      
+              if (state is ConsultantProfileInitState) return Center(child: Loading());
+      
+              if (state is ConsultantProfileErrorState) return retryWidget(context, state.message);
+      
+              if (state is ConsultantProfileSuccessState) {
+                setFilterData(state.consultantInfo);
+      
+                return profile(state.consultantInfo);
+              }
+              return Container();
+            },
+          ),
         ),
       ),
     );
@@ -168,7 +172,7 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> {
 
   Widget _profileWidget() {
     return Container(
-      color: Color(0xfffafbfd),
+      color: App.theme.backgroundColor.withOpacity(0.7),
       width: 80,
       height: 80,
       alignment: Alignment.center,

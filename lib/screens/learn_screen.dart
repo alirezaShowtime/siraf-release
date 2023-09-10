@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:siraf3/bloc/posts_bloc.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/post.dart';
@@ -100,72 +101,73 @@ class _LearnScreenState extends State<LearnScreen> with AutomaticKeepAliveClient
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => postsBloc,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: MyAppBar(
-          backgroundColor: Themes.appBar,
-          elevation: 0.7,
-          title: TextField2(
-            decoration: InputDecoration(
-              hintText: "جستجو در آموزش های سیراف",
-              hintStyle: TextStyle(color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey, fontSize: 13),
-              border: InputBorder.none,
-            ),
-            controller: _searchController,
-            style: TextStyle(color: App.theme.textTheme.bodyLarge?.color ?? Themes.text, fontSize: 13),
-            textInputAction: TextInputAction.search,
-            onSubmitted: (value) {
-              getPosts();
-            },
-          ),
-          automaticallyImplyLeading: false,
-          titleSpacing: 0,
-          leading: MyBackButton(),
-          actions: [
-            MyPopupMenuButton(
-              iconData: Icons.sort_rounded,
-              itemBuilder: (context) {
-                return [
-                  MyPopupMenuItem<String>(
-                    value: "newest",
-                    label: "جدید ترین",
-                    withSpace: true,
-                    icon: sort == "newest" ? Icons.check_rounded : null,
-                  ),
-                  MyPopupMenuItem<String>(
-                    value: "old",
-                    label: "قدیمی ترین",
-                    withSpace: true,
-                    icon: sort == "old" ? Icons.check_rounded : null,
-                  ),
-                  MyPopupMenuItem<String>(
-                    value: "bookMark",
-                    label: "نشان شده ها",
-                    withSpace: true,
-                    icon: sort == "bookMark" ? Icons.check_rounded : null,
-                  ),
-                ];
-              },
-              onSelected: (value) {
-                setState(() {
-                  sort = value;
-                });
-
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: App.getSystemUiOverlay(),
+      child: BlocProvider(
+        create: (_) => postsBloc,
+        child: Scaffold(
+          appBar: MyAppBar(
+            elevation: 0.7,
+            title: TextField2(
+              decoration: InputDecoration(
+                hintText: "جستجو در آموزش های سیراف",
+                hintStyle: TextStyle(color: App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey, fontSize: 13),
+                border: InputBorder.none,
+              ),
+              controller: _searchController,
+              style: TextStyle(color: App.theme.tooltipTheme.textStyle?.color ?? Themes.text, fontSize: 13),
+              textInputAction: TextInputAction.search,
+              onSubmitted: (value) {
                 getPosts();
               },
             ),
-            MyPopupMenuButton(
-              itemBuilder: (context) {
-                return [MyPopupMenuItem<String>(value: "report", label: "گزارش تخلف")];
-              },
-              onSelected: (value) => callToSupport(),
-              iconData: Icons.more_vert_rounded,
-            ),
-          ],
+            automaticallyImplyLeading: false,
+            titleSpacing: 0,
+            leading: MyBackButton(),
+            actions: [
+              MyPopupMenuButton(
+                iconData: Icons.sort_rounded,
+                itemBuilder: (context) {
+                  return [
+                    MyPopupMenuItem<String>(
+                      value: "newest",
+                      label: "جدید ترین",
+                      withSpace: true,
+                      icon: sort == "newest" ? Icons.check_rounded : null,
+                    ),
+                    MyPopupMenuItem<String>(
+                      value: "old",
+                      label: "قدیمی ترین",
+                      withSpace: true,
+                      icon: sort == "old" ? Icons.check_rounded : null,
+                    ),
+                    MyPopupMenuItem<String>(
+                      value: "bookMark",
+                      label: "نشان شده ها",
+                      withSpace: true,
+                      icon: sort == "bookMark" ? Icons.check_rounded : null,
+                    ),
+                  ];
+                },
+                onSelected: (value) {
+                  setState(() {
+                    sort = value;
+                  });
+    
+                  getPosts();
+                },
+              ),
+              MyPopupMenuButton(
+                itemBuilder: (context) {
+                  return [MyPopupMenuItem<String>(value: "report", label: "گزارش تخلف")];
+                },
+                onSelected: (value) => callToSupport(),
+                iconData: Icons.more_vert_rounded,
+              ),
+            ],
+          ),
+          body: BlocBuilder<PostsBloc, PostsState>(builder: _buildBloc),
         ),
-        body: BlocBuilder<PostsBloc, PostsState>(builder: _buildBloc),
       ),
     );
   }

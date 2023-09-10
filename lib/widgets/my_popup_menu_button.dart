@@ -29,7 +29,6 @@ class _MyPopupMenuButton extends State<MyPopupMenuButton> {
   Widget build(BuildContext context) {
     return PopupMenuButton(
       initialValue: widget.initialValue,
-      tooltip: widget.tooltip,
       child: widget.child,
       color: App.theme.dialogBackgroundColor,
       icon: widget.iconData != null ? Icon(widget.iconData, color: App.theme.iconTheme.color) : null,
@@ -41,6 +40,7 @@ class _MyPopupMenuButton extends State<MyPopupMenuButton> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
+      
       itemBuilder: widget.itemBuilder,
       onSelected: widget.onSelected,
     );

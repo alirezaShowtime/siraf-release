@@ -10,8 +10,8 @@ extension Profile on _ConsultantProfileScreen {
             constraints: BoxConstraints(minHeight: 180),
             padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 5),
             decoration: BoxDecoration(
-              color: Colors.white,
-              border: !(moreDetail || showComment) ? null : Border(bottom: BorderSide(width: 1, color: Colors.grey.shade200)),
+              color: App.theme.dialogBackgroundColor,
+              border: !(moreDetail || showComment) ? null : Border(bottom: BorderSide(width: 1, color: App.isDark ? Color.fromARGB(255, 43, 43, 43) : Colors.grey.shade200)),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -189,10 +189,13 @@ extension Profile on _ConsultantProfileScreen {
       listView: ListView.builder(
         itemCount: files.length + 1,
         itemBuilder: (context, i) {
-          if (i == 0) return SizedBox(height: 10);
-          return GestureDetector(
-            onTap: () => push(context, FileScreen(id: files[i - 1].id!)),
-            child: FileHorizontalItem(file: files[i - 1]),
+          if (i == 0) return SizedBox(height: 5);
+          return Padding(
+            padding: EdgeInsets.only(bottom: 4),
+            child: GestureDetector(
+              onTap: () => push(context, FileScreen(id: files[i - 1].id!)),
+              child: FileHorizontalItem(file: files[i - 1]),
+            ),
           );
         },
       ),

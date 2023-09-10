@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file.dart';
@@ -21,11 +22,11 @@ class _FileHorizontalItemState2 extends State<FileHorizontalItem> {
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: App.theme.dialogBackgroundColor,
         borderRadius: BorderRadius.circular(13),
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
+            color: App.theme.shadowColor,
             blurRadius: 2,
             spreadRadius: -1,
             offset: Offset(0, 0),
@@ -45,6 +46,7 @@ class _FileHorizontalItemState2 extends State<FileHorizontalItem> {
             fit: BoxFit.cover,
             loadingWidget: loadingImage(),
             errorWidget: loadingImage(),
+            withSaveState: true,
           ),
           SizedBox(width: 10),
           Expanded(
@@ -82,7 +84,7 @@ class _FileHorizontalItemState2 extends State<FileHorizontalItem> {
                           Text(
                             (widget.file.publishedAgo ?? "") + ' | ' + (widget.file.city?.name ?? ""),
                             style: TextStyle(
-                              color: Colors.grey.shade600,
+                              color: App.theme.tooltipTheme.textStyle?.color,
                               fontSize: 9,
                               fontWeight: FontWeight.w400,
                               fontFamily: 'IranSans',
@@ -111,7 +113,7 @@ class _FileHorizontalItemState2 extends State<FileHorizontalItem> {
                       Text(
                         widget.file.getSecondPrice(),
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: App.theme.tooltipTheme.textStyle?.color,
                           fontSize: 11,
                           fontFamily: 'IranSansMedium',
                         ),
@@ -130,7 +132,7 @@ class _FileHorizontalItemState2 extends State<FileHorizontalItem> {
     return Container(
       width: 100,
       height: 100,
-      color: Colors.grey.shade100,
+      color: App.isDark ? DarkThemes.background : Colors.grey.shade100,
       alignment: Alignment.center,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -138,13 +140,13 @@ class _FileHorizontalItemState2 extends State<FileHorizontalItem> {
         children: [
           m.Image.asset(
             "assets/images/siraf_logo.png",
-            color: Colors.grey.shade300,
+            color: App.isDark ? DarkThemes.iconGrey : Colors.grey.shade300,
             scale: 8.5,
           ),
           SizedBox(height: 4),
           m.Image.asset(
             "assets/images/siraf_logo_text.png",
-            color: Colors.grey.shade300,
+            color: App.isDark ? DarkThemes.iconGrey : Colors.grey.shade300,
             scale: 7,
           ),
         ],

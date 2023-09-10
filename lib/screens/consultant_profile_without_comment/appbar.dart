@@ -3,7 +3,6 @@ part of 'consultant_profile_screen.dart';
 extension AppBarWidget on _ConsultantProfileScreen {
   appBar() {
     return AppBar(
-      backgroundColor: Themes.appBar,
       elevation: 0.7,
       automaticallyImplyLeading: false,
       leading: MyBackButton(),

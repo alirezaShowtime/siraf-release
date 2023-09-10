@@ -44,9 +44,9 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
         fileList(),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: App.theme.dialogBackgroundColor,
             border: Border(
-              top: BorderSide(color: Colors.grey.shade300, width: 0.7),
+              top: BorderSide(color: App.theme.shadowColor, width: 0.7),
             ),
             boxShadow: [
               BoxShadow(
@@ -62,7 +62,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
               Container(
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                decoration: BoxDecoration(color: Colors.white),
+                decoration: BoxDecoration(color: App.theme.dialogBackgroundColor),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -178,7 +178,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
       constraints: BoxConstraints(maxHeight: 300),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-          color: Colors.white,
+          color: App.theme.dialogBackgroundColor,
           borderRadius: BorderRadius.only(
             topRight: Radius.circular(15),
             topLeft: Radius.circular(15),
@@ -186,7 +186,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
           boxShadow: [
             BoxShadow(
               offset: const Offset(0, -1),
-              color: Colors.black12,
+              color: App.theme.shadowColor,
               blurRadius: 5,
             )
           ]),
@@ -230,7 +230,6 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                   style: TextStyle(
-                    color: Colors.black,
                     fontSize: 12,
                     fontFamily: "sans-serif",
                   ),

@@ -111,7 +111,7 @@ class _CarouselSliderCustomState extends State<CarouselSliderCustom> with Automa
 
   Widget _content() {
     return ColoredBox(
-      color: Colors.grey.shade50,
+      color: App.theme.backgroundColor,
       child: CarouselSlider(
         options: CarouselOptions(
           height: widget.height,
@@ -263,14 +263,14 @@ class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> wit
           loadingWidget: Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            color: Colors.grey.shade50,
+            color: App.theme.backgroundColor,
             alignment: Alignment.center,
             child: Text(
               "درحال بارگذاری",
               style: TextStyle(
                 fontSize: 11,
                 fontFamily: "IranSansBold",
-                color: Colors.grey.shade400,
+                color: App.theme.tooltipTheme.textStyle?.color,
               ),
             ),
           ),
@@ -282,13 +282,13 @@ class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> wit
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.error_outline_rounded, size: 35, color: Colors.grey.shade400),
+                Icon(Icons.error_outline_rounded, size: 35, color: App.theme.tooltipTheme.textStyle?.color),
                 Text(
                   "خطا!!",
                   style: TextStyle(
                     fontSize: 11,
                     fontFamily: "IranSansBold",
-                    color: Colors.grey.shade400,
+                    color: App.theme.tooltipTheme.textStyle?.color,
                   ),
                 ),
               ],

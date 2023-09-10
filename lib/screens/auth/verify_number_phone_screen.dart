@@ -118,14 +118,7 @@ class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion(
-      value: SystemUiOverlayStyle(
-        statusBarColor: App.theme.primaryColor,
-        statusBarBrightness: Brightness.light,
-        statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarDividerColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
+      value: App.getSystemUiOverlayTransparentLight(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         extendBody: true,

@@ -28,6 +28,7 @@ class SelectCityScreen extends StatefulWidget {
   bool force;
   List<City>? selectedCities;
   bool isAdding;
+  bool alert;
 
   SelectCityScreen({
     super.key,
@@ -37,6 +38,7 @@ class SelectCityScreen extends StatefulWidget {
     this.max = null,
     this.selectedCities,
     this.isAdding = false,
+    this.alert = true,
   });
 
   @override
@@ -434,7 +436,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
               notify("حداکثر " + widget.max.toString() + " شهر میتوانید انتخاب کنید");
             } else {
               selectedCities.add(city);
-              if (!widget.isAdding && city.countFile == 0) notify("در این شهر فایلی ثبت نشده است");
+              if (!widget.isAdding && city.countFile == 0 && widget.alert) notify("در این شهر فایلی ثبت نشده است");
             }
           }
         });

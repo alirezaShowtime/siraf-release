@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/ticket.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/avatar.dart';
@@ -76,7 +77,7 @@ class _AppBarChat extends State<AppBarChat> {
             style: TextStyle(
               fontSize: 12,
               fontFamily: "IranSansBold",
-              color: Themes.themeData().textTheme.bodyLarge?.color,
+              color: App.theme.textTheme.bodyLarge?.color,
             ),
           ),
         ),

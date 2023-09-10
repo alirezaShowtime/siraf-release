@@ -228,14 +228,13 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
   }
 
   void determineCity() {
-    //todo: implement event listener
-
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => SelectCityScreen(
           max: 1,
           saveCity: false,
+          alert : false,
         ),
       ),
     ).then((result) {

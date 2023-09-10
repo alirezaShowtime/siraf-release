@@ -3,7 +3,7 @@ part of 'consultant_profile_screen.dart';
 extension AddCommentWidget on _ConsultantProfileScreen {
   Widget addCommentWidget() {
     return Container(
-      color: Colors.white,
+      color: App.theme.dialogBackgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: [

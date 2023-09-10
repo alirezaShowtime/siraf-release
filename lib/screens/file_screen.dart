@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:siraf3/bloc/add_violation_bloc.dart';
@@ -111,7 +112,6 @@ class _FileScreen extends State<FileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: BlocConsumer(
         bloc: fileBloc,
         listener: (context, state) {
@@ -153,19 +153,19 @@ class _FileScreen extends State<FileScreen> {
             headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
               return [
                 SliverAppBar(
-                  systemOverlayStyle: Themes.getSystemUiOverlayStyleTransparent(),
+                  systemOverlayStyle: App.getSystemUiOverlayTransparentLight(),
                   expandedHeight: 260,
                   elevation: 0.7,
-                  backgroundColor: Colors.white,
+                  backgroundColor: App.theme.backgroundColor,
                   leading: MyBackButton(color: Colors.white, shadow: true),
                   flexibleSpace: FlexibleSpaceBar(background: _buildSliders(state.file)),
                 ),
                 StatefulBuilder(builder: (context, setState) {
                   toolbarSetState = setState;
                   return SliverAppBar(
-                    systemOverlayStyle: Themes.getSystemUiOverlayStyle(),
+                    systemOverlayStyle: App.getSystemUiOverlay(),
                     elevation: 0.7,
-                    backgroundColor: Colors.white,
+                    backgroundColor: App.theme.backgroundColor,
                     titleSpacing: 0,
                     leading: _isSliverAppBarCollapsed ? MyBackButton() : SizedBox(),
                     leadingWidth: _isSliverAppBarCollapsed ? null : 0,
@@ -191,7 +191,7 @@ class _FileScreen extends State<FileScreen> {
                               Text(
                                 "${state.file.city!.name} | ${state.file.publishedAgo} ",
                                 style: TextStyle(
-                                  color: Colors.grey,
+                                  color: App.theme.tooltipTheme.textStyle?.color,
                                   fontFamily: "IranSansMedium",
                                   fontSize: _isSliverAppBarCollapsed ? 9 : 10,
                                 ),
@@ -258,12 +258,12 @@ class _FileScreen extends State<FileScreen> {
                           Container(
                             clipBehavior: Clip.hardEdge,
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
+                              color: App.isDark ? Color.fromARGB(255, 46, 54, 63) : Colors.grey.shade200,
                               borderRadius: BorderRadius.circular(15),
                             ),
                             foregroundDecoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15.0),
-                              border: Border.all(color: Colors.grey.shade200, width: 2.0),
+                              border: Border.all(color: App.isDark ? Color.fromARGB(255, 46, 54, 63) : Colors.grey.shade200, width: 2.0),
                             ),
                             child: Column(
                               children: [
@@ -350,7 +350,7 @@ class _FileScreen extends State<FileScreen> {
                 Container(
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: App.theme.dialogBackgroundColor,
                     borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
                     boxShadow: [
                       BoxShadow(
@@ -423,7 +423,7 @@ class _FileScreen extends State<FileScreen> {
         Text(
           value,
           style: TextStyle(
-            color: Colors.black,
+            color: App.theme.textTheme.bodyLarge?.color,
             fontFamily: "IranSansBold",
             fontSize: 13,
           ),
@@ -533,7 +533,7 @@ class _FileScreen extends State<FileScreen> {
   Widget propertyItemWidget({required String title, required String value}) {
     return Container(
       width: double.infinity,
-      color: Colors.white,
+      color: App.theme.dialogBackgroundColor,
       height: 40,
       margin: EdgeInsets.only(bottom: 2, left: 2, right: 2),
       padding: EdgeInsets.symmetric(horizontal: 10),

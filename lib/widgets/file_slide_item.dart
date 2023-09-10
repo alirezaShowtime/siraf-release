@@ -118,7 +118,7 @@ class _FileSlideItemState extends State<FileSlideItem> with AutomaticKeepAliveCl
                   right: 7.5,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Color(0xff6c6c6c).withOpacity(0.8),
+                      color: (App.isDark ? Color.fromARGB(255, 202, 202, 202) : Color(0xff6c6c6c)).withOpacity(0.8),
                       borderRadius: BorderRadius.circular(5),
                     ),
                     padding: EdgeInsets.all(5),

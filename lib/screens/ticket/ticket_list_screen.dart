@@ -202,9 +202,13 @@ class _TicketListScreen extends State<TicketListScreen> {
     bool isSelected = selectedTickets.contains(ticket);
 
     return Material(
-      color: ticket.status ? Colors.white : Colors.grey.shade100,
+      color: ticket.status ? App.theme.dialogBackgroundColor : (App.isDark ? Color.fromARGB(255, 34, 34, 34) : Colors.grey.shade100),
       child: InkWell(
         onLongPress: () {
+          if (!ticket.status) {
+            notify("این تیکت بسته شده است");
+            return;
+          }
           if (!isSelected) {
             setState(() {
               selectedTickets.add(ticket);
@@ -215,6 +219,10 @@ class _TicketListScreen extends State<TicketListScreen> {
         },
         onTap: () {
           if (!isSelected && isSelectable && selectedTickets.length > 0) {
+            if (!ticket.status) {
+              notify("این تیکت بسته شده است");
+              return;
+            }
             setState(() {
               selectedTickets.add(ticket);
             });

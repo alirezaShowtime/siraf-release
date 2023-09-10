@@ -78,6 +78,7 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
                   image: widget.file.fileId!.images.isFill() ? NetworkImage(widget.file.fileId?.images?.first.path ?? "") : NetworkImage(""),
                   width: 100,
                   height: 100,
+                  withSaveState: true,
                   fit: BoxFit.cover,
                   loadingWidget: loadingImage(),
                   errorWidget: loadingImage(),

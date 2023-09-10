@@ -78,7 +78,7 @@ class _ListDialog extends State<ListDialog> {
 
   Widget buildListItem({required Map<String, dynamic> item, bool isLast = false, void Function(Map<String, dynamic>)? onItemTap}) {
     return Material(
-      color: Colors.white,
+      color: App.theme.dialogBackgroundColor,
       child: InkWell(
         onTap: () {
           selectedItems.add(item);
@@ -88,7 +88,7 @@ class _ListDialog extends State<ListDialog> {
           height: 50,
           decoration: BoxDecoration(
             border: Border(
-              bottom: isLast ? BorderSide.none : BorderSide(color: Colors.grey.shade300, width: 0.7),
+              bottom: isLast ? BorderSide.none : BorderSide(color: App.theme.shadowColor, width: 0.7),
             ),
           ),
           padding: EdgeInsets.symmetric(vertical: 10),

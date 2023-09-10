@@ -28,7 +28,7 @@ class _Section extends State<Section> {
       padding: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5), width: 1),
+          bottom: BorderSide(color: (App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey).withOpacity(0.5), width: 1),
         ),
       ),
       child: Row(
