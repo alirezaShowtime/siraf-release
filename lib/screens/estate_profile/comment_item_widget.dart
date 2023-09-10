@@ -15,6 +15,7 @@ import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:siraf3/widgets/my_text_field.dart';
 import 'package:siraf3/widgets/my_text_icon_button.dart';
 
+import 'package:siraf3/main.dart';
 import 'estate_profile_screen.dart';
 
 class CommentItemWidget extends StatefulWidget {
@@ -84,7 +85,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
                   SizedBox(width: 10),
                   Text(
                     widget.comment.userId?.name ?? "ناشناس",
-                    style: TextStyle(color: Themes.textGrey, fontSize: 11),
+                    style: TextStyle(color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey, fontSize: 11),
                   ),
                 ],
               ),
@@ -106,7 +107,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
                   ),
                   Text(
                     widget.comment.createDate ?? "",
-                    style: TextStyle(color: Themes.textGrey, fontSize: 9),
+                    style: TextStyle(color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey, fontSize: 9),
                   ),
                 ],
               ),
@@ -117,7 +118,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
             padding: const EdgeInsets.only(right: 5, top: 10, bottom: 10),
             child: Text(
               widget.comment.comment ?? "",
-              style: TextStyle(color: Themes.textGrey, fontSize: 11),
+              style: TextStyle(color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey, fontSize: 11),
             ),
           ),
           Row(
@@ -138,13 +139,13 @@ class _CommentItemWidget extends State<CommentItemWidget> {
                         onPressed: onClickLike,
                         icon: icon(Icons.thumb_up_alt_outlined, size: 15),
                         text: widget.comment.likeCount.emptable(),
-                        rippleColor: Themes.text,
+                        rippleColor: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                       ),
                       MyTextIconButton(
                         onPressed: onClickDislike,
                         icon: icon(Icons.thumb_down_alt_outlined, size: 15),
                         text: widget.comment.dislikeCount.emptable(),
-                        rippleColor: Themes.text,
+                        rippleColor: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                       ),
                     ],
                   );
@@ -152,7 +153,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
               ),
               if (!showReplyField)
                 MyTextButton(
-                  rippleColor: Themes.text,
+                  rippleColor: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                   padding: EdgeInsets.zero,
                   onPressed: () {
                     setState(() => showReplyField = !showReplyField);
@@ -160,7 +161,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
                   child: Text(
                     "پاسخ",
                     style: TextStyle(
-                      color: Themes.text,
+                      color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                       fontSize: 10,
                       fontFamily: "IranSansBold",
                     ),
@@ -216,7 +217,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
               builder: (context, state) {
                 return MyTextButton(
                   text: "ارسال",
-                  color: Themes.primary,
+                  color: App.theme.primaryColor,
                   textColor: Colors.white,
                   fontSize: 10,
                   minimumSize: Size(50, 15),
@@ -230,7 +231,7 @@ class _CommentItemWidget extends State<CommentItemWidget> {
               fontSize: 10,
               text: "صرف نظر",
               border: false,
-              rippleColor: Themes.text,
+              rippleColor: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
               minimumSize: Size(50, 15),
               onPressed: () {
                 setState(() => showReplyField = !showReplyField);

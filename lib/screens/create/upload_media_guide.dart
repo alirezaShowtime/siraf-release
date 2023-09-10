@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/screens/video_screen.dart';
-import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UploadMediaGuide extends StatefulWidget {
@@ -147,7 +147,7 @@ class _UploadMediaGuideState extends State<UploadMediaGuide> {
                   style: TextStyle(
                     fontSize: 12,
                     fontFamily: "IranSansMedium",
-                    color: Themes.primary,
+                    color: App.theme.primaryColor,
                     decoration: TextDecoration.underline,
                   ),
                 ),
@@ -166,7 +166,7 @@ class _UploadMediaGuideState extends State<UploadMediaGuide> {
                   style: TextStyle(
                     fontSize: 12,
                     fontFamily: "IranSansMedium",
-                    color: Themes.primary,
+                    color: App.theme.primaryColor,
                     decoration: TextDecoration.underline,
                   ),
                 ),
@@ -185,7 +185,7 @@ class _UploadMediaGuideState extends State<UploadMediaGuide> {
                   style: TextStyle(
                     fontSize: 12,
                     fontFamily: "IranSansMedium",
-                    color: Themes.primary,
+                    color: App.theme.primaryColor,
                     decoration: TextDecoration.underline,
                   ),
                 ),

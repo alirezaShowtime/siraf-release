@@ -25,6 +25,7 @@ import 'package:siraf3/widgets/my_popup_menu_item.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 
 import '../chat_massage_action.dart';
+import 'package:siraf3/main.dart';
 
 class AppBarChat extends AppBar {
   @override
@@ -157,14 +158,14 @@ class _AppBarChat extends State<AppBarChat> {
                 if (state is ChatMessageSearchLoading) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18),
-                    child: SpinKitRing(color: Themes.primary, size: 18, lineWidth: 3),
+                    child: SpinKitRing(color: App.theme.primaryColor, size: 18, lineWidth: 3),
                   );
                 }
 
                 if (state is ChatMessageSearchError) {
                   IconButton(
                     onPressed: () => searchRequest(searchController.value.text),
-                    icon: Icon(Icons.refresh_rounded, color: Themes.text),
+                    icon: Icon(Icons.refresh_rounded, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
                   );
                 }
 
@@ -175,7 +176,7 @@ class _AppBarChat extends State<AppBarChat> {
                       showClearButton = false;
                       setState(() {});
                     },
-                    icon: Icon(Icons.close_rounded, color: Themes.text),
+                    icon: Icon(Icons.close_rounded, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
                   );
 
                 return SizedBox();
@@ -231,7 +232,7 @@ class _AppBarChat extends State<AppBarChat> {
             child: Text(
               selectedCount.toString(),
               style: TextStyle(
-                color: Themes.text,
+                color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                 fontFamily: "IranSansBold",
                 fontSize: 15,
               ),

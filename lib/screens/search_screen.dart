@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:siraf3/db/model/search_history.dart';
 import 'package:siraf3/main.dart';
@@ -50,107 +51,110 @@ class _SearchScreen extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: MyBackButton(),
-        title: TextField2(
-          controller: searchController,
-          onSubmitted: (searchedText) {
-            onSubmittedSearchField(searchedText);
-          },
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: "جستجوی فایل",
-            hintStyle: TextStyle(
-              fontSize: 14,
-              color: App.theme.tooltipTheme.textStyle?.color,
-            ),
-          ),
-          textInputAction: TextInputAction.search,
-          style: TextStyle(
-            fontSize: 14,
-            color: App.theme.textTheme.bodyLarge?.color,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              var result = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => FilterScreen(
-                    originalFilterData: widget.originalFilterData,
-                    filterData: widget.filterData,
-                    total_url: getFileUrl('file/files/').toString(),
-                  ),
-                ),
-              );
-
-              if (result != null && result is FilterData) {
-                setState(() {
-                  widget.filterData = result;
-                });
-              }
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: App.getSystemUiOverlay(),
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: MyBackButton(),
+          title: TextField2(
+            controller: searchController,
+            onSubmitted: (searchedText) {
+              onSubmittedSearchField(searchedText);
             },
-            icon: badges.Badge(
-              badgeContent: Text(''),
-              showBadge: widget.filterData.hasFilter(),
-              position: badges.BadgePosition.custom(top: -15, start: -10),
-              badgeStyle: badges.BadgeStyle(badgeColor: Themes.primary),
-              child: icon(
-                OctIcons.sliders_16,
-                size: 20,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: "جستجوی فایل",
+              hintStyle: TextStyle(
+                fontSize: 14,
+                color: App.theme.tooltipTheme.textStyle?.color,
               ),
             ),
+            textInputAction: TextInputAction.search,
+            style: TextStyle(
+              fontSize: 14,
+              color: App.theme.textTheme.bodyLarge?.color,
+            ),
           ),
-          IconButton(
-            onPressed: () {
-              onSubmittedSearchField(searchController.text);
-            },
-            icon: icon(CupertinoIcons.search),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Visibility(
-            visible: keywords.length > 0,
-            child: Padding(
-              padding: EdgeInsets.only(left: 15, top: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Text(
-                  //   "سابقه جستجو",
-                  //   style: TextStyle(
-                  //     fontSize: 12,
-                  //     color: Themes.blue,
-                  //     fontFamily: "IranSansBold",
-                  //   ),
-                  // ),
-                  InkWell(
-                    onTap: () {
-                      emptyHistory();
-                    },
-                    child: Text(
-                      "پاک کردن سوابق",
-                      style: TextStyle(fontSize: 12, color: Themes.blue, fontFamily: "IranSansBold"),
+          actions: [
+            IconButton(
+              onPressed: () async {
+                var result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => FilterScreen(
+                      originalFilterData: widget.originalFilterData,
+                      filterData: widget.filterData,
+                      total_url: getFileUrl('file/files/').toString(),
                     ),
                   ),
-                ],
+                );
+    
+                if (result != null && result is FilterData) {
+                  setState(() {
+                    widget.filterData = result;
+                  });
+                }
+              },
+              icon: badges.Badge(
+                badgeContent: Text(''),
+                showBadge: widget.filterData.hasFilter(),
+                position: badges.BadgePosition.custom(top: -15, start: -10),
+                badgeStyle: badges.BadgeStyle(badgeColor: App.theme.primaryColor),
+                child: icon(
+                  OctIcons.sliders_16,
+                  size: 20,
+                ),
               ),
             ),
-          ),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: keywords.length,
-            itemBuilder: (BuildContext context, int i) {
-              return historyItem(keywords[i]);
-            },
-          ),
-        ],
+            IconButton(
+              onPressed: () {
+                onSubmittedSearchField(searchController.text);
+              },
+              icon: icon(CupertinoIcons.search),
+            ),
+          ],
+        ),
+        body: Column(
+          children: [
+            Visibility(
+              visible: keywords.length > 0,
+              child: Padding(
+                padding: EdgeInsets.only(left: 15, top: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Text(
+                    //   "سابقه جستجو",
+                    //   style: TextStyle(
+                    //     fontSize: 12,
+                    //     color: Themes.blue,
+                    //     fontFamily: "IranSansBold",
+                    //   ),
+                    // ),
+                    InkWell(
+                      onTap: () {
+                        emptyHistory();
+                      },
+                      child: Text(
+                        "پاک کردن سوابق",
+                        style: TextStyle(fontSize: 12, color: Themes.blue, fontFamily: "IranSansBold"),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: keywords.length,
+              itemBuilder: (BuildContext context, int i) {
+                return historyItem(keywords[i]);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -168,7 +172,7 @@ class _SearchScreen extends State<SearchScreen> {
           searchHistory.keyword,
           style: TextStyle(
             fontSize: 13,
-            color: Themes.textGrey,
+            color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
           ),
         ),
       ),

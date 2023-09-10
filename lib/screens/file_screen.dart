@@ -26,6 +26,7 @@ import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/simple_map.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:siraf3/main.dart';
 
 class FileScreen extends StatefulWidget {
   @override
@@ -361,7 +362,7 @@ class _FileScreen extends State<FileScreen> {
                     ],
                   ),
                   child: Material(
-                    color: Themes.primary,
+                    color: App.theme.primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),

@@ -12,6 +12,7 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/simple_app_bar.dart';
 import 'package:siraf3/widgets/text_form_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:siraf3/main.dart';
 
 class TicketCreationScreen extends StatefulWidget {
   GroupModel? group;
@@ -154,7 +155,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
                     style: TextStyle(
                       fontSize: 13,
                       fontFamily: "IranSansMedium",
-                      color: Themes.text,
+                      color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                     ),
                   ),
                   Container(
@@ -166,7 +167,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
                       style: TextStyle(
                         fontSize: 13,
                         fontFamily: "IranSansMedium",
-                        color: Themes.text,
+                        color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                       ),
                     ),
                   ),
@@ -179,7 +180,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
             "موضوع",
             style: TextStyle(
               fontSize: 13,
-              color: Themes.text,
+              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
               fontFamily: "IranSansMedium",
             ),
           ),
@@ -203,14 +204,14 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Themes.primary,
+                  color: App.theme.primaryColor,
                   width: 1.5,
                 ),
                 borderRadius: BorderRadius.circular(5),
               ),
               disabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Themes.textGrey,
+                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                   width: 1.5,
                 ),
                 borderRadius: BorderRadius.circular(5),
@@ -225,8 +226,8 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
               hintStyle: TextStyle(fontSize: 13),
               contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             ),
-            style: TextStyle(fontSize: 13, color: Themes.text),
-            cursorColor: Themes.primary,
+            style: TextStyle(fontSize: 13, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
+            cursorColor: App.theme.primaryColor,
             maxLines: 1,
             minLines: 1,
             controller: titleController,
@@ -236,7 +237,7 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
             "پیام",
             style: TextStyle(
               fontSize: 13,
-              color: Themes.text,
+              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
               fontFamily: "IranSansMedium",
             ),
           ),
@@ -260,14 +261,14 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Themes.primary,
+                  color: App.theme.primaryColor,
                   width: 1.5,
                 ),
                 borderRadius: BorderRadius.circular(5),
               ),
               disabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Themes.textGrey,
+                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                   width: 1.5,
                 ),
                 borderRadius: BorderRadius.circular(5),
@@ -282,8 +283,8 @@ class _TicketCreationScreen extends State<TicketCreationScreen> {
               hintStyle: TextStyle(fontSize: 13),
               contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             ),
-            style: TextStyle(fontSize: 13, color: Themes.text),
-            cursorColor: Themes.primary,
+            style: TextStyle(fontSize: 13, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
+            cursorColor: App.theme.primaryColor,
             maxLines: 50,
             minLines: 6,
             controller: messageController,

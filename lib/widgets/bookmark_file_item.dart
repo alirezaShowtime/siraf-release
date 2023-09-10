@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/bookmark.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
@@ -49,11 +50,11 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.symmetric(horizontal: 4, vertical: 3),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: App.theme.dialogBackgroundColor,
         borderRadius: BorderRadius.circular(13),
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
+            color: App.theme.shadowColor,
             blurRadius: 2,
             spreadRadius: -1,
             offset: Offset(0, 0),
@@ -61,7 +62,7 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
         ],
       ),
       foregroundDecoration: BoxDecoration(
-        color: widget.isSelected ? Themes.primary.withOpacity(0.3) : Colors.transparent,
+        color: widget.isSelected ? App.theme.primaryColor.withOpacity(0.3) : Colors.transparent,
       ),
       constraints: BoxConstraints(maxHeight: 120),
       width: double.infinity,
@@ -90,7 +91,7 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
                     },
                     child: Icon(
                       CupertinoIcons.bookmark_fill,
-                      color: Themes.primary,
+                      color: App.theme.primaryColor,
                     ),
                   ),
                 ),
@@ -133,7 +134,7 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
                           Text(
                             (widget.file.fileId!.publishedAgo ?? "") + ' | ' + (widget.file.fileId!.city ?? ""),
                             style: TextStyle(
-                              color: Colors.grey.shade600,
+                              color: App.theme.tooltipTheme.textStyle?.color,
                               fontSize: 9,
                               fontWeight: FontWeight.w400,
                               fontFamily: 'IranSans',
@@ -162,7 +163,7 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
                       Text(
                         widget.file.fileId!.getSecondPrice(),
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: App.theme.tooltipTheme.textStyle?.color,
                           fontSize: 11,
                           fontFamily: 'IranSansMedium',
                         ),
@@ -181,7 +182,7 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
     return Container(
       width: 100,
       height: 100,
-      color: Colors.grey.shade100,
+      color: App.isDark ? DarkThemes.background : Colors.grey.shade100,
       alignment: Alignment.center,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -189,13 +190,13 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
         children: [
           Image.asset(
             "assets/images/siraf_logo.png",
-            color: Colors.grey.shade300,
+            color: App.isDark ? DarkThemes.iconGrey : Colors.grey.shade300,
             scale: 8.5,
           ),
           SizedBox(height: 4),
           Image.asset(
             "assets/images/siraf_logo_text.png",
-            color: Colors.grey.shade300,
+            color: App.isDark ? DarkThemes.iconGrey : Colors.grey.shade300,
             scale: 7,
           ),
         ],

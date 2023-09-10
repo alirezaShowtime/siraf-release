@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 
 class MyContentDialog extends StatefulWidget {
   @override
@@ -16,7 +17,7 @@ class _MyContentDialog extends State<MyContentDialog> {
     return Text(
       widget.content,
       style: TextStyle(
-        color: Themes.text,
+        color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
         fontSize: 13,
       ),
     );

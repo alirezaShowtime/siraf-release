@@ -54,13 +54,13 @@ extension ChatMessageSearch on _ChatScreen {
                   children: [
                     MyIconButton(
                       onTap: () => nextSearched(setState),
-                      iconColor: Themes.primary,
+                      iconColor: App.theme.primaryColor,
                       disable: currentFoundedIndex == null || currentFoundedIndex! >= countSearch,
                       iconData: Icons.keyboard_arrow_up_rounded,
                     ),
                     MyIconButton(
                       onTap: () => previousSearched(setState),
-                      iconColor: Themes.primary,
+                      iconColor: App.theme.primaryColor,
                       disable: currentFoundedIndex == null || currentFoundedIndex! <= 1,
                       iconData: Icons.keyboard_arrow_down_rounded,
                     ),
@@ -71,7 +71,7 @@ extension ChatMessageSearch on _ChatScreen {
                   style: TextStyle(
                     fontSize: 12,
                     fontFamily: "IranSansBold",
-                    color: Themes.text,
+                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                   ),
                 ),
               ],

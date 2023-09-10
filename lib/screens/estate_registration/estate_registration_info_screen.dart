@@ -6,6 +6,7 @@ import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
 
 import 'estate_registration_form_screen.dart';
+import 'package:siraf3/main.dart';
 
 class EstateRegistrationInfoScreen extends StatefulWidget {
   @override
@@ -40,7 +41,7 @@ class _EstateRegistrationInfoScreen extends State<EstateRegistrationInfoScreen> 
                   child: Text(
                     "مزایای ثبت دفتر املاک در سیراف",
                     style: TextStyle(
-                      color: Themes.primary,
+                      color: App.theme.primaryColor,
                       fontSize: 15,
                       fontFamily: "IranSansBold",
                     ),
@@ -89,18 +90,18 @@ class _EstateRegistrationInfoScreen extends State<EstateRegistrationInfoScreen> 
                   padding: EdgeInsets.only(top: 10, bottom: 30),
                   child: MyTextButton(
                     onPressed: viewIntroductionVideo,
-                    rippleColor: Themes.primary,
+                    rippleColor: App.theme.primaryColor,
                     child: Row(
                       children: [
                         Text(
                           "مشاهده ویدیو معرفی",
                           style: TextStyle(
-                            color: Themes.primary,
+                            color: App.theme.primaryColor,
                             fontSize: 12,
                             fontFamily: "IranSansBold",
                           ),
                         ),
-                        icon(Icons.arrow_right_rounded, color: Themes.primary),
+                        icon(Icons.arrow_right_rounded, color: App.theme.primaryColor),
                       ],
                     ),
                   ),
@@ -123,11 +124,11 @@ class _EstateRegistrationInfoScreen extends State<EstateRegistrationInfoScreen> 
                 MyTextButton(
                   onPressed: followUp,
                   text: "پیگیری کردن",
-                  rippleColor: Themes.primary,
+                  rippleColor: App.theme.primaryColor,
                 ),
                 MaterialButton(
                   onPressed: registerEstate,
-                  color: Themes.primary,
+                  color: App.theme.primaryColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -161,7 +162,7 @@ class _EstateRegistrationInfoScreen extends State<EstateRegistrationInfoScreen> 
         children: [
           Text(
             "${index}.${title}",
-            style: TextStyle(color: Themes.text, fontSize: 12, fontFamily: "IranSansBold"),
+            style: TextStyle(color: App.theme.textTheme.bodyLarge?.color ?? Themes.text, fontSize: 12, fontFamily: "IranSansBold"),
           ),
           if (subtitle != null)
             Padding(

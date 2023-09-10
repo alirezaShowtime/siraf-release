@@ -58,7 +58,7 @@ class _ListDialog extends State<ListDialog> {
                       bottomRight: Radius.circular(15),
                     ),
                   ),
-                  color: Themes.primary,
+                  color: App.theme.primaryColor,
                   elevation: 0,
                   minWidth: double.infinity,
                   height: 50,
@@ -98,7 +98,7 @@ class _ListDialog extends State<ListDialog> {
               item["name"],
               style: TextStyle(
                 fontSize: 13,
-                color: selectedItems.any((e) => e['name'] == item['name']) ? Themes.primary : App.theme.textTheme.bodyLarge?.color,
+                color: selectedItems.any((e) => e['name'] == item['name']) ? App.theme.primaryColor : App.theme.textTheme.bodyLarge?.color,
                 fontFamily: "IranSansBold",
               ),
             ),

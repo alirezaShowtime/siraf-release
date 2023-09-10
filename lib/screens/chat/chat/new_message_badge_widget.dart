@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 
 class NewMessageBadgeWidget extends StatelessWidget {
   @override
@@ -7,7 +7,7 @@ class NewMessageBadgeWidget extends StatelessWidget {
     return Container(
       height: 25,
       margin: EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(color: Themes.primary),
+      decoration: BoxDecoration(color: App.theme.primaryColor),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

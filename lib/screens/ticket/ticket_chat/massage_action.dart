@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/dialog.dart';
-import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/widgets/my_alert_dialog.dart';
 import 'package:siraf3/widgets/my_content_dialog.dart';
 import 'package:siraf3/widgets/my_popup_menu_item.dart';
@@ -79,7 +79,7 @@ void confirmDeleteMessageDialog(
 
               onClickCancel?.call();
             },
-            textColor: Themes.primary,
+            textColor: App.theme.primaryColor,
           ),
         ],
         title: TitleDialog(title: "حذف پیام"),

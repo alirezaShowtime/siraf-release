@@ -75,7 +75,7 @@ extension Profile on _EstateProfileScreen {
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: Themes.text,
+                                color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -85,7 +85,7 @@ extension Profile on _EstateProfileScreen {
                               textAlign: TextAlign.center,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(color: Themes.text, fontSize: 11),
+                              style: TextStyle(color: App.theme.textTheme.bodyLarge?.color ?? Themes.text, fontSize: 11),
                             ),
                             StaticStar(rating: estateProfile.rate ?? 0),
                           ],
@@ -161,7 +161,7 @@ extension Profile on _EstateProfileScreen {
       width: 80,
       height: 80,
       alignment: Alignment.center,
-      child: Icon(CupertinoIcons.home, color: Themes.primary, size: 34),
+      child: Icon(CupertinoIcons.home, color: App.theme.primaryColor, size: 34),
     );
   }
 

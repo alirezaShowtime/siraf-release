@@ -86,7 +86,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
           title: Text(
             "تایید نهایی",
             style: TextStyle(
-              color: Themes.text,
+              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
               fontSize: 15,
             ),
           ),
@@ -134,12 +134,12 @@ class _EditFileFinalState extends State<EditFileFinal> {
                             style: TextStyle(
                               fontSize: 13,
                               fontFamily: "IranSansMedium",
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                             ),
                           ),
                           Icon(
                             CupertinoIcons.right_chevron,
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                             size: 17,
                           ),
                         ],
@@ -150,7 +150,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
                     height: 10,
                   ),
                   Divider(
-                    color: Themes.textGrey.withOpacity(0.5),
+                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
                     height: 1,
                   ),
                   SizedBox(
@@ -168,7 +168,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
                             style: TextStyle(
                               fontSize: 13,
                               fontFamily: "IranSansMedium",
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                             ),
                           ),
                           Text(
@@ -176,7 +176,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
                             style: TextStyle(
                               fontSize: 13,
                               fontFamily: "IranSansMedium",
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                             ),
                           ),
                         ],
@@ -187,7 +187,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
                     height: 10,
                   ),
                   Divider(
-                    color: Themes.textGrey.withOpacity(0.5),
+                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
                     height: 1,
                   ),
                   SizedBox(height: 14),
@@ -195,7 +195,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
                     "توضیحات",
                     style: TextStyle(
                       fontSize: 14,
-                      color: Themes.primary,
+                      color: App.theme.primaryColor,
                       fontFamily: "IranSansBold",
                     ),
                   ),
@@ -231,14 +231,14 @@ class _EditFileFinalState extends State<EditFileFinal> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Themes.primary,
+                          color: App.theme.primaryColor,
                           width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(5),
                       ),
                       disabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Themes.textGrey,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                           width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(5),
@@ -250,7 +250,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
                         ),
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      hintStyle: TextStyle(fontSize: 14, color: Themes.textGrey),
+                      hintStyle: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey),
                       contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     ),
                     style: TextStyle(
@@ -262,7 +262,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
                         description = value;
                       });
                     },
-                    cursorColor: Themes.primary,
+                    cursorColor: App.theme.primaryColor,
                     maxLines: 50,
                     minLines: 6,
                     validator: (value) {
@@ -285,7 +285,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
                     "توضیحات محرمانه (اختیاری)",
                     style: TextStyle(
                       fontSize: 14,
-                      color: Themes.primary,
+                      color: App.theme.primaryColor,
                       fontFamily: "IranSansBold",
                     ),
                   ),
@@ -321,14 +321,14 @@ class _EditFileFinalState extends State<EditFileFinal> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Themes.primary,
+                          color: App.theme.primaryColor,
                           width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(5),
                       ),
                       disabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Themes.textGrey,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                           width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(5),
@@ -340,7 +340,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
                         ),
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      hintStyle: TextStyle(fontSize: 14, color: Themes.textGrey),
+                      hintStyle: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey),
                       contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     ),
                     style: TextStyle(
@@ -352,7 +352,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
                         securityDescription = value;
                       });
                     },
-                    cursorColor: Themes.primary,
+                    cursorColor: App.theme.primaryColor,
                     maxLines: 50,
                     minLines: 6,
                     validator: (value) {
@@ -386,7 +386,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
                 Expanded(
                   child: MaterialButton(
                     onPressed: _finalize,
-                    color: Themes.primary,
+                    color: App.theme.primaryColor,
                     child: Text(
                       "ویرایش",
                       style: TextStyle(
@@ -599,7 +599,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
                     s,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Themes.text,
+                      color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                       fontSize: 14,
                       fontWeight: FontWeight.normal,
                     ),

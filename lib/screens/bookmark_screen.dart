@@ -116,10 +116,10 @@ class _BookmarkScreen extends State<BookmarkScreen> with SingleTickerProviderSta
             ),
             bottom: TabBar(
               controller: tabController,
-              dividerColor: Themes.textGrey.withOpacity(0.5),
+              dividerColor: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
               // todo : temporaray
-              labelColor: Themes.text,
-              unselectedLabelColor: Themes.textGrey,
+              labelColor: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
+              unselectedLabelColor: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
               labelStyle: TextStyle(
                 fontSize: 14,
                 fontFamily: "IranSansBold",
@@ -128,7 +128,7 @@ class _BookmarkScreen extends State<BookmarkScreen> with SingleTickerProviderSta
                 fontSize: 14,
                 fontFamily: "IranSansBold",
               ),
-              indicatorColor: Themes.primary,
+              indicatorColor: App.theme.primaryColor,
               tabs: [
                 Tab(text: "نشان ها"),
                 Tab(text: "یادداشت ها"),
@@ -152,17 +152,30 @@ class _BookmarkScreen extends State<BookmarkScreen> with SingleTickerProviderSta
               if (currentTabIndex == 0)
                 MyPopupMenuButton(
                   itemBuilder: (_) => <PopupMenuItem>[
-                    PopupMenuItem<int>(
-                      value: 0,
-                      child: Text(
-                        "انتخاب همه",
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: App.theme.textTheme.bodyLarge?.color,
+                    if (selectedFiles.length < files.length)
+                      PopupMenuItem<int>(
+                        value: 0,
+                        child: Text(
+                          "انتخاب همه",
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: App.theme.textTheme.bodyLarge?.color,
+                          ),
                         ),
+                        height: 35,
                       ),
-                      height: 35,
-                    ),
+                    if (selectedFiles.length == files.length)
+                      PopupMenuItem<int>(
+                        value: 2,
+                        child: Text(
+                          "لغو انتخاب همه",
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: App.theme.textTheme.bodyLarge?.color,
+                          ),
+                        ),
+                        height: 35,
+                      ),
                     if (selectedFiles.isNotEmpty)
                       PopupMenuItem<int>(
                         value: 1,
@@ -197,6 +210,12 @@ class _BookmarkScreen extends State<BookmarkScreen> with SingleTickerProviderSta
                           isSelectable = false;
                         });
                       }
+                    }
+                    if (val == 2) {
+                      setState(() {
+                        selectedFiles.clear();
+                        isSelectable = false;
+                      });
                     }
                   },
                 ),

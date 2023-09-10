@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 
 class TextTitle extends StatefulWidget {
   String data;
-  Color color;
+  Color? color;
   String fontFamily;
 
   TextTitle(
     this.data, {
-    this.color = Themes.text,
+    this.color,
     this.fontFamily = "IranSansMedium",
     Key? key,
   }) : super(key: key);
@@ -25,6 +26,7 @@ class _TextTitleState extends State<TextTitle> {
       style: TextStyle(
         fontFamily: widget.fontFamily,
         fontSize: 15,
+        color: widget.color ?? App.theme.textTheme.bodyLarge?.color,
       ),
     );
   }

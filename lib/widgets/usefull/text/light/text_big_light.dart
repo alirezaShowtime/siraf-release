@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 
 class TextBigLight extends StatefulWidget {
   String data;
-  Color color;
+  Color? color;
   String fontFamily;
 
   TextBigLight(
     this.data, {
-    this.color = Themes.textLight,
+    this.color,
     this.fontFamily = "IranSansMedium",
     Key? key,
   }) : super(key: key);
@@ -23,7 +24,7 @@ class _TextBigLightState extends State<TextBigLight> {
     return Text(
       widget.data,
       style: TextStyle(
-        color: widget.color,
+        color: widget.color ?? App.theme.canvasColor,
         fontSize: 16,
         fontFamily: widget.fontFamily,
       ),

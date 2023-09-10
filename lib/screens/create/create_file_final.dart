@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:siraf3/bloc/compressor_bloc.dart';
 import 'package:siraf3/bloc/create_file_bloc.dart';
 import 'package:siraf3/dialog.dart';
@@ -67,328 +68,345 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0.7,
-        title: Text(
-          "ثبت نهایی",
-          style: TextStyle(
-            fontSize: 15,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: App.getSystemUiOverlay(),
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0.7,
+          title: Text(
+            "ثبت نهایی",
+            style: TextStyle(
+              fontSize: 15,
+            ),
           ),
-        ),
-        automaticallyImplyLeading: false,
-        titleSpacing: 0,
-        actions: [
-          IconButton(
+          automaticallyImplyLeading: false,
+          titleSpacing: 0,
+          actions: [
+            IconButton(
+              onPressed: () {
+                showResetDialog();
+              },
+              icon: Icon(
+                Icons.refresh,
+              ),
+            ),
+          ],
+          leading: IconButton(
             onPressed: () {
-              showResetDialog();
+              Navigator.pop(context);
             },
             icon: Icon(
-              Icons.refresh,
+              CupertinoIcons.back,
             ),
-          ),
-        ],
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            CupertinoIcons.back,
           ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Stack(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    GestureDetector(
-                      onTap: _openHelp,
-                      child: Container(
-                        color: Colors.transparent,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "راهنما",
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontFamily: "IranSansMedium",
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Stack(
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 10,
+                      ),
+                      GestureDetector(
+                        onTap: _openHelp,
+                        child: Container(
+                          color: Colors.transparent,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "راهنما",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontFamily: "IranSansMedium",
+                                ),
                               ),
-                            ),
-                            Icon(
-                              CupertinoIcons.right_chevron,
-                              size: 17,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Divider(
-                      color: Themes.textGrey.withOpacity(0.5),
-                      height: 1,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    GestureDetector(
-                      onTap: _selectEstate,
-                      child: Container(
-                        color: Colors.transparent,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "دفتر / دفاتر املاک (اختیاری)",
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontFamily: "IranSansMedium",
+                              Icon(
+                                CupertinoIcons.right_chevron,
+                                size: 17,
                               ),
-                            ),
-                            Text(
-                              selectedEstates.isNotEmpty ? "${selectedEstates.length} مورد" : "انتخاب",
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontFamily: "IranSansMedium",
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Divider(
+                        color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
+                        height: 1,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      GestureDetector(
+                        onTap: _selectEstate,
+                        child: Container(
+                          color: Colors.transparent,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "دفتر / دفاتر املاک (اختیاری)",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontFamily: "IranSansMedium",
+                                ),
                               ),
+                              Text(
+                                selectedEstates.isNotEmpty ? "${selectedEstates.length} مورد" : "انتخاب",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontFamily: "IranSansMedium",
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Divider(
+                        color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
+                        height: 1,
+                      ),
+                      SizedBox(height: 14),
+                      Text(
+                        "توضیحات",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: App.theme.primaryColor,
+                          fontFamily: "IranSansBold",
+                        ),
+                      ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      Text(
+                        "در توضیحات به جزئیات و ویژگی ها قابل توجه، دسترسی های محلی و موقعیت ملک اشاره کنید و از درج شماره تماس یا آدرس مستقیم در آن خودداری نمایید.",
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          fontFamily: "IranSansMedium",
+                        ),
+                      ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      TextFormField2(
+                        decoration: InputDecoration(
+                          hintText: "توضیحات را بنویسید.",
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: App.theme.dividerColor,
+                              width: 0.5,
                             ),
-                          ],
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: App.theme.dividerColor,
+                              width: 0.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: App.theme.primaryColor,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          hintStyle: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        ),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: App.theme.textTheme.bodyLarge?.color,
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            description = value;
+                          });
+                        },
+                        cursorColor: App.theme.primaryColor,
+                        maxLines: 50,
+                        minLines: 6,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "توضیحات فایل را وارد کنید";
+                          }
+                          if (value.length <= 40) {
+                            return "حداقل باید 40 کاراکتر بنویسید";
+                          }
+                        },
+                        onSaved: ((newValue) {
+                          setState(() {
+                            description = newValue;
+                          });
+                        }),
+                        controller: _descriptionController,
+                      ),
+                      SizedBox(height: 14),
+                      Text(
+                        "توضیحات محرمانه (اختیاری)",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: App.theme.primaryColor,
+                          fontFamily: "IranSansBold",
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Divider(
-                      color: Themes.textGrey.withOpacity(0.5),
-                      height: 1,
-                    ),
-                    SizedBox(height: 14),
-                    Text(
-                      "توضیحات",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Themes.primary,
-                        fontFamily: "IranSansBold",
+                      SizedBox(
+                        height: 4,
                       ),
-                    ),
-                    SizedBox(
-                      height: 4,
-                    ),
-                    Text(
-                      "در توضیحات به جزئیات و ویژگی ها قابل توجه، دسترسی های محلی و موقعیت ملک اشاره کنید و از درج شماره تماس یا آدرس مستقیم در آن خودداری نمایید.",
-                      style: TextStyle(
-                        fontSize: 11.5,
-                        fontFamily: "IranSansMedium",
+                      Text(
+                        "در صورت نیاز توضیحاتی که فقط مشاور باید آن را ببیند بنویسید",
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          fontFamily: "IranSansMedium",
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 4,
-                    ),
-                    TextFormField2(
-                      decoration: InputDecoration(
-                        hintText: "توضیحات را بنویسید.",
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Themes.icon,
-                            width: 0.5,
-                          ),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                            width: 1.5,
-                          ),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Themes.primary,
-                            width: 1.5,
-                          ),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        disabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Themes.textGrey,
-                            width: 1.5,
-                          ),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                            width: 1.5,
-                          ),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        hintStyle: TextStyle(fontSize: 14, color: Themes.textGrey),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      SizedBox(
+                        height: 4,
                       ),
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: App.theme.textTheme.bodyLarge?.color,
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          description = value;
-                        });
-                      },
-                      cursorColor: Themes.primary,
-                      maxLines: 50,
-                      minLines: 6,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "توضیحات فایل را وارد کنید";
-                        }
-                        if (value.length <= 40) {
-                          return "حداقل باید 40 کاراکتر بنویسید";
-                        }
-                      },
-                      onSaved: ((newValue) {
-                        setState(() {
-                          description = newValue;
-                        });
-                      }),
-                      controller: _descriptionController,
-                    ),
-                    SizedBox(height: 14),
-                    Text(
-                      "توضیحات محرمانه (اختیاری)",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Themes.primary,
-                        fontFamily: "IranSansBold",
-                      ),
-                    ),
-                    SizedBox(
-                      height: 4,
-                    ),
-                    Text(
-                      "در صورت نیاز توضیحاتی که فقط مشاور باید آن را ببیند بنویسید",
-                      style: TextStyle(
-                        fontSize: 11.5,
-                        fontFamily: "IranSansMedium",
-                      ),
-                    ),
-                    SizedBox(
-                      height: 4,
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        hintText: "توضیحات محرمانه را بنویسید.",
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Themes.icon,
-                            width: 0.5,
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: "توضیحات محرمانه را بنویسید.",
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: App.theme.dividerColor,
+                              width: 0.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
                           ),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                            width: 1.5,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: App.theme.dividerColor,
+                              width: 0.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
                           ),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Themes.primary,
-                            width: 1.5,
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
                           ),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        disabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Themes.textGrey,
-                            width: 1.5,
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: App.theme.primaryColor,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
                           ),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                            width: 1.5,
+                          disabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
                           ),
-                          borderRadius: BorderRadius.circular(5),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          hintStyle: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         ),
-                        hintStyle: TextStyle(fontSize: 14, color: Themes.textGrey),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: App.theme.textTheme.bodyLarge?.color,
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            securityDescription = value;
+                          });
+                        },
+                        cursorColor: App.theme.primaryColor,
+                        maxLines: 50,
+                        minLines: 6,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "توضیحات فایل را وارد کنید";
+                          }
+                          if (value.length <= 40) {
+                            return "حداقل باید 40 کاراکتر بنویسید";
+                          }
+                        },
+                        onSaved: ((newValue) {
+                          setState(() {
+                            securityDescription = newValue;
+                          });
+                        }),
+                        controller: _securitySescriptionController,
+                        onTap: () {
+                          var txtSelection = TextSelection.fromPosition(TextPosition(offset: _securitySescriptionController.text.length - 1));
+              
+                          if (_securitySescriptionController.selection == txtSelection) {
+                            _securitySescriptionController.selection = TextSelection.fromPosition(TextPosition(offset: _securitySescriptionController.text.length));
+                          }
+                        },
                       ),
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: App.theme.textTheme.bodyLarge?.color,
+                      SizedBox(
+                        height: 70,
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          securityDescription = value;
-                        });
-                      },
-                      cursorColor: Themes.primary,
-                      maxLines: 50,
-                      minLines: 6,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "توضیحات فایل را وارد کنید";
-                        }
-                        if (value.length <= 40) {
-                          return "حداقل باید 40 کاراکتر بنویسید";
-                        }
-                      },
-                      onSaved: ((newValue) {
-                        setState(() {
-                          securityDescription = newValue;
-                        });
-                      }),
-                      controller: _securitySescriptionController,
-                      onTap: () {
-                        var txtSelection = TextSelection.fromPosition(TextPosition(offset: _securitySescriptionController.text.length - 1));
-            
-                        if (_securitySescriptionController.selection == txtSelection) {
-                          _securitySescriptionController.selection = TextSelection.fromPosition(TextPosition(offset: _securitySescriptionController.text.length));
-                        }
-                      },
-                    ),
-                    SizedBox(
-                      height: 70,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 15,
-              left: 0,
-              right: 0,
-              child: MaterialButton(
-                onPressed: _finalize,
-                color: Themes.primary,
-                child: Text(
-                  "ثبت نهایی",
-                  style: TextStyle(
-                    color: Colors.white,
+                    ],
                   ),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                minWidth: 100,
-                height: 45,
               ),
-            )
-          ],
+              Positioned(
+                bottom: 15,
+                left: 0,
+                right: 0,
+                child: MaterialButton(
+                  onPressed: _finalize,
+                  color: App.theme.primaryColor,
+                  child: Text(
+                    "ثبت نهایی",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  minWidth: 100,
+                  height: 45,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

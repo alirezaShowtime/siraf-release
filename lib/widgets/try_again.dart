@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 
 class TryAgain extends StatefulWidget {
   void Function()? onPressed;
@@ -37,7 +37,7 @@ class _TryAgainState extends State<TryAgain> {
           ),
           elevation: 0.2,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-          fillColor: Themes.primary,
+          fillColor: App.theme.primaryColor,
         )
       ],
     );

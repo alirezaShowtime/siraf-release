@@ -31,6 +31,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_share/flutter_share.dart';
 
+import 'package:siraf3/main.dart';
 import 'consultant_profile_without_comment/consultant_profile_screen.dart';
 import 'file_view_chart_screen.dart';
 
@@ -128,10 +129,20 @@ class _MyFileScreen extends State<MyFileScreen> {
     super.dispose();
   }
 
+  
+                    // Text(
+                    //   "بازدید : ${widget.file.viewCount}",
+                    //   style: TextStyle(
+                    //     color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
+                    //     fontSize: 10.5,
+                    //     fontWeight: FontWeight.w400,
+                    //     fontFamily: 'IranSans',
+                    //   ),
+                    // ),
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: BlocBuilder(
         bloc: fileBloc,
         builder: (context, state) {
@@ -242,7 +253,7 @@ class _MyFileScreen extends State<MyFileScreen> {
                               icon: Icon(Icons.share_rounded),
                             ),
                           ] +
-                          (_isSliverAppBarCollapsed ? appBarActions(state.file, Themes.text) : <Widget>[]),
+                          (_isSliverAppBarCollapsed ? appBarActions(state.file, App.theme.textTheme.bodyLarge?.color ?? Themes.text) : <Widget>[]),
                     );
                   },
                 ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:siraf3/themes.dart';
 
 import 'text_field_2.dart';
+import 'package:siraf3/main.dart';
 
 class MyTextField extends TextField2 {
   bool isOptional;
@@ -57,13 +58,13 @@ class MyTextField extends TextField2 {
     InputDecoration? decoration,
     TextStyle? style,
   }) : super(
-          style: (style ?? TextStyle()).copyWith(color: Themes.text, fontSize: 12),
+          style: (style ?? TextStyle()).copyWith(color: App.theme.textTheme.bodyLarge?.color ?? Themes.text, fontSize: 12),
           decoration: (decoration ?? InputDecoration()).copyWith(
             border: new OutlineInputBorder(),
             floatingLabelBehavior: FloatingLabelBehavior.always,
             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-            hintStyle: TextStyle(color: Themes.textGrey, fontSize: 10),
-            labelStyle: const TextStyle(color: Themes.text, fontSize: 14, fontFamily: "IranSansBold"),
+            hintStyle: TextStyle(color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey, fontSize: 10),
+            labelStyle: TextStyle(color: App.theme.textTheme.bodyLarge?.color ?? Themes.text, fontSize: 14, fontFamily: "IranSansBold"),
             labelText: null,
             counterStyle: TextStyle(
               fontSize: 9,
@@ -79,7 +80,7 @@ class MyTextField extends TextField2 {
                         style: TextStyle(
                           fontSize: 14,
                           fontFamily: "IranSansBold",
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                           height: 1,
                         ),
                       ),

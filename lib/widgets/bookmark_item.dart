@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' as m;
 import 'package:siraf3/config.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 
 class BookmarkItem extends StatefulWidget {
   File file;
@@ -41,9 +42,9 @@ class _BookmarkItem extends State<BookmarkItem> {
       alignment: Alignment.centerLeft,
       children: [
         Container(
-          decoration: BoxDecoration(color: Themes.background2, boxShadow: [
+          decoration: BoxDecoration(color: App.theme.dialogBackgroundColor, boxShadow: [
             BoxShadow(
-              color: Themes.background,
+              color: App.theme.backgroundColor,
               blurRadius: 2,
               spreadRadius: 2,
               offset: Offset(0, -3),
@@ -89,7 +90,7 @@ class _BookmarkItem extends State<BookmarkItem> {
                                 Text(
                                   widget.file.getFirstPrice(),
                                   style: TextStyle(
-                                    color: Themes.text,
+                                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                     fontSize: 13,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -100,7 +101,7 @@ class _BookmarkItem extends State<BookmarkItem> {
                                 Text(
                                   widget.file.getSecondPrice(),
                                   style: TextStyle(
-                                    color: Themes.text,
+                                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w400,
                                   ),
@@ -112,7 +113,7 @@ class _BookmarkItem extends State<BookmarkItem> {
                         Text(
                           "${widget.file.fullCategory!.name!} | ${widget.file.name!}",
                           style: TextStyle(
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                             fontSize: 12,
                           ),
                           maxLines: 2,
@@ -122,7 +123,7 @@ class _BookmarkItem extends State<BookmarkItem> {
                             Text(
                               '',
                               style: TextStyle(
-                                color: Themes.text,
+                                color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
                               ),
@@ -136,7 +137,7 @@ class _BookmarkItem extends State<BookmarkItem> {
                                 Text(
                                   widget.file.publishedAgo ?? "",
                                   style: TextStyle(
-                                    color: Themes.text,
+                                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                     fontSize: 10.5,
                                     fontWeight: FontWeight.w400,
                                   ),
@@ -144,7 +145,7 @@ class _BookmarkItem extends State<BookmarkItem> {
                                 Text(
                                   "کد فایل : ${widget.file.id!}",
                                   style: TextStyle(
-                                    color: Themes.text,
+                                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                     fontSize: 10.5,
                                     fontWeight: FontWeight.w400,
                                   ),
@@ -172,25 +173,25 @@ class _BookmarkItem extends State<BookmarkItem> {
                 borderRadius: BorderRadius.circular(50),
                 boxShadow: [
                   BoxShadow(
-                    color: Themes.textGrey.withOpacity(0.2),
+                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.2),
                     blurRadius: 2,
                     spreadRadius: 0.2,
                     offset: Offset(0, -1),
                   ),
                   BoxShadow(
-                    color: Themes.textGrey.withOpacity(0.2),
+                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.2),
                     blurRadius: 2,
                     spreadRadius: 0.2,
                     offset: Offset(-1, 0),
                   ),
                   BoxShadow(
-                    color: Themes.textGrey.withOpacity(0.2),
+                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.2),
                     blurRadius: 2,
                     spreadRadius: 0.2,
                     offset: Offset(1, 0),
                   ),
                   BoxShadow(
-                    color: Themes.textGrey.withOpacity(0.2),
+                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.2),
                     blurRadius: 2,
                     spreadRadius: 0.2,
                     offset: Offset(0, 1),
@@ -199,7 +200,7 @@ class _BookmarkItem extends State<BookmarkItem> {
               ),
               child: Checkbox(
                 value: widget.isSelected,
-                side: BorderSide(color: Themes.primary, width: 1),
+                side: BorderSide(color: App.theme.primaryColor, width: 1),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),

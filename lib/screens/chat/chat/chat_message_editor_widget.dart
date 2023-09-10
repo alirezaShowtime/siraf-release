@@ -17,6 +17,7 @@ import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
+import 'package:siraf3/main.dart';
 
 class ChatMessageEditor extends StatefulWidget {
   @override
@@ -118,7 +119,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
                           textDirection: TextDirection.ltr,
                           child: btn(
                             iconData: Icons.send,
-                            color: Themes.primary,
+                            color: App.theme.primaryColor,
                             onTap: onClickSendMessage,
                           ),
                         ),
@@ -200,10 +201,10 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
               gridPadding: EdgeInsets.zero,
               initCategory: Category.RECENT,
               bgColor: Colors.white,
-              indicatorColor: Themes.primary,
+              indicatorColor: App.theme.primaryColor,
               iconColor: Colors.grey.shade400,
-              iconColorSelected: Themes.primary,
-              backspaceColor: Themes.primary,
+              iconColorSelected: App.theme.primaryColor,
+              backspaceColor: App.theme.primaryColor,
               skinToneDialogBgColor: Colors.white,
               skinToneIndicatorColor: Colors.grey.shade300,
               enableSkinTones: true,
@@ -216,7 +217,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
                 textAlign: TextAlign.center,
               ),
               loadingIndicator: SpinKitRing(
-                color: Themes.primary,
+                color: App.theme.primaryColor,
                 size: 25,
                 lineWidth: 4,
               ),
@@ -261,7 +262,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(Icons.reply_rounded, color: Themes.primary),
+          Icon(Icons.reply_rounded, color: App.theme.primaryColor),
           SizedBox(width: 10),
           Expanded(
             child: Column(
@@ -272,7 +273,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
                   reply.forMe == true ? "خودم" : "مشاور",
                   style: TextStyle(
                     fontFamily: "IranSansBold",
-                    color: Themes.primary,
+                    color: App.theme.primaryColor,
                     fontSize: 10,
                   ),
                 ),
@@ -281,7 +282,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: Themes.text,
+                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                     fontWeight: FontWeight.w700,
                     fontSize: 9,
                   ),
@@ -290,7 +291,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
             ),
           ),
           MyIconButton(
-            icon: Icon(Icons.close_rounded, color: Themes.text),
+            icon: Icon(Icons.close_rounded, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
             onTap: () {
               BlocProvider.of<ChatReplyBloc>(context).add(ChatReplyEvent(null));
             },
@@ -398,9 +399,9 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
-              color: Themes.primary.withOpacity(0.1),
+              color: App.theme.primaryColor.withOpacity(0.1),
             ),
-            child: Icon(icon, color: Themes.primary),
+            child: Icon(icon, color: App.theme.primaryColor),
           ),
           Expanded(
             child: Column(

@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/files_list_bloc.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/file.dart';
 import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/screens/file_screen.dart';
@@ -122,100 +124,103 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => homeScreenBloc,
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0.7,
-          title: Text(
-            "جستجوی \"${widget.filterData.search}\"",
-            style: TextStyle(
-              fontSize: 13,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: App.getSystemUiOverlay(),
+      child: BlocProvider(
+        create: (context) => homeScreenBloc,
+        child: Scaffold(
+          appBar: AppBar(
+            elevation: 0.7,
+            title: Text(
+              "جستجوی \"${widget.filterData.search}\"",
+              style: TextStyle(
+                fontSize: 13,
+              ),
             ),
-          ),
-          automaticallyImplyLeading: false,
-          leading: Padding(
-            padding: const EdgeInsets.only(right: 15),
-            child: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: MyBackButton(),
+            automaticallyImplyLeading: false,
+            leading: Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: MyBackButton(),
+              ),
             ),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => SearchScreen(
-                      originalFilterData: widget.originalFilterData,
-                      filterData: widget.filterData,
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => SearchScreen(
+                        originalFilterData: widget.originalFilterData,
+                        filterData: widget.filterData,
+                      ),
                     ),
+                  );
+                },
+                icon: FaIcon(
+                  CupertinoIcons.search,
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+            ],
+          ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (currentBlocState is FilesListInitState || currentBlocState is FilesListLoadingState)
+                Center(
+                  child: Loading(),
+                ),
+              if (currentBlocState is FilesListErrorState)
+                Center(
+                  child: TryAgain(
+                    onPressed: getFiles,
+                    message: (currentBlocState as FilesListErrorState).response != null ? jDecode((currentBlocState as FilesListErrorState).response!.body)['message'] : null,
                   ),
-                );
-              },
-              icon: FaIcon(
-                CupertinoIcons.search,
-              ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-          ],
-        ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (currentBlocState is FilesListInitState || currentBlocState is FilesListLoadingState)
-              Center(
-                child: Loading(),
-              ),
-            if (currentBlocState is FilesListErrorState)
-              Center(
-                child: TryAgain(
-                  onPressed: getFiles,
-                  message: (currentBlocState as FilesListErrorState).response != null ? jDecode((currentBlocState as FilesListErrorState).response!.body)['message'] : null,
                 ),
-              ),
-            if (currentBlocState is FilesListLoadedState && (currentBlocState as FilesListLoadedState).files.isEmpty)
-              Center(
-                child: Empty(),
-              ),
-            if (currentBlocState is FilesListLoadedState && (currentBlocState as FilesListLoadedState).files.isNotEmpty)
-              Expanded(
-                child: ListView(
-                  controller: scrollController,
-                  children: files
-                          .map<Widget>((file) => InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => FileScreen(id: file.id!),
-                                    ),
-                                  );
-                                },
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: files.first == file ? 0 : 5),
-                                  child: viewType == ViewType.List ? FileHorizontalItem(file: file) : FileSlideItem(file: file),
-                                ),
-                              ))
-                          .toList() +
-                      [
-                        if (_isLoadingMore)
-                          Align(
-                            alignment: Alignment.center,
-                            child: Loading(
-                              backgroundColor: Colors.transparent,
-                            ),
-                          )
-                      ],
+              if (currentBlocState is FilesListLoadedState && (currentBlocState as FilesListLoadedState).files.isEmpty)
+                Center(
+                  child: Empty(),
                 ),
-              ),
-          ],
+              if (currentBlocState is FilesListLoadedState && (currentBlocState as FilesListLoadedState).files.isNotEmpty)
+                Expanded(
+                  child: ListView(
+                    controller: scrollController,
+                    children: files
+                            .map<Widget>((file) => InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => FileScreen(id: file.id!),
+                                      ),
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.only(top: files.first == file ? 0 : 5),
+                                    child: viewType == ViewType.List ? FileHorizontalItem(file: file) : FileSlideItem(file: file),
+                                  ),
+                                ))
+                            .toList() +
+                        [
+                          if (_isLoadingMore)
+                            Align(
+                              alignment: Alignment.center,
+                              child: Loading(
+                                backgroundColor: Colors.transparent,
+                              ),
+                            )
+                        ],
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

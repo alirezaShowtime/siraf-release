@@ -178,7 +178,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
         decoration: BoxDecoration(
           color: App.theme.dialogBackgroundColor,
           border: Border(
-            bottom: BorderSide(color: Themes.textGrey.withOpacity(0.2), width: 1),
+            bottom: BorderSide(color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.2), width: 1),
           ),
         ),
         padding: EdgeInsets.symmetric(horizontal: 15),
@@ -229,7 +229,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
                   icon: Icon(
                     CupertinoIcons.chat_bubble_2,
                     size: 30,
-                    color: Themes.primary,
+                    color: App.theme.primaryColor,
                   ),
                 ),
                 SizedBox(width: 20),
@@ -240,7 +240,7 @@ class _SupportFileScreen extends State<SupportFileScreen> {
                   icon: Icon(
                     CupertinoIcons.phone_circle,
                     size: 30,
-                    color: Themes.primary,
+                    color: App.theme.primaryColor,
                   ),
                 ),
               ],

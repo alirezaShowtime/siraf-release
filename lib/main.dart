@@ -204,6 +204,30 @@ class App extends State<AppStf> {
       }),
     );
   }
+
+  static SystemUiOverlayStyle getSystemUiOverlay() {
+    return App.isDark
+            ? DarkThemes.getSystemUiOverlayStyle()
+            : Themes.getSystemUiOverlayStyle();
+  }
+
+  static SystemUiOverlayStyle getSystemUiOverlayTransparent({Brightness? statusBarIconBrightnessLight, Brightness? statusBarIconBrightnessDark}) {
+    return App.isDark
+            ? DarkThemes.getSystemUiOverlayStyleTransparent(statusBarIconBrightness: statusBarIconBrightnessDark)
+            : Themes.getSystemUiOverlayStyleTransparent(statusBarIconBrightness: statusBarIconBrightnessLight);
+  }
+
+  static SystemUiOverlayStyle getSystemUiOverlayTransparentLight() {
+    return App.isDark
+            ? DarkThemes.getSystemUiOverlayStyleTransparent(statusBarIconBrightness: Brightness.light)
+            : Themes.getSystemUiOverlayStyleTransparent(statusBarIconBrightness: Brightness.light);
+  }
+  
+  static SystemUiOverlayStyle getSystemUiOverlayTransparentDark() {
+    return App.isDark
+            ? DarkThemes.getSystemUiOverlayStyleTransparent(statusBarIconBrightness: Brightness.dark)
+            : Themes.getSystemUiOverlayStyleTransparent(statusBarIconBrightness: Brightness.dark);
+  }
 }
 
 class MyBehavior extends ScrollBehavior {

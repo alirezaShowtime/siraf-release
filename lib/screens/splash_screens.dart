@@ -120,14 +120,14 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return AnnotatedRegion(
       value: SystemUiOverlayStyle(
-        statusBarColor: Themes.primary,
+        statusBarColor: App.theme.primaryColor,
         statusBarBrightness: Brightness.light,
         statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: Themes.primary,
-        systemNavigationBarDividerColor: Themes.primary,
+        systemNavigationBarColor: App.theme.primaryColor,
+        systemNavigationBarDividerColor: App.theme.primaryColor,
       ),
       child: Scaffold(
-        backgroundColor: Themes.primary,
+        backgroundColor: App.theme.primaryColor,
         body: SafeArea(
           child: Stack(
             children: [
@@ -194,7 +194,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                  color: Themes.primary,
+                                  color: App.theme.primaryColor,
                                   child: Image(
                                     image: AssetImage('assets/images/siraf_logo_text.png'),
                                     width: 130,

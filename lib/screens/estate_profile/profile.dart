@@ -136,7 +136,7 @@ extension Profile on _EstateProfileScreen {
       width: 80,
       height: 80,
       alignment: Alignment.center,
-      child: Icon(CupertinoIcons.home, color: Themes.primary, size: 34),
+      child: Icon(CupertinoIcons.home, color: App.theme.primaryColor, size: 34),
     );
   }
 

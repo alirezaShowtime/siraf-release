@@ -174,11 +174,11 @@ class _SettingsScreen extends State<SettingsScreen> {
                 padding: 4.0,
                 toggleSize: 10.0,
                 borderRadius: 10.0,
-                activeColor: Themes.blue,
+                activeColor: App.theme.primaryColor,
                 inactiveColor: Colors.grey.shade300,
                 value: showNumberPhoneForConsultant,
                 activeToggleColor: Colors.white,
-                inactiveToggleColor: Themes.blue,
+                inactiveToggleColor: App.theme.primaryColor,
                 onToggle: (value) {
                   setState(() {
                     showNumberPhoneForConsultant = value;
@@ -258,7 +258,7 @@ class _SettingsScreen extends State<SettingsScreen> {
             widget: Text(
               isLastVersion ? "آخرین نسخه نصب میباشد" : "بررسی بروزرسانی",
               style: TextStyle(
-                color: isLastVersion ? Themes.text : Themes.blue,
+                color: isLastVersion ? App.theme.textTheme.bodyLarge?.color : App.theme.primaryColor,
                 fontSize: 11,
                 fontFamily: "IranSansBold",
               ),
@@ -280,7 +280,7 @@ class _SettingsScreen extends State<SettingsScreen> {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: Colors.grey.shade200.withOpacity(0.4),
+              color: App.theme.shadowColor.withOpacity(0.4),
               width: 1,
             ),
           ),

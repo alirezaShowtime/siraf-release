@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/bookmark.dart';
-import 'package:siraf3/config.dart';
+import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
-import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/note.dart';
 import 'package:siraf3/themes.dart';
@@ -93,7 +92,7 @@ class _NoteFileItemState extends State<NoteFileItem> {
                         },
                         child: Icon(
                           CupertinoIcons.bookmark_fill,
-                          color: Themes.primary,
+                          color: App.theme.primaryColor,
                         ),
                       ),
                     ),
@@ -210,7 +209,7 @@ class _NoteFileItemState extends State<NoteFileItem> {
     return Container(
       width: 100,
       height: 100,
-      color: Colors.grey.shade100,
+      color: App.isDark ? DarkThemes.background : Colors.grey.shade100,
       alignment: Alignment.center,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -218,13 +217,13 @@ class _NoteFileItemState extends State<NoteFileItem> {
         children: [
           Image.asset(
             "assets/images/siraf_logo.png",
-            color: Colors.grey.shade300,
+            color: App.isDark ? DarkThemes.iconGrey : Colors.grey.shade300,
             scale: 8.5,
           ),
           SizedBox(height: 4),
           Image.asset(
             "assets/images/siraf_logo_text.png",
-            color: Colors.grey.shade300,
+            color: App.isDark ? DarkThemes.iconGrey : Colors.grey.shade300,
             scale: 7,
           ),
         ],

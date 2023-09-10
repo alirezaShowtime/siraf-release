@@ -29,7 +29,7 @@ extension Profile on _ConsultantProfileScreen {
                           Text(
                             consultantInfo.name!,
                             style: TextStyle(
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                               fontSize: 12,
                               fontFamily: "IranSansBold",
                             ),
@@ -47,7 +47,7 @@ extension Profile on _ConsultantProfileScreen {
                             child: Text(
                               consultantInfo.estateName ?? "", // consultantInfo.estateName!,
                               style: TextStyle(
-                                color: Themes.primary,
+                                color: App.theme.primaryColor,
                                 fontSize: 11,
                                 fontFamily: "IranSansMedium",
                               ),
@@ -79,7 +79,7 @@ extension Profile on _ConsultantProfileScreen {
                           Text(
                             consultantInfo.bio ?? "",
                             maxLines: 2,
-                            style: TextStyle(color: Themes.textGrey, fontSize: 11),
+                            style: TextStyle(color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey, fontSize: 11),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -102,7 +102,7 @@ extension Profile on _ConsultantProfileScreen {
                                 child: Text(
                                   !showComment ? "نمایش نظرات (${comments.length})" : "فایل های مشاور",
                                   style: TextStyle(
-                                    color: Themes.text,
+                                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                     fontFamily: "IranSansBold",
                                     fontSize: 9,
                                   ),

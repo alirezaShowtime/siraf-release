@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 
 class MyAudioWave extends StatefulWidget {
   @override
@@ -9,12 +9,12 @@ class MyAudioWave extends StatefulWidget {
 
   double progress;
   Color barColor;
-  Color activeBarColor;
+  Color? activeBarColor;
 
   MyAudioWave({
     this.progress = 0.0,
     this.barColor = Colors.white60,
-    this.activeBarColor = Themes.primary,
+    this.activeBarColor,
   });
 }
 
@@ -43,7 +43,7 @@ class _MyAudioWave extends State<MyAudioWave> {
           for (int i = 0; i < heightBars.length; i++)
             bar(
               heightBars[i],
-              color: i < activeBar ? widget.activeBarColor : widget.barColor,
+              color: i < activeBar ? widget.activeBarColor ?? App.theme.primaryColor : widget.barColor,
             ),
         ],
       ),

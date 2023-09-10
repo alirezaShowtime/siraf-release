@@ -18,7 +18,7 @@ extension SearchBar on _ConsultantProfileScreen {
             child: Container(
               decoration: BoxDecoration(
                 border: Border(
-                  right: BorderSide(color: Themes.text, width: 1),
+                  right: BorderSide(color: App.theme.textTheme.bodyLarge?.color ?? Themes.text, width: 1),
                 ),
               ),
               child: TextField2(
@@ -35,7 +35,7 @@ extension SearchBar on _ConsultantProfileScreen {
                   contentPadding: EdgeInsets.zero,
                 ),
                 style: TextStyle(
-                  color: Themes.text,
+                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                   fontSize: 11,
                 ),
                 textInputAction: TextInputAction.search,

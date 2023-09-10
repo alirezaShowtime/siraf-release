@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:auto_direction/auto_direction.dart';
 import 'package:flutter/material.dart';
 import 'package:linkwell/linkwell.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/enums/message_owner.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/extensions/string_extension.dart';
@@ -122,7 +123,7 @@ class MessageWidgetState extends State<MessageWidget> {
       blRadius: 18,
       brRadius: 0,
       fileNameColor: Colors.white,
-      background: Themes.primary,
+      background: App.theme.primaryColor,
       textColor: Colors.white,
       primaryColor: Colors.white,
       secondTextColor: Color(0x8bc0d0e0),
@@ -139,7 +140,7 @@ class MessageWidgetState extends State<MessageWidget> {
       fileNameColor: Colors.black,
       background: Colors.grey.shade200,
       textColor: Colors.black,
-      primaryColor: Themes.primary,
+      primaryColor: App.theme.primaryColor,
       secondTextColor: Colors.grey.shade400,
       textDirection: TextDirection.rtl,
     );

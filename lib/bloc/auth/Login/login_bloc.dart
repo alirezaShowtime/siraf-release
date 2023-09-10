@@ -39,9 +39,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('mobile', event.numberPhone);
 
-    //todo: remove it
-    notify(jDecode(res.body)['data'].toString(), duration: Duration(seconds: 4));
-
     return emit(LoginSuccess(numberPhone: event.numberPhone));
   }
 }

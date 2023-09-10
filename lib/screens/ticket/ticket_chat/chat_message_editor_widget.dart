@@ -7,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:siraf3/bloc/ticket/sendMessage/send_message_bloc.dart';
 import 'package:siraf3/extensions/file_extension.dart';
 import 'package:siraf3/extensions/list_extension.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/themes.dart';
@@ -70,7 +71,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
                         textDirection: TextDirection.ltr,
                         child: btn(
                           iconData: Icons.send,
-                          color: Themes.primary,
+                          color: App.theme.primaryColor,
                           onTap: sendMessage,
                         ),
                       ),
@@ -216,9 +217,9 @@ class _ChatMessageEditor extends State<ChatMessageEditor> with SingleTickerProvi
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
-              color: Themes.primary.withOpacity(0.1),
+              color: App.theme.primaryColor.withOpacity(0.1),
             ),
-            child: Icon(icon, color: Themes.primary),
+            child: Icon(icon, color: App.theme.primaryColor),
           ),
           Expanded(
             child: Column(

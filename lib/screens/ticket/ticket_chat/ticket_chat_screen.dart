@@ -10,6 +10,7 @@ import 'package:siraf3/bloc/ticket/messages/ticket_messages_bloc.dart';
 import 'package:siraf3/bloc/ticket/sendMessage/send_message_bloc.dart';
 import 'package:siraf3/controller/message_upload_controller.dart';
 import 'package:siraf3/dialog.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/ticket.dart';
 import 'package:siraf3/models/ticket_details.dart';
@@ -226,7 +227,7 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
                   ),
                   child: Text(
                     "تیکت بسته شده است",
-                    style: TextStyle(color: Themes.primary, fontSize: 12, fontFamily: "IranSansBold"),
+                    style: TextStyle(color: App.theme.primaryColor, fontSize: 12, fontFamily: "IranSansBold"),
                   ),
                 ),
               if (!ticketIsClosed)

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 
 class MyListView extends StatefulWidget {
   @override
@@ -34,7 +35,7 @@ class _MyListView extends State<MyListView> {
               Image.asset("assets/images/no-result.png"),
               Text(
                 widget.emptyText,
-                style: TextStyle(color: Themes.text, fontSize: 11, fontFamily: "IranSansBold"),
+                style: TextStyle(color: App.theme.textTheme.bodyLarge?.color ?? Themes.text, fontSize: 11, fontFamily: "IranSansBold"),
               ),
             ],
           ),

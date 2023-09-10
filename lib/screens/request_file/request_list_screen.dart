@@ -356,7 +356,7 @@ class _RequestListScreen extends State<RequestListScreen> {
               ),
               elevation: 0.2,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-              fillColor: Themes.primary,
+              fillColor: App.theme.primaryColor,
             ),
           ],
         ),
@@ -364,7 +364,7 @@ class _RequestListScreen extends State<RequestListScreen> {
     }
 
     return RefreshIndicator(
-      color: Themes.primary,
+      color: App.theme.primaryColor,
       onRefresh: () async {
         getRequests();
       },

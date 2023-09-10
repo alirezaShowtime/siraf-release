@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 
 class DialogButton extends StatefulWidget {
   @override
@@ -7,12 +7,12 @@ class DialogButton extends StatefulWidget {
 
   void Function()? onPressed;
   String labelText;
-  Color color;
+  Color? color;
 
   DialogButton({
     required this.labelText,
     this.onPressed,
-    this.color = Themes.primary,
+    this.color,
   });
 }
 
@@ -20,7 +20,7 @@ class _DialogButton extends State<DialogButton> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: widget.color,
+      color: widget.color ?? App.theme.primaryColor,
       child: InkWell(
         onTap: widget.onPressed,
         child: Container(

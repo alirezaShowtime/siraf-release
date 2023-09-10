@@ -38,7 +38,7 @@ class _AnswerItemWidget extends State<AnswerItemWidget> {
                   Text(
                     widget.comment.name ?? "ناشناس",
                     style: TextStyle(
-                      color: Themes.textGrey,
+                      color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                       fontSize: 11,
                     ),
                   ),
@@ -47,7 +47,7 @@ class _AnswerItemWidget extends State<AnswerItemWidget> {
               Text(
                 widget.comment.createDate ?? "",
                 style: TextStyle(
-                  color: Themes.textGrey,
+                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                   fontSize: 9,
                 ),
               ),
@@ -58,7 +58,7 @@ class _AnswerItemWidget extends State<AnswerItemWidget> {
             widget.comment.comment ?? "",
             style: TextStyle(
               fontSize: 11,
-              color: Themes.textGrey,
+              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
             ),
           ),
         ],

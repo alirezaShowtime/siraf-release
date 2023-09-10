@@ -15,6 +15,7 @@ class BlockBtn extends StatefulWidget {
   double radius;
   bool isLoading;
   bool disable;
+  double? textSize;
 
   BlockBtn({
     required this.text,
@@ -25,6 +26,7 @@ class BlockBtn extends StatefulWidget {
     this.radius = 15,
     this.isLoading = false,
     this.disable = false,
+    this.textSize,
   });
 }
 
@@ -61,7 +63,7 @@ class _BlockBtn extends State<BlockBtn> {
     return Text(
       widget.text,
       style: TextStyle(
-        fontSize: 15,
+        fontSize: widget.textSize ?? 15,
         color: Colors.white,
         fontFamily: "IranSansBold",
       ),

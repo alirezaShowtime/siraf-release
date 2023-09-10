@@ -19,7 +19,7 @@ extension SearchBar on _EstateProfileScreen {
               decoration: BoxDecoration(
                 border: Border(
                   right: BorderSide(
-                    color: App.isDark ? Themes.textGrey : Themes.text,
+                    color: App.isDark ? App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey : App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                     width: 1,
                   ),
                 ),
@@ -56,7 +56,7 @@ extension SearchBar on _EstateProfileScreen {
             badgeContent: Text(''),
             showBadge: filterData.hasFilter(),
             position: badges.BadgePosition.custom(top: -15, end: -6),
-            badgeStyle: badges.BadgeStyle(badgeColor: Themes.primary),
+            badgeStyle: badges.BadgeStyle(badgeColor: App.theme.primaryColor),
             child: IconButton(
               onPressed: openFileBox,
               icon: icon(OctIcons.sliders_16, size: 20),

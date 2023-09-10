@@ -48,6 +48,8 @@ import '../messageWidgets/chat_message_widget.dart';
 import '../message_widget_list.dart';
 import '../sendingMessageWidgets/chat_sending_message_widget.dart';
 
+import 'package:siraf3/main.dart';
+
 part 'bloc_listeners.dart';
 part 'chat_message_search.dart';
 part 'chat_scroll_controller.dart';

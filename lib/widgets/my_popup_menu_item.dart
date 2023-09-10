@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 
 PopupMenuItem<T> MyPopupMenuItem<T>({
@@ -23,12 +24,12 @@ PopupMenuItem<T> MyPopupMenuItem<T>({
           textDirection: withSpace ? TextDirection.ltr : null,
           mainAxisAlignment: withSpace ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
           children: [
-            if (icon != null || iconWidget != null || withSpace) iconWidget != null ? iconWidget : Icon(icon, size: 24),
+            if (icon != null || iconWidget != null || withSpace) iconWidget != null ? iconWidget : Icon(icon, size: 24, color: App.theme.iconTheme.color,),
             if (iconWidget != null || icon != null) SizedBox(width: 10),
             Text(
               label,
               style: TextStyle(
-                color: enable ? Themes.themeData().textTheme.bodyLarge?.color : Colors.grey,
+                color: enable ? App.theme.textTheme.bodyLarge?.color : Colors.grey,
                 fontSize: 11,
                 fontFamily: "IranSansMedium",
               ),

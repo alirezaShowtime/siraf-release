@@ -218,7 +218,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
       actions: [
         IconButton(
           onPressed: estateProfile?.shareLink == null ? null : share,
-          disabledColor: estateProfile?.shareLink == null ? Colors.grey : Themes.text,
+          disabledColor: estateProfile?.shareLink == null ? Colors.grey : App.theme.textTheme.bodyLarge?.color ?? Themes.text,
           icon: icon(Icons.share_rounded, size: 22),
         ),
         MyPopupMenuButton(
@@ -287,7 +287,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
               Text(
                 title,
                 style: TextStyle(
-                  color: Themes.text,
+                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                   fontWeight: FontWeight.bold,
                   fontSize: 10,
                 ),
@@ -297,7 +297,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
                 (value ?? 0).toString(),
                 style: TextStyle(
                   fontSize: 11,
-                  color: Themes.text,
+                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                   fontFamily: "IranSansBold",
                 ),
               ),
@@ -370,7 +370,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   style: TextStyle(
-                    color: Themes.textGrey,
+                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                     fontSize: 9,
                     fontFamily: "IranSansBold",
                   ),

@@ -13,6 +13,7 @@ import 'package:siraf3/models/user.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_text_icon_button.dart';
 import 'package:siraf3/widgets/text_form_field_2.dart';
 import 'package:siraf3/widgets/usefull/button/button_primary.dart';
@@ -73,7 +74,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return BlocProvider(
       create: (_) => editProfileBloc,
       child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: Themes.getSystemUiOverlayStyleTransparent(),
+        value: App.getSystemUiOverlayTransparentLight(),
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           body: Column(
@@ -84,15 +85,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Positioned(
                     top: MediaQuery.of(context).padding.top,
                     right: 7,
-                    child: IconButton(
+                    child: MyBackButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(
-                        CupertinoIcons.back,
-                        color: Themes.iconLight,
-                        size: 20,
-                      ),
+                      color: Themes.textLight,
                     ),
                   ),
                   Positioned(
@@ -105,7 +102,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       icon: Icon(
                         CupertinoIcons.camera,
                         size: 24,
-                        color: Colors.white,
+                        color: Themes.iconLight,
                       ),
                     ),
                   ),
@@ -124,7 +121,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         "نام و نام خانوادگی",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color,
                           fontFamily: "IranSansBold",
                         ),
                       ),
@@ -139,13 +136,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                       ),
                       SizedBox(
-                        height: 4,
+                        height: 10,
                       ),
                       TextFormField2(
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Themes.icon,
+                              color: App.theme.dividerColor,
+                              width: 0.5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: App.theme.dividerColor,
                               width: 0.5,
                             ),
                             borderRadius: BorderRadius.circular(5),
@@ -159,14 +163,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               width: 1.5,
                             ),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           disabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               width: 1.5,
                             ),
                             borderRadius: BorderRadius.circular(5),
@@ -182,14 +186,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           contentPadding: EdgeInsets.symmetric(
                               horizontal: 10, vertical: 10),
                         ),
-                        style: TextStyle(fontSize: 14, color: Themes.text),
+                        style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
                         onChanged: (value) {
                           setState(() {
                             name = value;
                           });
                         },
                         textInputAction: TextInputAction.next,
-                        cursorColor: Themes.primary,
+                        cursorColor: App.theme.primaryColor,
                         maxLines: 1,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -203,97 +207,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         }),
                         controller: nameController,
                       ),
-                      // SizedBox(height: 14),
-                      // Text(
-                      //   "بیوگرافی",
-                      //   style: TextStyle(
-                      //     fontSize: 14,
-                      //     color: Themes.text,
-                      //     fontFamily: "IranSansBold",
-                      //   ),
-                      // ),
-                      // SizedBox(
-                      //   height: 4,
-                      // ),
-                      // Text(
-                      //   "بیو گرافی مختضری از خودتان بنویسید",
-                      //   style: TextStyle(
-                      //     fontSize: 11.5,
-                      //     fontFamily: "IranSansMedium",
-                      //   ),
-                      // ),
-                      // SizedBox(
-                      //   height: 4,
-                      // ),
-                      // TextFormField2(
-                      //   decoration: InputDecoration(
-                      //     border: OutlineInputBorder(
-                      //       borderSide: BorderSide(
-                      //         color: Themes.icon,
-                      //         width: 0.5,
-                      //       ),
-                      //       borderRadius: BorderRadius.circular(5),
-                      //     ),
-                      //     errorBorder: OutlineInputBorder(
-                      //       borderSide: BorderSide(
-                      //         color: Colors.red,
-                      //         width: 1.5,
-                      //       ),
-                      //       borderRadius: BorderRadius.circular(5),
-                      //     ),
-                      //     focusedBorder: OutlineInputBorder(
-                      //       borderSide: BorderSide(
-                      //         color: Themes.primary,
-                      //         width: 1.5,
-                      //       ),
-                      //       borderRadius: BorderRadius.circular(5),
-                      //     ),
-                      //     disabledBorder: OutlineInputBorder(
-                      //       borderSide: BorderSide(
-                      //         color: Themes.textGrey,
-                      //         width: 1.5,
-                      //       ),
-                      //       borderRadius: BorderRadius.circular(5),
-                      //     ),
-                      //     focusedErrorBorder: OutlineInputBorder(
-                      //       borderSide: BorderSide(
-                      //         color: Colors.red,
-                      //         width: 1.5,
-                      //       ),
-                      //       borderRadius: BorderRadius.circular(5),
-                      //     ),
-                      //     hintStyle:
-                      //         TextStyle(fontSize: 14, color: Themes.textGrey),
-                      //     contentPadding: EdgeInsets.symmetric(
-                      //         horizontal: 10, vertical: 10),
-                      //   ),
-                      //   style: TextStyle(
-                      //     fontSize: 14,
-                      //     color: App.theme.textTheme.bodyLarge?.color,
-                      //   ),
-                      //   onChanged: (value) {
-                      //     setState(() {
-                      //       description = value;
-                      //     });
-                      //   },
-                      //   cursorColor: Themes.primary,
-                      //   maxLines: 50,
-                      //   minLines: 6,
-                      //   validator: (value) {
-                      //     if (value == null || value.isEmpty) {
-                      //       return "توضیحات فایل را وارد کنید";
-                      //     }
-                      //     if (value.length <= 40) {
-                      //       return "حداقل باید 40 کاراکتر بنویسید";
-                      //     }
-                      //   },
-                      //   onSaved: ((newValue) {
-                      //     setState(() {
-                      //       description = newValue;
-                      //     });
-                      //   }),
-                      //   controller: descriptionController,
-                      // ),
                     ],
                   ),
                 ),
@@ -310,7 +223,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Themes.primary,
+                          color: App.theme.primaryColor,
                         ),
                         child: Loading(
                           color: Colors.white,
@@ -344,7 +257,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           image: AssetImage("assets/images/menu_background.png"),
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
-            App.isDark ? DarkThemes.background : Themes.primary,
+            App.isDark ? DarkThemes.background : App.theme.primaryColor,
             BlendMode.hardLight,
           ),
         ),
@@ -357,7 +270,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           size: 120,
           errorWidget: _profileDefaultWidget(),
           loadingWidget: Container(
-            color: Themes.primary.withOpacity(0.7),
+            color: App.theme.primaryColor.withOpacity(0.7),
             width: 120,
             height: 120,
             alignment: Alignment.center,
@@ -373,7 +286,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   _profileDefaultWidget() => Container(
-        color: Themes.primary.withOpacity(0.7),
+        color: App.theme.primaryColor.withOpacity(0.7),
         width: 120,
         height: 120,
         alignment: Alignment.center,

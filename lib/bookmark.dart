@@ -75,7 +75,7 @@ class Bookmark {
                     ),
                     Divider(
                       height: 1,
-                      color: Themes.textGrey,
+                      color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),

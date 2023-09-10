@@ -73,118 +73,121 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => propertyBloc,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "ثبت فایل",
-            style: TextStyle(
-              fontSize: 15,
-            ),
-          ),
-          automaticallyImplyLeading: false,
-          titleSpacing: 0,
-          actions: [
-            IconButton(
-              onPressed: () {
-                showResetDialog();
-              },
-              icon: Icon(
-                Icons.refresh,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: App.getSystemUiOverlay(),
+      child: BlocProvider(
+        create: (_) => propertyBloc,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              "ثبت فایل",
+              style: TextStyle(
+                fontSize: 15,
               ),
             ),
-          ],
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              CupertinoIcons.back,
-            ),
-          ),
-        ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15),
-          child: Stack(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 15),
-                      Text(
-                        "مشخصات کلی",
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Themes.primary,
-                          fontFamily: "IranSansBold",
-                        ),
-                      ),
-                      SizedBox(
-                        height: 14,
-                      ),
-                      section(
-                        title: "دسته بندی",
-                        hint: "انتخاب",
-                        value: category != null ? categories.map((e) => e.name).join(' > ') : null,
-                        onTap: _selectCategory,
-                      ),
-                      SizedBox(
-                        height: 14,
-                      ),
-                      section(
-                        title: "شهر",
-                        hint: "انتخاب",
-                        value: city?.name,
-                        onTap: _selectCity,
-                      ),
-                      SizedBox(
-                        height: 14,
-                      ),
-                      section(
-                        title: "موقعیت بر روی نقشه",
-                        hint: "تعیین",
-                        value: location != null ? "تغییر" : "تعیین",
-                        onTap: _chooseLocation,
-                      ),
-                      SizedBox(
-                        height: 14,
-                      ),
-                      section(
-                        title: "آدرس",
-                        hint: "تعیین",
-                        value: address != null ? "تغییر" : "تعیین",
-                        onTap: showAddressDialog,
-                      ),
-                      if (category != null) BlocBuilder<PropertyBloc, PropertyState>(builder: _buildPropertiesBloc),
-                      SizedBox(height: 70),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 15,
-                left: 0,
-                child: MaterialButton(
-                  onPressed: next,
-                  color: Themes.primary,
-                  child: Text(
-                    "بعدی",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  minWidth: 100,
-                  height: 45,
+            automaticallyImplyLeading: false,
+            titleSpacing: 0,
+            actions: [
+              IconButton(
+                onPressed: () {
+                  showResetDialog();
+                },
+                icon: Icon(
+                  Icons.refresh,
                 ),
               ),
             ],
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                CupertinoIcons.back,
+              ),
+            ),
+          ),
+          body: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Stack(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 15),
+                        Text(
+                          "مشخصات کلی",
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: App.theme.primaryColor,
+                            fontFamily: "IranSansBold",
+                          ),
+                        ),
+                        SizedBox(
+                          height: 14,
+                        ),
+                        section(
+                          title: "دسته بندی",
+                          hint: "انتخاب",
+                          value: category != null ? categories.map((e) => e.name).join(' > ') : null,
+                          onTap: _selectCategory,
+                        ),
+                        SizedBox(
+                          height: 14,
+                        ),
+                        section(
+                          title: "شهر",
+                          hint: "انتخاب",
+                          value: city?.name,
+                          onTap: _selectCity,
+                        ),
+                        SizedBox(
+                          height: 14,
+                        ),
+                        section(
+                          title: "موقعیت بر روی نقشه",
+                          hint: "تعیین",
+                          value: location != null ? "تغییر" : "تعیین",
+                          onTap: _chooseLocation,
+                        ),
+                        SizedBox(
+                          height: 14,
+                        ),
+                        section(
+                          title: "آدرس",
+                          hint: "تعیین",
+                          value: address != null ? "تغییر" : "تعیین",
+                          onTap: showAddressDialog,
+                        ),
+                        if (category != null) BlocBuilder<PropertyBloc, PropertyState>(builder: _buildPropertiesBloc),
+                        SizedBox(height: 70),
+                      ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 15,
+                  left: 0,
+                  child: MaterialButton(
+                    onPressed: next,
+                    color: App.theme.primaryColor,
+                    child: Text(
+                      "بعدی",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    minWidth: 100,
+                    height: 45,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -241,7 +244,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                     "ویژگی ها",
                     style: TextStyle(
                       fontSize: 15,
-                      color: Themes.primary,
+                      color: App.theme.primaryColor,
                       fontFamily: "IranSansBold",
                     ),
                   ),
@@ -312,7 +315,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                     "امکانات",
                     style: TextStyle(
                       fontSize: 15,
-                      color: Themes.primary,
+                      color: App.theme.primaryColor,
                       fontFamily: "IranSansBold",
                     ),
                   ),
@@ -700,7 +703,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                           border: InputBorder.none,
                           hintText: "آدرس را بصورت دقیق وارد کنید. (آدرس به صورت عمومی نمایش داده نمی شود)",
                           hintStyle: TextStyle(
-                            color: Themes.textGrey,
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                             fontSize: 13,
                             fontFamily: "IranSans",
                           ),
@@ -737,7 +740,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               child: Text(
                                 "تایید",
@@ -810,7 +813,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                             border: InputBorder.none,
                             hintText: hints.containsKey(property.value) ? hints[property.value] : "${property.name!} را وارد کنید",
                             hintStyle: TextStyle(
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               fontSize: 13,
                               fontFamily: "IranSans",
                             ),
@@ -924,7 +927,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -1000,7 +1003,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -1075,7 +1078,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                             border: InputBorder.none,
                             hintText: hints.containsKey(property.value) ? hints[property.value] : "${property.name!} را وارد کنید",
                             hintStyle: TextStyle(
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               fontSize: 13,
                               fontFamily: "IranSans",
                             ),
@@ -1185,7 +1188,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -1262,7 +1265,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -1328,7 +1331,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
             bottom: isLast
                 ? BorderSide.none
                 : BorderSide(
-                    color: Themes.textGrey.withOpacity(0.5),
+                    color: (App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey).withOpacity(0.5),
                     width: 0.7,
                   ),
           ),

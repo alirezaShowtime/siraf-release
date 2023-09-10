@@ -4,6 +4,7 @@ import 'package:introduction_screen/introduction_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({Key? key}) : super(key: key);
@@ -48,11 +49,11 @@ class _IntroScreenState extends State<IntroScreen> {
               showDoneButton: true,
               next: Text(
                 "بعدی",
-                style: TextStyle(color: Themes.primary, fontSize: 16),
+                style: TextStyle(color: App.theme.primaryColor, fontSize: 16),
               ),
               done: Text(
                 "شروع",
-                style: TextStyle(color: Themes.primary, fontSize: 16),
+                style: TextStyle(color: App.theme.primaryColor, fontSize: 16),
               ),
               onDone: () async {
                 (await SharedPreferences.getInstance()).setBool("IS_INTRO_SHOW", true);
@@ -68,8 +69,8 @@ class _IntroScreenState extends State<IntroScreen> {
                 ),
               ),
               dotsDecorator: DotsDecorator(
-                  color: Themes.textGrey,
-                  activeColor: Themes.primary,
+                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
+                  activeColor: App.theme.primaryColor,
                   shape: CircleBorder(),
                   size: Size(7, 7),
                   activeShape: RoundedRectangleBorder(

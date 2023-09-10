@@ -7,6 +7,7 @@ import 'package:siraf3/models/category.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:siraf3/main.dart';
 
 class CategorySelectScreen extends StatefulWidget {
   bool filterIsAllCategories;
@@ -97,7 +98,7 @@ class _CategorySelectScreenState extends State<CategorySelectScreen> {
     if (categories.isEmpty) {
       return Text(
         "موردی یافت نشد",
-        style: TextStyle(color: Themes.text, fontSize: 18),
+        style: TextStyle(color: App.theme.textTheme.bodyLarge?.color ?? Themes.text, fontSize: 18),
       );
     }
     var showableList = categories
@@ -139,7 +140,7 @@ class _CategorySelectScreenState extends State<CategorySelectScreen> {
             bottom: isLast
                 ? BorderSide.none
                 : BorderSide(
-                    color: Themes.textGrey.withOpacity(0.5),
+                    color: (App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey).withOpacity(0.5),
                     width: 0.7,
                   ),
           ),

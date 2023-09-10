@@ -10,7 +10,7 @@ extension AddCommentWidget on _EstateProfileScreen {
           Text(
             "امتیاز شما",
             style: TextStyle(
-              color: Themes.text,
+              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
               fontFamily: "IranSansBold",
               fontSize: 12,
             ),
@@ -39,7 +39,7 @@ extension AddCommentWidget on _EstateProfileScreen {
                   sendCommentOrRate(estateId);
                 });
               },
-              color: Themes.primary,
+              color: App.theme.primaryColor,
               elevation: 3,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),

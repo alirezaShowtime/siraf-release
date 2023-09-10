@@ -376,7 +376,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
             ),
             Divider(
               height: 0.3,
-              color: Themes.textGrey.withOpacity(0.5),
+              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
             )
           ],
         ),
@@ -440,7 +440,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
           ),
           Divider(
             height: 0.3,
-            color: Themes.textGrey.withOpacity(0.5),
+            color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
           ),
           SizedBox(
             height: 10,
@@ -484,7 +484,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
           ),
           Divider(
             height: 0.3,
-            color: Themes.textGrey.withOpacity(0.5),
+            color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
           )
         ],
       ),

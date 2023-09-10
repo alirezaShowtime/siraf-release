@@ -18,7 +18,7 @@ extension ProfileDetail on _EstateProfileScreen {
                     "جزییات بیشتر در دسترس نیست",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Themes.text,
+                      color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                       fontFamily: "IranSansBold",
                       fontSize: 10,
                     ),
@@ -55,7 +55,7 @@ extension ProfileDetail on _EstateProfileScreen {
                           "تماس",
                           style: TextStyle(
                             fontSize: 10,
-                            color: Themes.primary,
+                            color: App.theme.primaryColor,
                             fontFamily: "IranSansBold",
                           ),
                         ),
@@ -69,7 +69,7 @@ extension ProfileDetail on _EstateProfileScreen {
                   borderRadius: BorderRadius.circular(5),
                   child: Text(
                     "شماره مدیر : ${estateProfile.phoneNumber ?? "??"}",
-                    style: TextStyle(fontSize: 11, fontFamily: "IranSansMedium", color: Themes.primary),
+                    style: TextStyle(fontSize: 11, fontFamily: "IranSansMedium", color: App.theme.primaryColor),
                   ),
                 ),
               if (estateProfile.lat != null && estateProfile.long != null)
@@ -155,7 +155,7 @@ extension ProfileDetail on _EstateProfileScreen {
                     "مشاورین ${estateProfile.name}",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Themes.text,
+                      color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                       fontSize: 13,
                     ),
                   ),

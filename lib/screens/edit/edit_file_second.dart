@@ -151,7 +151,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
         title: Text(
           "ویرایش فایل ${widget.file.id!}",
           style: TextStyle(
-            color: Themes.text,
+            color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
             fontSize: 15,
           ),
         ),
@@ -205,12 +205,12 @@ class _EditFileSecondState extends State<EditFileSecond> {
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontFamily: "IranSansMedium",
-                                  color: Themes.text,
+                                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                 ),
                               ),
                               Icon(
                                 CupertinoIcons.right_chevron,
-                                color: Themes.text,
+                                color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                 size: 17,
                               ),
                             ],
@@ -221,7 +221,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         height: 10,
                       ),
                       Divider(
-                        color: Themes.textGrey.withOpacity(0.5),
+                        color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
                         height: 1,
                       ),
                       SizedBox(
@@ -231,7 +231,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         "آپلود فایل های تصویری",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.primary,
+                          color: App.theme.primaryColor,
                           fontFamily: "IranSansBold",
                         ),
                       ),
@@ -243,7 +243,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         style: TextStyle(
                           fontSize: 11.5,
                           fontFamily: "IranSansMedium",
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                         ),
                       ),
                       SizedBox(
@@ -296,7 +296,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         "عنوان",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.primary,
+                          color: App.theme.primaryColor,
                           fontFamily: "IranSansBold",
                         ),
                       ),
@@ -308,7 +308,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         style: TextStyle(
                           fontSize: 11.5,
                           fontFamily: "IranSansMedium",
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                         ),
                       ),
                       SizedBox(
@@ -333,14 +333,14 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               width: 1.5,
                             ),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           disabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               width: 1.5,
                             ),
                             borderRadius: BorderRadius.circular(5),
@@ -355,14 +355,14 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           hintStyle: TextStyle(fontSize: 14),
                           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         ),
-                        style: TextStyle(fontSize: 14, color: Themes.text),
+                        style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
                         onChanged: (value) {
                           setState(() {
                             title = value;
                           });
                         },
                         textInputAction: TextInputAction.next,
-                        cursorColor: Themes.primary,
+                        cursorColor: App.theme.primaryColor,
                         maxLines: 1,
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
@@ -392,7 +392,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         "نام و نام خانوادگی مالک",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                           fontFamily: "IranSansBold",
                         ),
                       ),
@@ -418,14 +418,14 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               width: 1.5,
                             ),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           disabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               width: 1.5,
                             ),
                             borderRadius: BorderRadius.circular(5),
@@ -440,14 +440,14 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           hintStyle: TextStyle(fontSize: 14),
                           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         ),
-                        style: TextStyle(fontSize: 14, color: Themes.text),
+                        style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
                         onChanged: (value) {
                           setState(() {
                             ownerName = value;
                           });
                         },
                         textInputAction: TextInputAction.next,
-                        cursorColor: Themes.primary,
+                        cursorColor: App.theme.primaryColor,
                         maxLines: 1,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -466,7 +466,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         "شماره تماس مالک",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                           fontFamily: "IranSansBold",
                         ),
                       ),
@@ -492,14 +492,14 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               width: 1.5,
                             ),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           disabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               width: 1.5,
                             ),
                             borderRadius: BorderRadius.circular(5),
@@ -517,14 +517,14 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         ),
                         maxLength: 11,
                         keyboardType: TextInputType.number,
-                        style: TextStyle(fontSize: 14, color: Themes.text),
+                        style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
                         onChanged: (value) {
                           setState(() {
                             ownerPhone = value;
                           });
                         },
                         textInputAction: TextInputAction.next,
-                        cursorColor: Themes.primary,
+                        cursorColor: App.theme.primaryColor,
                         maxLines: 1,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -551,7 +551,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         "نام و نام خانوادگی جهت هماهنگی بازدید (اختیاری)",
                         style: TextStyle(
                           fontSize: 13,
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                           fontFamily: "IranSansBold",
                         ),
                       ),
@@ -577,14 +577,14 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               width: 1.5,
                             ),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           disabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               width: 1.5,
                             ),
                             borderRadius: BorderRadius.circular(5),
@@ -599,7 +599,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           hintStyle: TextStyle(fontSize: 14),
                           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         ),
-                        style: TextStyle(fontSize: 14, color: Themes.text),
+                        style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
                         validator: (v) => null,
                         onChanged: (value) {
                           setState(() {
@@ -607,7 +607,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           });
                         },
                         textInputAction: TextInputAction.next,
-                        cursorColor: Themes.primary,
+                        cursorColor: App.theme.primaryColor,
                         maxLines: 1,
                         onSaved: ((newValue) {
                           setState(() {
@@ -623,7 +623,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         "شماره تماس بازدید (اختیاری)",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                           fontFamily: "IranSansBold",
                         ),
                       ),
@@ -649,14 +649,14 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               width: 1.5,
                             ),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           disabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               width: 1.5,
                             ),
                             borderRadius: BorderRadius.circular(5),
@@ -673,7 +673,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           helperStyle: TextStyle(fontSize: 0.01),
                         ),
                         keyboardType: TextInputType.number,
-                        style: TextStyle(fontSize: 14, color: Themes.text),
+                        style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
                         onChanged: (value) {
                           setState(() {
                             visitPhone = value;
@@ -692,7 +692,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                         },
                         maxLength: 11,
                         textInputAction: TextInputAction.next,
-                        cursorColor: Themes.primary,
+                        cursorColor: App.theme.primaryColor,
                         maxLines: 1,
                         onSaved: ((newValue) {
                           setState(() {
@@ -711,7 +711,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                 left: 0,
                 child: MaterialButton(
                   onPressed: next,
-                  color: Themes.primary,
+                  color: App.theme.primaryColor,
                   child: Text(
                     "بعدی",
                     style: TextStyle(
@@ -827,7 +827,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                       children: [
                         Icon(
                           CupertinoIcons.photo,
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                           size: 26,
                         ),
                         SizedBox(
@@ -838,7 +838,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           style: TextStyle(
                             fontSize: 14,
                             fontFamily: "IranSansMedium",
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                           ),
                         ),
                       ],
@@ -853,7 +853,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                       children: [
                         Icon(
                           CupertinoIcons.photo_camera,
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                           size: 26,
                         ),
                         SizedBox(
@@ -864,7 +864,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           style: TextStyle(
                             fontSize: 14,
                             fontFamily: "IranSansMedium",
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                           ),
                         ),
                       ],
@@ -879,7 +879,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                       children: [
                         Icon(
                           CupertinoIcons.video_camera,
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                           size: 26,
                         ),
                         SizedBox(
@@ -890,7 +890,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           style: TextStyle(
                             fontSize: 14,
                             fontFamily: "IranSansMedium",
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                           ),
                         ),
                       ],
@@ -991,7 +991,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.backgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -1012,7 +1012,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                                   topLeft: Radius.circular(15),
                                   topRight: Radius.circular(15),
                                 ),
-                                color: Themes.primary,
+                                color: App.theme.primaryColor,
                               ),
                               height: 40,
                               alignment: Alignment.center,
@@ -1195,7 +1195,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
             bottom: isLast
                 ? BorderSide.none
                 : BorderSide(
-                    color: Themes.textGrey.withOpacity(0.5),
+                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
                     width: 0.7,
                   ),
           ),
@@ -1207,7 +1207,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
             value,
             style: TextStyle(
               fontSize: 13,
-              color: Themes.text,
+              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
             ),
           ),
         ),
@@ -1306,7 +1306,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.backgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -1324,14 +1324,14 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           border: InputBorder.none,
                           hintText: "عنوان را وارد کنید",
                           hintStyle: TextStyle(
-                            color: Themes.textGrey,
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                             fontSize: 13,
                             fontFamily: "IranSans",
                           ),
                         ),
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                           fontSize: 13,
                           fontFamily: "IranSansMedium",
                         ),
@@ -1357,7 +1357,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(

@@ -298,7 +298,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: _showFileOnMyLocation ? Themes.primary : App.theme.dialogBackgroundColor,
+                    color: _showFileOnMyLocation ? App.theme.primaryColor : App.theme.dialogBackgroundColor,
                     borderRadius: BorderRadius.circular(100),
                     boxShadow: [
                       BoxShadow(
@@ -320,7 +320,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                     style: TextStyle(
                       fontSize: 15,
                       fontFamily: "IranSansMedium",
-                      color: _showFileOnMyLocation ? Themes.textLight : null,
+                      color: _showFileOnMyLocation ? App.theme.canvasColor : null,
                     ),
                   ),
                 ),
@@ -566,7 +566,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.backgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -602,14 +602,14 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                               Text(
                                 "مدیریت : " + estate.managerName!,
                                 style: TextStyle(
-                                  color: Themes.textGrey,
+                                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                                   fontSize: 12,
                                 ),
                               ),
                               Text(
                                 "امتیار ${((estate.rate ?? 0.0) * 10).round() / 10} از 5",
                                 style: TextStyle(
-                                  color: Themes.textGrey,
+                                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                                   fontSize: 12,
                                 ),
                               ),
@@ -622,14 +622,14 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                               Text(
                                 "موبایل : ${estate.phoneNumber}",
                                 style: TextStyle(
-                                  color: Themes.textGrey,
+                                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                                   fontSize: 12,
                                 ),
                               ),
                               Text(
                                 "تلفن : ${estate.telephoneNumber ?? "نامشخص"}",
                                 style: TextStyle(
-                                  color: Themes.textGrey,
+                                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                                   fontSize: 12,
                                 ),
                               ),
@@ -639,7 +639,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                           Text(
                             "آدرس : ${estate.address}",
                             style: TextStyle(
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               fontSize: 12,
                             ),
                           ),
@@ -664,7 +664,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -686,7 +686,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                               onPressed: () {
                                 Navigator.push(context, MaterialPageRoute(builder: (_) => CreateFileFirst(estates: [estate])));
                               },
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -716,7 +716,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                                   bottomLeft: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -782,14 +782,14 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                               Text(
                                 e.name!,
                                 style: TextStyle(
-                                  color: Themes.textLight,
+                                  color: App.theme.canvasColor,
                                   fontSize: 11,
                                 ),
                               ),
                               Text(
                                 "مدیریت : ${e.managerName}",
                                 style: TextStyle(
-                                  color: Themes.textLight,
+                                  color: App.theme.canvasColor,
                                   fontSize: 8,
                                 ),
                               ),

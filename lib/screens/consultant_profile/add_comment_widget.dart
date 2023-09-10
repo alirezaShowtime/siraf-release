@@ -10,7 +10,7 @@ extension AddCommentWidget on _ConsultantProfileScreen {
           Text(
             "امتیاز شما",
             style: TextStyle(
-              color: Themes.text,
+              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
               fontFamily: "IranSansBold",
               fontSize: 12,
             ),
@@ -44,7 +44,7 @@ extension AddCommentWidget on _ConsultantProfileScreen {
             alignment: Alignment.centerLeft,
             child: MaterialButton(
               onPressed: () => sendCommentOrRate(widget.consultantId),
-              color: Themes.primary,
+              color: App.theme.primaryColor,
               elevation: 3,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),

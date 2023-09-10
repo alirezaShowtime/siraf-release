@@ -19,6 +19,7 @@ import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_item.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:siraf3/main.dart';
 
 class TicketListScreen extends StatefulWidget {
   @override
@@ -107,7 +108,7 @@ class _TicketListScreen extends State<TicketListScreen> {
                       "${totalNoSeen}",
                       style: TextStyle(color: Colors.white),
                     ),
-                    badgeStyle: badges.BadgeStyle(badgeColor: Themes.primary, padding: EdgeInsets.symmetric(horizontal: 12)),
+                    badgeStyle: badges.BadgeStyle(badgeColor: App.theme.primaryColor, padding: EdgeInsets.symmetric(horizontal: 12)),
                   ),
               ],
             ),
@@ -169,7 +170,7 @@ class _TicketListScreen extends State<TicketListScreen> {
             ],
           ),
           body: RefreshIndicator(
-            color: Themes.primary,
+            color: App.theme.primaryColor,
             onRefresh: () async {
               ticketsBloc.add(TicketListRequestEvent());
             },
@@ -187,7 +188,7 @@ class _TicketListScreen extends State<TicketListScreen> {
             onPressed: () {
               navigateToCreateTicketScreen();
             },
-            backgroundColor: Themes.primary,
+            backgroundColor: App.theme.primaryColor,
             child: Icon(Icons.add_rounded, color: Colors.white),
           ),
         ),
@@ -239,7 +240,7 @@ class _TicketListScreen extends State<TicketListScreen> {
         },
         child: Container(
           height: 65,
-          foregroundDecoration: !isSelected ? null : BoxDecoration(color: Themes.primary.withOpacity(0.1)),
+          foregroundDecoration: !isSelected ? null : BoxDecoration(color: App.theme.primaryColor.withOpacity(0.1)),
           decoration: BoxDecoration(
             border: Border(
               top: BorderSide(color: Colors.black12, width: 0.5),
@@ -269,7 +270,7 @@ class _TicketListScreen extends State<TicketListScreen> {
                           "${ticket.groupName ?? "ناشناس"} | ",
                           style: TextStyle(
                             fontSize: 12,
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                             fontFamily: "IranSansBold",
                           ),
                         ),
@@ -279,7 +280,7 @@ class _TicketListScreen extends State<TicketListScreen> {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 10,
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                             ),
                           ),
                         ),
@@ -323,7 +324,7 @@ class _TicketListScreen extends State<TicketListScreen> {
                             "${ticket.messageNotSeen}",
                             style: TextStyle(color: Colors.white),
                           ),
-                          badgeStyle: badges.BadgeStyle(badgeColor: Themes.primary, padding: EdgeInsets.symmetric(horizontal: 12)),
+                          badgeStyle: badges.BadgeStyle(badgeColor: App.theme.primaryColor, padding: EdgeInsets.symmetric(horizontal: 12)),
                         ),
                     ],
                   ),

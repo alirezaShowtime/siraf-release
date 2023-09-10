@@ -12,11 +12,11 @@ class DarkThemes {
   static const secondary2 = Color(0xff707070);
   static const text = Color(0xff3d3d3d);
   static const textGrey = Color(0xff707070);
-  static const textLight = Color(0xffffffff);
-  static const textMediumLight = Color(0xffc4c4c4);
+  static const textLight = Color.fromARGB(255, 223, 223, 223);
+  static const textMediumLight = Color.fromARGB(255, 168, 168, 168);
   static const icon = Color(0xff3d3d3d);
   static const iconGrey = Color(0xff707070);
-  static const iconLight = Color(0xffffffff);
+  static const iconLight = Color.fromARGB(255, 223, 223, 223);
 
   static const disabled = Color.fromARGB(255, 180, 180, 180);
 
@@ -35,7 +35,7 @@ class DarkThemes {
         statusBarBrightness: Brightness.dark,
         statusBarIconBrightness: Brightness.dark,
         systemNavigationBarColor: DarkThemes.appBar,
-        systemNavigationBarDividerColor: Color(0x00EEEEEE),
+        systemNavigationBarDividerColor: Color.fromARGB(255, 31, 34, 41),
         systemNavigationBarIconBrightness: Brightness.dark,
       );
 
@@ -44,7 +44,7 @@ class DarkThemes {
         statusBarBrightness: Brightness.dark,
         statusBarIconBrightness: statusBarIconBrightness ?? Brightness.dark,
         systemNavigationBarColor: DarkThemes.appBar,
-        systemNavigationBarDividerColor: Color(0x00EEEEEE),
+        systemNavigationBarDividerColor: Color.fromARGB(255, 31, 34, 41),
         systemNavigationBarIconBrightness: Brightness.dark,
         systemStatusBarContrastEnforced: false,
       );
@@ -66,7 +66,8 @@ class DarkThemes {
         titleTextStyle: TextStyle(
             fontSize: 16,
             color: DarkThemes.textLight,
-            fontFamily: "IranSansMedium"),
+            fontFamily: "IranSansMedium",
+        ),
         titleSpacing: 0,
         elevation: 0.7,
         actionsIconTheme: IconThemeData(
@@ -80,7 +81,7 @@ class DarkThemes {
           textStyle: TextStyle(
         color: DarkThemes.textMediumLight,
       )),
-      shadowColor: Colors.transparent,
+      shadowColor: Color.fromARGB(80, 90, 90, 90),
       textTheme: TextTheme(
         bodyText1: TextStyle(),
         bodyText2: TextStyle(),
@@ -88,6 +89,8 @@ class DarkThemes {
         bodyColor: DarkThemes.textLight,
         displayColor: DarkThemes.textLight,
       ),
+      dividerColor: DarkThemes.textLight.withOpacity(0.5),
+      canvasColor: DarkThemes.text,
     );
   }
 }

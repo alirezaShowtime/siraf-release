@@ -333,7 +333,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   style: TextStyle(
-                    color: Themes.textGrey,
+                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                     fontSize: 9,
                     fontFamily: "IranSansBold",
                   ),

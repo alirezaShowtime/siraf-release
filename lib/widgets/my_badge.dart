@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 
 class MyBadge extends StatefulWidget {
   @override
@@ -21,13 +21,13 @@ class _MyBadge extends State<MyBadge> {
       margin: widget.margin ?? EdgeInsets.symmetric(horizontal: 3),
       alignment: Alignment.center,
       decoration: BoxDecoration(
-          color: Themes.primary.withOpacity(0.2),
+          color: App.theme.primaryColor.withOpacity(0.2),
           borderRadius: BorderRadius.circular(10)),
       child: Text(
         widget.text,
         style: TextStyle(
           fontFamily: "IranSansBold",
-          color: Themes.primary,
+          color: App.theme.primaryColor,
           fontSize: 11,
         ),
       ),

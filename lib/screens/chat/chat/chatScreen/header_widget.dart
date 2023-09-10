@@ -9,9 +9,9 @@ extension HeaderWidget on _ChatScreen {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        color: Themes.primary.withOpacity(0.1),
+        color: App.theme.primaryColor.withOpacity(0.1),
       ),
-      child: Icon(Icons.home, color: Themes.primary),
+      child: Icon(Icons.home, color: App.theme.primaryColor),
     );
   }
 
@@ -79,7 +79,7 @@ extension HeaderWidget on _ChatScreen {
               style: TextStyle(
                 fontFamily: "IranSansBold",
                 fontSize: 10,
-                color: Themes.primary,
+                color: App.theme.primaryColor,
               ),
             ),
           ),

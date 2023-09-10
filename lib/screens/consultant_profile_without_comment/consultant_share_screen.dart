@@ -8,7 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/widgets/avatar.dart';
 import 'package:siraf3/widgets/simple_app_bar.dart';
 
@@ -88,7 +88,7 @@ class _ConsultantShareScreen extends State<ConsultantShareScreen> {
                         style: TextStyle(
                           fontSize: 15,
                           fontFamily: "IranSansBold",
-                          color: Themes.primary,
+                          color: App.theme.primaryColor,
                         ),
                       ),
                     ],

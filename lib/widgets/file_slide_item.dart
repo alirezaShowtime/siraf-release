@@ -129,7 +129,7 @@ class _FileSlideItemState extends State<FileSlideItem> with AutomaticKeepAliveCl
                           Text(
                             widget.file.getFirstPrice(),
                             style: TextStyle(
-                              color: Themes.textLight,
+                              color: App.theme.canvasColor,
                               fontFamily: "IranSans",
                               fontSize: 14,
                             ),
@@ -142,7 +142,7 @@ class _FileSlideItemState extends State<FileSlideItem> with AutomaticKeepAliveCl
                           Text(
                             widget.file.getSecondPrice(),
                             style: TextStyle(
-                              color: Themes.textLight,
+                              color: App.theme.canvasColor,
                               fontFamily: "IranSans",
                               fontSize: 12,
                             ),
@@ -167,7 +167,7 @@ class _FileSlideItemState extends State<FileSlideItem> with AutomaticKeepAliveCl
                         Text(
                           "توافقی",
                           style: TextStyle(
-                            color: Themes.textLight,
+                            color: App.theme.canvasColor,
                             fontFamily: "IranSans",
                             fontSize: 15,
                           ),

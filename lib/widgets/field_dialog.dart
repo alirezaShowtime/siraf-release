@@ -98,7 +98,7 @@ class _FieldDialog extends State<FieldDialog> {
                       bottomRight: Radius.circular(15),
                     ),
                   ),
-                  color: Themes.primary,
+                  color: App.theme.primaryColor,
                   elevation: 1,
                   height: 50,
                   minWidth: double.infinity,

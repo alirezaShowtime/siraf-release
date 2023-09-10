@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 
 class TextNormalLight extends StatefulWidget {
   String data;
-  Color color;
+  Color? color;
   String fontFamily;
 
   TextNormalLight(
     this.data, {
-    this.color = Themes.textLight,
+    this.color,
     this.fontFamily = "IranSansMedium",
     Key? key,
   }) : super(key: key);
@@ -23,7 +24,7 @@ class _TextNormalLightState extends State<TextNormalLight> {
     return Text(
       widget.data,
       style: TextStyle(
-        color: widget.color,
+        color: widget.color ?? App.theme.canvasColor,
         fontSize: 14,
         fontFamily: widget.fontFamily,
       ),

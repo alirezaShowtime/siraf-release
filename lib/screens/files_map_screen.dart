@@ -214,7 +214,7 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                 badgeContent: Text(''),
                 showBadge: filterData.hasFilter(),
                 position: badges.BadgePosition.custom(top: -15, start: -10),
-                badgeStyle: badges.BadgeStyle(badgeColor: Themes.primary),
+                badgeStyle: badges.BadgeStyle(badgeColor: App.theme.primaryColor),
                 child: FaIcon(
                   OctIcons.sliders_16,
                   size: 20,
@@ -341,7 +341,7 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: _showFileOnMyLocation ? Themes.primary : App.theme.dialogBackgroundColor,
+                    color: _showFileOnMyLocation ? App.theme.primaryColor : App.theme.dialogBackgroundColor,
                     borderRadius: BorderRadius.circular(100),
                     boxShadow: [
                       BoxShadow(
@@ -363,7 +363,7 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                     style: TextStyle(
                       fontSize: 14,
                       fontFamily: "IranSansMedium",
-                      color: _showFileOnMyLocation ? Themes.textLight : null,
+                      color: _showFileOnMyLocation ? App.theme.canvasColor : null,
                     ),
                   ),
                 ),
@@ -693,7 +693,7 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                             child: Text(
                               e.name!,
                               style: TextStyle(
-                                color: Themes.textLight,
+                                color: App.theme.canvasColor,
                                 fontSize: 9,
                               ),
                               textAlign: TextAlign.center,
@@ -704,7 +704,7 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                           Text(
                             e.getFirstPrice(),
                             style: TextStyle(
-                              color: Themes.textLight,
+                              color: App.theme.canvasColor,
                               fontSize: e.isRent() ? 9 : 10,
                               fontFamily: e.isRent() ? "IranSans" : "IranSansMedium",
                             ),
@@ -713,7 +713,7 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                             Text(
                               e.getSecondPrice(),
                               style: TextStyle(
-                                color: Themes.textLight,
+                                color: App.theme.canvasColor,
                                 fontSize: e.isRent() ? 9 : 10,
                                 fontFamily: e.isRent() ? "IranSans" : "IranSansMedium",
                               ),

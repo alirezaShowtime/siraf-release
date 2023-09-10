@@ -30,7 +30,7 @@ extension ChatScrollController on _ChatScreen {
                   alignment: Alignment.center,
                   constraints: BoxConstraints(minWidth: 22),
                   decoration: BoxDecoration(
-                    color: Themes.primary,
+                    color: App.theme.primaryColor,
                     borderRadius: BorderRadius.circular(100),
                     boxShadow: [
                       BoxShadow(

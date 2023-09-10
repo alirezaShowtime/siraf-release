@@ -16,6 +16,7 @@ import 'package:siraf3/models/filter_data.dart';
 import 'package:siraf3/screens/estate_profile_without_comment/estate_profile_screen.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/avatar.dart';
@@ -171,7 +172,7 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> {
       width: 80,
       height: 80,
       alignment: Alignment.center,
-      child: Icon(CupertinoIcons.person, color: Themes.primary, size: 34),
+      child: Icon(CupertinoIcons.person, color: App.theme.primaryColor, size: 34),
     );
   }
 

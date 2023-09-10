@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
+import 'package:siraf3/main.dart';
 
 class LoadingDialog extends StatefulWidget {
   String? message;
@@ -24,7 +25,7 @@ class _LoadingDialogState extends State<LoadingDialog> {
       child: AlertDialog(
         contentPadding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        backgroundColor: Colors.white,
+        backgroundColor: App.theme.dialogBackgroundColor,
         insetPadding: EdgeInsets.zero,
         content: !widget.showMessage ? SizedBox(width: 85, height: 85, child: onlyLoading()) : withText(),
       ),
@@ -41,14 +42,14 @@ class _LoadingDialogState extends State<LoadingDialog> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CircularProgressIndicator(color: Themes.primary),
+            CircularProgressIndicator(color: App.theme.primaryColor),
             SizedBox(width: 18),
             Expanded(
               child: Text(
                 widget.message ?? 'در حال ارسال درخواست صبور باشید',
                 textAlign: TextAlign.start,
                 style: TextStyle(
-                  color: Themes.text,
+                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                   fontSize: 11,
                   fontFamily: "IranSansBold",
                 ),
@@ -66,7 +67,7 @@ class _LoadingDialogState extends State<LoadingDialog> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CircularProgressIndicator(color: Themes.primary),
+          CircularProgressIndicator(color: App.theme.primaryColor),
           SizedBox(width: 18),
           Expanded(
             child: Padding(
@@ -79,7 +80,7 @@ class _LoadingDialogState extends State<LoadingDialog> {
                     widget.message ?? 'در حال ارسال درخواست صبور باشید',
                     textAlign: TextAlign.start,
                     style: TextStyle(
-                      color: Themes.text,
+                      color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                       fontSize: 11,
                       fontFamily: "IranSansBold",
                     ),
@@ -122,7 +123,7 @@ class _LoadingDialogState extends State<LoadingDialog> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(height: 50, width: 50, child: CircularProgressIndicator(color: Themes.primary)),
+                    SizedBox(height: 50, width: 50, child: CircularProgressIndicator(color: App.theme.primaryColor)),
                     MyTextButton(
                       border: true,
                       text: "لغو",

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 
 class ErrorDialog extends StatefulWidget {
   String message;
@@ -26,7 +27,7 @@ class _ErrorDialogState extends State<ErrorDialog> {
               widget.message,
               textAlign: TextAlign.start,
               style: TextStyle(
-                color: Themes.text,
+                color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                 fontSize: 11,
                 fontFamily: "IranSansBold",
               ),

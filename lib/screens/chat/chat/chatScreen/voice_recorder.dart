@@ -100,7 +100,7 @@ extension VoiceRecorder on _ChatScreen {
                               timeFormatter(snapshot.data!),
                               textAlign: TextAlign.left,
                               style: TextStyle(
-                                color: Themes.text,
+                                color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: "sans-serif",
                                 fontSize: 11,
@@ -133,7 +133,7 @@ extension VoiceRecorder on _ChatScreen {
                 animation: voiceAnim,
                 builder: (_, __) {
                   return Material(
-                    color: Themes.primary,
+                    color: App.theme.primaryColor,
                     borderRadius: BorderRadius.circular(100),
                     child: Container(
                       height: 95,

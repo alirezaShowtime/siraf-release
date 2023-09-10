@@ -114,7 +114,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                               "سایر ویژگی ها",
                               style: TextStyle(
                                 fontSize: 15,
-                                color: Themes.primary,
+                                color: App.theme.primaryColor,
                                 fontFamily: "IranSansBold",
                               ),
                             ),
@@ -182,7 +182,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                               "سایر امکانات",
                               style: TextStyle(
                                 fontSize: 15,
-                                color: Themes.primary,
+                                color: App.theme.primaryColor,
                                 fontFamily: "IranSansBold",
                               ),
                             ),
@@ -265,7 +265,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                         }
                         Navigator.pop(context, [selectedProps, selectedFeatures]);
                       },
-                      color: Themes.primary,
+                      color: App.theme.primaryColor,
                       child: Text(
                         "تایید",
                         style: TextStyle(
@@ -324,7 +324,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
           height: 5,
         ),
         Divider(
-          color: Themes.textGrey.withOpacity(0.5),
+          color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
           height: 1,
         ),
       ],
@@ -389,7 +389,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                             border: InputBorder.none,
                             hintText: hints.containsKey(property.value) ? hints[property.value] : "${property.name!} را وارد کنید",
                             hintStyle: TextStyle(
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               fontSize: 13,
                               fontFamily: "IranSans",
                             ),
@@ -499,7 +499,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -575,7 +575,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -650,7 +650,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                             border: InputBorder.none,
                             hintText: hints.containsKey(property.value) ? hints[property.value] : "${property.name!} را وارد کنید",
                             hintStyle: TextStyle(
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               fontSize: 13,
                               fontFamily: "IranSans",
                             ),
@@ -760,7 +760,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -837,7 +837,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -903,7 +903,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
             bottom: isLast
                 ? BorderSide.none
                 : BorderSide(
-                    color: Themes.textGrey.withOpacity(0.5),
+                    color: (App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey).withOpacity(0.5),
                     width: 0.7,
                   ),
           ),

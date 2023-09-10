@@ -178,7 +178,7 @@ class _ConsultantProfileScreen extends State<ConsultantProfileScreen> {
       width: 80,
       height: 80,
       alignment: Alignment.center,
-      child: Icon(CupertinoIcons.person, color: Themes.primary, size: 34),
+      child: Icon(CupertinoIcons.person, color: App.theme.primaryColor, size: 34),
     );
   }
 

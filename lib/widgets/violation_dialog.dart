@@ -3,6 +3,7 @@ import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
+import 'package:siraf3/main.dart';
 
 class ViolationDialog extends StatefulWidget {
   @override
@@ -54,11 +55,11 @@ class _ViolationDialog extends State<ViolationDialog> {
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
-                        borderSide: BorderSide(color: Themes.themeData().tooltipTheme.textStyle?.color ?? Themes.textGrey, width: 1),
+                        borderSide: BorderSide(color: Themes.themeData().tooltipTheme.textStyle?.color ?? App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey, width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
-                        borderSide: BorderSide(color: Themes.primary, width: 1),
+                        borderSide: BorderSide(color: App.theme.primaryColor, width: 1),
                       ),
                       hintText: "عنوان",
                       hintStyle: TextStyle(
@@ -83,11 +84,11 @@ class _ViolationDialog extends State<ViolationDialog> {
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
-                        borderSide: BorderSide(color: Themes.themeData().tooltipTheme.textStyle?.color ?? Themes.textGrey, width: 1),
+                        borderSide: BorderSide(color: Themes.themeData().tooltipTheme.textStyle?.color ?? App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey, width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
-                        borderSide: BorderSide(color: Themes.primary, width: 1),
+                        borderSide: BorderSide(color: App.theme.primaryColor, width: 1),
                       ),
                       hintText: "توضیحات",
                       hintStyle: TextStyle(
@@ -134,7 +135,7 @@ class _ViolationDialog extends State<ViolationDialog> {
                               bottomRight: Radius.circular(15),
                             ),
                           ),
-                          color: Themes.primary,
+                          color: App.theme.primaryColor,
                           elevation: 1,
                           height: 50,
                           child: Text(

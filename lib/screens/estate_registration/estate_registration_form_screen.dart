@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/helpers.dart';
-import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:siraf3/widgets/simple_app_bar.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
@@ -88,7 +88,7 @@ class _EstateRegistrationFormScreen extends State<EstateRegistrationFormScreen> 
             left: 10,
             child: MaterialButton(
               onPressed: next,
-              color: Themes.primary,
+              color: App.theme.primaryColor,
               child: Row(
                 children: [
                   Text(

@@ -47,7 +47,7 @@ extension SearchBar on _EstateProfileScreen {
             badgeContent: Text(''),
             showBadge: filterData.hasFilter(),
             position: badges.BadgePosition.custom(top: -15, end: -6),
-            badgeStyle: badges.BadgeStyle(badgeColor: Themes.primary),
+            badgeStyle: badges.BadgeStyle(badgeColor: App.theme.primaryColor),
             child: IconButton(
               onPressed: openFileBox,
               icon: icon(OctIcons.sliders_16, size: 20),

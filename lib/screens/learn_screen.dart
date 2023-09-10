@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
 
+import 'package:siraf3/main.dart';
 import '../widgets/my_app_bar.dart';
 
 class LearnScreen extends StatefulWidget {
@@ -109,11 +110,11 @@ class _LearnScreenState extends State<LearnScreen> with AutomaticKeepAliveClient
           title: TextField2(
             decoration: InputDecoration(
               hintText: "جستجو در آموزش های سیراف",
-              hintStyle: TextStyle(color: Themes.textGrey, fontSize: 13),
+              hintStyle: TextStyle(color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey, fontSize: 13),
               border: InputBorder.none,
             ),
             controller: _searchController,
-            style: TextStyle(color: Themes.text, fontSize: 13),
+            style: TextStyle(color: App.theme.textTheme.bodyLarge?.color ?? Themes.text, fontSize: 13),
             textInputAction: TextInputAction.search,
             onSubmitted: (value) {
               getPosts();

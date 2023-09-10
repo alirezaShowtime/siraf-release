@@ -82,7 +82,7 @@ class _LocationFileItemState extends State<LocationFileItem> {
                     },
                     child: Icon(
                       CupertinoIcons.bookmark_fill,
-                      color: (widget.locationFile.favorite ?? false) ? Themes.primary : Themes.secondary2,
+                      color: (widget.locationFile.favorite ?? false) ? App.theme.primaryColor : Themes.secondary2,
                     ),
                   ),
                 ),

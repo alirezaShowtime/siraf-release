@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:siraf3/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -156,7 +157,7 @@ class _VideoScreenState extends State<VideoScreen> {
                     Icon(
                       (_controller?.value.isPlaying ?? false) ? CupertinoIcons.pause_fill : CupertinoIcons.play_fill,
                       size: 44,
-                      color: Themes.primary,
+                      color: App.theme.primaryColor,
                     ),
                     Icon(
                       (_controller?.value.isPlaying ?? false) ? CupertinoIcons.pause_fill : CupertinoIcons.play_fill,
@@ -188,7 +189,7 @@ class _VideoScreenState extends State<VideoScreen> {
                           value: (_controller?.value.position.inSeconds ?? 0).toDouble(),
                           min: 0,
                           max: (_controller?.value.duration.inSeconds ?? 0).toDouble(),
-                          activeColor: Themes.primary,
+                          activeColor: App.theme.primaryColor,
                           onChanged: (value) {
                             setState(() {
                               _controller?.seekTo(Duration(seconds: value.toInt()));

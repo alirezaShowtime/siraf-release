@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 
 class MyTextButton extends StatefulWidget {
   @override
@@ -58,7 +58,7 @@ class _MyTextButton extends State<MyTextButton> {
         padding: widget.padding,
         minimumSize: widget.minimumSize,
         backgroundColor: getColor(),
-        foregroundColor: widget.rippleColor ?? Themes.primary,
+        foregroundColor: widget.rippleColor ?? App.theme.primaryColor,
         tapTargetSize: widget.tapTargetSize,
         shape: RoundedRectangleBorder(
           borderRadius: widget.borderRadius,
@@ -83,7 +83,7 @@ class _MyTextButton extends State<MyTextButton> {
         padding: widget.padding,
         minimumSize: widget.minimumSize,
         backgroundColor: getColor(),
-        foregroundColor: widget.rippleColor ?? Themes.primary,
+        foregroundColor: widget.rippleColor ?? App.theme.primaryColor,
         tapTargetSize: widget.tapTargetSize,
         shape: RoundedRectangleBorder(
           borderRadius: widget.borderRadius,

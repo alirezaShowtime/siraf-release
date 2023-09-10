@@ -7,6 +7,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 import 'package:siraf3/controller/message_upload_controller.dart';
 import 'package:siraf3/enums/message_state.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/extensions/double_extension.dart';
 import 'package:siraf3/extensions/file_extension.dart';
 import 'package:siraf3/extensions/list_extension.dart';
@@ -318,7 +319,7 @@ class SendingMessageWidgetState extends State<SendingMessageWidget> with SingleT
       blRadius: 18,
       brRadius: 0,
       fileNameColor: Colors.white,
-      background: Themes.primary,
+      background: App.theme.primaryColor,
       textColor: Colors.white,
       primaryColor: Colors.white,
       secondTextColor: Color(0x8bc0d0e0),

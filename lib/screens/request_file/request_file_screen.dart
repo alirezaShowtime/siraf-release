@@ -109,7 +109,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                     padding: EdgeInsets.only(bottom: 10),
                     decoration: BoxDecoration(
                       border: Border(
-                        bottom: BorderSide(color: Themes.textGrey.withOpacity(0.5), width: 1),
+                        bottom: BorderSide(color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5), width: 1),
                       ),
                     ),
                     child: Row(
@@ -197,14 +197,14 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: Themes.primary,
+                            color: App.theme.primaryColor,
                             width: 1.5,
                           ),
                           borderRadius: BorderRadius.circular(2),
                         ),
                         disabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: Themes.textGrey,
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                             width: 1.5,
                           ),
                           borderRadius: BorderRadius.circular(2),
@@ -221,12 +221,12 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                         hintStyle: TextStyle(fontSize: 13, color: App.theme.tooltipTheme.textStyle?.color),
                         labelStyle: TextStyle(fontSize: 14, color: App.theme.tooltipTheme.textStyle?.color),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
-                        floatingLabelStyle: TextStyle(color: Themes.primary),
+                        floatingLabelStyle: TextStyle(color: App.theme.primaryColor),
                       ),
                       controller: _titleController,
                       style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color),
                       maxLines: 1,
-                      cursorColor: Themes.primary,
+                      cursorColor: App.theme.primaryColor,
                     ),
                   ),
                 ),
@@ -253,14 +253,14 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Themes.primary,
+                          color: App.theme.primaryColor,
                           width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(2),
                       ),
                       disabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Themes.textGrey,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                           width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(2),
@@ -272,14 +272,14 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                         ),
                         borderRadius: BorderRadius.circular(2),
                       ),
-                      floatingLabelStyle: TextStyle(color: Themes.primary),
+                      floatingLabelStyle: TextStyle(color: App.theme.primaryColor),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       hintStyle: TextStyle(fontSize: 13, color: App.theme.tooltipTheme.textStyle?.color),
                       labelStyle: TextStyle(fontSize: 14, color: App.theme.tooltipTheme.textStyle?.color),
                       hintText: "در این قسمت به جزئیات ملک مانند امکانات ، ویژگی ها و ... که برای شمااهمیت دارد اشاره کنید",
                     ),
                     controller: _descriptionController,
-                    cursorColor: Themes.primary,
+                    cursorColor: App.theme.primaryColor,
                     style: TextStyle(fontSize: 14, color: App.theme.textTheme.bodyLarge?.color),
                   ),
                 ),
@@ -303,7 +303,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                   Expanded(
                     child: MaterialButton(
                       onPressed: _submit,
-                      color: Themes.primary,
+                      color: App.theme.primaryColor,
                       child: Text(
                         "ثبت درخواست",
                         style: TextStyle(
@@ -644,7 +644,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                       stream: persianNumberTextMin.stream,
                     ),
                     SizedBox(height: 3),
-                    Divider(height: 1, color: Themes.textGrey.withOpacity(0.5)),
+                    Divider(height: 1, color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5)),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Container(
@@ -727,7 +727,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(

@@ -13,6 +13,8 @@ import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
 import 'package:video_player/video_player.dart';
 
+import 'package:siraf3/main.dart';
+
 class PostItem extends StatefulWidget {
   Post post;
   Function(VideoPlayerController)? onStartVideo;
@@ -95,7 +97,7 @@ class _PostItemState extends State<PostItem> with AutomaticKeepAliveClientMixin 
               height: 250,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Themes.background,
+                color: App.theme.backgroundColor,
                 image: DecorationImage(image: AssetImage("assets/images/image_not_avialable.png"), alignment: Alignment.center),
               ),
             ),
@@ -157,7 +159,7 @@ class _PostItemState extends State<PostItem> with AutomaticKeepAliveClientMixin 
                     },
                     icon: Icon(
                       isBookmark ? CupertinoIcons.bookmark_fill : CupertinoIcons.bookmark,
-                      color: isBookmark ? Themes.primary : Themes.icon,
+                      color: isBookmark ? App.theme.primaryColor : Themes.icon,
                     ),
                   ),
                   SizedBox(
@@ -165,7 +167,7 @@ class _PostItemState extends State<PostItem> with AutomaticKeepAliveClientMixin 
                     child: Text(
                       widget.post.title ?? "",
                       style: TextStyle(
-                        color: Themes.text,
+                        color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                         fontSize: 13,
                       ),
                       overflow: TextOverflow.ellipsis,
@@ -200,7 +202,7 @@ class _PostItemState extends State<PostItem> with AutomaticKeepAliveClientMixin 
                   TextSpan(
                     text: showSummary ? summary : description,
                     style: TextStyle(
-                      color: Themes.text,
+                      color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                       fontSize: 10.5,
                       fontWeight: FontWeight.w400,
                       fontFamily: 'IranSans',

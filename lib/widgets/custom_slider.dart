@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as m;
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/mini_video.dart';
 import 'package:video_player/video_player.dart';
@@ -357,7 +358,7 @@ class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> wit
                 ),
                 Text(
                   "جهت نمایش تور مجازی کلیک کنید",
-                  style: TextStyle(fontSize: 13, color: Themes.textLight),
+                  style: TextStyle(fontSize: 13, color: App.theme.canvasColor),
                 ),
               ],
             ),

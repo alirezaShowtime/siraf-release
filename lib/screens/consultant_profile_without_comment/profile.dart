@@ -75,7 +75,7 @@ extension Profile on _ConsultantProfileScreen {
                               textAlign: TextAlign.center,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                color: Themes.text,
+                                color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -96,7 +96,7 @@ extension Profile on _ConsultantProfileScreen {
                                 consultantInfo.estateName!,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: Themes.primary,
+                                  color: App.theme.primaryColor,
                                   fontSize: 10,
                                   fontFamily: "IranSansBold",
                                 ),
@@ -141,7 +141,7 @@ extension Profile on _ConsultantProfileScreen {
                                   child: Text(
                                     !showComment ? "ثبت امتیاز" : "فایل های مشاور",
                                     style: TextStyle(
-                                      color: Themes.text,
+                                      color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                       fontFamily: "IranSansBold",
                                       fontSize: 9,
                                     ),

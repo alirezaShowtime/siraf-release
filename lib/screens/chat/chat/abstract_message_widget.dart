@@ -7,7 +7,7 @@ import 'package:siraf3/bloc/chat/search/messages/request/chat_message_search_blo
 import 'package:siraf3/bloc/chat/select_message/select_message_bloc.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/models/chat_message.dart';
-import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'chat_massage_action.dart';
@@ -96,7 +96,7 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
                 }
               },
               builder: (context, state) {
-                return Container(color: !isSelected ? null : Themes.primary.withOpacity(0.08));
+                return Container(color: !isSelected ? null : App.theme.primaryColor.withOpacity(0.08));
               },
             ),
           ),
@@ -325,7 +325,7 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
       brRadius: 0,
       blRadius: 18,
       fileNameColor: Colors.white,
-      background: Themes.primary.withOpacity(1),
+      background: App.theme.primaryColor.withOpacity(1),
       textColor: Colors.white,
       primaryColor: Colors.white,
       secondTextColor: Color(0x8bc0d0e0),
@@ -343,7 +343,7 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
       fileNameColor: Colors.black,
       background: Color(0xfff0f0f0),
       textColor: Colors.black,
-      primaryColor: Themes.primary,
+      primaryColor: App.theme.primaryColor,
       secondTextColor: Color(0xffb9c0c6),
       textDirection: TextDirection.ltr,
     );

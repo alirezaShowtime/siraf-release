@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/my_image.dart';
+import 'package:siraf3/main.dart';
 
 class Empty extends StatelessWidget {
   String? message;
@@ -22,7 +23,7 @@ class Empty extends StatelessWidget {
             message ?? "نتیجه ای یافت نشد",
             style: TextStyle(
               fontSize: 12,
-              color: Themes.text,
+              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
               fontFamily: "IranSansBold",
             ),
           ),

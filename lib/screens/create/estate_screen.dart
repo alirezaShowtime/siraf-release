@@ -11,12 +11,14 @@ import 'package:siraf3/bloc/estate_bloc.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/map_utilities.dart';
 import 'package:siraf3/models/city.dart';
 import 'package:siraf3/models/estate.dart';
 import 'package:siraf3/screens/estate_profile_without_comment/estate_profile_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/loading.dart';
+import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_item.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
@@ -149,16 +151,15 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
       create: (_) => bloc,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Themes.appBar,
           elevation: 0.7,
           title: TextField2(
             decoration: InputDecoration(
               hintText: "جستجو در دفاتر املاک | " + widget.city.name!,
-              hintStyle: TextStyle(color: Themes.textGrey, fontSize: 13),
+              hintStyle: TextStyle(color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey, fontSize: 13),
               border: InputBorder.none,
             ),
             controller: _searchController,
-            style: TextStyle(color: Themes.text, fontSize: 13),
+            style: TextStyle(color: App.theme.textTheme.bodyLarge?.color ?? Themes.text, fontSize: 13),
             textInputAction: TextInputAction.search,
             onSubmitted: (value) {
               getEstates();
@@ -180,13 +181,13 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                             "بر اساس حروف الفبا",
                             style: TextStyle(
                               fontSize: 13,
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                             ),
                           ),
                           if (currentSortType == "alphabet")
                             Icon(
                               Icons.check,
-                              color: Themes.icon,
+                              color: App.theme.iconTheme.color,
                               size: 20,
                             ),
                         ],
@@ -202,13 +203,13 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                             "بالاترین امتیاز",
                             style: TextStyle(
                               fontSize: 13,
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                             ),
                           ),
                           if (currentSortType == "topRate")
                             Icon(
                               Icons.check,
-                              color: Themes.icon,
+                              color: App.theme.iconTheme.color,
                               size: 20,
                             ),
                         ],
@@ -257,22 +258,14 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
               },
               child: Icon(
                 mapEnabled ? CupertinoIcons.map_fill : CupertinoIcons.map,
-                color: Themes.icon,
+                color: App.theme.iconTheme.color,
               ),
             ),
             SizedBox(
               width: 20,
             ),
           ],
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              CupertinoIcons.back,
-              color: Themes.icon,
-            ),
-          ),
+          leading: MyBackButton()
         ),
         body: Column(
           children: [
@@ -293,7 +286,6 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                           Text(
                             e.name!,
                             style: TextStyle(
-                              color: Color(0xff000000),
                               fontSize: 13,
                             ),
                           ),
@@ -334,7 +326,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                           selectedEstates,
                         );
                       },
-                      color: Themes.primary,
+                      color: App.theme.primaryColor,
                       child: Text(
                         "تایید",
                         style: TextStyle(
@@ -415,7 +407,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                 children: [
                   TileLayerWidget(
                     options: TileLayerOptions(
-                      urlTemplate: "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}",
+                      urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
                     ),
                   ),
                   CircleLayerWidget(
@@ -436,7 +428,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
               right: 20,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Themes.background,
+                  color: App.theme.backgroundColor,
                   borderRadius: BorderRadius.circular(100),
                   boxShadow: [
                     BoxShadow(
@@ -459,7 +451,6 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                     child: Icon(
                       Icons.my_location_outlined,
                       size: 30,
-                      color: Themes.icon,
                     ),
                   ),
                 ),
@@ -499,7 +490,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: _showFileOnMyLocation ? Themes.primary : Themes.background,
+                    color: _showFileOnMyLocation ? App.theme.primaryColor : App.theme.backgroundColor,
                     borderRadius: BorderRadius.circular(100),
                     boxShadow: [
                       BoxShadow(
@@ -521,7 +512,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                     style: TextStyle(
                       fontSize: 15,
                       fontFamily: "IranSansMedium",
-                      color: _showFileOnMyLocation ? Themes.textLight : Themes.text,
+                      color: _showFileOnMyLocation ? App.theme.canvasColor : App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                     ),
                   ),
                 ),
@@ -654,7 +645,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                 style: TextStyle(
                   fontSize: 11.5,
                   fontFamily: "IranSansMedium",
-                  color: Themes.text,
+                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                   overflow: TextOverflow.ellipsis,
                 ),
                 maxLines: 1,
@@ -667,7 +658,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                 style: TextStyle(
                   fontSize: 10,
                   fontFamily: "IranSansMedium",
-                  color: Themes.textGrey,
+                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                   overflow: TextOverflow.ellipsis,
                 ),
                 maxLines: 1,
@@ -677,7 +668,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
               ),
               Divider(
                 height: 0.7,
-                color: Themes.textGrey.withOpacity(0.5),
+                color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
               ),
             ],
           ),
@@ -697,7 +688,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.backgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -719,7 +710,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                               Text(
                                 estate.name!,
                                 style: TextStyle(
-                                  color: Color(0xff000000),
+                                  color: App.theme.textTheme.bodyLarge?.color,
                                   fontSize: 14,
                                 ),
                               ),
@@ -749,14 +740,14 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                               Text(
                                 "مدیریت : " + estate.managerName!,
                                 style: TextStyle(
-                                  color: Themes.textGrey,
+                                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                                   fontSize: 12,
                                 ),
                               ),
                               Text(
                                 "امتیار 4/4 از 5",
                                 style: TextStyle(
-                                  color: Themes.textGrey,
+                                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                                   fontSize: 12,
                                 ),
                               ),
@@ -769,14 +760,14 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                               Text(
                                 "موبایل : " + estate.phoneNumber!,
                                 style: TextStyle(
-                                  color: Themes.textGrey,
+                                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                                   fontSize: 12,
                                 ),
                               ),
                               Text(
                                 "تلفن : " + "02133333333",
                                 style: TextStyle(
-                                  color: Themes.textGrey,
+                                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                                   fontSize: 12,
                                 ),
                               ),
@@ -786,7 +777,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                           Text(
                             "آدرس : " + estate.address!,
                             style: TextStyle(
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               fontSize: 12,
                             ),
                           ),
@@ -821,7 +812,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -854,7 +845,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                                   bottomLeft: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(

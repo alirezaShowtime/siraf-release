@@ -3,6 +3,7 @@ import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/block_btn.dart';
 import 'package:siraf3/widgets/my_card.dart';
 import 'package:siraf3/widgets/simple_app_bar.dart';
+import 'package:siraf3/main.dart';
 
 class ReceiveScreen extends StatefulWidget {
   @override
@@ -13,7 +14,7 @@ class _ReceiveScreen extends State<ReceiveScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Themes.background,
+      backgroundColor: App.theme.backgroundColor,
       appBar: SimpleAppBar(titleText: "دریافت قرارداد"),
       body: Stack(
         children: [
@@ -58,7 +59,7 @@ class _ReceiveScreen extends State<ReceiveScreen> {
             "${key}:",
             style: TextStyle(
               fontSize: 11,
-              color: Themes.text,
+              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
               fontFamily: "IranSansBold",
             ),
           ),
@@ -66,7 +67,7 @@ class _ReceiveScreen extends State<ReceiveScreen> {
             value,
             style: TextStyle(
               fontSize: 11,
-              color: Themes.textGrey,
+              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
             ),
           ),
         ],

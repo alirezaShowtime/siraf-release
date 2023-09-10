@@ -263,7 +263,7 @@ extension List2<E> on List<E>? {
   }
 }
 
-Divider divider({double height = 1}) => Divider(color: Colors.grey.shade300, height: height);
+Divider divider({double height = 1}) => Divider(color: App.isDark ? App.theme.shadowColor : Colors.grey.shade300, height: height);
 
 bool resetCreateFileForm = false;
 bool resetEditFileForm = false;

@@ -4,6 +4,7 @@ import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/my_card.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:siraf3/widgets/simple_app_bar.dart';
+import 'package:siraf3/main.dart';
 
 class PreviewEstateRegistrationScreen extends StatefulWidget {
   @override
@@ -41,7 +42,7 @@ class _PreviewEstateRegistrationScreen extends State<PreviewEstateRegistrationSc
                           child: Text(
                             "آدرس دفتر املاک",
                             style: TextStyle(
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                               fontSize: 13,
                               fontFamily: "IranSansBold",
                             ),
@@ -54,7 +55,7 @@ class _PreviewEstateRegistrationScreen extends State<PreviewEstateRegistrationSc
                           child: Text(
                             "fld[spkf[d نیحخنبخح ینبحخ نبحخینبح خینسبحخ نیبحخ نسیبخحیسنبخح ینب یحسخبنیسحخب ",
                             style: TextStyle(
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               fontSize: 11,
                             ),
                           ),
@@ -93,11 +94,11 @@ class _PreviewEstateRegistrationScreen extends State<PreviewEstateRegistrationSc
                   MyTextButton(
                     onPressed: previous,
                     text: "قبلی",
-                    rippleColor: Themes.textGrey,
+                    rippleColor: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                   ),
                   MaterialButton(
                     onPressed: done,
-                    color: Themes.primary,
+                    color: App.theme.primaryColor,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                     child: Row(
@@ -132,7 +133,7 @@ class _PreviewEstateRegistrationScreen extends State<PreviewEstateRegistrationSc
           Text(
             title,
             style: TextStyle(
-              color: Themes.text,
+              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
               fontSize: 13,
               fontFamily: "IranSansBold",
             ),
@@ -140,7 +141,7 @@ class _PreviewEstateRegistrationScreen extends State<PreviewEstateRegistrationSc
           Text(
             value,
             style: TextStyle(
-              color: Themes.textGrey,
+              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
               fontSize: 11,
             ),
           ),
@@ -168,7 +169,7 @@ class _PreviewEstateRegistrationScreen extends State<PreviewEstateRegistrationSc
                 child: Text(
                   "در حال باگذاری",
                   style: TextStyle(
-                    color: Themes.textGrey,
+                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                     fontSize: 10,
                   ),
                 ),
@@ -183,7 +184,7 @@ class _PreviewEstateRegistrationScreen extends State<PreviewEstateRegistrationSc
                 child: Text(
                   "در حال باگذاری",
                   style: TextStyle(
-                    color: Themes.textGrey,
+                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                     fontSize: 10,
                   ),
                 ),
@@ -195,7 +196,7 @@ class _PreviewEstateRegistrationScreen extends State<PreviewEstateRegistrationSc
         Text(
           title,
           style: TextStyle(
-            color: Themes.textGrey,
+            color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
             fontSize: 11,
           ),
         ),

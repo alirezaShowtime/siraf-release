@@ -116,14 +116,14 @@ class _ChatListScreen extends State<ChatListScreen> {
                   if (state is ChatSearchLoading) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 18),
-                      child: SpinKitRing(color: Themes.primary, size: 18, lineWidth: 3),
+                      child: SpinKitRing(color: App.theme.primaryColor, size: 18, lineWidth: 3),
                     );
                   }
 
                   if (state is ChatSearchError) {
                     IconButton(
                       onPressed: () => searchRequest(searchController.value.text),
-                      icon: Icon(Icons.refresh_rounded, color: Themes.text),
+                      icon: Icon(Icons.refresh_rounded, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
                     );
                   }
 
@@ -134,7 +134,7 @@ class _ChatListScreen extends State<ChatListScreen> {
                         showClearButton = false;
                         setState(() {});
                       },
-                      icon: Icon(Icons.close_rounded, color: Themes.text),
+                      icon: Icon(Icons.close_rounded, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
                     );
 
                   return SizedBox();
@@ -217,7 +217,7 @@ class _ChatListScreen extends State<ChatListScreen> {
         },
         child: Container(
           height: 65,
-          foregroundDecoration: !isSelected ? null : BoxDecoration(color: Themes.primary.withOpacity(0.1)),
+          foregroundDecoration: !isSelected ? null : BoxDecoration(color: App.theme.primaryColor.withOpacity(0.1)),
           decoration: BoxDecoration(
             border: Border(
               top: BorderSide(color: Colors.black12, width: 0.5),
@@ -249,7 +249,7 @@ class _ChatListScreen extends State<ChatListScreen> {
                           "${chatItem.consultantName ?? "مشاور"} | ",
                           style: TextStyle(
                             fontSize: 12,
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                             fontFamily: "IranSansBold",
                           ),
                         ),
@@ -259,7 +259,7 @@ class _ChatListScreen extends State<ChatListScreen> {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 10,
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               // fontFamily: "IranSansBold",
                             ),
                           ),
@@ -313,7 +313,7 @@ class _ChatListScreen extends State<ChatListScreen> {
                       padding: EdgeInsets.symmetric(horizontal: 5),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: Themes.primary,
+                        color: App.theme.primaryColor,
                         borderRadius: BorderRadius.circular(100),
                       ),
                       child: Text(

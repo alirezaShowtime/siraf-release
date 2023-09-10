@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/usefull/text/text_big.dart';
 
@@ -10,7 +11,7 @@ class ButtonPrimary extends StatefulWidget {
   bool fullWidth;
   double elevation;
   BorderRadius? borderRadius;
-  Color color;
+  Color? color;
 
   ButtonPrimary({
     required this.text,
@@ -20,7 +21,7 @@ class ButtonPrimary extends StatefulWidget {
     this.elevation = 0,
     this.onPressed = null,
     this.borderRadius,
-    this.color = Themes.primary,
+    this.color,
     Key? key,
   }) : super(key: key);
 
@@ -42,7 +43,7 @@ class _ButtonPrimaryState extends State<ButtonPrimary> {
         minHeight: widget.height,
         minWidth: widget.fullWidth ? double.infinity : widget.width,
       ),
-      fillColor: widget.color,
+      fillColor: widget.color ?? App.theme.primaryColor,
     );
   }
 }

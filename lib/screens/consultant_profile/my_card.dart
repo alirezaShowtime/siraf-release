@@ -15,7 +15,7 @@ extension MyCard on _ConsultantProfileScreen {
             Text(
               title,
               style: TextStyle(
-                color: Themes.text,
+                color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                 fontFamily: "IranSansBold",
                 fontSize: 11,
               ),
@@ -24,7 +24,7 @@ extension MyCard on _ConsultantProfileScreen {
             Text(
               value,
               style: TextStyle(
-                color: Themes.textGrey,
+                color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                 fontSize: 10,
               ),
             ),

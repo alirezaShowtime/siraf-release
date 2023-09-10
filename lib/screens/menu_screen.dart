@@ -85,7 +85,7 @@ class _MenuScreenState extends State<MenuScreen> {
     return BlocProvider(
       create: (_) => getGroupsBloc,
       child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: Themes.getSystemUiOverlayStyleTransparent(statusBarIconBrightness: Brightness.light),
+        value: App.getSystemUiOverlayTransparentLight(),
         child: WillPopScope(
           onWillPop: () async {
             closeRabbit();
@@ -108,7 +108,7 @@ class _MenuScreenState extends State<MenuScreen> {
                             image: AssetImage("assets/images/menu_background.png"),
                             fit: BoxFit.cover,
                             colorFilter: ColorFilter.mode(
-                              App.isDark ? DarkThemes.background : Themes.primary,
+                              App.isDark ? DarkThemes.background : App.theme.primaryColor,
                               BlendMode.hardLight,
                             ),
                           ),
@@ -420,7 +420,7 @@ class _MenuScreenState extends State<MenuScreen> {
 
   Widget _profileWidget() {
     return Container(
-      color: Themes.primary.withOpacity(0.7),
+      color: App.theme.primaryColor.withOpacity(0.7),
       width: 80,
       height: 80,
       alignment: Alignment.center,
@@ -464,7 +464,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   badgeContent: Text(''),
                   showBadge: hasBadge,
                   position: badge.BadgePosition.custom(top: -13, start: -6),
-                  badgeStyle: badge.BadgeStyle(badgeColor: Themes.primary),
+                  badgeStyle: badge.BadgeStyle(badgeColor: App.theme.primaryColor),
                   child: Icon(icon, size: 24, color: App.theme.iconTheme.color),
                 ),
                 SizedBox(height: 1),

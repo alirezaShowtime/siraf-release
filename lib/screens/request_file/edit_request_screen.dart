@@ -22,6 +22,7 @@ import 'package:siraf3/widgets/my_app_bar.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 
+import 'package:siraf3/main.dart';
 import '../../../widgets/section.dart';
 
 class EditRequestScreen extends StatefulWidget {
@@ -102,7 +103,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
   Widget build(BuildContext context) {
     buildContext = context;
     return Scaffold(
-      backgroundColor: Themes.background,
+      backgroundColor: App.theme.backgroundColor,
       appBar: MyAppBar(
         backgroundColor: Themes.appBar,
         leading: MyBackButton(),
@@ -187,14 +188,14 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: Themes.primary,
+                            color: App.theme.primaryColor,
                             width: 1.5,
                           ),
                           borderRadius: BorderRadius.circular(2),
                         ),
                         disabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: Themes.textGrey,
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                             width: 1.5,
                           ),
                           borderRadius: BorderRadius.circular(2),
@@ -211,12 +212,12 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                         hintStyle: TextStyle(fontSize: 13),
                         labelStyle: TextStyle(fontSize: 14),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
-                        floatingLabelStyle: TextStyle(color: Themes.primary),
+                        floatingLabelStyle: TextStyle(color: App.theme.primaryColor),
                       ),
                       controller: _titleController,
                       style: TextStyle(fontSize: 14),
                       maxLines: 1,
-                      cursorColor: Themes.primary,
+                      cursorColor: App.theme.primaryColor,
                     ),
                   ),
                 ),
@@ -229,7 +230,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                       labelText: 'توضیحات',
                       border: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Themes.textGrey,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                           width: 0.5,
                         ),
                         borderRadius: BorderRadius.circular(2),
@@ -243,14 +244,14 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Themes.primary,
+                          color: App.theme.primaryColor,
                           width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(2),
                       ),
                       disabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Themes.textGrey,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                           width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(2),
@@ -262,14 +263,14 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                         ),
                         borderRadius: BorderRadius.circular(2),
                       ),
-                      floatingLabelStyle: TextStyle(color: Themes.primary),
+                      floatingLabelStyle: TextStyle(color: App.theme.primaryColor),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       labelStyle: TextStyle(fontSize: 14),
                       hintText: "در این قسمت به جزئیات ملک مانند امکانات ، ویژگی ها و ... که برای شمااهمیت دارد اشاره کنید",
                       hintStyle: TextStyle(fontSize: 13),
                     ),
                     controller: _descriptionController,
-                    cursorColor: Themes.primary,
+                    cursorColor: App.theme.primaryColor,
                     style: TextStyle(fontSize: 14),
                   ),
                 ),
@@ -283,7 +284,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                 Text(
                   'این درخواست فقط برای دفتر شما ثبت خواهد شد',
                   style: TextStyle(
-                    color: Themes.text,
+                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                     fontSize: 13,
                   ),
                 ),
@@ -490,7 +491,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.backgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -510,7 +511,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                       child: Text(
                         'آیا مایل به ثبت درخواست از ابتدا هستید؟',
                         style: TextStyle(
-                          color: Themes.textGrey,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                           fontSize: 13,
                         ),
                       ),
@@ -531,7 +532,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -559,7 +560,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                                   bottomLeft: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -619,7 +620,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.backgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -640,7 +641,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                             border: InputBorder.none,
                             hintText: "حداقل ${label}",
                             hintStyle: TextStyle(
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               fontSize: 13,
                               fontFamily: "IranSans",
                             ),
@@ -655,7 +656,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                             fontSize: 13,
                             fontFamily: "IranSansMedium",
                           ),
@@ -671,7 +672,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                             child: Text(
                               "",
                               style: TextStyle(
-                                color: Themes.text,
+                                color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                 fontSize: 11,
                                 fontFamily: "IranSansMedium",
                               ),
@@ -686,7 +687,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                           child: Text(
                             text.trim(),
                             style: TextStyle(
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                               fontSize: 11,
                               fontFamily: "IranSansMedium",
                             ),
@@ -696,7 +697,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                       stream: persianNumberTextMin.stream,
                     ),
                     SizedBox(height: 3),
-                    Divider(height: 1, color: Themes.textGrey.withOpacity(0.5)),
+                    Divider(height: 1, color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5)),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Container(
@@ -709,7 +710,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                             border: InputBorder.none,
                             hintText: "حداکثر ${label}",
                             hintStyle: TextStyle(
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               fontSize: 13,
                               fontFamily: "IranSans",
                             ),
@@ -723,7 +724,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                             fontSize: 13,
                             fontFamily: "IranSansMedium",
                           ),
@@ -739,7 +740,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                             child: Text(
                               "",
                               style: TextStyle(
-                                color: Themes.text,
+                                color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                 fontSize: 11,
                                 fontFamily: "IranSansMedium",
                               ),
@@ -754,7 +755,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                           child: Text(
                             text.trim(),
                             style: TextStyle(
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                               fontSize: 11,
                               fontFamily: "IranSansMedium",
                             ),
@@ -779,7 +780,7 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(

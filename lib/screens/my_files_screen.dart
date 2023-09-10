@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siraf3/bloc/delete_file_bloc.dart';
 import 'package:siraf3/bloc/my_files_bloc.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/models/my_file.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/create/create_file_first.dart';
@@ -87,131 +89,134 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => bloc,
-      child: WillPopScope(
-        onWillPop: () async {
-          if (isSelectable) {
-            setState(() {
-              selectedFiles.clear();
-              isSelectable = false;
-            });
-            return false;
-          }
-          return true;
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(
-              "فایل های من",
-              style: TextStyle(
-                fontSize: 15,
-              ),
-            ),
-            automaticallyImplyLeading: false,
-            leading: MyBackButton(
-              onPressed: () {
-                if (isSelectable) {
-                  setState(() {
-                    selectedFiles.clear();
-                    isSelectable = false;
-                  });
-                } else {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-            actions: [
-              IconButton(
-                onPressed: _addFile,
-                icon: Icon(
-                  CupertinoIcons.add,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: App.getSystemUiOverlay(),
+      child: BlocProvider(
+        create: (_) => bloc,
+        child: WillPopScope(
+          onWillPop: () async {
+            if (isSelectable) {
+              setState(() {
+                selectedFiles.clear();
+                isSelectable = false;
+              });
+              return false;
+            }
+            return true;
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(
+                "فایل های من",
+                style: TextStyle(
+                  fontSize: 15,
                 ),
               ),
-              if (selectedFiles.isNotEmpty)
+              automaticallyImplyLeading: false,
+              leading: MyBackButton(
+                onPressed: () {
+                  if (isSelectable) {
+                    setState(() {
+                      selectedFiles.clear();
+                      isSelectable = false;
+                    });
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              actions: [
                 IconButton(
-                  onPressed: selectedFiles.isNotEmpty
-                      ? () {
-                    showDeleteDialog(selectedFiles.map((e) => e.id!).toList());
-                        }
-                      : null,
+                  onPressed: _addFile,
                   icon: Icon(
-                    CupertinoIcons.delete,
-                    color: selectedFiles.isNotEmpty ? null : Themes.iconGrey,
+                    CupertinoIcons.add,
                   ),
-                  disabledColor: Themes.iconGrey,
                 ),
-              MyPopupMenuButton(
-                itemBuilder: (context) {
-                  return [
-                    MyPopupMenuItem<String>(
-                      value: "new",
-                      label: "جدید ترین",
-                      withSpace: true,
-                      icon: !currentSortType.isFill() ? Icons.check_rounded : null,
+                if (selectedFiles.isNotEmpty)
+                  IconButton(
+                    onPressed: selectedFiles.isNotEmpty
+                        ? () {
+                      showDeleteDialog(selectedFiles.map((e) => e.id!).toList());
+                          }
+                        : null,
+                    icon: Icon(
+                      CupertinoIcons.delete,
+                      color: selectedFiles.isNotEmpty ? null : Themes.iconGrey,
                     ),
-                    MyPopupMenuItem<String>(
-                      value: "old",
-                      label: "قدیمی ترین",
-                      withSpace: true,
-                      icon: currentSortType == "8" ? Icons.check_rounded : null,
-                    ),
-                    MyPopupMenuItem<String>(
-                      value: "pending",
-                      label: "در انتظار تایید",
-                      withSpace: true,
-                      icon: currentSortType == "1" ? Icons.check_rounded : null,
-                    ),
-                    MyPopupMenuItem<String>(
-                      value: "pendingReception",
-                      label: "در انتظار پذیرش",
-                      withSpace: true,
-                      icon: currentSortType == "5" ? Icons.check_rounded : null,
-                    ),
-                    MyPopupMenuItem<String>(
-                      value: "acceptReception",
-                      label: "پذیرش شده",
-                      withSpace: true,
-                      icon: currentSortType == "7" ? Icons.check_rounded : null,
-                    ),
-                    MyPopupMenuItem<String>(
-                      value: "rejectReception",
-                      label: "رد شده",
-                      withSpace: true,
-                      icon: currentSortType == "3" ? Icons.check_rounded : null,
-                    ),
-                  ];
-                },
-                onSelected: (value) {
-                  _loadFiles(sort: value);
-                  setState(() {
-                    currentSortType = value;
-                  });
-                },
-                iconData: CupertinoIcons.sort_down,
-              ),
-              MyPopupMenuButton(
-                itemBuilder: (context) {
-                  return [
-                    MyPopupMenuItem<int>(
-                      value: 0,
-                      label: "انتخاب همه",
-                    ),
-                  ];
-                },
-                onSelected: (value) {
-                  setState(() {
-                    selectedFiles.clear();
-                    selectedFiles.addAll(files);
-                    isSelectable = true;
-                  });
-                },
-                iconData: Icons.more_vert,
-              ),
-            ],
-          ),
-          body: BlocBuilder<MyFilesBloc, MyFilesState>(
-            builder: _buildMainBloc,
+                    disabledColor: Themes.iconGrey,
+                  ),
+                MyPopupMenuButton(
+                  itemBuilder: (context) {
+                    return [
+                      MyPopupMenuItem<String>(
+                        value: "new",
+                        label: "جدید ترین",
+                        withSpace: true,
+                        icon: !currentSortType.isFill() ? Icons.check_rounded : null,
+                      ),
+                      MyPopupMenuItem<String>(
+                        value: "old",
+                        label: "قدیمی ترین",
+                        withSpace: true,
+                        icon: currentSortType == "8" ? Icons.check_rounded : null,
+                      ),
+                      MyPopupMenuItem<String>(
+                        value: "pending",
+                        label: "در انتظار تایید",
+                        withSpace: true,
+                        icon: currentSortType == "1" ? Icons.check_rounded : null,
+                      ),
+                      MyPopupMenuItem<String>(
+                        value: "pendingReception",
+                        label: "در انتظار پذیرش",
+                        withSpace: true,
+                        icon: currentSortType == "5" ? Icons.check_rounded : null,
+                      ),
+                      MyPopupMenuItem<String>(
+                        value: "acceptReception",
+                        label: "پذیرش شده",
+                        withSpace: true,
+                        icon: currentSortType == "7" ? Icons.check_rounded : null,
+                      ),
+                      MyPopupMenuItem<String>(
+                        value: "rejectReception",
+                        label: "رد شده",
+                        withSpace: true,
+                        icon: currentSortType == "3" ? Icons.check_rounded : null,
+                      ),
+                    ];
+                  },
+                  onSelected: (value) {
+                    _loadFiles(sort: value);
+                    setState(() {
+                      currentSortType = value;
+                    });
+                  },
+                  iconData: CupertinoIcons.sort_down,
+                ),
+                MyPopupMenuButton(
+                  itemBuilder: (context) {
+                    return [
+                      MyPopupMenuItem<int>(
+                        value: 0,
+                        label: "انتخاب همه",
+                      ),
+                    ];
+                  },
+                  onSelected: (value) {
+                    setState(() {
+                      selectedFiles.clear();
+                      selectedFiles.addAll(files);
+                      isSelectable = true;
+                    });
+                  },
+                  iconData: Icons.more_vert,
+                ),
+              ],
+            ),
+            body: BlocBuilder<MyFilesBloc, MyFilesState>(
+              builder: _buildMainBloc,
+            ),
           ),
         ),
       ),
@@ -266,7 +271,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
               ),
               elevation: 0.2,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-              fillColor: Themes.primary,
+              fillColor: App.theme.primaryColor,
             ),
           ],
         ),
@@ -274,17 +279,20 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
     }
 
     return RefreshIndicator(
-      color: Themes.primary,
+      color: App.theme.primaryColor,
       onRefresh: () async => _loadFiles(sort: currentSortType),
       child: ListView(
         children: files
             .map<Widget>(
-              (file) => GestureDetector(
-                onTap: isSelectable ? () => changeSelection(file) : () => onTapFile(file),
-                onLongPress: () => changeSelection(file),
-                child: MyFileHorizontalItem(
-                  file: file,
-                  isSelected: selectedFiles.contains(file),
+              (file) => Padding(
+                padding: EdgeInsets.only(bottom: 5),
+                child: GestureDetector(
+                  onTap: isSelectable ? () => changeSelection(file) : () => onTapFile(file),
+                  onLongPress: () => changeSelection(file),
+                  child: MyFileHorizontalItem(
+                    file: file,
+                    isSelected: selectedFiles.contains(file),
+                  ),
                 ),
               ),
             )

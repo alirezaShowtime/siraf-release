@@ -90,6 +90,8 @@ class Themes {
         bodyColor: Themes.text,
         displayColor: Themes.textGrey,
       ),
+      dividerColor: Themes.text.withOpacity(0.8),
+      canvasColor: Themes.textLight,
     );
   }
 }

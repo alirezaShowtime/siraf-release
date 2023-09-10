@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 
 class MyPopupMenuButton extends StatefulWidget {
   @override
@@ -33,7 +34,7 @@ class _MyPopupMenuButton extends State<MyPopupMenuButton> {
       tooltip: widget.tooltip,
       child: widget.child,
       color: Colors.white,
-      icon: widget.iconData != null ? Icon(widget.iconData, color: Themes.text) : widget.icon,
+      icon: widget.iconData != null ? Icon(widget.iconData, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text) : widget.icon,
       padding: EdgeInsets.symmetric(vertical: 5),
       elevation: 2,
       offset: Offset(10, 10),

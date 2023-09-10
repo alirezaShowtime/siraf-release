@@ -6,6 +6,7 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:siraf3/main.dart';
 
 class MiniVideo extends StatefulWidget {
   ImageProvider<Object> thumbnail;
@@ -73,7 +74,7 @@ class MiniVideoState extends State<MiniVideo> with AutomaticKeepAliveClientMixin
                               Icon(
                                 CupertinoIcons.play_fill,
                                 size: 44,
-                                color: Themes.primary,
+                                color: App.theme.primaryColor,
                               ),
                               Icon(
                                 CupertinoIcons.play_fill,
@@ -95,7 +96,7 @@ class MiniVideoState extends State<MiniVideo> with AutomaticKeepAliveClientMixin
                               Icon(
                                 CupertinoIcons.play_fill,
                                 size: 44,
-                                color: Themes.primary,
+                                color: App.theme.primaryColor,
                               ),
                               Icon(
                                 CupertinoIcons.play_fill,

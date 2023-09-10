@@ -159,7 +159,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                       style: TextStyle(
                         fontFamily: "IranSansBold",
                         fontSize: 12,
-                        color: Themes.primary,
+                        color: App.theme.primaryColor,
                       ),
                     ),
                   ],
@@ -261,7 +261,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                   ),
                   Text(
                     "(${requestConsultant.estateName})",
-                    style: TextStyle(fontSize: 10, color: Themes.textGrey),
+                    style: TextStyle(fontSize: 10, color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey),
                   ),
                   SizedBox(height: 6),
                   RatingBarIndicator(

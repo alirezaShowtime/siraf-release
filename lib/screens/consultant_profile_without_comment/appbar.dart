@@ -12,7 +12,7 @@ extension AppBarWidget on _ConsultantProfileScreen {
       actions: [
         IconButton(
           onPressed: share,
-          disabledColor: consultantInfo?.shareLink == null ? Colors.grey : Themes.text,
+          disabledColor: consultantInfo?.shareLink == null ? Colors.grey : App.theme.textTheme.bodyLarge?.color ?? Themes.text,
           icon: icon(Icons.share_rounded, size: 22),
         ),
         MyPopupMenuButton(

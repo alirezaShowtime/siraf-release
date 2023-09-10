@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:siraf3/main.dart';
 import '../themes.dart';
 
 class Section extends StatefulWidget {
@@ -27,7 +28,7 @@ class _Section extends State<Section> {
       padding: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: Themes.textGrey.withOpacity(0.5), width: 1),
+          bottom: BorderSide(color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5), width: 1),
         ),
       ),
       child: Row(

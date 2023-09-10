@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
+import 'package:siraf3/main.dart';
 
 class PaginationError extends StatelessWidget {
   void Function()? onClickTryAgain;
@@ -17,7 +18,7 @@ class PaginationError extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error_outline_rounded, color: Themes.text, size: 20),
+          Icon(Icons.error_outline_rounded, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text, size: 20),
           SizedBox(width: 5),
           Expanded(
             child: Text(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/widgets/my_app_bar.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 
@@ -31,8 +33,7 @@ class _RulesScreenState extends State<RulesScreen> {
   }
 
   setTexts() async {
-    var guide = await DefaultAssetBundle.of(context)
-        .loadString('assets/images/about_us.txt');
+    var guide = await DefaultAssetBundle.of(context).loadString('assets/images/about_us.txt');
 
     setState(() {
       texts = guide.split("#");
@@ -41,27 +42,27 @@ class _RulesScreenState extends State<RulesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: MyAppBar(
-        title: Text(
-          "درباره سیراف و قوانین",
-          style: TextStyle(
-            fontSize: 15,
+    return AnnotatedRegion(
+      value: App.getSystemUiOverlay(),
+      child: Scaffold(
+        appBar: MyAppBar(
+          title: Text(
+            "درباره سیراف و قوانین",
+            style: TextStyle(
+              fontSize: 15,
+            ),
           ),
+          automaticallyImplyLeading: false,
+          leading: MyBackButton(),
         ),
-        automaticallyImplyLeading: false,
-        leading: MyBackButton(),
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15),
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: texts
-                .map<Widget>(
-                    (e) => _buildWithTitle(e, titles[texts.indexOf(e)]))
-                .toList(),
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15),
+          child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: texts.map<Widget>((e) => _buildWithTitle(e, titles[texts.indexOf(e)])).toList(),
+            ),
           ),
         ),
       ),

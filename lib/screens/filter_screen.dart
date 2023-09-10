@@ -7,6 +7,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:siraf3/bloc/categories_bloc.dart';
 import 'package:siraf3/bloc/property_bloc.dart';
 import 'package:siraf3/bloc/total_file_bloc.dart';
+import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
@@ -61,6 +62,8 @@ class _FilterScreenState extends State<FilterScreen> {
   void initState() {
     super.initState();
 
+    SystemChrome.setSystemUIOverlayStyle(App.getSystemUiOverlayTransparentLight());
+
     propFilters = widget.filterData.propFilters ?? {};
 
     if (widget.total_url != null) totalFileBloc = TotalFileBloc(url: widget.total_url!);
@@ -68,6 +71,17 @@ class _FilterScreenState extends State<FilterScreen> {
     categoriesBloc.add(CategoriesFetchEvent());
     categoriesBloc.stream.listen((event) {
       if (event is CategoriesBlocLoaded) {
+        SystemChrome.setSystemUIOverlayStyle(
+          SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarBrightness: Brightness.dark,
+            statusBarIconBrightness: Brightness.light,
+            systemNavigationBarColor: App.isDark ? Color(0xff2d2e33) : Color(0xff534e4f),
+            systemNavigationBarDividerColor: App.isDark ? Color(0xff2d2e33) : Color(0xff534e4f),
+            systemNavigationBarIconBrightness: Brightness.light,
+            systemStatusBarContrastEnforced: false,
+          ),
+        );
         categories = event.categories;
 
         if (widget.filterData.category != null) {
@@ -155,12 +169,9 @@ class _FilterScreenState extends State<FilterScreen> {
         BlocProvider(create: (_) => categoriesBloc),
         BlocProvider<TotalFileBloc>(create: (_) => totalFileBloc),
       ],
-      child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: Themes.getSystemUiOverlayStyleTransparent(statusBarIconBrightness: Brightness.light),
-        child: Scaffold(
-          resizeToAvoidBottomInset: true,
-          body: BlocBuilder<CategoriesBloc, CategoriesBlocState>(builder: _buildMainWidgets),
-        ),
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        body: BlocBuilder<CategoriesBloc, CategoriesBlocState>(builder: _buildMainWidgets),
       ),
     );
   }
@@ -197,13 +208,15 @@ class _FilterScreenState extends State<FilterScreen> {
       height: MediaQuery.of(context).size.height,
       child: Stack(
         children: [
-          if (!App.isDark)
-            Image(
+          Opacity(
+            opacity: App.isDark ? 0.3 : 1,
+            child: Image(
               image: AssetImage("assets/images/filter_background.png"),
               fit: BoxFit.cover,
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
             ),
+          ),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -294,38 +307,40 @@ class _FilterScreenState extends State<FilterScreen> {
                         decoration: BoxDecoration(
                           color: App.theme.dialogBackgroundColor,
                           borderRadius: BorderRadius.circular(60),
-                          boxShadow: [
-                            BoxShadow(
-                              offset: Offset(-1, 0),
-                              color: App.theme.shadowColor,
-                              blurRadius: 5,
-                              spreadRadius: 1,
-                            ),
-                            BoxShadow(
-                              offset: Offset(1, 0),
-                              color: App.theme.shadowColor,
-                              blurRadius: 5,
-                              spreadRadius: 1,
-                            ),
-                            BoxShadow(
-                              offset: Offset(0, 0),
-                              color: App.theme.shadowColor,
-                              blurRadius: 5,
-                              spreadRadius: 1,
-                            ),
-                            BoxShadow(
-                              offset: Offset(1, 1),
-                              color: App.theme.shadowColor,
-                              blurRadius: 5,
-                              spreadRadius: 1,
-                            ),
-                            BoxShadow(
-                              offset: Offset(-1, -1),
-                              color: App.theme.shadowColor,
-                              blurRadius: 5,
-                              spreadRadius: 1,
-                            ),
-                          ],
+                          boxShadow: App.isDark
+                              ? []
+                              : [
+                                  BoxShadow(
+                                    offset: Offset(-1, 0),
+                                    color: App.theme.shadowColor,
+                                    blurRadius: 5,
+                                    spreadRadius: 1,
+                                  ),
+                                  BoxShadow(
+                                    offset: Offset(1, 0),
+                                    color: App.theme.shadowColor,
+                                    blurRadius: 5,
+                                    spreadRadius: 1,
+                                  ),
+                                  BoxShadow(
+                                    offset: Offset(0, 0),
+                                    color: App.theme.shadowColor,
+                                    blurRadius: 5,
+                                    spreadRadius: 1,
+                                  ),
+                                  BoxShadow(
+                                    offset: Offset(1, 1),
+                                    color: App.theme.shadowColor,
+                                    blurRadius: 5,
+                                    spreadRadius: 1,
+                                  ),
+                                  BoxShadow(
+                                    offset: Offset(-1, -1),
+                                    color: App.theme.shadowColor,
+                                    blurRadius: 5,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
                         ),
                         width: MediaQuery.of(context).size.width,
                         child: Padding(
@@ -342,38 +357,40 @@ class _FilterScreenState extends State<FilterScreen> {
                         decoration: BoxDecoration(
                           color: App.theme.dialogBackgroundColor,
                           borderRadius: BorderRadius.circular(30),
-                          boxShadow: [
-                            BoxShadow(
-                              offset: Offset(-1, 0),
-                              color: App.theme.shadowColor,
-                              blurRadius: 5,
-                              spreadRadius: 1,
-                            ),
-                            BoxShadow(
-                              offset: Offset(1, 0),
-                              color: App.theme.shadowColor,
-                              blurRadius: 5,
-                              spreadRadius: 1,
-                            ),
-                            BoxShadow(
-                              offset: Offset(0, 0),
-                              color: App.theme.shadowColor,
-                              blurRadius: 5,
-                              spreadRadius: 1,
-                            ),
-                            BoxShadow(
-                              offset: Offset(1, 1),
-                              color: App.theme.shadowColor,
-                              blurRadius: 5,
-                              spreadRadius: 1,
-                            ),
-                            BoxShadow(
-                              offset: Offset(-1, -1),
-                              color: App.theme.shadowColor,
-                              blurRadius: 5,
-                              spreadRadius: 1,
-                            ),
-                          ],
+                          boxShadow: App.isDark
+                              ? []
+                              : [
+                                  BoxShadow(
+                                    offset: Offset(-1, 0),
+                                    color: App.theme.shadowColor,
+                                    blurRadius: 5,
+                                    spreadRadius: 1,
+                                  ),
+                                  BoxShadow(
+                                    offset: Offset(1, 0),
+                                    color: App.theme.shadowColor,
+                                    blurRadius: 5,
+                                    spreadRadius: 1,
+                                  ),
+                                  BoxShadow(
+                                    offset: Offset(0, 0),
+                                    color: App.theme.shadowColor,
+                                    blurRadius: 5,
+                                    spreadRadius: 1,
+                                  ),
+                                  BoxShadow(
+                                    offset: Offset(1, 1),
+                                    color: App.theme.shadowColor,
+                                    blurRadius: 5,
+                                    spreadRadius: 1,
+                                  ),
+                                  BoxShadow(
+                                    offset: Offset(-1, -1),
+                                    color: App.theme.shadowColor,
+                                    blurRadius: 5,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
                         ),
                         width: MediaQuery.of(context).size.width,
                         child: Column(
@@ -434,7 +451,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                 minHeight: 50,
                                 minWidth: double.infinity,
                               ),
-                              fillColor: Themes.primary,
+                              fillColor: App.theme.primaryColor,
                             ),
                           ],
                         ),
@@ -471,14 +488,14 @@ class _FilterScreenState extends State<FilterScreen> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(40),
-                color: _mainCategory?.id == category.id ? Themes.primary : Colors.transparent,
+                color: _mainCategory?.id == category.id ? App.theme.primaryColor : Colors.transparent,
               ),
               padding: EdgeInsets.symmetric(vertical: 12),
               alignment: Alignment.center,
               child: Text(
                 category.name!,
                 style: TextStyle(
-                  color: _mainCategory?.id == category.id ? Themes.textLight : Themes.text,
+                  color: _mainCategory?.id == category.id ? Themes.textLight : App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                   fontSize: 11,
                   fontFamily: "IranSansBold",
                 ),
@@ -516,14 +533,14 @@ class _FilterScreenState extends State<FilterScreen> {
               minWidth: (MediaQuery.of(context).size.width - 40) / 4,
             ),
             decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: _subCategory?.id == e.id ? Themes.primary : Colors.transparent, width: 3)),
+              border: Border(bottom: BorderSide(color: _subCategory?.id == e.id ? App.theme.primaryColor : Colors.transparent, width: 3)),
             ),
             child: Text(
               e.name ?? "",
               style: TextStyle(
                 fontSize: 11,
                 fontFamily: _subCategory?.id == e.id ? "IranSansBold" : "IranSansMedium",
-                color: _subCategory?.id == e.id ? Themes.text : Themes.secondary2,
+                color: _subCategory?.id == e.id ? App.theme.textTheme.bodyLarge?.color ?? Themes.text : (App.isDark ? DarkThemes.textLight : Themes.secondary2),
               ),
             ),
           ),
@@ -612,7 +629,7 @@ class _FilterScreenState extends State<FilterScreen> {
                         inputFormatters: [MoneyInputFormatter(mantissaLength: 0)],
                         textInputAction: TextInputAction.next,
                         keyboardType: TextInputType.number,
-                        style: TextStyle(fontSize: 13, color: Themes.text, fontFamily: "IranSansBold"),
+                        style: TextStyle(fontSize: 13, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text, fontFamily: "IranSansBold"),
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(45),
@@ -620,10 +637,10 @@ class _FilterScreenState extends State<FilterScreen> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(45),
-                            borderSide: BorderSide(color: Themes.primary, width: 2),
+                            borderSide: BorderSide(color: App.theme.primaryColor, width: 2),
                           ),
                           hintText: "حداقل",
-                          hintStyle: TextStyle(fontSize: 12, color: Themes.textGrey, fontFamily: "IranSansMedium"),
+                          hintStyle: TextStyle(fontSize: 12, color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey, fontFamily: "IranSansMedium"),
                           contentPadding: EdgeInsets.all(10),
                         ),
                         onChanged: (v) {
@@ -681,7 +698,7 @@ class _FilterScreenState extends State<FilterScreen> {
                         textInputAction: TextInputAction.next,
                         keyboardType: TextInputType.number,
                         inputFormatters: [MoneyInputFormatter(mantissaLength: 0)],
-                        style: TextStyle(fontSize: 13, color: Themes.text, fontFamily: "IranSansBold"),
+                        style: TextStyle(fontSize: 13, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text, fontFamily: "IranSansBold"),
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(45),
@@ -689,10 +706,10 @@ class _FilterScreenState extends State<FilterScreen> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(45),
-                            borderSide: BorderSide(color: Themes.primary, width: 2),
+                            borderSide: BorderSide(color: App.theme.primaryColor, width: 2),
                           ),
                           hintText: "حداکثر",
-                          hintStyle: TextStyle(fontSize: 12, color: Themes.textGrey, fontFamily: "IranSansMedium"),
+                          hintStyle: TextStyle(fontSize: 12, color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey, fontFamily: "IranSansMedium"),
                           contentPadding: EdgeInsets.all(10),
                         ),
                         onChanged: (v) {
@@ -790,7 +807,7 @@ class _FilterScreenState extends State<FilterScreen> {
                           constraints: BoxConstraints(minWidth: 50),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30),
-                            color: propFilters.containsKey(prop.value) && propFilters[prop.value] == item.value.toString() ? Themes.primary : Colors.transparent,
+                            color: propFilters.containsKey(prop.value) && propFilters[prop.value] == item.value.toString() ? App.theme.primaryColor : Colors.transparent,
                             border: Border.all(color: Colors.grey.shade300, width: 1),
                           ),
                           padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -845,15 +862,15 @@ class _FilterScreenState extends State<FilterScreen> {
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30),
-                              color: _hasImage ? Themes.primary : Colors.transparent,
-                              border: Border.all(color: _hasImage ? Themes.primary : Colors.grey.shade300, width: 1),
+                              color: _hasImage ? App.theme.primaryColor : Colors.transparent,
+                              border: Border.all(color: _hasImage ? App.theme.primaryColor : Colors.grey.shade300, width: 1),
                             ),
                             padding: EdgeInsets.symmetric(vertical: 10),
                             alignment: Alignment.center,
                             child: Text(
                               "عکس دار",
                               style: TextStyle(
-                                color: _hasImage ? Colors.white : Themes.text,
+                                color: _hasImage ? Colors.white : App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                 fontFamily: "IranSansBold",
                                 fontSize: 11,
                               ),
@@ -875,15 +892,15 @@ class _FilterScreenState extends State<FilterScreen> {
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30),
-                              color: _hasVideo ? Themes.primary : Colors.transparent,
-                              border: Border.all(color: _hasVideo ? Themes.primary : Colors.grey.shade300, width: 1),
+                              color: _hasVideo ? App.theme.primaryColor : Colors.transparent,
+                              border: Border.all(color: _hasVideo ? App.theme.primaryColor : Colors.grey.shade300, width: 1),
                             ),
                             padding: EdgeInsets.symmetric(vertical: 10),
                             alignment: Alignment.center,
                             child: Text(
                               "ویدیو دار",
                               style: TextStyle(
-                                color: _hasVideo ? Colors.white : Themes.text,
+                                color: _hasVideo ? Colors.white : App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                 fontFamily: "IranSansBold",
                                 fontSize: 11,
                               ),
@@ -905,15 +922,15 @@ class _FilterScreenState extends State<FilterScreen> {
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30),
-                              color: _hasTour ? Themes.primary : Colors.transparent,
-                              border: Border.all(color: _hasTour ? Themes.primary : Colors.grey.shade300, width: 1),
+                              color: _hasTour ? App.theme.primaryColor : Colors.transparent,
+                              border: Border.all(color: _hasTour ? App.theme.primaryColor : Colors.grey.shade300, width: 1),
                             ),
                             padding: EdgeInsets.symmetric(vertical: 10),
                             alignment: Alignment.center,
                             child: Text(
                               "تور مجازی",
                               style: TextStyle(
-                                color: _hasTour ? Colors.white : Themes.text,
+                                color: _hasTour ? Colors.white : App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                 fontFamily: "IranSansBold",
                                 fontSize: 11,
                               ),
@@ -955,15 +972,15 @@ class _FilterScreenState extends State<FilterScreen> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        color: _hasImage ? Themes.primary : Colors.transparent,
-                        border: Border.all(color: _hasImage ? Themes.primary : Colors.grey.shade300, width: 1),
+                        color: _hasImage ? App.theme.primaryColor : Colors.transparent,
+                        border: Border.all(color: _hasImage ? App.theme.primaryColor : Colors.grey.shade300, width: 1),
                       ),
                       padding: EdgeInsets.symmetric(vertical: 10),
                       alignment: Alignment.center,
                       child: Text(
                         "عکس دار",
                         style: TextStyle(
-                          color: _hasImage ? Colors.white : Themes.text,
+                          color: _hasImage ? Colors.white : App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                           fontSize: 11,
                           fontFamily: "IranSansBold",
                         ),
@@ -985,15 +1002,15 @@ class _FilterScreenState extends State<FilterScreen> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        color: _hasVideo ? Themes.primary : Colors.transparent,
-                        border: Border.all(color: _hasVideo ? Themes.primary : Colors.grey.shade300, width: 1),
+                        color: _hasVideo ? App.theme.primaryColor : Colors.transparent,
+                        border: Border.all(color: _hasVideo ? App.theme.primaryColor : Colors.grey.shade300, width: 1),
                       ),
                       padding: EdgeInsets.symmetric(vertical: 10),
                       alignment: Alignment.center,
                       child: Text(
                         "ویدیو دار",
                         style: TextStyle(
-                          color: _hasVideo ? Colors.white : Themes.text,
+                          color: _hasVideo ? Colors.white : App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                           fontSize: 11,
                           fontFamily: "IranSansBold",
                         ),
@@ -1015,15 +1032,15 @@ class _FilterScreenState extends State<FilterScreen> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        color: _hasTour ? Themes.primary : Colors.transparent,
-                        border: Border.all(color: _hasTour ? Themes.primary : Colors.grey.shade300, width: 1),
+                        color: _hasTour ? App.theme.primaryColor : Colors.transparent,
+                        border: Border.all(color: _hasTour ? App.theme.primaryColor : Colors.grey.shade300, width: 1),
                       ),
                       padding: EdgeInsets.symmetric(vertical: 10),
                       alignment: Alignment.center,
                       child: Text(
                         "با تور مجازی",
                         style: TextStyle(
-                          color: _hasTour ? Colors.white : Themes.text,
+                          color: _hasTour ? Colors.white : App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                           fontSize: 11,
                           fontFamily: "IranSansBold",
                         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/dialog.dart';
-import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/widgets/my_popup_menu_item.dart';
 
 void showMessageActionMenu(
@@ -129,7 +129,7 @@ void confirmDeleteMessageDialog(
                           bottomRight: Radius.circular(15),
                         ),
                       ),
-                      color: Themes.primary,
+                      color: App.theme.primaryColor,
                       elevation: 1,
                       height: 50,
                       child: Text(
@@ -143,7 +143,7 @@ void confirmDeleteMessageDialog(
                       padding: EdgeInsets.symmetric(vertical: 9),
                     ),
                   ),
-                  VerticalDivider(width: 0.3, color: Themes.primary.withAlpha(60)),
+                  VerticalDivider(width: 0.3, color: App.theme.primaryColor.withAlpha(60)),
                   Expanded(
                     child: MaterialButton(
                       onPressed: () {
@@ -155,7 +155,7 @@ void confirmDeleteMessageDialog(
                           bottomLeft: Radius.circular(15),
                         ),
                       ),
-                      color: Themes.primary,
+                      color: App.theme.primaryColor,
                       elevation: 1,
                       height: 50,
                       child: Text(

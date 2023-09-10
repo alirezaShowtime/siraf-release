@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' as m;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 
 class TextField2 extends m.TextField {
   final TextEditingController? controller;
@@ -103,7 +103,7 @@ class TextField2 extends m.TextField {
           cursorWidth: cursorWidth,
           cursorHeight: cursorHeight,
           cursorRadius: cursorRadius,
-          cursorColor: cursorColor ?? Themes.primary,
+          cursorColor: cursorColor ?? App.theme.primaryColor,
           keyboardAppearance: keyboardAppearance,
           scrollPadding: scrollPadding,
           enableInteractiveSelection: enableInteractiveSelection,

@@ -327,143 +327,138 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var darkMode = App.isDark;
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
-      statusBarBrightness: darkMode ? Brightness.light : Brightness.dark,
-      statusBarIconBrightness: darkMode ? Brightness.light : Brightness.dark,
-      systemNavigationBarIconBrightness: darkMode ? Brightness.light : Brightness.dark,
-      systemNavigationBarColor: darkMode ? DarkThemes.appBar : Themes.appBar,
-    ));
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0.7,
-        title: GestureDetector(
-          onTap: () => goSelectCity(showSelected: true),
-          child: Text(
-            getTitle(cities),
-            style: TextStyle(
-              fontSize: 15,
-            ),
-          ),
-        ),
-        centerTitle: true,
-        leading: Padding(
-          padding: const EdgeInsets.only(right: 15),
-          child: IconButton(
-            onPressed: openMenu,
-            icon: badges.Badge(
-              badgeContent: Text(''),
-              showBadge: hasNewMessage,
-              position: badges.BadgePosition.custom(top: -17, start: -4),
-              badgeStyle: badges.BadgeStyle(badgeColor: Themes.primary),
-              child: Icon(
-                Icons.menu_rounded,
-                color: App.theme.iconTheme.color,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: App.getSystemUiOverlay(),
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0.7,
+          title: GestureDetector(
+            onTap: () => goSelectCity(showSelected: true),
+            child: Text(
+              getTitle(cities),
+              style: TextStyle(
+                fontSize: 15,
               ),
             ),
           ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              var result = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => FilterScreen(
-                    originalFilterData: FilterData(cityIds: cities.map<int>((e) => e.id!).toList()),
-                    filterData: filterData,
-                    total_url: getFileUrl('file/files/').toString(),
-                  ),
+          centerTitle: true,
+          leading: Padding(
+            padding: const EdgeInsets.only(right: 15),
+            child: IconButton(
+              onPressed: openMenu,
+              icon: badges.Badge(
+                badgeContent: Text(''),
+                showBadge: hasNewMessage,
+                position: badges.BadgePosition.custom(top: -17, start: -4),
+                badgeStyle: badges.BadgeStyle(badgeColor: App.theme.primaryColor),
+                child: Icon(
+                  Icons.menu_rounded,
+                  color: App.theme.iconTheme.color,
                 ),
-              );
-
-              if (result != null && result is FilterData) {
-                setState(() {
-                  filterData = result;
-                });
-
-                getFiles();
-              }
-            },
-            icon: badges.Badge(
-              badgeContent: Text(''),
-              showBadge: filterData.hasFilter(),
-              position: badges.BadgePosition.custom(top: -15, start: -10),
-              badgeStyle: badges.BadgeStyle(badgeColor: Themes.primary),
-              child: FaIcon(
-                OctIcons.sliders_16,
-                size: 20,
               ),
             ),
           ),
-          IconButton(
-            onPressed: () {
-              var originalFilterData = this.filterData;
-              var filterData = this.filterData;
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => SearchScreen(
-                    originalFilterData: originalFilterData,
-                    filterData: filterData,
+          actions: [
+            IconButton(
+              onPressed: () async {
+                var result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => FilterScreen(
+                      originalFilterData: FilterData(cityIds: cities.map<int>((e) => e.id!).toList()),
+                      filterData: filterData,
+                      total_url: getFileUrl('file/files/').toString(),
+                    ),
                   ),
-                ),
-              );
-            },
-            icon: FaIcon(
-              CupertinoIcons.search,
-            ),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-        ],
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (currentBlocState is HSInitState || currentBlocState is HSLoadingState)
-            Center(
-              child: Loading(),
-            ),
-          if (currentBlocState is HSErrorState)
-            Center(
-              child: TryAgain(
-                onPressed: getFiles,
-                message: (currentBlocState as HSErrorState).response != null ? jDecode((currentBlocState as HSErrorState).response!.body)['message'] : null,
-              ),
-            ),
-          if (currentBlocState is HSLoadedState && (currentBlocState as HSLoadedState).homeItems.isEmpty) Center(child: Empty(message: "موردی یافت نشد")),
-          if (currentBlocState is HSLoadedState && (currentBlocState as HSLoadedState).homeItems.isNotEmpty)
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  filterData.search = null;
+                );
+    
+                if (result != null && result is FilterData) {
+                  setState(() {
+                    filterData = result;
+                  });
+    
                   getFiles();
-                },
-                color: Themes.primary,
-                child: ListView(
-                  controller: scrollController,
-                  children: items
-                          .map<Widget>(
-                            (item) => item.type == Type.File ? fileItem(item.file!) : postItem(item, item.post!),
-                          )
-                          .toList() +
-                      [
-                        if (_isLoadingMore)
-                          Align(
-                            alignment: Alignment.center,
-                            child: Loading(
-                              backgroundColor: Colors.transparent,
-                            ),
-                          )
-                      ],
+                }
+              },
+              icon: badges.Badge(
+                badgeContent: Text(''),
+                showBadge: filterData.hasFilter(),
+                position: badges.BadgePosition.custom(top: -15, start: -10),
+                badgeStyle: badges.BadgeStyle(badgeColor: App.theme.primaryColor),
+                child: FaIcon(
+                  OctIcons.sliders_16,
+                  size: 20,
                 ),
               ),
             ),
-        ],
+            IconButton(
+              onPressed: () {
+                var originalFilterData = this.filterData;
+                var filterData = this.filterData;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => SearchScreen(
+                      originalFilterData: originalFilterData,
+                      filterData: filterData,
+                    ),
+                  ),
+                );
+              },
+              icon: FaIcon(
+                CupertinoIcons.search,
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+          ],
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (currentBlocState is HSInitState || currentBlocState is HSLoadingState)
+              Center(
+                child: Loading(),
+              ),
+            if (currentBlocState is HSErrorState)
+              Center(
+                child: TryAgain(
+                  onPressed: getFiles,
+                  message: (currentBlocState as HSErrorState).response != null ? jDecode((currentBlocState as HSErrorState).response!.body)['message'] : null,
+                ),
+              ),
+            if (currentBlocState is HSLoadedState && (currentBlocState as HSLoadedState).homeItems.isEmpty) Center(child: Empty(message: "موردی یافت نشد")),
+            if (currentBlocState is HSLoadedState && (currentBlocState as HSLoadedState).homeItems.isNotEmpty)
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    filterData.search = null;
+                    getFiles();
+                  },
+                  color: App.theme.primaryColor,
+                  child: ListView(
+                    controller: scrollController,
+                    children: items
+                            .map<Widget>(
+                              (item) => item.type == Type.File ? fileItem(item.file!) : postItem(item, item.post!),
+                            )
+                            .toList() +
+                        [
+                          if (_isLoadingMore)
+                            Align(
+                              alignment: Alignment.center,
+                              child: Loading(
+                                backgroundColor: Colors.transparent,
+                              ),
+                            )
+                        ],
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

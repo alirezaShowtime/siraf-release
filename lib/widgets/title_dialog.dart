@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:siraf3/main.dart';
 import 'package:siraf3/themes.dart';
 
 class TitleDialog extends StatefulWidget {
@@ -16,7 +17,7 @@ class _TitleDialog extends State<TitleDialog> {
     return Text(
       widget.title,
       style: TextStyle(
-        color: Themes.text,
+        color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
         fontFamily: "IranSansBold",
         fontSize: 15,
       ),

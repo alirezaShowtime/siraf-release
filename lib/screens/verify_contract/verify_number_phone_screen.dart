@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/simple_app_bar.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
+import 'package:siraf3/main.dart';
 
 class VerifyNumberPhoneScreen extends StatefulWidget {
   @override
@@ -21,7 +22,7 @@ class _VerifyNumberPhoneScreen extends State<VerifyNumberPhoneScreen> {
             style: TextStyle(
               fontSize: 13,
               fontFamily: "IranSansBold",
-              color: Themes.text,
+              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
             ),
           ),
           Padding(

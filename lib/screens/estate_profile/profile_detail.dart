@@ -26,7 +26,7 @@ extension ProfileDetail on _EstateProfileScreen {
                 "جزییات بیشتر در دسترس نیست",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Themes.text,
+                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                   fontFamily: "IranSansBold",
                   fontSize: 10,
                 ),
@@ -35,7 +35,7 @@ extension ProfileDetail on _EstateProfileScreen {
           if (estateProfile.description.isFill())
             Text(
               estateProfile.description!,
-              style: TextStyle(color: Themes.textGrey, fontSize: 11),
+              style: TextStyle(color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey, fontSize: 11),
             ),
           if (estateProfile.video.isFill())
             Container(
@@ -74,7 +74,7 @@ extension ProfileDetail on _EstateProfileScreen {
                                   Icon(
                                     CupertinoIcons.play_fill,
                                     size: 44,
-                                    color: Themes.primary,
+                                    color: App.theme.primaryColor,
                                   ),
                                   Icon(
                                     CupertinoIcons.play_fill,
@@ -113,7 +113,7 @@ extension ProfileDetail on _EstateProfileScreen {
                 style: TextStyle(
                   fontFamily: "IranSansBold",
                   fontSize: 13,
-                  color: Themes.text,
+                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                 ),
               ),
             ),

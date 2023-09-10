@@ -135,6 +135,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
                     hintText: "جستجو در شهر ها",
                     hintStyle: TextStyle(
                       fontSize: 12,
+                      color: App.theme.tooltipTheme.textStyle?.color,
                       fontFamily: "IranSansMedium",
                     ),
                   ),
@@ -369,7 +370,11 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
         child: Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
           Text(
             city.name!,
-            style: TextStyle(fontFamily: "IranSansBold", fontSize: 11),
+            style: TextStyle(
+              fontFamily: "IranSansBold",
+              fontSize: 11,
+              color: Themes.text,
+            ),
           ),
           SizedBox(width: 5),
           Icon(
@@ -397,7 +402,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
           });
         },
         content: Container(
-          color: Colors.white,
+          color: App.theme.dialogBackgroundColor,
           padding: EdgeInsets.only(top: 10, bottom: 15, right: 20),
           alignment: Alignment.centerRight,
           child: Column(
@@ -441,7 +446,9 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
             TextNormal(
               city.name!,
               fontFamily: selectedCities.any((e) => e.id == city.id) ? "IranSansBold" : "IranSans",
-              color: (selectedCities.any((e) => e.id == city.id) ? Themes.primary.withOpacity(city.countFile == 0 ? 0.5 : 1) : Themes.textGrey.withOpacity(city.countFile == 0 ? 0.5 : 1)),
+              color: (selectedCities.any((e) => e.id == city.id)
+                  ? App.theme.primaryColor.withOpacity(city.countFile == 0 ? 0.5 : 1)
+                  : (App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey).withOpacity(city.countFile == 0 ? 0.5 : 1)),
             ),
           ],
         ),
@@ -477,7 +484,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
             TextNormal(
               "همه شهر های ${province.name}",
               fontFamily: isFullSelected ? "IranSansBold" : "IranSansMedium",
-              color: isFullSelected ? Themes.primary : App.theme.tooltipTheme.textStyle?.color,
+              color: isFullSelected ? App.theme.primaryColor : App.theme.tooltipTheme.textStyle?.color,
             ),
           ],
         ),

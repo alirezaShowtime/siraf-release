@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/my_file.dart';
@@ -28,11 +29,11 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
   };
 
   Map<int, Color> progress_color = {
-    1: Themes.textGrey,
+    1: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
     2: Colors.red,
     3: Colors.red,
     4: Colors.green,
-    5: App.isDark ? Themes.textLight : Themes.text,
+    5: App.isDark ? App.theme.canvasColor : App.theme.textTheme.bodyLarge?.color ?? Themes.text,
     6: Colors.yellow,
     7: Colors.green,
   };
@@ -43,7 +44,7 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: App.theme.dialogBackgroundColor,
         borderRadius: BorderRadius.circular(13),
         boxShadow: [
           BoxShadow(
@@ -55,7 +56,7 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
         ],
       ),
       foregroundDecoration: BoxDecoration(
-        color: widget.isSelected ? Themes.primary.withOpacity(0.3) : Colors.transparent,
+        color: widget.isSelected ? App.theme.primaryColor.withOpacity(0.3) : Colors.transparent,
       ),
       constraints: BoxConstraints(maxHeight: 140),
       width: double.infinity,
@@ -165,7 +166,7 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                     Text(
                       widget.file.publishedAgo ?? "",
                       style: TextStyle(
-                        color: Themes.text,
+                        color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                         fontSize: 10.5,
                         fontWeight: FontWeight.w400,
                         fontFamily: 'IranSans',
@@ -174,16 +175,7 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                     Text(
                       "کد فایل : ${widget.file.id}",
                       style: TextStyle(
-                        color: Themes.text,
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: 'IranSans',
-                      ),
-                    ),
-                    Text(
-                      "بازدید : ${widget.file.viewCount}",
-                      style: TextStyle(
-                        color: Themes.text,
+                        color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                         fontSize: 10.5,
                         fontWeight: FontWeight.w400,
                         fontFamily: 'IranSans',
@@ -203,7 +195,7 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
     return Container(
       width: 100,
       height: 100,
-      color: Colors.grey.shade100,
+      color: App.isDark ? DarkThemes.background : Colors.grey.shade100,
       alignment: Alignment.center,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -211,13 +203,13 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
         children: [
           Image.asset(
             "assets/images/siraf_logo.png",
-            color: Colors.grey.shade300,
+            color: App.isDark ? DarkThemes.iconGrey : Colors.grey.shade300,
             scale: 8.5,
           ),
           SizedBox(height: 4),
           Image.asset(
             "assets/images/siraf_logo_text.png",
-            color: Colors.grey.shade300,
+            color: App.isDark ? DarkThemes.iconGrey : Colors.grey.shade300,
             scale: 7,
           ),
         ],

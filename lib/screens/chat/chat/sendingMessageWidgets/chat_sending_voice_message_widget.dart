@@ -5,7 +5,7 @@ import 'package:siraf3/bloc/chat/play/voice_message_play_bloc.dart';
 import 'package:siraf3/enums/message_state.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/screens/chat/chat/chat_message_config.dart';
-import 'package:siraf3/themes.dart';
+import 'package:siraf3/main.dart';
 
 import '../my_audio_wave.dart';
 import 'chat_sending_message_widget.dart';
@@ -99,14 +99,14 @@ class ChatSendingVoiceMessageWidgetState extends ChatSendingMessageWidgetState {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
-                color: isForMe() ? Colors.white : Themes.primary,
+                color: isForMe() ? Colors.white : App.theme.primaryColor,
               ),
               child: StreamBuilder<PlayerState>(
                 stream: player.onPlayerStateChanged,
                 builder: (context, snapshot) {
                   return Icon(
                     snapshot.data == PlayerState.playing ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                    color: isForMe() ? Themes.primary : Colors.white,
+                    color: isForMe() ? App.theme.primaryColor : Colors.white,
                   );
                 },
               ),

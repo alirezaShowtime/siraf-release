@@ -25,6 +25,7 @@ import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:siraf3/main.dart';
 
 class EditFileFirst extends StatefulWidget {
   MyFileDetail file;
@@ -122,7 +123,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
           title: Text(
             "ویرایش فایل ${widget.file.id}",
             style: TextStyle(
-              color: Themes.text,
+              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
               fontSize: 15,
             ),
           ),
@@ -163,7 +164,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                         "مشخصات کلی",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Themes.primary,
+                          color: App.theme.primaryColor,
                           fontFamily: "IranSansBold",
                         ),
                       ),
@@ -214,7 +215,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                 left: 0,
                 child: MaterialButton(
                   onPressed: next,
-                  color: Themes.primary,
+                  color: App.theme.primaryColor,
                   child: Text(
                     "بعدی",
                     style: TextStyle(
@@ -335,7 +336,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                     "ویژگی ها",
                     style: TextStyle(
                       fontSize: 14,
-                      color: Themes.primary,
+                      color: App.theme.primaryColor,
                       fontFamily: "IranSansBold",
                     ),
                   ),
@@ -423,7 +424,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                     "امکانات",
                     style: TextStyle(
                       fontSize: 14,
-                      color: Themes.primary,
+                      color: App.theme.primaryColor,
                       fontFamily: "IranSansBold",
                     ),
                   ),
@@ -715,7 +716,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
               style: TextStyle(
                 fontSize: 13,
                 fontFamily: "IranSansMedium",
-                color: Themes.text,
+                color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
               ),
             ),
             GestureDetector(
@@ -731,7 +732,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                   style: TextStyle(
                     fontSize: 13,
                     fontFamily: "IranSansMedium",
-                    color: Themes.text,
+                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                   ),
                 ),
               ),
@@ -742,7 +743,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
           height: 5,
         ),
         Divider(
-          color: Themes.textGrey.withOpacity(0.5),
+          color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
           height: 1,
         ),
       ],
@@ -790,7 +791,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.backgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -809,14 +810,14 @@ class _EditFileFirstState extends State<EditFileFirst> {
                           border: InputBorder.none,
                           hintText: "آدرس را بصورت دقیق وارد کنید. (آدرس به صورت عمومی نمایش داده نمی شود)",
                           hintStyle: TextStyle(
-                            color: Themes.textGrey,
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                             fontSize: 13,
                             fontFamily: "IranSans",
                           ),
                         ),
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Themes.text,
+                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                           fontSize: 13,
                           fontFamily: "IranSansMedium",
                         ),
@@ -845,7 +846,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -898,7 +899,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.backgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -919,7 +920,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                             border: InputBorder.none,
                             hintText: hints.containsKey(property.value) ? hints[property.value] : "${property.name!} را وارد کنید",
                             hintStyle: TextStyle(
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               fontSize: 13,
                               fontFamily: "IranSans",
                             ),
@@ -936,7 +937,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                             fontSize: 13,
                             fontFamily: "IranSansMedium",
                           ),
@@ -953,7 +954,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                               child: Text(
                                 helpTexts[property.value!]!,
                                 style: TextStyle(
-                                  color: Themes.text,
+                                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                   fontSize: 11,
                                   fontFamily: "IranSansMedium",
                                 ),
@@ -998,7 +999,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                           child: Text(
                             text.trim(),
                             style: TextStyle(
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                               fontSize: 11,
                               fontFamily: "IranSansMedium",
                             ),
@@ -1031,7 +1032,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -1075,7 +1076,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.backgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -1107,7 +1108,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -1160,7 +1161,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.backgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -1182,7 +1183,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                             border: InputBorder.none,
                             hintText: hints.containsKey(property.value) ? hints[property.value] : "${property.name!} را وارد کنید",
                             hintStyle: TextStyle(
-                              color: Themes.textGrey,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
                               fontSize: 13,
                               fontFamily: "IranSans",
                             ),
@@ -1197,7 +1198,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Themes.text,
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                             fontSize: 13,
                             fontFamily: "IranSansMedium",
                           ),
@@ -1214,7 +1215,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                               child: Text(
                                 helpTexts[property.value!]!,
                                 style: TextStyle(
-                                  color: Themes.text,
+                                  color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                                   fontSize: 11,
                                   fontFamily: "IranSansMedium",
                                 ),
@@ -1259,7 +1260,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                           child: Text(
                             text.trim(),
                             style: TextStyle(
-                              color: Themes.text,
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
                               fontSize: 11,
                               fontFamily: "IranSansMedium",
                             ),
@@ -1292,7 +1293,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -1337,7 +1338,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: Themes.background,
+          backgroundColor: App.theme.backgroundColor,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -1369,7 +1370,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: Themes.primary,
+                              color: App.theme.primaryColor,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -1408,9 +1409,9 @@ class _EditFileFirstState extends State<EditFileFirst> {
     var color;
 
     if (isProp) {
-      color = (selectedMainProps.containsKey(property.value!) && selectedMainProps[property.value!] == e.value.toString()) ? Themes.secondary : Themes.text;
+      color = (selectedMainProps.containsKey(property.value!) && selectedMainProps[property.value!] == e.value.toString()) ? Themes.secondary : App.theme.textTheme.bodyLarge?.color ?? Themes.text;
     } else {
-      color = (selectedMainFeatures.containsKey(property.value!) && selectedMainFeatures[property.value!] == e.value.toString()) ? Themes.secondary : Themes.text;
+      color = (selectedMainFeatures.containsKey(property.value!) && selectedMainFeatures[property.value!] == e.value.toString()) ? Themes.secondary : App.theme.textTheme.bodyLarge?.color ?? Themes.text;
     }
 
     return GestureDetector(
@@ -1435,7 +1436,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
             bottom: isLast
                 ? BorderSide.none
                 : BorderSide(
-                    color: Themes.textGrey.withOpacity(0.5),
+                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
                     width: 0.7,
                   ),
           ),
