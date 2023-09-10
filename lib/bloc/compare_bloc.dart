@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/file.dart';
@@ -38,6 +39,9 @@ class CompareBloc extends Bloc<CompareEvent, CompareState> {
   }
 
   _onEvent(CompareEvent event, Emitter<CompareState> emit) async {
+    if (await Permission.storage.status != PermissionStatus.granted) {
+      await Permission.storage.request();
+    }
     emit(CompareLoadingState());
 
     var response = await http2.getWithToken(

@@ -5,7 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:siraf3/extensions/file_extension.dart';
-import 'package:video_compressor/video_compressor.dart';
+import 'package:video_compress/video_compress.dart';
 
 class CompressorEvent {
   List<File> images;
@@ -58,19 +58,12 @@ class CompressorBloc extends Bloc<CompressorEvent, CompressorState> {
     var newVideos = <File>[];
 
     for (File video in event.videos) {
-      MediaInfo? mediaInfo;
-      // try {
-      //   VideoCompressor.setLogLevel(0);
-      //   mediaInfo = await VideoCompressor.compressVideo(
-      //     video.path,
-      //     quality: VideoQuality.LowResQuality,
-      //     deleteOrigin: false,
-      //     includeAudio: true,
-      //   );
-      // } catch (e) {
-      //   VideoCompressor.cancelCompression();
-      //   emit(CompressorFailState());
-      // }
+        var mediaInfo = await VideoCompress.compressVideo(
+          video.path,
+          quality: VideoQuality.DefaultQuality,
+          deleteOrigin: false,
+          includeAudio: true,
+        );
 
       if (mediaInfo == null) {
         newVideos.add(video);
