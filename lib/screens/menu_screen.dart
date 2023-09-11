@@ -344,7 +344,7 @@ class _MenuScreenState extends State<MenuScreen> {
                           //   // content: BlocBuilder<GetGroupsBloc, GetGroupsState>(builder: _buildTicketAccordionContent),
                           // ),
                           Accordion(
-                            title: _accordionTitle("آموزش ها"),
+                            title: _accordionTitle("بلاگ"),
                             onClick: () => push(context, LearnScreen()),
                           ),
                           Accordion(

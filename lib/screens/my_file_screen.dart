@@ -168,8 +168,10 @@ class _MyFileScreen extends State<MyFileScreen> {
                   expandedHeight: 260,
                   elevation: 0.7,
                   backgroundColor: App.theme.dialogBackgroundColor,
-                  leading: MyBackButton(shadow: true),
-                  actions: appBarActions(state.file, App.theme.iconTheme.color ?? Colors.black),
+                  leading:
+                      MyBackButton(color: (state.file.media?.isFill() ?? false ? (App.theme.canvasColor) : App.theme.iconTheme.color ?? Colors.black), shadow: state.file.media?.isFill() ?? false),
+                  actions: appBarActions(state.file, (state.file.media?.isFill() ?? false ? (App.theme.canvasColor) : App.theme.iconTheme.color ?? Colors.black),
+                      shadow: state.file.media?.isFill() ?? false),
                   flexibleSpace: FlexibleSpaceBar(background: _buildSliders(state.file)),
                 ),
                 StatefulBuilder(
@@ -821,13 +823,13 @@ class _MyFileScreen extends State<MyFileScreen> {
     );
   }
 
-  List<Widget> appBarActions(MyFileDetail file, Color color) {
+  List<Widget> appBarActions(MyFileDetail file, Color color, {bool shadow = true}) {
     return [
       MyPopupMenuButton(
         child: Icon(
           Icons.more_vert_rounded,
           color: color,
-          shadows: _isSliverAppBarCollapsed ? null : [BoxShadow(color: Colors.black87, blurRadius: 3)],
+          shadows: !shadow || _isSliverAppBarCollapsed ? null : [BoxShadow(color: Colors.black87, blurRadius: 3)],
         ),
         itemBuilder: (_) => [
           MyPopupMenuItem(

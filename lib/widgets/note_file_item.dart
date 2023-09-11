@@ -60,6 +60,7 @@ class _NoteFileItemState extends State<NoteFileItem> {
       ),
       foregroundDecoration: BoxDecoration(
         color: widget.isSelected ? Themes.blue.withOpacity(0.2) : Colors.transparent,
+        borderRadius: BorderRadius.circular(13),
       ),
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.symmetric(horizontal: 4, vertical: 3),

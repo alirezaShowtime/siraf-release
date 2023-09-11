@@ -110,7 +110,7 @@ class _LearnScreenState extends State<LearnScreen> with AutomaticKeepAliveClient
             elevation: 0.7,
             title: TextField2(
               decoration: InputDecoration(
-                hintText: "جستجو در آموزش های سیراف",
+                hintText: "جستجو در بلاگ سیراف",
                 hintStyle: TextStyle(color: App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey, fontSize: 13),
                 border: InputBorder.none,
               ),

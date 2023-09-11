@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/estate.dart';
 import 'package:siraf3/widgets/slider.dart' as s;
@@ -376,6 +377,10 @@ class Media {
     }
     _data["virtualTour"] = virtualTour;
     return _data;
+  }
+  
+  bool isFill() {
+    return image.isFill() || video.isFill() || virtualTour != null;
   }
 }
 

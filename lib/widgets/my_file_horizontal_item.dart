@@ -57,6 +57,7 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
       ),
       foregroundDecoration: BoxDecoration(
         color: widget.isSelected ? App.theme.primaryColor.withOpacity(0.3) : Colors.transparent,
+        borderRadius: BorderRadius.circular(13),
       ),
       constraints: BoxConstraints(maxHeight: 140),
       width: double.infinity,
