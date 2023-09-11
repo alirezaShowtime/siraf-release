@@ -7,6 +7,7 @@ import 'package:location/location.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
+import 'package:siraf3/map_utilities.dart';
 import 'package:siraf3/themes.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
 
@@ -20,7 +21,7 @@ class MarkInMapScreen extends StatefulWidget {
   State<MarkInMapScreen> createState() => _MarkInMapScreenState();
 }
 
-class _MarkInMapScreenState extends State<MarkInMapScreen> {
+class _MarkInMapScreenState extends State<MarkInMapScreen> with SingleTickerProviderStateMixin {
   MapController _controller = MapController();
 
   LatLng defaultLocation = LatLng(34.08892074204623, 49.7009108491914);
@@ -139,6 +140,15 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
               FlutterMap(
                 mapController: _controller,
                 options: MapOptions(
+                  onMapCreated: (mapController) {
+                    if (widget.position != null) {
+                      Future.delayed(Duration(milliseconds: 300), () {
+                        setState(() {
+                          animatedMapMove(mapController, widget.position!, mapController.zoom, this);
+                        });
+                      });
+                    }
+                  },
                   center: defaultLocation,
                   zoom: 13.0,
                   minZoom: 9,
@@ -147,8 +157,7 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
                 children: [
                   TileLayerWidget(
                     options: TileLayerOptions(
-                      urlTemplate:
-                          App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
+                      urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
                     ),
                   ),
                   MarkerLayerWidget(
@@ -186,8 +195,7 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
                           ),
                         ],
                       ),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                       alignment: Alignment.center,
                       child: Row(
                         children: [
@@ -253,10 +261,7 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> {
 
     LocationData locationData = await _location.getLocation();
 
-    if (locationData.latitude == null ||
-        locationData.longitude == null ||
-        locationData.latitude == 0 ||
-        locationData.longitude == 0) {
+    if (locationData.latitude == null || locationData.longitude == null || locationData.latitude == 0 || locationData.longitude == 0) {
       notify("موقعیت مکانی دریافت نشد");
       return;
     }

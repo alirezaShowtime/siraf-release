@@ -37,7 +37,7 @@ class _ViolationDialog extends State<ViolationDialog> {
     return AlertDialog(
       contentPadding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      backgroundColor: Themes.themeData().dialogBackgroundColor,
+      backgroundColor: App.theme.dialogBackgroundColor,
       content: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
@@ -55,7 +55,11 @@ class _ViolationDialog extends State<ViolationDialog> {
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
-                        borderSide: BorderSide(color: Themes.themeData().tooltipTheme.textStyle?.color ?? App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey, width: 1),
+                        borderSide: BorderSide(color: (App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey).withOpacity(0.5), width: 1),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: BorderSide(color: (App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey).withOpacity(0.5), width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
@@ -63,13 +67,13 @@ class _ViolationDialog extends State<ViolationDialog> {
                       ),
                       hintText: "عنوان",
                       hintStyle: TextStyle(
-                        color: Themes.themeData().tooltipTheme.textStyle?.color,
+                        color: App.theme.tooltipTheme.textStyle?.color,
                         fontSize: 13,
                         fontFamily: "IranSans",
                       ),
                     ),
                     style: TextStyle(
-                      color: Themes.themeData().textTheme.bodyLarge?.color,
+                      color: App.theme.textTheme.bodyLarge?.color,
                       fontSize: 13,
                       fontFamily: "IranSansMedium",
                     ),
@@ -84,7 +88,11 @@ class _ViolationDialog extends State<ViolationDialog> {
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
-                        borderSide: BorderSide(color: Themes.themeData().tooltipTheme.textStyle?.color ?? App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey, width: 1),
+                        borderSide: BorderSide(color: (App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey).withOpacity(0.5), width: 1),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: BorderSide(color: (App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey).withOpacity(0.5), width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
@@ -92,13 +100,13 @@ class _ViolationDialog extends State<ViolationDialog> {
                       ),
                       hintText: "توضیحات",
                       hintStyle: TextStyle(
-                        color: Themes.themeData().tooltipTheme.textStyle?.color,
+                        color: App.theme.tooltipTheme.textStyle?.color,
                         fontSize: 13,
                         fontFamily: "IranSans",
                       ),
                     ),
                     style: TextStyle(
-                      color: Themes.themeData().textTheme.bodyLarge?.color,
+                      color: App.theme.textTheme.bodyLarge?.color,
                       fontSize: 13,
                       fontFamily: "IranSansMedium",
                     ),

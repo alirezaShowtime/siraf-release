@@ -3,7 +3,7 @@ part of 'estate_profile_screen.dart';
 extension AddCommentWidget on _EstateProfileScreen {
   Widget addCommentWidget(int estateId) {
     return Container(
-      color: Colors.white,
+      color: App.theme.dialogBackgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: [

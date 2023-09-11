@@ -219,7 +219,7 @@ class _AppBarChat extends State<AppBarChat> {
                   style: TextStyle(
                     fontSize: 12,
                     fontFamily: "IranSansBold",
-                    color: Themes.themeData().textTheme.bodyLarge?.color,
+                    color: App.theme.textTheme.bodyLarge?.color,
                   ),
                 ),
               ],
@@ -345,6 +345,7 @@ class _AppBarChat extends State<AppBarChat> {
       style: TextStyle(
         fontFamily: "IranSansMedium",
         fontSize: 12,
+        color: App.theme.textTheme.bodyLarge?.color,
       ),
     );
   }

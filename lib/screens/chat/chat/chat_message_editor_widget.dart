@@ -93,8 +93,8 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
         ),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border(top: BorderSide(color: Colors.grey.shade300, width: 0.7)),
+            color: App.theme.dialogBackgroundColor,
+            border: Border(top: BorderSide(color: App.theme.shadowColor, width: 0.7)),
             boxShadow: [
               BoxShadow(
                 offset: const Offset(1, -3),
@@ -110,7 +110,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
                 return Container(
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                  decoration: BoxDecoration(color: Colors.white),
+                  decoration: BoxDecoration(color: App.theme.dialogBackgroundColor),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -163,7 +163,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
                             hintText: "پیام...",
                             hintStyle: TextStyle(color: Colors.grey.shade400),
                           ),
-                          style: TextStyle(fontSize: 13),
+                          style: TextStyle(fontSize: 13, color: App.theme.textTheme.bodyLarge?.color),
                         ),
                       ),
                       // btn(
@@ -246,9 +246,9 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
       height: 50,
       padding: EdgeInsets.only(left: 5, right: 8, top: 5, bottom: 5),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: App.theme.dialogBackgroundColor,
         border: Border(
-          top: BorderSide(color: Colors.grey.shade300, width: 0.7),
+          top: BorderSide(color: App.theme.shadowColor, width: 0.7),
         ),
         boxShadow: [
           BoxShadow(
@@ -359,7 +359,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
     return Container(
       constraints: BoxConstraints(maxHeight: 300),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: App.theme.dialogBackgroundColor,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(15),
           topLeft: Radius.circular(15),
@@ -412,7 +412,7 @@ class _ChatMessageEditor extends State<ChatMessageEditor> {
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                   style: TextStyle(
-                    color: Colors.black,
+                    color: App.theme.textTheme.bodyLarge?.color,
                     fontSize: 11,
                     fontFamily: "sans-serif",
                   ),

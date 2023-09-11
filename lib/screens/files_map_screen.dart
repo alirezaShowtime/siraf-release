@@ -131,217 +131,185 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => bloc,
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0.7,
-          title: TextField2(
-            decoration: InputDecoration(
-              hintText: "جستجو در فایل ها",
-              hintStyle: TextStyle(color: App.theme.tooltipTheme.textStyle?.color, fontSize: 13),
-              border: InputBorder.none,
-            ),
-            controller: _searchController,
-            style: TextStyle(fontSize: 13, color: App.theme.textTheme.bodyLarge?.color),
-            textInputAction: TextInputAction.search,
-            onSubmitted: (value) {
-              getFiles();
-            },
-            onChanged: (v) {
-              setState(() {});
-            },
-          ),
-          automaticallyImplyLeading: false,
-          titleSpacing: 0,
-          actions: [
-            if (_searchController.text.isFill())
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _searchController.clear();
-                  });
-                  getFiles();
-                },
-                child: Icon(
-                  CupertinoIcons.clear,
-                ),
+    return WillPopScope(
+      onWillPop: () async {
+        if (selectedFile != null) {
+          setState(() {
+            selectedFile = null;
+          });
+          return false;
+        }
+
+        return true;
+      },
+      child: BlocProvider(
+        create: (_) => bloc,
+        child: Scaffold(
+          appBar: AppBar(
+            elevation: 0.7,
+            title: TextField2(
+              decoration: InputDecoration(
+                hintText: "جستجو در فایل ها",
+                hintStyle: TextStyle(color: App.theme.tooltipTheme.textStyle?.color, fontSize: 13),
+                border: InputBorder.none,
               ),
-            SizedBox(
-              width: 5,
-            ),
-            GestureDetector(
-              onTap: () async {
-                await goSelectCity();
+              controller: _searchController,
+              style: TextStyle(fontSize: 13, color: App.theme.textTheme.bodyLarge?.color),
+              textInputAction: TextInputAction.search,
+              onSubmitted: (value) {
                 getFiles();
               },
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 17,
-                ),
-                child: Text(
-                  getTitle(cities),
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontFamily: "IranSansMedium",
-                  ),
-                ),
-              ),
-            ),
-            IconButton(
-              onPressed: () async {
-                var result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => FilterScreen(
-                      originalFilterData: FilterData(cityIds: cities.map<int>((e) => e.id!).toList()),
-                      filterData: filterData,
-                      total_url: getFileUrl("file/locationFiles/").toString(),
-                    ),
-                  ),
-                );
-
-                if (result != null && result is FilterData) {
-                  setState(() {
-                    filterData = result;
-                  });
-
-                  getFiles();
-                }
+              onChanged: (v) {
+                setState(() {});
               },
-              icon: badges.Badge(
-                badgeContent: Text(''),
-                showBadge: filterData.hasFilter(),
-                position: badges.BadgePosition.custom(top: -15, start: -10),
-                badgeStyle: badges.BadgeStyle(badgeColor: App.theme.primaryColor),
-                child: FaIcon(
-                  OctIcons.sliders_16,
-                  size: 20,
-                ),
-              ),
             ),
-          ],
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              CupertinoIcons.back,
-            ),
-          ),
-        ),
-        body: Stack(
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: FlutterMap(
-                mapController: _controller,
-                options: MapOptions(
-                  center: defaultLocation,
-                  interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-                  zoom: 14.0,
-                  minZoom: 9,
-                  plugins: [
-                    MarkerClusterPlugin(),
-                  ],
-                ),
-                children: [
-                  TileLayerWidget(
-                    options: TileLayerOptions(
-                      urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
-                    ),
-                  ),
-                  MarkerClusterLayerWidget(
-                    options: MarkerClusterLayerOptions(
-                      spiderfyCircleRadius: 80,
-                      spiderfySpiralDistanceMultiplier: 2,
-                      circleSpiralSwitchover: 50,
-                      maxClusterRadius: 120,
-                      rotate: true,
-                      size: const Size(40, 40),
-                      anchor: AnchorPos.align(AnchorAlign.center),
-                      fitBoundsOptions: const FitBoundsOptions(
-                        padding: EdgeInsets.all(50),
-                        maxZoom: 100,
-                      ),
-                      markers: markers,
-                      polygonOptions: const PolygonOptions(borderColor: Colors.blueAccent, color: Colors.black12, borderStrokeWidth: 3),
-                      builder: (context, markers) {
-                        return Container(
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.blue),
-                          child: Center(
-                            child: Text(
-                              markers.length.toString(),
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  CircleLayerWidget(
-                    options: CircleLayerOptions(circles: circles),
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              top: 10,
-              right: 10,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: App.theme.dialogBackgroundColor,
-                  borderRadius: BorderRadius.circular(100),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      offset: Offset(-2, 2),
-                      blurRadius: 4,
-                    ),
-                    BoxShadow(
-                      color: Colors.black12,
-                      offset: Offset(2, -2),
-                      blurRadius: 4,
-                    ),
-                  ],
-                ),
-                alignment: Alignment.center,
-                padding: EdgeInsets.all(7),
-                child: InkWell(
-                  onTap: _onMyLocationClicked,
-                  child: Center(
-                    child: Icon(
-                      Icons.my_location_outlined,
-                      size: 30,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 10,
-              right: 60,
-              child: GestureDetector(
-                onTap: () async {
-                  setState(() {
-                    _showFileOnMyLocation = !_showFileOnMyLocation;
-                  });
-                  if (!_showFileOnMyLocation) {
+            automaticallyImplyLeading: false,
+            titleSpacing: 0,
+            actions: [
+              if (_searchController.text.isFill())
+                GestureDetector(
+                  onTap: () {
                     setState(() {
-                      circles.removeAt(1);
-                      myLocationMarker = null;
+                      _searchController.clear();
+                    });
+                    getFiles();
+                  },
+                  child: Icon(
+                    CupertinoIcons.clear,
+                  ),
+                ),
+              SizedBox(
+                width: 5,
+              ),
+              GestureDetector(
+                onTap: () async {
+                  await goSelectCity();
+                  getFiles();
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 17,
+                  ),
+                  child: Text(
+                    getTitle(cities),
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontFamily: "IranSansMedium",
+                    ),
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () async {
+                  var result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => FilterScreen(
+                        originalFilterData: FilterData(cityIds: cities.map<int>((e) => e.id!).toList()),
+                        filterData: filterData,
+                        total_url: getFileUrl("file/locationFiles/").toString(),
+                      ),
+                    ),
+                  );
+
+                  if (result != null && result is FilterData) {
+                    setState(() {
+                      filterData = result;
                     });
 
                     getFiles();
-                    return;
                   }
-
-                  getFilesFirstTime();
                 },
+                icon: badges.Badge(
+                  badgeContent: Text(''),
+                  showBadge: filterData.hasFilter(),
+                  position: badges.BadgePosition.custom(top: -15, start: -10),
+                  badgeStyle: badges.BadgeStyle(badgeColor: App.theme.primaryColor),
+                  child: FaIcon(
+                    OctIcons.sliders_16,
+                    size: 20,
+                  ),
+                ),
+              ),
+            ],
+            leading: IconButton(
+              onPressed: () {
+                if (selectedFile != null) {
+                  setState(() {
+                    selectedFile = null;
+                  });
+                  return;
+                }
+
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                CupertinoIcons.back,
+              ),
+            ),
+          ),
+          body: Stack(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: FlutterMap(
+                  mapController: _controller,
+                  options: MapOptions(
+                    center: defaultLocation,
+                    interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                    zoom: 14.0,
+                    minZoom: 9,
+                    plugins: [
+                      MarkerClusterPlugin(),
+                    ],
+                  ),
+                  children: [
+                    TileLayerWidget(
+                      options: TileLayerOptions(
+                        urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
+                      ),
+                    ),
+                    MarkerClusterLayerWidget(
+                      options: MarkerClusterLayerOptions(
+                        spiderfyCircleRadius: 80,
+                        spiderfySpiralDistanceMultiplier: 2,
+                        circleSpiralSwitchover: 50,
+                        maxClusterRadius: 120,
+                        rotate: true,
+                        size: const Size(40, 40),
+                        anchor: AnchorPos.align(AnchorAlign.center),
+                        fitBoundsOptions: const FitBoundsOptions(
+                          padding: EdgeInsets.all(50),
+                          maxZoom: 100,
+                        ),
+                        markers: markers,
+                        polygonOptions: const PolygonOptions(borderColor: Colors.blueAccent, color: Colors.black12, borderStrokeWidth: 3),
+                        builder: (context, markers) {
+                          return Container(
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.blue),
+                            child: Center(
+                              child: Text(
+                                markers.length.toString(),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    CircleLayerWidget(
+                      options: CircleLayerOptions(circles: circles),
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: 10,
+                right: 10,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: _showFileOnMyLocation ? App.theme.primaryColor : App.theme.dialogBackgroundColor,
+                    color: App.theme.dialogBackgroundColor,
                     borderRadius: BorderRadius.circular(100),
                     boxShadow: [
                       BoxShadow(
@@ -357,60 +325,111 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                     ],
                   ),
                   alignment: Alignment.center,
-                  padding: EdgeInsets.all(10),
-                  child: Text(
-                    "فقط اطراف من",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: "IranSansMedium",
-                      color: _showFileOnMyLocation ? App.theme.canvasColor : null,
+                  padding: EdgeInsets.all(7),
+                  child: InkWell(
+                    onTap: _onMyLocationClicked,
+                    child: Center(
+                      child: Icon(
+                        Icons.my_location_outlined,
+                        size: 30,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            Visibility(
-              visible: selectedFile != null,
-              child: Positioned(
-                bottom: 10,
-                left: 0,
-                right: 0,
-                child: CarouselSlider(
-                  items: files
-                      .map((e) => Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => FileScreen(id: e.id!),
-                                  ),
-                                );
-                              },
-                              child: LocationFileItem(
-                                locationFile: e,
-                              ),
-                            ),
-                          ))
-                      .toList(),
-                  options: CarouselOptions(
-                      height: 120,
-                      autoPlay: false,
-                      viewportFraction: 0.9,
-                      onPageChanged: (i, _) {
-                        animatedMapMove(_controller, LatLng(double.parse(files.elementAt(i).lat!), double.parse(files.elementAt(i).long!)), _controller.zoom, this);
+              Positioned(
+                top: 10,
+                right: 60,
+                child: GestureDetector(
+                  onTap: () async {
+                    setState(() {
+                      _showFileOnMyLocation = !_showFileOnMyLocation;
+                    });
+                    if (!_showFileOnMyLocation) {
+                      setState(() {
+                        circles.removeAt(1);
+                        myLocationMarker = null;
+                      });
 
-                        setState(() {
-                          selectedFile = files.elementAt(i);
-                          markers = _buildFileMarkers(files);
-                        });
-                      }),
-                  carouselController: carouselController,
+                      getFiles();
+                      return;
+                    }
+
+                    getFilesFirstTime();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: _showFileOnMyLocation ? App.theme.primaryColor : App.theme.dialogBackgroundColor,
+                      borderRadius: BorderRadius.circular(100),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(-2, 2),
+                          blurRadius: 4,
+                        ),
+                        BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(2, -2),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      "فقط اطراف من",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: "IranSansMedium",
+                        color: _showFileOnMyLocation ? App.theme.canvasColor : null,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ],
+              Visibility(
+                visible: selectedFile != null,
+                child: Positioned(
+                  bottom: 10,
+                  left: 0,
+                  right: 0,
+                  child: CarouselSlider(
+                    items: files
+                        .map((e) => Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 5),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => FileScreen(id: e.id!),
+                                    ),
+                                  );
+                                },
+                                child: LocationFileItem(
+                                  locationFile: e,
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                    options: CarouselOptions(
+                        height: 120,
+                        autoPlay: false,
+                        viewportFraction: 0.9,
+                        onPageChanged: (i, _) {
+                          animatedMapMove(_controller, LatLng(double.parse(files.elementAt(i).lat!), double.parse(files.elementAt(i).long!)), _controller.zoom, this);
+
+                          setState(() {
+                            selectedFile = files.elementAt(i);
+                            markers = _buildFileMarkers(files);
+                          });
+                        }),
+                    carouselController: carouselController,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -677,7 +696,7 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                       height: 60,
                       width: 122,
                       decoration: BoxDecoration(
-                        color: Color(0xff707070),
+                        color: App.isDark ? Color.fromARGB(255, 201, 201, 201) : Color(0xff707070),
                         border: Border.all(
                           color: Themes.icon,
                           width: 2,
@@ -771,6 +790,8 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
 
       return;
     }
+
+    animatedMapMove(_controller, toLatLng(cities[0].lat, cities[0].long), 13.5, this);
   }
 
   LatLng toLatLng(lat, long) {

@@ -5,6 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_amqp/dart_amqp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -160,7 +161,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
   int newMessageCount = 0;
 
   var newMessageCountBadgeSetState;
-  
+
   Client? rabbitClient;
 
   @override
@@ -197,7 +198,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
     chatDeleteBlocListener();
 
     paginationBlocListener();
-    
+
     listenRabbit();
   }
 
@@ -238,117 +239,118 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
         onWillPop: onClickBackButton(),
         child: KeyboardSizeProvider(
           smallSize: 400,
-          child: Scaffold(
-            resizeToAvoidBottomInset: true,
-            backgroundColor: Colors.white,
-            appBar: AppBarChat(
-              consultantId: widget.consultantId,
-              consultantName: widget.consultantName,
-              consultantImage: widget.consultantImage,
-              chatId: widget.chatId,
-              isDisable: blockByHer || isBlockByMe,
-              onClickBackButton: backToList,
-            ),
-            body: Stack(
-              children: [
-                BlocConsumer(
-                  bloc: chatMessagesBloc,
-                  listener: (context, state) {
-                    if (state is! MessagesSuccess) return;
-                    messages = state.messages;
-
-                    try {
-                      lastMessage = messages.last;
-                    } catch (e) {}
-
-                    for (ChatMessage message in messages) {
-                      messageWidgets.add(
-                        createDate: message.createDate!,
-                        widget: ChatMessageWidget(
-                          messageKey: MessageWidgetKey(message),
-                          message: message,
-                          onClickReplyMessage: scrollTo,
-                        ),
-                      );
-                    }
-                    if (messages.isFill() && !messages.last.forMe) {
-                      seenMessageBloc.add(SeenMessageRequestEvent(widget.chatId));
-                    }
-                  },
-                  builder: (context, state) {
-                    if (state is MessagesInitial) return Container();
-
-                    if (state is MessagesLoading) return Align(alignment: Alignment.center, child: Container(alignment: Alignment.center, child: Loading()));
-
-                    if (state is MessagesError) {
-                      return Center(child: TryAgain(onPressed: _request, message: state.message));
-                    }
-
-                    bool isEmptyMessageWidgets = messageWidgets.widgetLength() == 0;
-
-                    return Column(
-                      children: [
-                        headerChatWidget(),
-                        Expanded(
-                          child: Stack(
-                            children: [
-                              if (isEmptyMessageWidgets)
-                                const Center(
-                                  child: Text(
-                                    "پیامی وجود ندارد",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontFamily: "IranSansBold",
-                                      fontSize: 10,
+          child: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: App.getSystemUiOverlay(),
+            child: Scaffold(
+              resizeToAvoidBottomInset: true,
+              appBar: AppBarChat(
+                consultantId: widget.consultantId,
+                consultantName: widget.consultantName,
+                consultantImage: widget.consultantImage,
+                chatId: widget.chatId,
+                isDisable: blockByHer || isBlockByMe,
+                onClickBackButton: backToList,
+              ),
+              body: Stack(
+                children: [
+                  BlocConsumer(
+                    bloc: chatMessagesBloc,
+                    listener: (context, state) {
+                      if (state is! MessagesSuccess) return;
+                      messages = state.messages;
+          
+                      try {
+                        lastMessage = messages.last;
+                      } catch (e) {}
+          
+                      for (ChatMessage message in messages) {
+                        messageWidgets.add(
+                          createDate: message.createDate!,
+                          widget: ChatMessageWidget(
+                            messageKey: MessageWidgetKey(message),
+                            message: message,
+                            onClickReplyMessage: scrollTo,
+                          ),
+                        );
+                      }
+                      if (messages.isFill() && !messages.last.forMe) {
+                        seenMessageBloc.add(SeenMessageRequestEvent(widget.chatId));
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is MessagesInitial) return Container();
+          
+                      if (state is MessagesLoading) return Align(alignment: Alignment.center, child: Container(alignment: Alignment.center, child: Loading()));
+          
+                      if (state is MessagesError) {
+                        return Center(child: TryAgain(onPressed: _request, message: state.message));
+                      }
+          
+                      bool isEmptyMessageWidgets = messageWidgets.widgetLength() == 0;
+          
+                      return Column(
+                        children: [
+                          headerChatWidget(),
+                          Expanded(
+                            child: Stack(
+                              children: [
+                                if (isEmptyMessageWidgets)
+                                  const Center(
+                                    child: Text(
+                                      "پیامی وجود ندارد",
+                                      style: TextStyle(
+                                        fontFamily: "IranSansBold",
+                                        fontSize: 10,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              if (!isEmptyMessageWidgets)
-                                StatefulBuilder(builder: (context, setState) {
-                                  listViewSetState = setState;
-
-                                  var list = generateList();
-
-                                  return NotificationListener(
-                                    onNotification: onNotificationListView,
-                                    child: ScrollablePositionedList.builder(
-                                      reverse: true,
-                                      itemCount: list.length,
-                                      itemBuilder: (_, i) => list[i],
-                                      addAutomaticKeepAlives: true,
-                                      itemScrollController: chatItemScrollController,
-                                      scrollOffsetController: chatScrollOffsetController,
-                                    ),
-                                  );
-                                }),
-                              if (!isEmptyMessageWidgets) ScrollDownButtonWidget(),
-                            ],
+                                if (!isEmptyMessageWidgets)
+                                  StatefulBuilder(builder: (context, setState) {
+                                    listViewSetState = setState;
+          
+                                    var list = generateList();
+          
+                                    return NotificationListener(
+                                      onNotification: onNotificationListView,
+                                      child: ScrollablePositionedList.builder(
+                                        reverse: true,
+                                        itemCount: list.length,
+                                        itemBuilder: (_, i) => list[i],
+                                        addAutomaticKeepAlives: true,
+                                        itemScrollController: chatItemScrollController,
+                                        scrollOffsetController: chatScrollOffsetController,
+                                      ),
+                                    );
+                                  }),
+                                if (!isEmptyMessageWidgets) ScrollDownButtonWidget(),
+                              ],
+                            ),
                           ),
-                        ),
-                        BlocBuilder(
-                          bloc: chatSearchBoxMessageStatus,
-                          builder: (context, bool state) {
-                            if (state) return searchControllerWidget();
-                            if (isDeleted) return notifChatWidget("حذف شده");
-                            if (isBlockByMe) return notifChatWidget("رفع مسدودیت", onTap: onClickUnblock);
-                            if (blockByHer && !isBlockByMe) return notifChatWidget("شما مسدود شداید");
-                            if (!isBlockByMe && !isDeleted && !blockByHer)
-                              return ChatMessageEditor(
-                                onClickSendMessage: sendMessage,
-                                changeKeyboardStatus: changeEmojiKeyboardStatus,
-                                onOpenEmojiKeyboard: (isOpen) {
-                                  isOpenEmojiKeyboard = isOpen;
-                                },
-                              );
-                            return SizedBox();
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                ),
-                VoiceRecorderWidget(),
-              ],
+                          BlocBuilder(
+                            bloc: chatSearchBoxMessageStatus,
+                            builder: (context, bool state) {
+                              if (state) return searchControllerWidget();
+                              if (isDeleted) return notifChatWidget("حذف شده");
+                              if (isBlockByMe) return notifChatWidget("رفع مسدودیت", onTap: onClickUnblock);
+                              if (blockByHer && !isBlockByMe) return notifChatWidget("شما مسدود شداید");
+                              if (!isBlockByMe && !isDeleted && !blockByHer)
+                                return ChatMessageEditor(
+                                  onClickSendMessage: sendMessage,
+                                  changeKeyboardStatus: changeEmojiKeyboardStatus,
+                                  onOpenEmojiKeyboard: (isOpen) {
+                                    isOpenEmojiKeyboard = isOpen;
+                                  },
+                                );
+                              return SizedBox();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  VoiceRecorderWidget(),
+                ],
+              ),
             ),
           ),
         ),
@@ -492,7 +494,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
   void backToList() {
     rabbitClient?.close();
-    
+
     Navigator.pop(context, {
       "chatId": widget.chatId,
       "sentMessage": lastMessage?.message ?? "فایل",

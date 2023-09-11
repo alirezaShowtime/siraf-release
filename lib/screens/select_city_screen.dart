@@ -449,8 +449,8 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
               city.name!,
               fontFamily: selectedCities.any((e) => e.id == city.id) ? "IranSansBold" : "IranSans",
               color: (selectedCities.any((e) => e.id == city.id)
-                  ? App.theme.primaryColor.withOpacity(city.countFile == 0 ? 0.5 : 1)
-                  : (App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey).withOpacity(city.countFile == 0 ? 0.5 : 1)),
+                  ? App.theme.primaryColor.withOpacity(city.countFile == 0 && widget.alert ? 0.5 : 1)
+                  : (App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey).withOpacity(city.countFile == 0 && widget.alert ? 0.5 : 1)),
             ),
           ],
         ),

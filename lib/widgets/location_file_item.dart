@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:siraf3/bookmark.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
@@ -42,7 +43,7 @@ class _LocationFileItemState extends State<LocationFileItem> {
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: App.theme.dialogBackgroundColor,
         borderRadius: BorderRadius.circular(13),
         boxShadow: [
           BoxShadow(
@@ -169,11 +170,12 @@ class _LocationFileItemState extends State<LocationFileItem> {
     );
   }
 
+
   Widget loadingImage() {
     return Container(
       width: 100,
       height: 100,
-      color: Colors.grey.shade100,
+      color: App.isDark ? DarkThemes.background : Colors.grey.shade100,
       alignment: Alignment.center,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -181,13 +183,13 @@ class _LocationFileItemState extends State<LocationFileItem> {
         children: [
           m.Image.asset(
             "assets/images/siraf_logo.png",
-            color: Colors.grey.shade300,
+            color: App.isDark ? DarkThemes.iconGrey : Colors.grey.shade300,
             scale: 8.5,
           ),
           SizedBox(height: 4),
           m.Image.asset(
             "assets/images/siraf_logo_text.png",
-            color: Colors.grey.shade300,
+            color: App.isDark ? DarkThemes.iconGrey : Colors.grey.shade300,
             scale: 7,
           ),
         ],

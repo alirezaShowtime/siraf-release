@@ -357,7 +357,7 @@ class _MenuScreenState extends State<MenuScreen> {
                               await FlutterShare.share(
                                 title: 'اشتراک گذاری برنامه',
                                 text: "اپلیکیشن سیراف",
-                                linkUrl: "https://siraf.app/app",
+                                linkUrl: "https://siraf.app/about",
                                 chooserTitle: 'اشتراک گذاری در',
                               );
                             },

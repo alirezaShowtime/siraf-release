@@ -588,7 +588,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                               Text(
                                 estate.name!,
                                 style: TextStyle(
-                                  color: Color(0xff000000),
+                                  color: App.theme.textTheme.bodyLarge?.color,
                                   fontSize: 14,
                                 ),
                               ),
@@ -768,7 +768,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                           height: 70,
                           width: 122,
                           decoration: BoxDecoration(
-                            color: Color(0xff707070),
+                            color: App.isDark ? Color.fromARGB(255, 201, 201, 201) : Color(0xff707070),
                             border: Border.all(
                               color: Themes.icon,
                               width: 3,
@@ -880,6 +880,8 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
 
       return;
     }
+    
+    animatedMapMove(_controller, toLatLng(cities[0].lat, cities[0].long), 13.5, this);
   }
 
   LatLng toLatLng(lat, long) {

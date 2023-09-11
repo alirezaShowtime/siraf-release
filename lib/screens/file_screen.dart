@@ -451,7 +451,7 @@ class _FileScreen extends State<FileScreen> {
               height: 300,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Themes.themeData().backgroundColor,
+                    color: App.theme.backgroundColor,
                 image: DecorationImage(image: AssetImage(IMAGE_NOT_AVAILABLE), alignment: Alignment.center),
               ),
             ),

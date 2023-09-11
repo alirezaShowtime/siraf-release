@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:siraf3/bloc/edit_file_request_bloc.dart';
 import 'package:siraf3/dialog.dart';
@@ -102,79 +103,160 @@ class _EditRequestScreen extends State<EditRequestScreen> {
   @override
   Widget build(BuildContext context) {
     buildContext = context;
-    return Scaffold(
-      backgroundColor: App.theme.backgroundColor,
-      appBar: MyAppBar(
-        backgroundColor: Themes.appBar,
-        leading: MyBackButton(),
-        title: AppBarTitle("ویرایش درخواست"),
-        automaticallyImplyLeading: false,
-        titleSpacing: 0,
-        elevation: 0.7,
-        actions: [
-          IconButton(
-            onPressed: showResetDialog,
-            icon: icon(Icons.refresh_rounded),
-          )
-        ],
-      ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: ListView(
-              physics: BouncingScrollPhysics(),
-              children: [
-                SizedBox(height: 20),
-                Text(
-                  "مشخصات کلی",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontFamily: "IranSansBold",
-                    color: Themes.blue,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: App.getSystemUiOverlay(),
+      child: Scaffold(
+        appBar: MyAppBar(
+          leading: MyBackButton(),
+          title: AppBarTitle("ویرایش درخواست"),
+          automaticallyImplyLeading: false,
+          titleSpacing: 0,
+          elevation: 0.7,
+          actions: [
+            IconButton(
+              onPressed: showResetDialog,
+              icon: icon(Icons.refresh_rounded),
+            )
+          ],
+        ),
+        body: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: ListView(
+                physics: BouncingScrollPhysics(),
+                children: [
+                  SizedBox(height: 20),
+                  Text(
+                    "مشخصات کلی",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: "IranSansBold",
+                      color: Themes.blue,
+                    ),
                   ),
-                ),
-                Section(
-                  title: "دسته بندی",
-                  hint: "انتخاب",
-                  value: category != null ? categories.map((e) => e.name).join(' > ') : null,
-                  onTap: onClickCategoryItem,
-                ),
-                Section(
-                  title: "شهر",
-                  hint: "انتخاب",
-                  value: city?.name,
-                  onTap: onClickCityItem,
-                ),
-                Section(
-                  title: "محدوده متراژ",
-                  hint: "تعیین",
-                  value: createLabel(minMeter, maxMeter, 'متر'),
-                  onTap: onClickMeterageItem,
-                ),
-                Section(
-                  title: "محدوده " + (isRent ? "ودیعه" : "قیمت"),
-                  hint: "تعیین",
-                  value: createLabel(minPrice, maxPrice, 'تومان'),
-                  onTap: onClickPriceItem,
-                ),
-                if (isRent)
                   Section(
-                    title: "محدوده اجاره",
-                    hint: "تعیین",
-                    value: createLabel(minRent, maxRent, 'تومان'),
-                    onTap: onClickRentItem,
+                    title: "دسته بندی",
+                    hint: "انتخاب",
+                    value: category != null ? categories.map((e) => e.name).join(' > ') : null,
+                    onTap: onClickCategoryItem,
                   ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 5, top: 20),
-                  child: SizedBox(
-                    height: 45,
-                    child: TextField2(
-                      decoration: InputDecoration(
-                        labelText: 'عنوان',
+                  Section(
+                    title: "شهر",
+                    hint: "انتخاب",
+                    value: city?.name,
+                    onTap: onClickCityItem,
+                  ),
+                  Section(
+                    title: "محدوده متراژ",
+                    hint: "تعیین",
+                    value: createLabel(minMeter, maxMeter, 'متر'),
+                    onTap: onClickMeterageItem,
+                  ),
+                  Section(
+                    title: "محدوده " + (isRent ? "ودیعه" : "قیمت"),
+                    hint: "تعیین",
+                    value: createLabel(minPrice, maxPrice, 'تومان'),
+                    onTap: onClickPriceItem,
+                  ),
+                  if (isRent)
+                    Section(
+                      title: "محدوده اجاره",
+                      hint: "تعیین",
+                      value: createLabel(minRent, maxRent, 'تومان'),
+                      onTap: onClickRentItem,
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 5, top: 20),
+                    child: SizedBox(
+                      height: 45,
+                      child: TextField2(
+                        decoration: InputDecoration(
+                          labelText: 'عنوان',
                         border: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: Themes.icon,
+                            color: App.theme.dividerColor.withOpacity(0.5),
+                            width: 0.5,
+                          ),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: App.theme.dividerColor.withOpacity(0.5),
+                            width: 0.5,
+                          ),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: App.theme.primaryColor,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                          hintText: "در این قسمت به موارد مهم ملک مانند نوع ملک و محله اشاره کنید",
+                          hintStyle: TextStyle(
+                            fontSize: 13,
+                            color: App.theme.tooltipTheme.textStyle?.color,
+                          ),
+                          labelStyle: TextStyle(
+                            fontSize: 14,
+                            color: App.theme.tooltipTheme.textStyle?.color,
+                          ),
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          floatingLabelStyle: TextStyle(
+                            color: App.theme.primaryColor,
+                          ),
+                        ),
+                        controller: _titleController,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: App.theme.textTheme.bodyLarge?.color,
+                        ),
+                        maxLines: 1,
+                        cursorColor: App.theme.primaryColor,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: TextField2(
+                      textAlignVertical: TextAlignVertical.top,
+                      maxLines: 8,
+                      decoration: InputDecoration(
+                        labelText: 'توضیحات',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: App.theme.dividerColor.withOpacity(0.5),
+                            width: 0.5,
+                          ),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: App.theme.dividerColor.withOpacity(0.5),
                             width: 0.5,
                           ),
                           borderRadius: BorderRadius.circular(2),
@@ -207,96 +289,42 @@ class _EditRequestScreen extends State<EditRequestScreen> {
                           ),
                           borderRadius: BorderRadius.circular(2),
                         ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                        hintText: "در این قسمت به موارد مهم ملک مانند نوع ملک و محله اشاره کنید",
-                        hintStyle: TextStyle(fontSize: 13),
-                        labelStyle: TextStyle(fontSize: 14),
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
                         floatingLabelStyle: TextStyle(color: App.theme.primaryColor),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        labelStyle: TextStyle(
+                          fontSize: 14,
+                          color: App.theme.tooltipTheme.textStyle?.color,
+                        ),
+                        hintText: "در این قسمت به جزئیات ملک مانند امکانات ، ویژگی ها و ... که برای شمااهمیت دارد اشاره کنید",
+                        hintStyle: TextStyle(
+                          fontSize: 13,
+                          color: App.theme.tooltipTheme.textStyle?.color,
+                        ),
                       ),
-                      controller: _titleController,
-                      style: TextStyle(fontSize: 14),
-                      maxLines: 1,
+                      controller: _descriptionController,
                       cursorColor: App.theme.primaryColor,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: App.theme.textTheme.bodyLarge?.color,
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: TextField2(
-                    textAlignVertical: TextAlignVertical.top,
-                    maxLines: 8,
-                    decoration: InputDecoration(
-                      labelText: 'توضیحات',
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
-                          width: 0.5,
-                        ),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.red,
-                          width: 1.5,
-                        ),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: App.theme.primaryColor,
-                          width: 1.5,
-                        ),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                      disabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
-                          width: 1.5,
-                        ),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.red,
-                          width: 1.5,
-                        ),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                      floatingLabelStyle: TextStyle(color: App.theme.primaryColor),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      labelStyle: TextStyle(fontSize: 14),
-                      hintText: "در این قسمت به جزئیات ملک مانند امکانات ، ویژگی ها و ... که برای شمااهمیت دارد اشاره کنید",
-                      hintStyle: TextStyle(fontSize: 13),
-                    ),
-                    controller: _descriptionController,
-                    cursorColor: App.theme.primaryColor,
-                    style: TextStyle(fontSize: 14),
+                  Section(
+                    title: "دفتر/دفاتر املاک(اختیاری)",
+                    hint: "انتخاب",
+                    value: selectedEstates.isNotEmpty ? "${selectedEstates.length} مورد" : null,
+                    onTap: onClickSelectEstate,
                   ),
-                ),
-                Section(
-                  title: "دفتر/دفاتر املاک(اختیاری)",
-                  hint: "انتخاب",
-                  value: selectedEstates.isNotEmpty ? "${selectedEstates.length} مورد" : null,
-                  onTap: onClickSelectEstate,
-                ),
-                SizedBox(height: 10),
-                Text(
-                  'این درخواست فقط برای دفتر شما ثبت خواهد شد',
-                  style: TextStyle(
-                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
-                    fontSize: 13,
-                  ),
-                ),
-                SizedBox(height: 80),
-              ],
+                  SizedBox(height: 80),
+                ],
+              ),
             ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: BlockBtn(onTap: _submit, text: "ثبت درخواست"),
-          ),
-        ],
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: BlockBtn(onTap: _submit, text: "ثبت درخواست"),
+            ),
+          ],
+        ),
       ),
     );
   }

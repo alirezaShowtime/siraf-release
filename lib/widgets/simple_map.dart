@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:siraf3/config.dart';
+import 'package:siraf3/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SimpleMap extends StatefulWidget {
@@ -56,7 +57,7 @@ class _SimpleMap extends State<SimpleMap> {
           ),
           children: [
             TileLayerWidget(
-              options: TileLayerOptions(urlTemplate: MAPBOX_TILE_LIGHT),
+              options: TileLayerOptions(urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT),
             ),
             MarkerLayerWidget(
               options: MarkerLayerOptions(

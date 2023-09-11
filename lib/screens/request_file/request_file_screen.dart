@@ -109,7 +109,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                     padding: EdgeInsets.only(bottom: 10),
                     decoration: BoxDecoration(
                       border: Border(
-                        bottom: BorderSide(color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5), width: 1),
+                        bottom: BorderSide(color: (App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey).withOpacity(0.5), width: 1),
                       ),
                     ),
                     child: Row(
@@ -188,6 +188,13 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                           ),
                           borderRadius: BorderRadius.circular(2),
                         ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey,
+                            width: 0.5,
+                          ),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
                         errorBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                             color: Colors.red,
@@ -240,6 +247,13 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                       border: OutlineInputBorder(
                         borderSide: BorderSide(
                           color: Themes.icon,
+                          width: 0.5,
+                        ),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey,
                           width: 0.5,
                         ),
                         borderRadius: BorderRadius.circular(2),
@@ -644,7 +658,7 @@ class _RequestFileScreen extends State<RequestFileScreen> {
                       stream: persianNumberTextMin.stream,
                     ),
                     SizedBox(height: 3),
-                    Divider(height: 1, color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5)),
+                    Divider(height: 1, color: (App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey).withOpacity(0.5)),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Container(

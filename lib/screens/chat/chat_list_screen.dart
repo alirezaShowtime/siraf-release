@@ -1,6 +1,7 @@
 import 'package:dart_amqp/dart_amqp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
@@ -82,102 +83,106 @@ class _ChatListScreen extends State<ChatListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => chatListBloc,
-      child: WillPopScope(
-        onWillPop: () async => _handleBack(),
-        child: Scaffold(
-          appBar: MyAppBar(
-            automaticallyImplyLeading: false,
-            elevation: 0.7,
-            titleSpacing: 0,
-            leading: MyBackButton(
-              onPressed: () {
-                if (_handleBack()) {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-            title: showSearchBoxWidget ? searchBoxWidget() : AppBarTitle("لیست پیام ها"),
-            actions: [
-              if (!showSearchBoxWidget && selectedChats.isEmpty)
-                IconButton(
-                  onPressed: () {
-                    showSearchBoxWidget = !showSearchBoxWidget;
-                    setState(() {});
-                  },
-                  icon: Icon(Icons.search_rounded),
-                ),
-              BlocBuilder(
-                bloc: chatSearchBloc,
-                builder: (context, state) {
-                  if (!showSearchBoxWidget || state is ChatSearchCancel) return SizedBox();
-
-                  if (state is ChatSearchLoading) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
-                      child: SpinKitRing(color: App.theme.primaryColor, size: 18, lineWidth: 3),
-                    );
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: App.getSystemUiOverlay(),
+      child: BlocProvider(
+        create: (_) => chatListBloc,
+        child: WillPopScope(
+          onWillPop: () async => _handleBack(),
+          child: Scaffold(
+            appBar: MyAppBar(
+              automaticallyImplyLeading: false,
+              elevation: 0.7,
+              titleSpacing: 0,
+              leading: MyBackButton(
+                onPressed: () {
+                  if (_handleBack()) {
+                    Navigator.pop(context);
                   }
-
-                  if (state is ChatSearchError) {
-                    IconButton(
-                      onPressed: () => searchRequest(searchController.value.text),
-                      icon: Icon(Icons.refresh_rounded, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
-                    );
-                  }
-
-                  if (showClearButton)
-                    return IconButton(
-                      onPressed: () {
-                        searchController.clear();
-                        showClearButton = false;
-                        setState(() {});
-                      },
-                      icon: Icon(Icons.close_rounded, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
-                    );
-
-                  return SizedBox();
                 },
               ),
-              if (selectedChats.isNotEmpty && !showSearchBoxWidget)
-                IconButton(
-                  icon: Icon(CupertinoIcons.trash, size: 22),
-                  onPressed: deleteChat,
-                ),
-              if (!showSearchBoxWidget)
-                MyPopupMenuButton(
-                  itemBuilder: (context) {
-                    return [
-                      MyPopupMenuItem<int>(enable: selectedChats.length < chats.length, value: 0, label: "انتخاب همه"),
-                      if (selectedChats.isNotEmpty) MyPopupMenuItem<int>(value: 1, label: "لغو انتخاب همه"),
-                    ];
-                  },
-                  onSelected: (value) {
-                    if (value == 0) {
-                      setState(() {
-                        selectedChats.clear();
-                        selectedChats.addAll(chats);
-                        isSelectable = true;
-                      });
+              systemOverlayStyle: App.getSystemUiOverlay(),
+              title: showSearchBoxWidget ? searchBoxWidget() : AppBarTitle("لیست پیام ها"),
+              actions: [
+                if (!showSearchBoxWidget && selectedChats.isEmpty)
+                  IconButton(
+                    onPressed: () {
+                      showSearchBoxWidget = !showSearchBoxWidget;
+                      setState(() {});
+                    },
+                    icon: Icon(Icons.search_rounded),
+                  ),
+                BlocBuilder(
+                  bloc: chatSearchBloc,
+                  builder: (context, state) {
+                    if (!showSearchBoxWidget || state is ChatSearchCancel) return SizedBox();
+    
+                    if (state is ChatSearchLoading) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                        child: SpinKitRing(color: App.theme.primaryColor, size: 18, lineWidth: 3),
+                      );
                     }
-                    if (value == 1) {
-                      setState(() {
-                        selectedChats.clear();
-                        isSelectable = false;
-                      });
+    
+                    if (state is ChatSearchError) {
+                      IconButton(
+                        onPressed: () => searchRequest(searchController.value.text),
+                        icon: Icon(Icons.refresh_rounded, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
+                      );
                     }
+    
+                    if (showClearButton)
+                      return IconButton(
+                        onPressed: () {
+                          searchController.clear();
+                          showClearButton = false;
+                          setState(() {});
+                        },
+                        icon: Icon(Icons.close_rounded, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
+                      );
+    
+                    return SizedBox();
                   },
-                  iconData: Icons.more_vert,
                 ),
-            ],
-          ),
-          body: BlocConsumer<ChatListBloc, ChatListState>(
-            builder: _listBlocBuilder,
-            listener: (context, state) {
-              if (state is! ChatListSuccess) return;
-              chats = state.chatList;
-            },
+                if (selectedChats.isNotEmpty && !showSearchBoxWidget)
+                  IconButton(
+                    icon: Icon(CupertinoIcons.trash, size: 22),
+                    onPressed: deleteChat,
+                  ),
+                if (!showSearchBoxWidget)
+                  MyPopupMenuButton(
+                    itemBuilder: (context) {
+                      return [
+                        MyPopupMenuItem<int>(enable: selectedChats.length < chats.length, value: 0, label: "انتخاب همه"),
+                        if (selectedChats.isNotEmpty) MyPopupMenuItem<int>(value: 1, label: "لغو انتخاب همه"),
+                      ];
+                    },
+                    onSelected: (value) {
+                      if (value == 0) {
+                        setState(() {
+                          selectedChats.clear();
+                          selectedChats.addAll(chats);
+                          isSelectable = true;
+                        });
+                      }
+                      if (value == 1) {
+                        setState(() {
+                          selectedChats.clear();
+                          isSelectable = false;
+                        });
+                      }
+                    },
+                    iconData: Icons.more_vert,
+                  ),
+              ],
+            ),
+            body: BlocConsumer<ChatListBloc, ChatListState>(
+              builder: _listBlocBuilder,
+              listener: (context, state) {
+                if (state is! ChatListSuccess) return;
+                chats = state.chatList;
+              },
+            ),
           ),
         ),
       ),
@@ -188,7 +193,7 @@ class _ChatListScreen extends State<ChatListScreen> {
     bool isSelected = selectedChats.contains(chatItem);
 
     return Material(
-      color: Colors.white,
+      color: App.theme.dialogBackgroundColor,
       child: InkWell(
         onLongPress: () {
           if (!isSelected) {

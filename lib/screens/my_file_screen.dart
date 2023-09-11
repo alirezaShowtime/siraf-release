@@ -129,16 +129,15 @@ class _MyFileScreen extends State<MyFileScreen> {
     super.dispose();
   }
 
-  
-                    // Text(
-                    //   "بازدید : ${widget.file.viewCount}",
-                    //   style: TextStyle(
-                    //     color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
-                    //     fontSize: 10.5,
-                    //     fontWeight: FontWeight.w400,
-                    //     fontFamily: 'IranSans',
-                    //   ),
-                    // ),
+  // Text(
+  //   "بازدید : ${widget.file.viewCount}",
+  //   style: TextStyle(
+  //     color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
+  //     fontSize: 10.5,
+  //     fontWeight: FontWeight.w400,
+  //     fontFamily: 'IranSans',
+  //   ),
+  // ),
 
   @override
   Widget build(BuildContext context) {
@@ -165,21 +164,21 @@ class _MyFileScreen extends State<MyFileScreen> {
             headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
               return [
                 SliverAppBar(
-                  systemOverlayStyle: Themes.getSystemUiOverlayStyleTransparent(),
+                  systemOverlayStyle: App.getSystemUiOverlayTransparentLight(),
                   expandedHeight: 260,
                   elevation: 0.7,
-                  backgroundColor: Colors.white,
-                  leading: MyBackButton(color: Colors.white, shadow: true),
-                  actions: appBarActions(state.file, Colors.white),
+                  backgroundColor: App.theme.dialogBackgroundColor,
+                  leading: MyBackButton(shadow: true),
+                  actions: appBarActions(state.file, App.theme.iconTheme.color ?? Colors.black),
                   flexibleSpace: FlexibleSpaceBar(background: _buildSliders(state.file)),
                 ),
                 StatefulBuilder(
                   builder: (context, setState) {
                     toolbarSetState = setState;
                     return SliverAppBar(
-                      systemOverlayStyle: Themes.getSystemUiOverlayStyle(),
+                      systemOverlayStyle: App.getSystemUiOverlay(),
                       elevation: 0.7,
-                      backgroundColor: Colors.white,
+                      backgroundColor: App.theme.backgroundColor,
                       titleSpacing: 0,
                       leading: _isSliverAppBarCollapsed ? MyBackButton() : SizedBox(),
                       leadingWidth: _isSliverAppBarCollapsed ? null : 0,
@@ -292,12 +291,12 @@ class _MyFileScreen extends State<MyFileScreen> {
                             clipBehavior: Clip.hardEdge,
                             margin: EdgeInsets.only(bottom: 5, top: 20),
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
+                              color: App.isDark ? Color.fromARGB(255, 46, 54, 63) : Colors.grey.shade200,
                               borderRadius: BorderRadius.circular(15),
                             ),
                             foregroundDecoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15.0),
-                              border: Border.all(color: Colors.grey.shade200, width: 2.0),
+                              border: Border.all(color: App.isDark ? Color.fromARGB(255, 46, 54, 63) : Colors.grey.shade200, width: 2.0),
                             ),
                             child: Column(
                               children: [
@@ -333,7 +332,7 @@ class _MyFileScreen extends State<MyFileScreen> {
                                   expand: secDescExpand,
                                   child: Container(
                                     width: double.infinity,
-                                    color: Colors.white,
+                                    color: App.theme.dialogBackgroundColor,
                                     padding: const EdgeInsets.all(12),
                                     child: Text(
                                       state.file.secDescription!,
@@ -352,12 +351,12 @@ class _MyFileScreen extends State<MyFileScreen> {
                           Container(
                             clipBehavior: Clip.hardEdge,
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
+                              color: App.isDark ? Color.fromARGB(255, 46, 54, 63) : Colors.grey.shade200,
                               borderRadius: BorderRadius.circular(15),
                             ),
                             foregroundDecoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15.0),
-                              border: Border.all(color: Colors.grey.shade200, width: 2.0),
+                              border: Border.all(color: App.isDark ? Color.fromARGB(255, 46, 54, 63) : Colors.grey.shade200, width: 2.0),
                             ),
                             child: Column(
                               children: [
@@ -419,12 +418,12 @@ class _MyFileScreen extends State<MyFileScreen> {
                             clipBehavior: Clip.hardEdge,
                             margin: EdgeInsets.only(bottom: 5),
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
+                              color: App.isDark ? Color.fromARGB(255, 46, 54, 63) : Colors.grey.shade200,
                               borderRadius: BorderRadius.circular(15),
                             ),
                             foregroundDecoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15.0),
-                              border: Border.all(color: Colors.grey.shade200, width: 2.0),
+                              border: Border.all(color: App.isDark ? Color.fromARGB(255, 46, 54, 63) : Colors.grey.shade200, width: 2.0),
                             ),
                             child: Column(
                               children: [
@@ -460,7 +459,7 @@ class _MyFileScreen extends State<MyFileScreen> {
                                   expand: rejectDescExpand,
                                   child: Container(
                                     width: double.infinity,
-                                    color: Colors.white,
+                                    color: App.theme.dialogBackgroundColor,
                                     padding: const EdgeInsets.all(12),
                                     child: Text(
                                       state.file.rejectionDesc!,
@@ -507,7 +506,7 @@ class _MyFileScreen extends State<MyFileScreen> {
                   padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   height: 60,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: App.theme.dialogBackgroundColor,
                     borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
                     boxShadow: [
                       BoxShadow(
@@ -611,7 +610,6 @@ class _MyFileScreen extends State<MyFileScreen> {
         Text(
           value,
           style: TextStyle(
-            color: Colors.black,
             fontFamily: "IranSansBold",
             fontSize: 13,
           ),
@@ -631,7 +629,7 @@ class _MyFileScreen extends State<MyFileScreen> {
 
   Widget _buildSliders(MyFileDetail file) {
     return Container(
-      color: Colors.grey.shade50,
+      color: App.theme.dialogBackgroundColor,
       child: Stack(
         children: [
           if (!file.media!.image.isFill() && !file.media!.video.isFill() && !file.media!.virtualTour.isFill())
@@ -639,7 +637,7 @@ class _MyFileScreen extends State<MyFileScreen> {
               height: 300,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Themes.themeData().backgroundColor,
+                color: App.theme.backgroundColor,
                 image: DecorationImage(image: AssetImage(IMAGE_NOT_AVAILABLE), alignment: Alignment.center),
               ),
             ),
@@ -656,7 +654,7 @@ class _MyFileScreen extends State<MyFileScreen> {
               itemBorderRadius: BorderRadius.zero,
               directPlay: true,
               imageFit: BoxFit.cover,
-              indicatorSelectedColor: Themes.blue,
+              indicatorSelectedColor: App.theme.primaryColor,
               indicatorColor: Colors.white,
               onPageChanged: (i) {
                 setState(() {
@@ -721,7 +719,7 @@ class _MyFileScreen extends State<MyFileScreen> {
   Widget propertyItemWidget({required String title, required String value}) {
     return Container(
       width: double.infinity,
-      color: Colors.white,
+      color: App.theme.dialogBackgroundColor,
       height: 40,
       margin: EdgeInsets.only(bottom: 2, left: 2, right: 2),
       padding: EdgeInsets.symmetric(horizontal: 10),

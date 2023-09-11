@@ -9,7 +9,7 @@ extension ProfileDetail on _EstateProfileScreen {
       ),
       padding: const EdgeInsets.only(left: 20, right: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: App.theme.dialogBackgroundColor,
         border: Border(
           bottom: BorderSide(color: Colors.grey.shade200, width: 1),
         ),

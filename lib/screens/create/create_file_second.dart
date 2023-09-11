@@ -1009,7 +1009,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
             bottom: isLast
                 ? BorderSide.none
                 : BorderSide(
-                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.3),
+                    color: (App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey).withOpacity(0.5),
                     width: 0.7,
                   ),
           ),

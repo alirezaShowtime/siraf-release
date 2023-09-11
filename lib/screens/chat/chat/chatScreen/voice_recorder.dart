@@ -56,14 +56,14 @@ extension VoiceRecorder on _ChatScreen {
               child: Container(
                 height: 60,
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border(top: BorderSide(color: Colors.grey.shade300, width: 0.7)),
+                  color: App.theme.dialogBackgroundColor,
+                  border: Border(top: BorderSide(color: App.theme.shadowColor, width: 0.7)),
                   boxShadow: [
                     BoxShadow(
                       offset: const Offset(1, -3),
                       spreadRadius: -3,
                       blurRadius: 1,
-                      color: Colors.black12,
+                      color: App.theme.shadowColor,
                     ),
                   ],
                 ),

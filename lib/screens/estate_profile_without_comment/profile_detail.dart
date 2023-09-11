@@ -5,7 +5,7 @@ extension ProfileDetail on _EstateProfileScreen {
     return Expanded(
       child: Container(
         width: double.infinity,
-        color: Colors.white,
+        color: App.theme.dialogBackgroundColor,
         padding: const EdgeInsets.only(left: 20, right: 20),
         child: SingleChildScrollView(
           child: Column(

@@ -130,7 +130,7 @@ class _PostItemState extends State<PostItem> with AutomaticKeepAliveClientMixin 
               indicatorMargin: EdgeInsets.only(left: 0, right: 0, bottom: 18),
               itemBorderRadius: BorderRadius.zero,
               imageFit: BoxFit.fitHeight,
-              indicatorSelectedColor: Themes.blue,
+              indicatorSelectedColor: App.theme.primaryColor,
               indicatorColor: Colors.grey,
               onStartVideo: widget.onStartVideo,
               onImageTap: (slide) {
@@ -159,7 +159,7 @@ class _PostItemState extends State<PostItem> with AutomaticKeepAliveClientMixin 
                     },
                     icon: Icon(
                       isBookmark ? CupertinoIcons.bookmark_fill : CupertinoIcons.bookmark,
-                      color: isBookmark ? App.theme.primaryColor : Themes.icon,
+                      color: isBookmark ? App.theme.primaryColor : App.theme.iconTheme.color,
                     ),
                   ),
                   SizedBox(
@@ -188,7 +188,7 @@ class _PostItemState extends State<PostItem> with AutomaticKeepAliveClientMixin 
                 },
                 icon: Icon(
                   Icons.share_rounded,
-                  color: Themes.icon,
+                  color: App.theme.iconTheme.color,
                   size: 21,
                 ),
               ),
@@ -212,7 +212,7 @@ class _PostItemState extends State<PostItem> with AutomaticKeepAliveClientMixin 
                     TextSpan(
                       text: showSummary ? ' بیشتر...' : ' کمتر',
                       style: TextStyle(
-                        color: Themes.blue,
+                        color: App.theme.primaryColor,
                         fontSize: 10.5,
                         fontWeight: FontWeight.w400,
                         fontFamily: 'IranSans',

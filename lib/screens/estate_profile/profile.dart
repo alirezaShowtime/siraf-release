@@ -11,7 +11,7 @@ extension Profile on _EstateProfileScreen {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
             decoration: BoxDecoration(
               color: App.theme.dialogBackgroundColor,
-              border: !(showComment || moreDetail) ? null : Border(bottom: BorderSide(color: Colors.grey.shade200, width: 1)),
+              border: !(moreDetail || showComment) ? null : Border(bottom: BorderSide(width: 1, color: App.isDark ? Color.fromARGB(255, 43, 43, 43) : Colors.grey.shade200)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,

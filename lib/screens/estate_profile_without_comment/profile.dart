@@ -10,8 +10,8 @@ extension Profile on _EstateProfileScreen {
             constraints: BoxConstraints(minHeight: 180),
             padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 5),
             decoration: BoxDecoration(
-              color: Colors.white,
-              border: !(showComment || moreDetail) ? null : Border(bottom: BorderSide(color: Colors.grey.shade200, width: 1)),
+              color: App.theme.dialogBackgroundColor,
+              border: !(moreDetail || showComment) ? null : Border(bottom: BorderSide(width: 1, color: App.isDark ? Color.fromARGB(255, 43, 43, 43) : Colors.grey.shade200)),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,

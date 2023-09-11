@@ -400,7 +400,7 @@ class _FilterScreenState extends State<FilterScreen> {
                               margin: EdgeInsets.only(bottom: 10),
                               height: 46,
                               decoration: BoxDecoration(
-                                border: Border(bottom: BorderSide(color: Colors.grey.shade200, width: 1)),
+                                border: Border(bottom: BorderSide(color: App.isDark ? DarkThemes.textGrey.withOpacity(0.5) : Colors.grey.shade200, width: 1)),
                               ),
                               child: StreamBuilder(
                                 builder: ((context, snapshot) {
@@ -633,7 +633,11 @@ class _FilterScreenState extends State<FilterScreen> {
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(45),
-                            borderSide: BorderSide(color: Colors.grey.shade200, width: 1),
+                            borderSide: BorderSide(color: (App.theme.dividerColor).withOpacity(0.5), width: 1),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(45),
+                            borderSide: BorderSide(color: (App.theme.dividerColor).withOpacity(0.5), width: 1),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(45),
@@ -702,7 +706,11 @@ class _FilterScreenState extends State<FilterScreen> {
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(45),
-                            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+                            borderSide: BorderSide(color: (App.theme.dividerColor).withOpacity(0.5), width: 1),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(45),
+                            borderSide: BorderSide(color: (App.theme.dividerColor).withOpacity(0.5), width: 1),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(45),
@@ -791,7 +799,7 @@ class _FilterScreenState extends State<FilterScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 7),
                     child: Material(
                       color: Colors.transparent,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30), side: BorderSide(color: Colors.grey.shade300, width: 1)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30), side: BorderSide(color: App.theme.dividerColor.withOpacity(0.5), width: 1)),
                       child: InkWell(
                         borderRadius: BorderRadius.circular(30),
                         onTap: () {
@@ -808,14 +816,14 @@ class _FilterScreenState extends State<FilterScreen> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30),
                             color: propFilters.containsKey(prop.value) && propFilters[prop.value] == item.value.toString() ? App.theme.primaryColor : Colors.transparent,
-                            border: Border.all(color: Colors.grey.shade300, width: 1),
+                            border: Border.all(color: App.theme.dividerColor.withOpacity(0.5), width: 1),
                           ),
                           padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                           alignment: Alignment.center,
                           child: Text(
                             item.name ?? "",
                             style: TextStyle(
-                              color: propFilters.containsKey(prop.value) && propFilters[prop.value] == item.value.toString() ? Colors.white : (Themes.text),
+                              color: propFilters.containsKey(prop.value) && propFilters[prop.value] == item.value.toString() ? Colors.white : (App.theme.textTheme.bodyLarge?.color),
                               fontSize: 11,
                               fontFamily: "IranSansBold",
                             ),
@@ -863,7 +871,7 @@ class _FilterScreenState extends State<FilterScreen> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30),
                               color: _hasImage ? App.theme.primaryColor : Colors.transparent,
-                              border: Border.all(color: _hasImage ? App.theme.primaryColor : Colors.grey.shade300, width: 1),
+                              border: Border.all(color: _hasImage ? App.theme.primaryColor : App.theme.dividerColor.withOpacity(0.9), width: 1),
                             ),
                             padding: EdgeInsets.symmetric(vertical: 10),
                             alignment: Alignment.center,
@@ -893,7 +901,7 @@ class _FilterScreenState extends State<FilterScreen> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30),
                               color: _hasVideo ? App.theme.primaryColor : Colors.transparent,
-                              border: Border.all(color: _hasVideo ? App.theme.primaryColor : Colors.grey.shade300, width: 1),
+                              border: Border.all(color: _hasVideo ? App.theme.primaryColor : App.theme.dividerColor.withOpacity(0.9), width: 1),
                             ),
                             padding: EdgeInsets.symmetric(vertical: 10),
                             alignment: Alignment.center,
@@ -923,7 +931,7 @@ class _FilterScreenState extends State<FilterScreen> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30),
                               color: _hasTour ? App.theme.primaryColor : Colors.transparent,
-                              border: Border.all(color: _hasTour ? App.theme.primaryColor : Colors.grey.shade300, width: 1),
+                              border: Border.all(color: _hasTour ? App.theme.primaryColor : App.theme.dividerColor.withOpacity(0.9), width: 1),
                             ),
                             padding: EdgeInsets.symmetric(vertical: 10),
                             alignment: Alignment.center,

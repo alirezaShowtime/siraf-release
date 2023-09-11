@@ -114,122 +114,122 @@ class _EditFileFirstState extends State<EditFileFirst> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => propertyBloc,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Themes.appBar,
-          elevation: 0.7,
-          title: Text(
-            "ویرایش فایل ${widget.file.id}",
-            style: TextStyle(
-              color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
-              fontSize: 15,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: App.getSystemUiOverlay(),
+      child: BlocProvider(
+        create: (_) => propertyBloc,
+        child: Scaffold(
+          appBar: AppBar(
+            elevation: 0.7,
+            title: Text(
+              "ویرایش فایل ${widget.file.id}",
+              style: TextStyle(
+                color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
+                fontSize: 15,
+              ),
             ),
-          ),
-          automaticallyImplyLeading: false,
-          titleSpacing: 0,
-          actions: [
-            IconButton(
+            automaticallyImplyLeading: false,
+            titleSpacing: 0,
+            actions: [
+              IconButton(
+                onPressed: () {
+                  showResetDialog();
+                },
+                icon: Icon(
+                  Icons.refresh,
+                ),
+              ),
+            ],
+            leading: IconButton(
               onPressed: () {
-                showResetDialog();
+                Navigator.pop(context);
               },
               icon: Icon(
-                Icons.refresh,
-                color: Themes.icon,
+                CupertinoIcons.back,
               ),
-            ),
-          ],
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              CupertinoIcons.back,
-              color: Themes.icon,
             ),
           ),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Stack(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "مشخصات کلی",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: App.theme.primaryColor,
-                          fontFamily: "IranSansBold",
+          body: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Stack(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "مشخصات کلی",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: App.theme.primaryColor,
+                            fontFamily: "IranSansBold",
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 14,
-                      ),
-                      section(
-                        title: "دسته بندی",
-                        hint: "انتخاب",
-                        value: category?.name,
-                        onTap: _selectCategory,
-                      ),
-                      SizedBox(
-                        height: 14,
-                      ),
-                      section(
-                        title: "شهر",
-                        hint: "انتخاب",
-                        value: city?.name,
-                        onTap: _selectCity,
-                      ),
-                      SizedBox(
-                        height: 14,
-                      ),
-                      section(
-                        title: "موقعیت بر روی نقشه",
-                        hint: "تعیین",
-                        value: location != null ? "تغییر" : "تعیین",
-                        onTap: _chooseLocation,
-                      ),
-                      SizedBox(
-                        height: 14,
-                      ),
-                      section(
-                        title: "آدرس",
-                        hint: "تعیین",
-                        value: address != null ? "تغییر" : "تعیین",
-                        onTap: showAddressDialog,
-                      ),
-                      if (category != null) BlocBuilder<PropertyBloc, PropertyState>(builder: _buildPropertiesBloc),
-                      SizedBox(height: 45),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                child: MaterialButton(
-                  onPressed: next,
-                  color: App.theme.primaryColor,
-                  child: Text(
-                    "بعدی",
-                    style: TextStyle(
-                      color: Colors.white,
+                        SizedBox(
+                          height: 14,
+                        ),
+                        section(
+                          title: "دسته بندی",
+                          hint: "انتخاب",
+                          value: category?.name,
+                          onTap: _selectCategory,
+                        ),
+                        SizedBox(
+                          height: 14,
+                        ),
+                        section(
+                          title: "شهر",
+                          hint: "انتخاب",
+                          value: city?.name,
+                          onTap: _selectCity,
+                        ),
+                        SizedBox(
+                          height: 14,
+                        ),
+                        section(
+                          title: "موقعیت بر روی نقشه",
+                          hint: "تعیین",
+                          value: location != null ? "تغییر" : "تعیین",
+                          onTap: _chooseLocation,
+                        ),
+                        SizedBox(
+                          height: 14,
+                        ),
+                        section(
+                          title: "آدرس",
+                          hint: "تعیین",
+                          value: address != null ? "تغییر" : "تعیین",
+                          onTap: showAddressDialog,
+                        ),
+                        if (category != null) BlocBuilder<PropertyBloc, PropertyState>(builder: _buildPropertiesBloc),
+                        SizedBox(height: 45),
+                      ],
                     ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  minWidth: 100,
-                  height: 45,
                 ),
-              )
-            ],
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  child: MaterialButton(
+                    onPressed: next,
+                    color: App.theme.primaryColor,
+                    child: Text(
+                      "بعدی",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    minWidth: 100,
+                    height: 45,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -743,7 +743,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
           height: 5,
         ),
         Divider(
-          color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
+          color: (App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey).withOpacity(0.5),
           height: 1,
         ),
       ],
@@ -1436,7 +1436,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
             bottom: isLast
                 ? BorderSide.none
                 : BorderSide(
-                    color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
+                    color: (App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey).withOpacity(0.5),
                     width: 0.7,
                   ),
           ),

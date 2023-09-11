@@ -21,16 +21,16 @@ extension HeaderWidget on _ChatScreen {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: App.theme.dialogBackgroundColor,
         border: Border(
-          bottom: BorderSide(color: Colors.grey.shade300, width: 0.7),
+          bottom: BorderSide(color: App.theme.shadowColor, width: 0.7),
         ),
         boxShadow: [
           BoxShadow(
             offset: const Offset(1, -3),
             spreadRadius: 3,
             blurRadius: 1,
-            color: Colors.black12,
+            color: App.theme.shadowColor,
           ),
         ],
       ),
@@ -55,14 +55,14 @@ extension HeaderWidget on _ChatScreen {
                   widget.fileTitle ?? "نامشخص",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 10, color: Colors.black, fontFamily: "IranSansBold"),
+                  style: TextStyle(fontSize: 10, fontFamily: "IranSansBold"),
                 ),
                 SizedBox(height: 4),
                 Text(
                   widget.fileAddress ?? "نامشخص",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 9, color: Colors.black, fontFamily: "IranSansMedium"),
+                  style: TextStyle(fontSize: 9, fontFamily: "IranSansMedium"),
                 ),
               ],
             ),
