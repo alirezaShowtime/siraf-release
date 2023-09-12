@@ -35,7 +35,6 @@ class _DateBadge extends State<DateBadge> {
               widget.createDate,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.black,
                 fontWeight: FontWeight.w500,
                 fontSize: 10,
                 fontFamily: "IranSansBold",

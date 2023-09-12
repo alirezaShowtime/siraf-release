@@ -197,18 +197,30 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                 MyPopupMenuButton(
                   itemBuilder: (context) {
                     return [
-                      MyPopupMenuItem<int>(
+                      if (selectedFiles.length < files.length) MyPopupMenuItem<int>(
                         value: 0,
                         label: "انتخاب همه",
+                      ),
+                      if (selectedFiles.length == files.length) MyPopupMenuItem<int>(
+                        value: 1,
+                        label: "لغو انتخاب همه",
                       ),
                     ];
                   },
                   onSelected: (value) {
-                    setState(() {
-                      selectedFiles.clear();
-                      selectedFiles.addAll(files);
-                      isSelectable = true;
-                    });
+                    if (value == 0) {
+                      setState(() {
+                        selectedFiles.clear();
+                        selectedFiles.addAll(files);
+                        isSelectable = true;
+                      });
+                    }
+                    if (value == 1) {
+                      setState(() {
+                        selectedFiles.clear();
+                        isSelectable = true;
+                      });
+                    }
                   },
                   iconData: Icons.more_vert,
                 ),

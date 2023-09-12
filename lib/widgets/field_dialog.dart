@@ -34,11 +34,11 @@ class _FieldDialog extends State<FieldDialog> {
     return AlertDialog(
       contentPadding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5.5),
+        borderRadius: BorderRadius.circular(15),
       ),
       content: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(15),
         ),
         child: Wrap(
           children: [

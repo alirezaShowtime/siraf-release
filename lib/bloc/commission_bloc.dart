@@ -15,16 +15,11 @@ class CommissionCalculateEvent {
   double? rent;
   double? deposit;
 
-  CommissionCalculateEvent(
-      {required this.city,
-      required this.tradeType,
-      this.totalPrice,
-      this.rent,
-      this.deposit});
+  CommissionCalculateEvent({required this.city, required this.tradeType, this.totalPrice, this.rent, this.deposit});
 
   Map<String, dynamic> toMap() => {
         "cityId": city.id,
-        "type": tradeType == TradeType.rentAndMortgage ? 1 : 2,
+        "type": tradeType == TradeType.rentAndMortgage ? 2 : 1,
         "total": (tradeType == TradeType.rentAndMortgage ? deposit : totalPrice)?.toInt(),
         if (tradeType == TradeType.rentAndMortgage) "rent": rent?.toInt()
       };
@@ -39,11 +34,12 @@ class CommissionLoadingState extends CommissionState {}
 class CommissionLoadedState extends CommissionState {
   TradeType tradeType;
   double? total;
-  double? mojer;
-  double? mostajer;
+  double? tarafAval;
+  double? tarafDovom;
+  double? tarafAvalPercent;
+  double? tarafDovomPercent;
 
-  CommissionLoadedState(
-      {required this.tradeType, this.total, this.mojer, this.mostajer});
+  CommissionLoadedState({required this.tradeType, this.total, this.tarafAval, this.tarafDovom, this.tarafAvalPercent, this.tarafDovomPercent});
 }
 
 class CommissionErrorState extends CommissionState {
@@ -57,32 +53,33 @@ class CommissionBloc extends Bloc<CommissionCalculateEvent, CommissionState> {
     on(_onEvent);
   }
 
-  _onEvent(
-      CommissionCalculateEvent event, Emitter<CommissionState> emit) async {
+  _onEvent(CommissionCalculateEvent event, Emitter<CommissionState> emit) async {
     emit(CommissionLoadingState());
 
-    var response = await http2.post(
-        getFileUrl("commission/calculateCommission/"),
-        body: jsonEncode(event.toMap()),
-        headers: {
-          "Content-Type": "application/json",
-        });
+    var response = await http2.post(getFileUrl("commission/calculateCommission/"), body: jsonEncode(event.toMap()), headers: {
+      "Content-Type": "application/json",
+    });
 
     if (isResponseOk(response)) {
       var json = jDecode(response.body);
       if (event.tradeType == TradeType.rentAndMortgage) {
         emit(CommissionLoadedState(
           tradeType: event.tradeType,
-          mojer: json['data']['landlord'] * json['data']['price'],
-          mostajer: json['data']['lessor'] * json['data']['price'],
+          total: json['data']['price'],
+          tarafAval: json['data']['landlord'] * json['data']['price'],
+          tarafDovom: json['data']['lessor'] * json['data']['price'],
+          tarafAvalPercent: json['data']['landlord'],
+          tarafDovomPercent: json['data']['lessor'],
         )); // todo fix after fix API
       } else {
         emit(
           CommissionLoadedState(
             tradeType: event.tradeType,
-            total: double.parse(
-              json['data']['price'].toString(),
-            ),
+            total: json['data']['price'],
+            tarafAval: json['data']['landlord'] * json['data']['price'],
+            tarafDovom: json['data']['lessor'] * json['data']['price'],
+            tarafAvalPercent: json['data']['landlord'],
+            tarafDovomPercent: json['data']['lessor'],
           ),
         );
       }

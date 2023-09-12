@@ -270,6 +270,9 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                         urlTemplate: App.isDark ? MAPBOX_TILE_DARK : MAPBOX_TILE_LIGHT,
                       ),
                     ),
+                    CircleLayerWidget(
+                      options: CircleLayerOptions(circles: circles),
+                    ),
                     MarkerClusterLayerWidget(
                       options: MarkerClusterLayerOptions(
                         spiderfyCircleRadius: 80,
@@ -297,9 +300,6 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                           );
                         },
                       ),
-                    ),
-                    CircleLayerWidget(
-                      options: CircleLayerOptions(circles: circles),
                     ),
                   ],
                 ),

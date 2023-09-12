@@ -9,6 +9,7 @@ import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/models/chat_message.dart';
 import 'package:siraf3/main.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:siraf3/themes.dart';
 
 import 'chat_massage_action.dart';
 import 'chat_message_config.dart';
@@ -117,6 +118,7 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
                   height: 8,
                   alignment: Alignment.bottomCenter,
                   fit: BoxFit.fitWidth,
+                  color: isForMe() ? Themes.primary : Color(0xff343a46),
                 ),
                 Transform.translate(
                   offset: Offset(isForMe() ? 0.3 : -0.3, -.3),
@@ -341,8 +343,8 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
       blRadius: 0,
       brRadius: 18,
       fileNameColor: Colors.black,
-      background: Color(0xfff0f0f0),
-      textColor: Colors.black,
+      background: App.isDark ? Color(0xff343a46) : Color(0xfff0f0f0),
+      textColor: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
       primaryColor: App.theme.primaryColor,
       secondTextColor: Color(0xffb9c0c6),
       textDirection: TextDirection.ltr,
@@ -370,7 +372,7 @@ abstract class AbstractMessageWidget<T extends MessageWidget> extends State<T> w
       context,
       details,
       isForMe: isForMe(),
-      deletable: isForMe() || onClickDeleteMessage(false),
+      deletable: isForMe(),
       onClickDeleteItem: (bool isForAll) {
         onClickDeleteMessage.call(isForAll);
       },
