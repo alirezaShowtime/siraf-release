@@ -361,6 +361,10 @@ class Media {
       image = json["Image"] == null
           ? null
           : (json["Image"] as List).map((e) => fd.Image.fromJson(e)).toList();
+
+      if (image != null) {
+        image!.sort((a, b) => (a.weight ?? 0).compareTo(b.weight ?? 0));
+      }
     }
     if (json["virtualTour"] is String) {
       virtualTour = json["virtualTour"];

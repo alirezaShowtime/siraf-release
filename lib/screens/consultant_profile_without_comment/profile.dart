@@ -111,7 +111,7 @@ extension Profile on _ConsultantProfileScreen {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              consultantInfo.bio ?? "بیو...",
+                              consultantInfo.bio ?? "",
                               overflow: TextOverflow.ellipsis,
                               maxLines: 4,
                               style: TextStyle(

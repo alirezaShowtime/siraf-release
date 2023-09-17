@@ -439,6 +439,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   color: App.theme.primaryColor,
                   child: ListView(
+                    physics: AlwaysScrollableScrollPhysics(),
                     controller: scrollController,
                     children: items
                             .map<Widget>(

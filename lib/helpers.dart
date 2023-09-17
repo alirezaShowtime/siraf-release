@@ -114,11 +114,11 @@ dynamic jDecode(String json) {
 }
 
 callToSupport() async {
-  const url = "tel:" + SUPPORT_PHONE;
+  const url = "tel:" + SUPPORT_MOBILE;
   if (await canLaunch(url)) {
     await launch(url);
   } else {
-    notify('نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_PHONE + 'تماس بگیرید');
+    notify('نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_MOBILE + 'تماس بگیرید');
   }
 }
 

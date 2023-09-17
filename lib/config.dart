@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 const SUPPORT_PHONE = "086334859307";
+const SUPPORT_MOBILE = "086334859307";
 const MAPBOX_ACCESS_TOKEN =
     "pk.eyJ1IjoibWltcmUiLCJhIjoiY2p5cGlkZ2hnMDRwMzNtcXpwMnVrdTV4eCJ9.E2yheoYbXKcl6eDicZC1FQ";
 const ABOUT_TEXT =

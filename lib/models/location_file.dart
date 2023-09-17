@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:siraf3/extensions/list_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/city.dart';
@@ -82,6 +84,12 @@ class LocationFile {
     if (json['city'] is Map) {
       city = json['city'] == null ? null : City.fromJson(json['city']);
     }
+
+    try {
+      lat = (double.parse(lat ?? "0") + (Random().nextInt(2) == 1 ? -0.0005 : 0.0005)).toString();
+
+      long = (double.parse(long ?? "0") + (Random().nextInt(2) == 1 ? -0.00105: 0.0005)).toString();
+    } catch (FormatException) {}
 
     lat_long = lat.toString() + "," + long.toString();
   }

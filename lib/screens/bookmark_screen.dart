@@ -19,6 +19,8 @@ import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/note_file_item.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:siraf3/widgets/confirm_dialog.dart';
+import 'package:siraf3/dialog.dart';
 
 class BookmarkScreen extends StatefulWidget {
   @override
@@ -202,14 +204,28 @@ class _BookmarkScreen extends State<BookmarkScreen> with SingleTickerProviderSta
                       });
                     }
                     if (val == 1) {
-                      var result = await Bookmark.removeFavoriteList(context: context, ids: selectedFiles.map((e) => e.fileId!.id!).toList());
-                      if (result) {
-                        setState(() {
-                          files.removeWhere((file) => selectedFiles.any((e) => e.id == file.id));
-                          selectedFiles.clear();
-                          isSelectable = false;
-                        });
-                      }
+                      showDialog2(
+                        context: context,
+                        builder: (dContext) => ConfirmDialog(
+                          dialogContext: dContext,
+                          content: "آیا از حذف موارد انتخاب شده اطمینان دارید؟",
+                          title: "حذف",
+                          applyText: "بله",
+                          cancelText: "خیر",
+                          titleColor: Colors.red,
+                          onApply: () async {
+                            dismissDialog(dContext);
+                            var result = await Bookmark.removeFavoriteList(context: context, ids: selectedFiles.map((e) => e.fileId!.id!).toList());
+                            if (result) {
+                              setState(() {
+                                files.removeWhere((file) => selectedFiles.any((e) => e.id == file.id));
+                                selectedFiles.clear();
+                                isSelectable = false;
+                              });
+                            }
+                          },
+                        ),
+                      );
                     }
                     if (val == 2) {
                       setState(() {

@@ -38,7 +38,7 @@ class UFMBloc extends Bloc<UFMEvent, UFMState> {
   _onEvent(UFMEvent event, emit) async {
     emit(UFMLoadingState());
 
-    Response response;
+    Response? response;
 
     try {
       var headers = {
@@ -46,8 +46,11 @@ class UFMBloc extends Bloc<UFMEvent, UFMState> {
         "Authorization": await User.getBearerToken(),
       };
 
-
       var url = getFileUrl("file/uploadFile/${event.id}/").toString();
+
+      var data = await event.media.getFormData();
+
+      // throw(HttpException("OK"));
 
       response = await Dio().post(
         url,
@@ -57,7 +60,7 @@ class UFMBloc extends Bloc<UFMEvent, UFMState> {
           },
           headers: headers,
         ),
-        data: await event.media.getFormData(),
+        data: data,
       );
     } on HttpException catch (e) {
       emit(UFMErrorState());
@@ -70,7 +73,7 @@ class UFMBloc extends Bloc<UFMEvent, UFMState> {
       return;
     }
 
-    if (response.data['status'] == 1) {
+    if (response?.data['status'] == 1) {
       emit(UFMSuccessState());
     } else {
       emit(UFMErrorState(response: response));

@@ -35,6 +35,10 @@ class MyFile {
     }
     if (json["images"] is List) {
       images = json["images"] == null ? null : (json["images"] as List).map((e) => Images.fromJson(e)).toList();
+
+      if (images != null) {
+        images!.sort((a, b) => (a.weight ?? 0).compareTo(b.weight ?? 0));
+      }
     }
     if (json["favorite"] is bool) {
       favorite = json["favorite"];

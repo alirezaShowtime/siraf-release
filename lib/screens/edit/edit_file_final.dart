@@ -269,7 +269,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
                         });
                       },
                       cursorColor: App.theme.primaryColor,
-                      maxLines: 50,
+                      maxLines: 10,
                       minLines: 6,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -366,7 +366,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
                         });
                       },
                       cursorColor: App.theme.primaryColor,
-                      maxLines: 50,
+                      maxLines: 10,
                       minLines: 6,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -634,14 +634,15 @@ class _EditFileFinalState extends State<EditFileFinal> {
       String message = "";
 
       dissmisLoadingDialog();
+      print(event.response);
       if (event.response?.data != null) {
         try {
           message = event.response!.data!['message'];
         } on Exception catch (e) {
-          message = "خطایی در آپلود رسانه ها پیش آمد لطفا بعدا مجدد تلاش کنید";
+          message = "خطایی در آپلود رسانه ها پیش آمد لطفا بعدا تلاش کنید";
         }
       } else {
-        message = "خطایی در آپلود رسانه ها پیش آمد لطفا بعدا مجدد تلاش کنید";
+        message = "خطایی در آپلود رسانه ها پیش آمد لطفا بعدا تلاش کنید";
       }
 
       showErrorDialog(message);

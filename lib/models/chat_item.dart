@@ -35,8 +35,8 @@ class ChatItem {
       if (json["file"]["id"] is int) {
         fileId = json["file"]["id"];
       }
-      if (json["file"]["title"] is String) {
-        fileTitle = json["file"]["title"];
+      if (json["file"]["name"] is String) {
+        fileTitle = json["file"]["name"];
       }
       if (json["file"]["address"] is String) {
         fileAddress = json["file"]["address"];

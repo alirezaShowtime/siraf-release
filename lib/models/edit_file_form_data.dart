@@ -70,6 +70,9 @@ class MediaData {
   List<int> deleteImages = [];
   List<int> deleteVideos = [];
 
+  List<Map<String, dynamic>> images = [];
+  List<Map<String, dynamic>> videos = [];
+
   List<Map<String, dynamic>> newImages = [];
   List<Map<String, dynamic>> newVideos = [];
 
@@ -79,6 +82,8 @@ class MediaData {
   MediaData({
     this.deleteImages = const [],
     this.deleteVideos = const [],
+    this.images = const [],
+    this.videos = const [],
     this.newImages = const [],
     this.newVideos = const [],
     this.imagesWeight = const [],
@@ -86,15 +91,13 @@ class MediaData {
   });
 
   bool isEmpty() {
-    return deleteImages.isEmpty && deleteVideos.isEmpty && newImages.isEmpty && newVideos.isEmpty;
-    // imagesWeight.isEmpty && // todo remove comment # temporary
-    // videosWeight.isEmpty; // todo remove comment # temporary
+    return deleteImages.isEmpty && deleteVideos.isEmpty && newImages.isEmpty && newVideos.isEmpty && imagesWeight.isEmpty && videosWeight.isEmpty;
   }
 
   Future<FormData> getFormData() async {
-    var images = newImages.where((element) => checkImageExtension((element['file'] as io.File).path)).toList();
+    var nImages = newImages.where((element) => checkImageExtension((element['file'] as io.File).path)).toList();
 
-    var videos = newVideos.where((element) => checkVideoExtension((element['file'] as io.File).path)).toList();
+    var nVideos = newVideos.where((element) => checkVideoExtension((element['file'] as io.File).path)).toList();
 
     var formData = FormData.fromMap({
       'labelImages': jsonEncode(images.map((e) => (e['title'] as String?) ?? "").toList()),
@@ -106,9 +109,10 @@ class MediaData {
     });
 
     formData.files.addAll([
-      for (Map<String, dynamic> item in images) MapEntry<String, MultipartFile>("images", await MultipartFile.fromFile((item['file'] as io.File).path)),
-      for (Map<String, dynamic> item in videos) MapEntry<String, MultipartFile>("videos", await MultipartFile.fromFile((item['file'] as io.File).path)),
+      for (Map<String, dynamic> item in nImages) MapEntry<String, MultipartFile>("images", await MultipartFile.fromFile((item['file'] as io.File).path)),
+      for (Map<String, dynamic> item in nVideos) MapEntry<String, MultipartFile>("videos", await MultipartFile.fromFile((item['file'] as io.File).path)),
     ]);
+
     return formData;
   }
 }

@@ -388,7 +388,7 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           minLines: 1,
                           onTap: () {
                             var txtSelection = TextSelection.fromPosition(TextPosition(offset: _titleController.text.length - 1));
-    
+
                             if (_titleController.selection == txtSelection) {
                               _titleController.selection = TextSelection.fromPosition(TextPosition(offset: _titleController.text.length));
                             }
@@ -804,9 +804,13 @@ class _EditFileSecondState extends State<EditFileSecond> {
       return;
     }
 
+    print(files.length);
+
     widget.formData.mediaData = MediaData(
       deleteImages: deleteImages,
       deleteVideos: deleteVideos,
+      images: files.where((element) => element["type"] == FileType2.image).toList(),
+      videos: files.where((element) => element["type"] == FileType2.video).toList(),
       newImages: files.where((element) => (element["isNew"] ?? false) && element["type"] == FileType2.image).toList(),
       newVideos: files.where((element) => (element["isNew"] ?? false) && element["type"] == FileType2.video).toList(),
       imagesWeight: files.where((element) => (element["path"] != null) && element["type"] == FileType2.image).map<String>((e) => e["path"].toString()).toList(),
@@ -983,9 +987,13 @@ class _EditFileSecondState extends State<EditFileSecond> {
 
     setState(() {
       files.add({
+        "isNew": true,
         "file": file,
         "title": null,
+        "type": FileType2.image,
+        "path": p.basename(file.path),
       });
+      print(files);
       mediaBoxes.add(mediaBox);
     });
   }
@@ -1002,8 +1010,11 @@ class _EditFileSecondState extends State<EditFileSecond> {
 
     setState(() {
       files.add({
+        "isNew": true,
         "file": file,
         "title": null,
+        "type": FileType2.video,
+        "path": p.basename(file.path),
       });
       mediaBoxes.add(mediaBox);
     });
@@ -1416,7 +1427,6 @@ class _EditFileSecondState extends State<EditFileSecond> {
   dismissMediaTitleDialog() {
     if (mediaTitleDialogContext != null) Navigator.pop(mediaTitleDialogContext!);
     if (optionsDialog != null) Navigator.pop(optionsDialog!);
-
   }
 }
 

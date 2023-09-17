@@ -257,7 +257,7 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
                           });
                         },
                         cursorColor: App.theme.primaryColor,
-                        maxLines: 50,
+                        maxLines: 10,
                         minLines: 6,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -354,7 +354,7 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
                           });
                         },
                         cursorColor: App.theme.primaryColor,
-                        maxLines: 50,
+                        maxLines: 10,
                         minLines: 6,
                         validator: (value) {
                           if (value == null || value.isEmpty) {

@@ -249,7 +249,7 @@ class _MyFileScreen extends State<MyFileScreen> {
                         ],
                       ),
                       actions: <Widget>[
-                            IconButton(
+                            if (widget.progress == 7) IconButton(
                               onPressed: () => shareFile(state.file.name!),
                               icon: Icon(Icons.share_rounded),
                             ),
