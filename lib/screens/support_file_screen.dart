@@ -101,25 +101,6 @@ class _SupportFileScreen extends State<SupportFileScreen> {
                 fontSize: 12,
               ),
             ),
-<<<<<<< HEAD
-=======
-            // actions: [
-            //   IconButton(
-            //     onPressed: () {
-            //       doWithLogin(context, () async {
-            //         if (await addOrRemoveFavorite(widget.id)) {
-            //           setState(() {
-            //             widget.isFavorite = !widget.isFavorite;
-            //           });
-            //         }
-            //       });
-            //     },
-            //     icon: Icon(
-            //       widget.isFavorite ? Icons.bookmark : Icons.bookmark_border,
-            //     ),
-            //   ),
-            // ],
->>>>>>> 83f6783c8d99adcdd535f589633bed51f8137a3c
             leading: IconButton(
               onPressed: () {
                 Navigator.pop(context, widget.isFavorite);

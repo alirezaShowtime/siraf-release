@@ -316,7 +316,6 @@ class _FileScreen extends State<FileScreen> {
                               width: double.infinity,
                               hidden: true,
                               borderRadius: BorderRadius.circular(15),
-                              hidden: true,
                             ),
                           ),
                         BlocConsumer(

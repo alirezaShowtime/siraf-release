@@ -676,7 +676,7 @@ class _EditFileFinalState extends State<EditFileFinal> {
           }).toList();
 
           widget.formData.mediaData.newVideos = widget.formData.mediaData.newVideos.map<Map<String, dynamic>>((e) {
-            e['file'] = event.images.elementAt(widget.formData.mediaData.newVideos.indexOf(e));
+            e['file'] = event.videos.elementAt(widget.formData.mediaData.newVideos.indexOf(e));
             return e;
           }).toList();
         });
