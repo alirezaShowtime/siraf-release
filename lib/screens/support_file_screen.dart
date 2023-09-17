@@ -101,22 +101,22 @@ class _SupportFileScreen extends State<SupportFileScreen> {
                 fontSize: 12,
               ),
             ),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  doWithLogin(context, () async {
-                    if (await addOrRemoveFavorite(widget.id)) {
-                      setState(() {
-                        widget.isFavorite = !widget.isFavorite;
-                      });
-                    }
-                  });
-                },
-                icon: Icon(
-                  widget.isFavorite ? Icons.bookmark : Icons.bookmark_border,
-                ),
-              ),
-            ],
+            // actions: [
+            //   IconButton(
+            //     onPressed: () {
+            //       doWithLogin(context, () async {
+            //         if (await addOrRemoveFavorite(widget.id)) {
+            //           setState(() {
+            //             widget.isFavorite = !widget.isFavorite;
+            //           });
+            //         }
+            //       });
+            //     },
+            //     icon: Icon(
+            //       widget.isFavorite ? Icons.bookmark : Icons.bookmark_border,
+            //     ),
+            //   ),
+            // ],
             leading: IconButton(
               onPressed: () {
                 Navigator.pop(context, widget.isFavorite);

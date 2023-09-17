@@ -314,6 +314,7 @@ class _FileScreen extends State<FileScreen> {
                               lat: state.file.lat!.toDouble(),
                               long: state.file.long!.toDouble(),
                               width: double.infinity,
+                              hidden: true,
                               borderRadius: BorderRadius.circular(15),
                             ),
                           ),

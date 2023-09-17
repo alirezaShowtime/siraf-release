@@ -48,6 +48,8 @@ class CreateFileBloc extends Bloc<CreateFileEvent, CreateFileState> {
 
       var url = event.data.estates.isEmpty ? getFileUrl("file/addFileSiraf/").toString() : getFileUrl("file/addFileEstate/").toString();
 
+      print("CRAETE FILE : " + url);
+
       response = await Dio().post(
         url,
         options: Options(

@@ -624,7 +624,7 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
     } else if (event is CompressorFailState) {
       dissmisLoadingDialog();
       notify("خطا در بهینه سازی عکس ها و ویدیو ها رخ داد");
-      bloc.add(CreateFileEvent(data: widget.formData));
+      // bloc.add(CreateFileEvent(data: widget.formData));
     } else if (event is CompressorSuccessState) {
       dissmisLoadingDialog();
       if (event.images.isFill() || event.videos.isFill()) {
