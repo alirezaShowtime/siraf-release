@@ -61,33 +61,14 @@ class _LocationFileItemState extends State<LocationFileItem> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Stack(
-              children: [
-                MyImage(
-                  borderRadius: BorderRadius.circular(10),
-                  image: NetworkImage(widget.locationFile.image?.path ?? ""),
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                  loadingWidget: loadingImage(),
-                  errorWidget: loadingImage(),
-                ),
-                Positioned(
-                  right: 6,
-                  top: 0,
-                  child: GestureDetector(
-                    onTap: () {
-                      doWithLogin(context, () {
-                        bookmark.addOrRemoveFavorite();
-                      });
-                    },
-                    child: Icon(
-                      CupertinoIcons.bookmark_fill,
-                      color: (widget.locationFile.favorite ?? false) ? App.theme.primaryColor : Themes.secondary2,
-                    ),
-                  ),
-                ),
-              ],
+            child: MyImage(
+              borderRadius: BorderRadius.circular(10),
+              image: NetworkImage(widget.locationFile.image?.path ?? ""),
+              width: 100,
+              height: 100,
+              fit: BoxFit.cover,
+              loadingWidget: loadingImage(),
+              errorWidget: loadingImage(),
             ),
           ),
           SizedBox(width: 10),

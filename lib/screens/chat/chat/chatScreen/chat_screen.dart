@@ -5,7 +5,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_amqp/dart_amqp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -44,6 +43,7 @@ import 'package:siraf3/widgets/my_icon_button.dart';
 import 'package:siraf3/widgets/my_image.dart';
 import 'package:siraf3/widgets/my_text_button.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:flutter/services.dart';
 
 import '../messageWidgets/chat_message_widget.dart';
 import '../message_widget_list.dart';
@@ -497,7 +497,7 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
 
     Navigator.pop(context, {
       "chatId": widget.chatId,
-      "sentMessage": lastMessage?.message ?? "فایل",
+      if (lastMessage != null) "sentMessage": lastMessage?.message ?? "فایل",
       "newMessageCount": newMessageCount,
       "isBlockByMe": isBlockByMe,
     });

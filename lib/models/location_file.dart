@@ -123,17 +123,20 @@ class LocationFile {
     return list2;
   }
 
+
   String getPricePerMeter() {
     if ((getFirstPriceInt() == -1 || getFirstPriceInt() == 0) || getMeter() == 0) {
-      return "توافقی";
+      return "";
     }
     var result = getFirstPriceInt() ~/ getMeter();
 
     if (result == 0) {
-      return "توافقی";
+      return "";
     }
 
-    result = (result / 100000).round() * 100000;
+    var rounded_result = (result / 100000).round() * 100000;
+
+    if (rounded_result != 0) result = rounded_result;
 
     return "قیمت هر متر " + number_format(result);
   }
@@ -195,18 +198,18 @@ class LocationFile {
 
       if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
 
-      if (isRent()) return toPrice(prop.value!, prop.name!);
-      return number_format(prop.value!) + " تومان";
+      return toPrice(prop.value!, prop.name!);
     } else {
-      return adaptivePrice("");
+      var name = "";
+      if (isRent()) name = "ودیعه";
+      if (category?.name?.contains("روزانه") ?? false) name = "اجاره روزانه";
+
+      return adaptivePrice("", name: name);
     }
   }
 
   String getSecondPrice() {
-    if (!isRent()) {
-      return getPricePerMeter();
-    }
-    if (fullAdaptive()) return "";
+    if (!isRent()) return getPricePerMeter();
 
     if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
       var prop = propertys!.firstWhere((element) => element.weightList == 6);
@@ -215,24 +218,139 @@ class LocationFile {
 
       return toPrice(prop.value!, prop.name!);
     } else {
-      return adaptivePrice("");
+      if (category?.name?.contains("روزانه") ?? false) return "";
+
+      return adaptivePrice("", name: "اجاره");
     }
   }
 
   String adaptivePrice(value, {String? name}) {
     if (value.toString() == "0") {
-      return name != null ? "$name : رایگان" : "رایگان";
+      return "رایگان";
     }
-    return (name != null && !fullAdaptive() ? "$name توافقی" : "") + "توافقی";
+    return (name != null ? "$name " : "") + "توافقی";
   }
 
   String toPrice(dynamic value, String name) {
     if (value.toString() == "0") {
-      return "$name : رایگان";
+      return "$name رایگان";
     }
 
-    return "$name : ${number_format(value)}";
+    var v = int.parse(value.toString());
+
+    return "$name ${number_format(v)}";
   }
+
+  // String getPricePerMeter() {
+  //   if ((getFirstPriceInt() == -1 || getFirstPriceInt() == 0) || getMeter() == 0) {
+  //     return "توافقی";
+  //   }
+  //   var result = getFirstPriceInt() ~/ getMeter();
+  //
+  //   if (result == 0) {
+  //     return "توافقی";
+  //   }
+  //
+  //   result = (result / 100000).round() * 100000;
+  //
+  //   return "قیمت هر متر " + number_format(result);
+  // }
+  //
+  // int getPricePerMeterInt() {
+  //   if ((getFirstPriceInt() == -1 || getFirstPriceInt() == 0) || getMeter() == 0) {
+  //     return -1;
+  //   }
+  //   var result = getFirstPriceInt() ~/ getMeter();
+  //
+  //   if (result == 0) {
+  //     return -1;
+  //   }
+  //
+  //   result = (result / 100000).round() * 100000;
+  //
+  //   return result;
+  // }
+  //
+  // int getMeter() {
+  //   if (propertys!.where((element) => element.weightList == 1).isNotEmpty) {
+  //     var prop = propertys!.firstWhere((element) => element.weightList == 1);
+  //
+  //     if (prop.value == null || prop.name == null) return 0;
+  //
+  //     return int.parse(prop.value!);
+  //   } else {
+  //     return 0;
+  //   }
+  // }
+  //
+  // int getFirstPriceInt() {
+  //   if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
+  //     var prop = propertys!.firstWhere((element) => element.weightList == 5);
+  //
+  //     if (prop.value == null || prop.name == null) return -1;
+  //
+  //     return int.parse(prop.value!);
+  //   } else {
+  //     return -1;
+  //   }
+  // }
+  //
+  // int getSecondPriceInt() {
+  //   if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
+  //     var prop = propertys!.firstWhere((element) => element.weightList == 6);
+  //
+  //     if (prop.value == null || prop.name == null) return -1;
+  //
+  //     return int.parse(prop.value!);
+  //   } else {
+  //     return -1;
+  //   }
+  // }
+  //
+  // String getFirstPrice() {
+  //   if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
+  //     var prop = propertys!.firstWhere((element) => element.weightList == 5);
+  //
+  //     if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
+  //
+  //     if (isRent()) return toPrice(prop.value!, prop.name!);
+  //     return number_format(prop.value!) + " تومان";
+  //   } else {
+  //     return adaptivePrice("");
+  //   }
+  // }
+  //
+  // String getSecondPrice() {
+  //   if (!isRent()) {
+  //     return getPricePerMeter();
+  //   }
+  //   if (fullAdaptive()) return "";
+  //
+  //   if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
+  //     var prop = propertys!.firstWhere((element) => element.weightList == 6);
+  //
+  //     if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
+  //
+  //     return toPrice(prop.value!, prop.name!);
+  //   } else {
+  //     return adaptivePrice("");
+  //   }
+  // }
+  //
+  // String adaptivePrice(value, {String? name}) {
+  //   if (value.toString() == "0") {
+  //     return name != null ? "$name : رایگان" : "رایگان";
+  //   }
+  //   return (name != null && !fullAdaptive() ? "$name توافقی" : "") + "توافقی";
+  // }
+  //
+  // String toPrice(dynamic value, String name) {
+  //   if (value.toString() == "0") {
+  //     return "$name : رایگان";
+  //   }
+  //
+  //   return "$name : ${number_format(value)}";
+  // }
 
   bool fullAdaptive() {
     return (getFirstPriceInt() == -1 && getSecondPriceInt() == -1);

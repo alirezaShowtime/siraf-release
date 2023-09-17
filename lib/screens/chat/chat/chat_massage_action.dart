@@ -16,8 +16,8 @@ void showMessageActionMenu(
     context: context,
     constraints: BoxConstraints(minWidth: 180),
     elevation: 2,
-    color: Colors.white,
-    shadowColor: Colors.grey.shade200,
+    color: App.theme.dialogBackgroundColor,
+    shadowColor: App.theme.shadowColor, 
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(7),
     ),
@@ -33,6 +33,7 @@ void showMessageActionMenu(
         icon: Icons.reply_rounded,
         onTap: onClickAnswerItem,
       ),
+      if(deletable)
       MyPopupMenuItem(
         label: "حذف پیام",
         icon: CupertinoIcons.delete,

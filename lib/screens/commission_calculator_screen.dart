@@ -26,8 +26,7 @@ enum TradeType {
 
 class CommissionCalculatorScreen extends StatefulWidget {
   @override
-  State<CommissionCalculatorScreen> createState() =>
-      _CommissionCalculatorScreen();
+  State<CommissionCalculatorScreen> createState() => _CommissionCalculatorScreen();
 }
 
 class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
@@ -82,10 +81,8 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
                 value: tradTypeLabel[selectedTradeType],
                 onTap: determineTradeType,
               ),
-              if (selectedTradeType == TradeType.buyAndSell)
-                getBuyAndSellWidget(),
-              if (selectedTradeType == TradeType.rentAndMortgage)
-                getRentAndMortgageWidget(),
+              if (selectedTradeType == TradeType.buyAndSell) getBuyAndSellWidget(),
+              if (selectedTradeType == TradeType.rentAndMortgage) getRentAndMortgageWidget(),
               SizedBox(
                 height: 10,
               ),
@@ -142,9 +139,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
 
   String? totalPriceHelpText;
 
-  //event listeners
   void determineTotalPrice() {
-    //todo: implement event listener
     showDialog2(
       context: context,
       builder: (context) {
@@ -160,14 +155,12 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
             setState(() {
               totalPriceHelpText = value.isNotEmpty ? value.toWord() : null;
             });
-
           },
           onPressed: () {
             if (!totalPriceController.text.isFill()) {
               totalPrice = null;
             } else {
-              totalPrice = double.parse(
-                  totalPriceController.value.text.replaceAll(',', ''));
+              totalPrice = double.parse(totalPriceController.value.text.replaceAll(',', ''));
             }
             setState(() {});
           },
@@ -191,8 +184,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
             if (!depositController.text.isFill()) {
               deposit = null;
             } else {
-              deposit = double.parse(
-                  depositController.value.text.replaceAll(',', ''));
+              deposit = double.parse(depositController.value.text.replaceAll(',', ''));
             }
             setState(() {});
           },
@@ -217,8 +209,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
             if (!rentController.text.isFill()) {
               rent = null;
             } else {
-              rent =
-                  double.parse(rentController.value.text.replaceAll(',', ''));
+              rent = double.parse(rentController.value.text.replaceAll(',', ''));
             }
             setState(() {});
           },
@@ -234,7 +225,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
         builder: (_) => SelectCityScreen(
           max: 1,
           saveCity: false,
-          alert : false,
+          alert: false,
         ),
       ),
     ).then((result) {
@@ -252,8 +243,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
         return ListDialog(
           list: tradeTypeList,
           onItemTap: (item) {
-            if (selectedTradeType != null && selectedTradeType == item["value"])
-              return;
+            if (selectedTradeType != null && selectedTradeType == item["value"]) return;
 
             selectedTradeType = item["value"];
             if (selectedTradeType == TradeType.buyAndSell) {
@@ -287,10 +277,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
     );
   }
 
-  bool isInvalidType() =>
-      (selectedTradeType == TradeType.buyAndSell && totalPrice == null) ||
-      (selectedTradeType == TradeType.rentAndMortgage &&
-          (rent == null || deposit == null));
+  bool isInvalidType() => (selectedTradeType == TradeType.buyAndSell && totalPrice == null) || (selectedTradeType == TradeType.rentAndMortgage && (rent == null || deposit == null));
 
   Widget _buildBloc(BuildContext context, CommissionState state) {
     if (state is CommissionLoadingState) {
@@ -343,7 +330,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "مبلغ پرداختی",
+                      "مبلغ فروشنده",
                       style: TextStyle(
                         fontSize: 12,
                         fontFamily: "IranSansMedium",
@@ -353,7 +340,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
                       height: 5,
                     ),
                     Text(
-                      "برای هر طرف به صورت مساوی",
+                      "${state.tarafAvalPercent?.toInt()} درصد با فروشنده می باشد",
                       style: TextStyle(
                         fontSize: 10,
                         fontFamily: "IranSans",
@@ -362,7 +349,51 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
                   ],
                 ),
                 Text(
-                  price_text(state.total),
+                  price_text(state.tarafAval),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontFamily: "IranSansMedium",
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Divider(
+              height: 0.3,
+              color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "مبلغ خریدار",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: "IranSansMedium",
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      "${state.tarafDovomPercent?.toInt()} درصد با خریدار می باشد",
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontFamily: "IranSans",
+                      ),
+                    ),
+                  ],
+                ),
+                Text(
+                  price_text(state.tarafDovom),
                   style: TextStyle(
                     fontSize: 12,
                     fontFamily: "IranSansMedium",
@@ -417,7 +448,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
                     height: 5,
                   ),
                   Text(
-                    "60 درصد با موجر می باشد",
+                    "${state.tarafAvalPercent?.toInt()} درصد با موجر می باشد",
                     style: TextStyle(
                       fontSize: 10,
                       fontFamily: "IranSans",
@@ -426,7 +457,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
                 ],
               ),
               Text(
-                price_text(state.mojer),
+                price_text(state.tarafAval),
                 style: TextStyle(
                   fontSize: 12,
                   fontFamily: "IranSansMedium",
@@ -461,7 +492,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
                     height: 5,
                   ),
                   Text(
-                    "40 درصد با مستاجر می باشد",
+                    "${state.tarafDovomPercent?.toInt()} درصد با مستاجر می باشد",
                     style: TextStyle(
                       fontSize: 10,
                       fontFamily: "IranSans",
@@ -470,7 +501,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
                 ],
               ),
               Text(
-                price_text(state.mostajer),
+                price_text(state.tarafDovom),
                 style: TextStyle(
                   fontSize: 12,
                   fontFamily: "IranSansMedium",

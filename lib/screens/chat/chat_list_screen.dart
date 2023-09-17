@@ -116,21 +116,21 @@ class _ChatListScreen extends State<ChatListScreen> {
                   bloc: chatSearchBloc,
                   builder: (context, state) {
                     if (!showSearchBoxWidget || state is ChatSearchCancel) return SizedBox();
-    
+
                     if (state is ChatSearchLoading) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 18),
                         child: SpinKitRing(color: App.theme.primaryColor, size: 18, lineWidth: 3),
                       );
                     }
-    
+
                     if (state is ChatSearchError) {
                       IconButton(
                         onPressed: () => searchRequest(searchController.value.text),
                         icon: Icon(Icons.refresh_rounded, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
                       );
                     }
-    
+
                     if (showClearButton)
                       return IconButton(
                         onPressed: () {
@@ -140,7 +140,7 @@ class _ChatListScreen extends State<ChatListScreen> {
                         },
                         icon: Icon(Icons.close_rounded, color: App.theme.textTheme.bodyLarge?.color ?? Themes.text),
                       );
-    
+
                     return SizedBox();
                   },
                 ),
@@ -154,7 +154,7 @@ class _ChatListScreen extends State<ChatListScreen> {
                     itemBuilder: (context) {
                       return [
                         MyPopupMenuItem<int>(enable: selectedChats.length < chats.length, value: 0, label: "انتخاب همه"),
-                        if (selectedChats.isNotEmpty) MyPopupMenuItem<int>(value: 1, label: "لغو انتخاب همه"),
+                        if (selectedChats.isNotEmpty) MyPopupMenuItem<int>(value: 1, label: "لغو انتخاب"),
                       ];
                     },
                     onSelected: (value) {
@@ -225,7 +225,7 @@ class _ChatListScreen extends State<ChatListScreen> {
           foregroundDecoration: !isSelected ? null : BoxDecoration(color: App.theme.primaryColor.withOpacity(0.1)),
           decoration: BoxDecoration(
             border: Border(
-              top: BorderSide(color: Colors.black12, width: 0.5),
+              top: BorderSide(color: App.theme.dividerColor.withOpacity(0.3), width: 0.5),
             ),
           ),
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
@@ -293,7 +293,7 @@ class _ChatListScreen extends State<ChatListScreen> {
                     children: [
                       if (chatItem.isConsultant == false)
                         Icon(
-                          chatItem.isSeen! ? Icons.done_all_rounded : Icons.check_rounded,
+                          (chatItem.isSeen ?? false) ? Icons.done_all_rounded : Icons.check_rounded,
                           color: App.theme.primaryColor,
                           size: 18,
                         ),
@@ -408,7 +408,7 @@ class _ChatListScreen extends State<ChatListScreen> {
   void goToChatScreen(ChatItem chatItem) async {
     rabbitClient?.close();
 
-    Map result = await push(
+    var result = await push(
         context,
         ChatScreen(
           chatId: chatItem.id!,
@@ -426,28 +426,29 @@ class _ChatListScreen extends State<ChatListScreen> {
 
     listenRabbit();
 
-    if (!result.containsKey("chatId") || chatItem.id != result["chatId"]) return;
+    if (result is Map) {
+      if (!result.containsKey("chatId") || chatItem.id != result["chatId"]) return;
 
-    var index = chats.indexOf(chatItem);
+      var index = chats.indexOf(chatItem);
 
-    if (result.containsKey("deleted") && result["deleted"]) {
-      chats.removeAt(index);
-      return;
+      if (result.containsKey("deleted") && result["deleted"]) {
+        chats.removeAt(index);
+        return;
+      }
+      if (result.containsKey("isBlockByMe")) {
+        chatItem.isBlockByMe = result["isBlockByMe"];
+      }
+
+      if (result.containsKey("newMessageCount")) {
+        chatItem.countNotSeen = result["newMessageCount"];
+      }
+
+      if (result.containsKey("sentMessage") && result["sentMessage"] != null) {
+        chatItem.isConsultant = false;
+        chatItem.lastMessage = result["sentMessage"];
+      }
+      chats[index] = chatItem;
     }
-    if (result.containsKey("isBlockByMe")) {
-      chatItem.isBlockByMe = result["isBlockByMe"];
-    }
-
-    if (result.containsKey("newMessageCount")) {
-      chatItem.countNotSeen = result["newMessageCount"];
-    }
-
-    if (result.containsKey("sentMessage")) {
-      chatItem.isConsultant = false;
-      chatItem.lastMessage = result["sentMessage"];
-    }
-
-    chats[index] = chatItem;
 
     setState(() {});
   }
@@ -475,6 +476,7 @@ class _ChatListScreen extends State<ChatListScreen> {
       style: TextStyle(
         fontFamily: "IranSansMedium",
         fontSize: 12,
+        color: App.theme.textTheme.bodyLarge?.color,
       ),
     );
   }

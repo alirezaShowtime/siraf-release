@@ -13,7 +13,6 @@ part 'chat_message_search_state.dart';
 class ChatMessageSearchBloc extends Bloc<ChatMessageSearchEvent, ChatMessageSearchState> {
   String? q;
   bool cancelRequest = false;
-  Uri? _uri;
 
   ChatMessageSearchBloc() : super(ChatMessageSearchInitial()) {
     on<ChatMessageSearchRequestEvent>(_request);
@@ -42,21 +41,16 @@ class ChatMessageSearchBloc extends Bloc<ChatMessageSearchEvent, ChatMessageSear
       },
     );
 
-    if (_uri != null) {
-      uri = _uri!;
-    }
-
     var res = await http2.getWithToken(uri);
 
     if (!isResponseOk(res)) {
-      _uri = uri;
       return emit(ChatMessageSearchError(res));
     }
 
-    if (cancelRequest) {
-      _uri = null;
-      cancelRequest = false;
+    if (!cancelRequest) {
       return emit(ChatMessageSearchSuccess(res, searched: q ?? "", type: event.type));
+    }else{
+      cancelRequest = false;
     }
   }
 }

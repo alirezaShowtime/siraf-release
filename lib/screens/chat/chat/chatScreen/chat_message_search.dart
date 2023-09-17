@@ -7,8 +7,8 @@ extension ChatMessageSearch on _ChatScreen {
       height: 60,
       padding: EdgeInsets.only(left: 20, right: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Colors.grey.shade300, width: 0.7)),
+        color: App.theme.dialogBackgroundColor,
+        border: Border(top: BorderSide(color: App.theme.shadowColor, width: 0.7)),
         boxShadow: [
           BoxShadow(
             offset: const Offset(1, -3),
