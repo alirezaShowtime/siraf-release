@@ -14,6 +14,7 @@ import 'package:siraf3/screens/create/create_file_first.dart';
 import 'package:siraf3/screens/my_file_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
+import 'package:siraf3/widgets/empty.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_file_horizontal_item.dart';
@@ -264,16 +265,19 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            if (currentSortType != null && currentSortType != "new" && currentSortType != "old") Empty(
+              message: "فایلی پیدا نشد",
+            ),
+            if (currentSortType == null || currentSortType == "new" || currentSortType == "old") Text(
               "فایلی پیدا نشد جهت ثبت فایل دکمه زیر را کلیک کنید",
               style: TextStyle(
                 fontSize: 14,
               ),
             ),
-            SizedBox(
+            if (currentSortType == null || currentSortType == "new" || currentSortType == "old") SizedBox(
               height: 10,
             ),
-            RawMaterialButton(
+            if (currentSortType == null || currentSortType == "new" || currentSortType == "old") RawMaterialButton(
               onPressed: _addFile,
               child: Text(
                 "ایجاد فایل",

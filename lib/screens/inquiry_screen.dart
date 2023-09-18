@@ -66,7 +66,7 @@ class _InquiryScreenState extends State<InquiryScreen> {
               SizedBox(height: 15),
               item(
                 "دفتر طلاق دارای ظرفیت ثبت واقعه",
-                "https://my.ssaa.ir/portal/ssar/notary-office-capacity",
+                "https://my.ssaa.ir/portal/sset/notary-office-capacity",
               ),
               SizedBox(height: 15),
               item(

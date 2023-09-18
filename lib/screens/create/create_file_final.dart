@@ -629,17 +629,31 @@ class _CreateFileFinalState extends State<CreateFileFinal> {
       dissmisLoadingDialog();
       if (event.images.isFill() || event.videos.isFill()) {
         setState(() {
-          widget.formData.files = widget.formData.files.map<Map<String, dynamic>>((e) {
-            if (checkImageExtension((e['file'] as File).path)) {
-              e['file'] = event.images.elementAt(widget.formData.files.indexOf(e));
-            }
+          var images = widget.formData.files.where((element) => checkImageExtension((element['file'] as File).path)).toList();
+          
+          widget.formData.files.removeWhere((element) => checkImageExtension((element['file'] as File).path));
+          
+          var videos = widget.formData.files.where((element) => checkVideoExtension((element['file'] as File).path)).toList();
+          
+          widget.formData.files.removeWhere((element) => checkVideoExtension((element['file'] as File).path));
 
-            if (checkVideoExtension((e['file'] as File).path)) {
-              e['file'] = event.videos.elementAt(widget.formData.files.indexOf(e));
-            }
+          print(images.length.toString());
+          print(event.images.length);
+
+          images = images.map((e) {
+            print(images.indexOf(e));
+            e['file'] = event.images[images.indexOf(e)];
 
             return e;
           }).toList();
+          
+          videos = videos.map((e) {
+            e['file'] = event.videos[videos.indexOf(e)];
+
+            return e;
+          }).toList();
+
+          widget.formData.files = images + videos + widget.formData.files;
         });
         notify("بهینه سازی رسانه ها با موفقیت انجام شد");
       }

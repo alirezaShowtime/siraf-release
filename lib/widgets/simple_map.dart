@@ -69,6 +69,7 @@ class _SimpleMap extends State<SimpleMap> {
                 maxZoom: 18.0,
                 minZoom: 12.0,
                 onTap: (_, _1) {
+                  if (widget.hidden) return;
                   if (!widget.openGoogleMap) return;
                   launchUrl(Uri.parse('geo:0,0?q=${widget.lat},${widget.long}'));
                 },

@@ -234,7 +234,7 @@ class _MyFileScreen extends State<MyFileScreen> {
                                     ),
                                     SizedBox(width: 5),
                                     Text(
-                                      "${state.file.city} | ${state.file.publishedAgo} ",
+                                      "${state.file.city} | ${state.file.publishedAgo}" + (widget.progress == 7 ? "\nبازدید : ${state.file.viewCount}" : ""),
                                       style: TextStyle(
                                         color: Colors.grey,
                                         fontFamily: "IranSansMedium",

@@ -26,6 +26,7 @@ class MyFileDetail {
   String? createDateTimeAgo;
   List<Propertys>? propertys;
   String? lat;
+  int? viewCount;
   String? long;
   String? fullCategory;
   String? city;
@@ -52,6 +53,7 @@ class MyFileDetail {
     this.fullCategory,
     this.city,
     this.estates,
+    this.viewCount,
     this.comment,
   });
 
@@ -73,6 +75,9 @@ class MyFileDetail {
     }
     if (json["progress"] is int) {
       progress = json["progress"];
+    }
+    if (json["viewCount"] is int) {
+      viewCount = json["viewCount"];
     }
     if (json["ownerPhoneNumber"] is String) {
       ownerPhoneNumber = json["ownerPhoneNumber"];
