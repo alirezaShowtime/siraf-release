@@ -11,6 +11,7 @@ import 'package:siraf3/bloc/ticket/sendMessage/send_message_bloc.dart';
 import 'package:siraf3/controller/message_upload_controller.dart';
 import 'package:siraf3/dark_themes.dart';
 import 'package:siraf3/dialog.dart';
+import 'package:siraf3/enums/message_owner.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/ticket.dart';
@@ -19,7 +20,6 @@ import 'package:siraf3/screens/ticket/ticket_chat/app_bar_chat_widget.dart';
 import 'package:siraf3/screens/ticket/ticket_chat/chat_message_editor_widget.dart';
 import 'package:siraf3/screens/ticket/ticket_chat/message_widget.dart';
 import 'package:siraf3/screens/ticket/ticket_chat/sending_message_widget.dart';
-import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/try_again.dart';
@@ -46,6 +46,7 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
   late TicketDetails ticketDetails;
 
   List<Widget> messageWidgets = [];
+  List<MessageOwner> messageOwners = [];
 
   TicketMessagesState? nowTicketMessagesState;
   bool ticketIsClosed = false;
@@ -285,11 +286,40 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
               addAutomaticKeepAlives: true,
               itemScrollController: chatItemScrollController,
               itemBuilder: (_, i) {
-                if (i == 0) return SizedBox(height: 5);
+                if (i == 0) {
+                  messageOwners.clear();
+                  return SizedBox(height: 5);
+                }
 
-                if (i == messageWidgets.length + 1) return SizedBox(height: 60);
+                if (i == messageWidgets.length + 1) {
+                  Future.delayed(Duration(milliseconds: 100), () {
+                    for (int v = 0; v < messageWidgets.length; v++) {
+                      if (messageWidgets[v] is MessageWidget) {
+                        (messageWidgets[v] as MessageWidget).messageOwner = messageOwners[v];
 
-                return messageWidgets[i - 1];
+                        print((messageWidgets[v] as MessageWidget).message.message.toString() + " : " + (messageWidgets[v] as MessageWidget).messageOwner.toString());
+                      }
+                    }
+                  });
+
+                  return SizedBox(height: 60);
+                }
+
+                var messageWidget = messageWidgets[i - 1];
+
+                var owner = MessageOwner.ForMe;
+
+                if (messageWidget is MessageWidget) {
+                  owner = messageWidget.messageOwner;
+                }
+
+                messageOwners.add(owner);
+
+                return Row(
+                  mainAxisAlignment: owner == MessageOwner.ForMe ? MainAxisAlignment.start : MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [messageWidget],
+                );
               },
             ),
           ),
@@ -307,16 +337,17 @@ class _TicketChatScreen extends State<TicketChatScreen> with SingleTickerProvide
     MessageUploadController messageUploadController = MessageUploadController();
 
     SendingMessageWidget sendingMessageWidget = SendingMessageWidget(
-      key: Key(DateTime.now().microsecond.toString()),
+      key: Key("${DateTime.now().millisecondsSinceEpoch}-${DateTime.now().microsecond}"),
       controller: messageUploadController,
       message: text,
       files: files,
     );
 
-    messageWidgets.insert(0, sendingMessageWidget);
+    setState(() {
+      messageWidgets.insert(0, sendingMessageWidget);
+    });
 
     scrollDown();
-    setState(() {});
     sendMessageBloc.add(
       AddToSendQueueEvent(
         ticketId: widget.ticket.id!,

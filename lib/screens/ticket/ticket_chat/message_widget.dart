@@ -27,7 +27,10 @@ class MessageWidget extends StatefulWidget {
   }
 }
 
-class MessageWidgetState extends State<MessageWidget> {
+class MessageWidgetState extends State<MessageWidget> with AutomaticKeepAliveClientMixin<MessageWidget> {
+  @override
+  bool get wantKeepAlive => true;
+
   late MessageConfig messageConfig;
   late bool hasFile;
 
@@ -35,57 +38,56 @@ class MessageWidgetState extends State<MessageWidget> {
   void initState() {
     super.initState();
 
-    messageConfig = _getConfig();
-
-    hasFile = widget.fileMessages.isFill();
+    setState(() {
+      hasFile = widget.fileMessages.isFill();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: messageConfig.alignment,
-      child: Column(
-        textDirection: messageConfig.fileDirection,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: messageConfig.background,
-              borderRadius: messageConfig.borderRadius,
-            ),
-            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.60, minWidth: 100),
-            margin: EdgeInsets.only(bottom: 3, left: 10, right: 10),
-            padding: EdgeInsets.only(top: 5, left: 9, right: 9, bottom: 3),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (FileMessage fileMessage in widget.fileMessages)
-                  MessageFileWidget(
-                    fileMessage: fileMessage,
-                    messageConfig: messageConfig,
-                    textDirection: messageConfig.fileDirection,
-                  ),
-                if (hasFile && widget.message.message.isFill()) SizedBox(height: 10),
-                if (widget.message.message.isFill()) textWidget(),
-              ],
-            ),
+    messageConfig = _getConfig();
+
+    return Column(
+      textDirection: messageConfig.fileDirection,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: messageConfig.background,
+            borderRadius: messageConfig.borderRadius,
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 10),
-            child: Text(
-              "${widget.message.createDate} ${widget.message.createTime}",
-              style: TextStyle(
-                color: Colors.grey.shade500,
-                fontSize: 9,
-                height: 1,
-                fontFamily: "sans-serif",
-              ),
-              textDirection: TextDirection.ltr,
-            ),
+          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.60, minWidth: 100),
+          margin: EdgeInsets.only(bottom: 3, left: 10, right: 10),
+          padding: EdgeInsets.only(top: 5, left: 9, right: 9, bottom: 3),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (FileMessage fileMessage in widget.fileMessages)
+                MessageFileWidget(
+                  fileMessage: fileMessage,
+                  messageConfig: messageConfig,
+                  textDirection: messageConfig.fileDirection,
+                ),
+              if (hasFile && widget.message.message.isFill()) SizedBox(height: 10),
+              if (widget.message.message.isFill()) textWidget(),
+            ],
           ),
-        ],
-      ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 10),
+          child: Text(
+            "${widget.message.createDate} ${widget.message.createTime}",
+            style: TextStyle(
+              color: Colors.grey.shade500,
+              fontSize: 9,
+              height: 1,
+              fontFamily: "sans-serif",
+            ),
+            textDirection: TextDirection.ltr,
+          ),
+        ),
+      ],
     );
   }
 

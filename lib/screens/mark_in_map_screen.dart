@@ -79,7 +79,7 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> with SingleTickerProv
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            "موقعیت فایل",
+            "انتخاب موقعیت مکانی",
             style: TextStyle(
               fontSize: 15,
             ),

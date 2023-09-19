@@ -452,7 +452,7 @@ class _FileScreen extends State<FileScreen> {
               height: 300,
               width: double.infinity,
               decoration: BoxDecoration(
-                    color: App.theme.backgroundColor,
+                color: App.theme.backgroundColor,
                 image: DecorationImage(image: AssetImage(IMAGE_NOT_AVAILABLE), alignment: Alignment.center),
               ),
             ),
@@ -499,7 +499,7 @@ class _FileScreen extends State<FileScreen> {
               child: Container(
                 decoration: BoxDecoration(color: Colors.black.withOpacity(0.6), borderRadius: BorderRadius.circular(7)),
                 padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                width: MediaQuery.of(context).size.width - 100,
+                constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 100),
                 child: Text(
                   imageName,
                   style: TextStyle(

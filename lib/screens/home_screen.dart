@@ -56,7 +56,10 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMixin<HomeScreen> {
+  @override
+  bool get wantKeepAlive => true;
+
   FilterData filterData = FilterData();
 
   @override
@@ -65,13 +68,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     checkInitialLink();
     listenLink();
-
-    if (widget.nextScreen != null) {
-      Future.delayed(Duration.zero, () {
-        Navigator.push(context, widget.nextScreen!);
-      });
-      return;
-    }
 
     homeScreenBloc = BlocProvider.of<HSBloc>(context);
 
@@ -135,6 +131,12 @@ class _HomeScreenState extends State<HomeScreen> {
         resumeCallBack: () async => setState(() {
               checkNotificationClicked();
             })));
+
+    if (widget.nextScreen != null) {
+      Future.delayed(Duration.zero, () {
+        Navigator.push(context, widget.nextScreen!);
+      });
+    }
   }
 
   var notifications_handled = [];
@@ -369,12 +371,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 );
-    
+
                 if (result != null && result is FilterData) {
                   setState(() {
                     filterData = result;
                   });
-    
+
                   getFiles();
                 }
               },
@@ -531,7 +533,6 @@ class _HomeScreenState extends State<HomeScreen> {
       initialURILinkHandled = true;
       final uri = await getInitialUri();
       if (uri != null) {
-      
         if (!mounted) return;
 
         RegExp reg = new RegExp(r'https://siraf.app/files/([0-9]+)');
@@ -605,10 +606,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void listenLink() {
     uriLinkStream.listen((Uri? uri) {
-      
-      if (!mounted)  return;
-      
-   
+      if (!mounted) return;
+
       RegExp reg = new RegExp(r'https://siraf.app/files/([0-9]+)');
 
       if (reg.hasMatch(uri.toString())) {

@@ -10,13 +10,13 @@ class GetLastVersion {
     String packageName = (await PackageInfo.fromPlatform()).packageName;
 
     if (Platform.isAndroid) {
-      // var uri = Uri.parse("bazar://details?id=${packageName}");
+      var uri = Uri.parse("bazar://details?id=${packageName}");
 
-      // if (await canLaunchUrl(uri)) {
-      //   await launchUrl(uri);
-      // } else {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      } else {
         await launchUrl(Uri.parse(downloadUrl), mode: LaunchMode.externalApplication);
-      // }
+      }
     }
 
     if (Platform.isIOS) {

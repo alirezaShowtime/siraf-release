@@ -9,6 +9,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:siraf3/bloc/property_bloc.dart';
 import 'package:siraf3/dialog.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/category.dart' as cat;
 import 'package:siraf3/models/city.dart';
@@ -642,25 +643,25 @@ class _EditFileFirstState extends State<EditFileFirst> {
     if (address == null) return notify("فیلد آدرس اجباری است");
 
     for (PropertyInsert pr in mainProps) {
-      if ((pr.require ?? false) && !selectedMainProps.containsKey(pr.value!)) {
+      if ((pr.require ?? false) && (!selectedMainProps.containsKey(pr.value!) || !selectedMainProps[pr.value!].isFill())) {
         return notify("لطفا " + pr.name! + " را " + (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") + " کنید");
       }
     }
 
     for (PropertyInsert pr in mainFeature) {
-      if ((pr.require ?? false) && !selectedMainFeatures.containsKey(pr.value!)) {
+      if ((pr.require ?? false) && (!selectedMainFeatures.containsKey(pr.value!) || !selectedMainFeatures[pr.value!].isFill())) {
         return notify("لطفا " + pr.name! + " را " + (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") + " کنید");
       }
     }
 
     for (PropertyInsert pr in otherProps) {
-      if ((pr.require ?? false) && !selectedOtherProps.containsKey(pr.value!)) {
+      if ((pr.require ?? false) && (!selectedOtherProps.containsKey(pr.value!) || !selectedOtherProps[pr.value!].isFill())) {
         return notify("لطفا وارد سایر امکانات و ویژگی ها شوید و " + pr.name! + " را " + (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") + " کنید", duration: Duration(seconds: 4));
       }
     }
 
     for (PropertyInsert pr in otherFeature) {
-      if ((pr.require ?? false) && !selectedOtherFeatures.containsKey(pr.value!)) {
+      if ((pr.require ?? false) && (!selectedOtherFeatures.containsKey(pr.value!) || !selectedOtherFeatures[pr.value!].isFill())) {
         return notify("لطفا وارد سایر امکانات و ویژگی ها شوید و " + pr.name! + " را " + (pr.type!.toLowerCase() == "list" ? "انتخاب" : "تعیین") + " کنید", duration: Duration(seconds: 4));
       }
     }

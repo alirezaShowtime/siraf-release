@@ -266,11 +266,11 @@ class MyFileDetail {
 
   String getPricePerMater() {
     var mater =
-        (propertys?.where((element) => element.weightSection == 1).length ??
+        (propertys?.where((element) => element.name.toString().contains('متر')).length ??
                     0) >
                 0
             ? (propertys
-                    ?.firstWhere((element) => element.weightSection == 1)
+                    ?.firstWhere((element) => element.name.toString().contains('متر'))
                     .value ??
                 -1)
             : -2;
@@ -284,8 +284,18 @@ class MyFileDetail {
     if (mater == -1 || mater == null) {
       return "متراژ نامشخص";
     }
+    
+    var result = int.parse(getPrice()!.value!) ~/ int.parse(mater.toString());
 
-    return number_format(int.parse(getPrice()!.value!) / int.parse(mater.toString()));
+    if (result == 0) {
+      return "نامشخص";
+    }
+
+    var rounded_result = (result / 100000).round() * 100000;
+
+    if (rounded_result != 0) result = rounded_result;
+
+    return number_format(result);
   }
   
   String getPriceStr() {

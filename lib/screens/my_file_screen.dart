@@ -57,7 +57,7 @@ class _MyFileScreen extends State<MyFileScreen> {
   DeleteFileBloc deleteFileBloc = DeleteFileBloc();
 
   Map<int, String> progressFa = {
-    1: "در انتظار پذیرش",
+    1: "در انتظار تایید",
     2: "رد شده",
     3: "رد شده",
     4: "تایید شده",
@@ -686,7 +686,7 @@ class _MyFileScreen extends State<MyFileScreen> {
               child: Container(
                 decoration: BoxDecoration(color: Colors.black.withOpacity(0.6), borderRadius: BorderRadius.circular(7)),
                 padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                width: MediaQuery.of(context).size.width - 100,
+                constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 100),
                 child: Text(
                   imageName,
                   style: TextStyle(
@@ -825,35 +825,38 @@ class _MyFileScreen extends State<MyFileScreen> {
 
   List<Widget> appBarActions(MyFileDetail file, Color color, {bool shadow = true}) {
     return [
-      MyPopupMenuButton(
-        child: Icon(
-          Icons.more_vert_rounded,
-          color: color,
-          shadows: !shadow || _isSliverAppBarCollapsed ? null : [BoxShadow(color: Colors.black87, blurRadius: 3)],
-        ),
-        itemBuilder: (_) => [
-          MyPopupMenuItem(
-            value: 0,
-            label: "ویرایش",
-            icon: Icons.edit_outlined,
+      Padding(
+        padding: EdgeInsets.only(left: 15),
+        child: MyPopupMenuButton(
+          child: Icon(
+            Icons.more_vert_rounded,
+            color: color,
+            shadows: !shadow || _isSliverAppBarCollapsed ? null : [BoxShadow(color: Colors.black87, blurRadius: 3)],
           ),
-          if (widget.progress == 7)
+          itemBuilder: (_) => [
             MyPopupMenuItem(
-              value: 1,
-              label: "آمار بازدید",
-              icon: Icons.visibility_outlined,
+              value: 0,
+              label: "ویرایش",
+              icon: Icons.edit_outlined,
             ),
-          MyPopupMenuItem(
-            value: 2,
-            label: "حذف",
-            icon: CupertinoIcons.delete,
-          ),
-        ],
-        onSelected: (v) {
-          if (v == 0) push(context, EditFileFirst(file: file));
-          if (v == 1) push(context, FileViewChartScreen(id: widget.id, fileTitle: file.name ?? ""));
-          if (v == 2) showDeleteDialog();
-        },
+            if (widget.progress == 7)
+              MyPopupMenuItem(
+                value: 1,
+                label: "آمار بازدید",
+                icon: Icons.visibility_outlined,
+              ),
+            MyPopupMenuItem(
+              value: 2,
+              label: "حذف",
+              icon: CupertinoIcons.delete,
+            ),
+          ],
+          onSelected: (v) {
+            if (v == 0) push(context, EditFileFirst(file: file));
+            if (v == 1) push(context, FileViewChartScreen(id: widget.id, fileTitle: file.name ?? ""));
+            if (v == 2) showDeleteDialog();
+          },
+        ),
       ),
     ];
   }

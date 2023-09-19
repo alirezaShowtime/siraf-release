@@ -17,6 +17,7 @@ import 'package:siraf3/screens/auth/edit_profile_screen.dart';
 import 'package:siraf3/screens/home_screen.dart';
 import 'package:siraf3/settings.dart';
 import 'package:siraf3/themes.dart';
+import 'package:siraf3/utilities/get_last_version.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/my_switch.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -62,20 +63,36 @@ class _SettingsScreen extends State<SettingsScreen> {
       if (event is CheckVersionSuccessState) {
         dismissDialog(loadingDialogContext);
         if (event.hasUpdate) {
-          showDialog2(
-            context: context,
-            barrierDismissible: true,
-            builder: (_context) {
-              return ConfirmDialog(
-                dialogContext: context,
-                content: "نسخه جدیدی از برنامه موجود است آیا میخواهید بروزرسانی کنید؟",
-                applyText: "بله",
-                cancelText: "خیر",
-                onApply: () => openBazarOrOpenUrl(event.downloadUrl),
-                title: "بروزرسانی",
-              );
-            },
-          );
+          if (event.isRequired) {
+            animationDialog(
+                context: context,
+                builder: (dialogContext) {
+                  return ConfirmDialog(
+                    dialogContext: dialogContext,
+                    title: "بروزرسانی",
+                    content: "نسخه جدیدی از برنامه منتشر شده است.",
+                    applyText: "بروزرسانی",
+                    cancelText: "خروج از برنامه",
+                    onApply: () => GetLastVersion.start(event.downloadUrl),
+                    onCancel: applicationExit,
+                  );
+                });
+          } else {
+            showDialog2(
+              context: context,
+              barrierDismissible: true,
+              builder: (_context) {
+                return ConfirmDialog(
+                  dialogContext: context,
+                  content: "نسخه جدیدی از برنامه موجود است آیا میخواهید بروزرسانی کنید؟",
+                  applyText: "بله",
+                  cancelText: "خیر",
+                  onApply: () => GetLastVersion.start(event.downloadUrl),
+                  title: "بروزرسانی",
+                );
+              },
+            );
+          }
         } else {
           setState(() {
             isLastVersion = true;
@@ -321,6 +338,7 @@ class _SettingsScreen extends State<SettingsScreen> {
         cancelText: "خیر",
         onApply: () {
           Navigator.pop(_);
+          FirebaseMessaging.instance.deleteToken();
           User.remove();
           Navigator.pop(context);
         },

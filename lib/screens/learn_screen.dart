@@ -4,6 +4,7 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/post.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/screens/post_item.dart';
+import 'package:siraf3/widgets/empty.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
@@ -153,7 +154,7 @@ class _LearnScreenState extends State<LearnScreen> with AutomaticKeepAliveClient
                   setState(() {
                     sort = value;
                   });
-    
+
                   getPosts();
                 },
               ),
@@ -186,6 +187,12 @@ class _LearnScreenState extends State<LearnScreen> with AutomaticKeepAliveClient
     }
 
     posts = (state as PostsLoadedState).posts;
+
+    if (posts.isEmpty) {
+      return Center(
+        child: Empty(message: "محتوایی وجود ندارد"),
+      );
+    }
 
     return ListView(
       controller: scrollController,
