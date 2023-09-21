@@ -324,7 +324,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
           height: 5,
         ),
         Divider(
-          color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey.withOpacity(0.5),
+          color: (App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey).withOpacity(0.5),
           height: 1,
         ),
       ],

@@ -9,6 +9,7 @@ import 'package:siraf3/helpers.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/models/request.dart';
 import 'package:siraf3/models/request_consultant.dart';
+import 'package:siraf3/screens/consultant_profile/consultant_profile_screen.dart';
 import 'package:siraf3/screens/request_file/edit_request_screen.dart';
 import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
@@ -32,7 +33,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
   RequestConsultantBloc requestConsultantBloc = RequestConsultantBloc();
   DeleteRequestBloc deleteRequestBloc = DeleteRequestBloc();
 
-    Map<int, Color?> statusColors = {
+  Map<int, Color?> statusColors = {
     5: Color(0xfffdb713), // عدم پذیرش
     1: Color(0xff00cc11), // تایید شده
     2: Color(0xfffd1313), // رد شده
@@ -112,13 +113,14 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
                   fontFamily: "IranSansBold",
                 ),
               ),
-              Text(
-                "محدوده اجاره : " + (createLabel(widget.request.minRent!, widget.request.maxRent!, "تومان") ?? ""),
-                style: TextStyle(
-                  fontSize: 12,
-                  fontFamily: "IranSansBold",
+              if (widget.request.isRent())
+                Text(
+                  "محدوده اجاره : " + (createLabel(widget.request.minRent!, widget.request.maxRent!, "تومان") ?? ""),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontFamily: "IranSansBold",
+                  ),
                 ),
-              ),
               Text(
                 "محدوده متراژ: " + (createLabel(widget.request.minMeter!, widget.request.maxMeter!, "متر") ?? ""),
                 style: TextStyle(
@@ -216,79 +218,84 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
   }
 
   Widget item(RequestConsultant requestConsultant) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 5),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Colors.grey.shade200, width: 1),
+    return GestureDetector(
+      onTap: () {
+        push(
+          context,
+          ConsultantProfileScreen(
+            consultantId: requestConsultant.consultantId!.id!,
+            consultantName: requestConsultant.consultantId?.name,
+          ),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 5),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: Colors.grey.shade200, width: 1),
+          ),
         ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image(
-                  image: NetworkImage("https://auth.siraf.app/media/static/upload/user/avatar/avatar.png"),
-                  // todo change image link
-                  height: 40,
-                  width: 40,
-                  fit: BoxFit.fill,
-                  loadingBuilder: (context, child, eventProgress) {
-                    return Image.asset(
-                      "assets/images/profile.jpg",
-                      width: 40,
-                      height: 40,
-                      fit: BoxFit.fill,
-                      alignment: Alignment.center,
-                    );
-                  },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image(
+                    image: NetworkImage(requestConsultant.consultantId?.avatar ?? ""),
+                    height: 40,
+                    width: 40,
+                    fit: BoxFit.fill,
+                    errorBuilder: (context, child, eventProgress) {
+                      return Image.asset(
+                        "assets/images/profile.jpg",
+                        width: 40,
+                        height: 40,
+                        fit: BoxFit.fill,
+                        alignment: Alignment.center,
+                      );
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    requestConsultant.consultantId!.name ?? "",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontFamily: "IranSansBold",
+                SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      requestConsultant.consultantId!.name ?? "",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: "IranSansBold",
+                      ),
                     ),
-                  ),
-                  Text(
-                    "(${requestConsultant.estateName})",
-                    style: TextStyle(fontSize: 10, color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey),
-                  ),
-                  SizedBox(height: 6),
-                  RatingBarIndicator(
-                    rating: (requestConsultant.consultantId?.rate?.toDouble() ?? 0),
-                    // minRating: 1,
-                    direction: Axis.horizontal,
-                    itemCount: 5,
-                    // allowHalfRating: true,
-                    itemPadding: EdgeInsets.symmetric(horizontal: 0.25),
-                    itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
-                    itemSize: 10,
-                    // onRatingUpdate: (double value) {},
-                    // updateOnDrag: false,
-                    // ignoreGestures: true,
-                    unratedColor: Colors.grey.shade300,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              IconButton(onPressed: () => startChat(requestConsultant), icon: icon(Icons.chat_outlined)),
-              IconButton(onPressed: () => call(requestConsultant.consultantId!), icon: icon(Icons.phone_rounded)),
-            ],
-          ),
-        ],
+                    Text(
+                      "(${requestConsultant.estateName})",
+                      style: TextStyle(fontSize: 10, color: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey),
+                    ),
+                    SizedBox(height: 6),
+                    RatingBarIndicator(
+                      rating: (requestConsultant.consultantId?.rate?.toDouble() ?? 0),
+                      // minRating: 1,
+                      direction: Axis.horizontal,
+                      itemCount: 5,
+                      // allowHalfRating: true,
+                      itemPadding: EdgeInsets.symmetric(horizontal: 0.25),
+                      itemBuilder: (context, _) => icon(Icons.star, color: Colors.amber),
+                      itemSize: 10,
+                      // onRatingUpdate: (double value) {},
+                      // updateOnDrag: false,
+                      // ignoreGestures: true,
+                      unratedColor: Colors.grey.shade300,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            IconButton(onPressed: () => call(requestConsultant.consultantId!), icon: icon(Icons.phone_rounded)),
+          ],
+        ),
       ),
     );
   }

@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siraf3/bloc/auth/edit_profile_bloc.dart';
@@ -102,7 +101,7 @@ class _SettingsScreen extends State<SettingsScreen> {
       }
     });
 
-    editProfileBloc.stream.listen((event) {
+    editProfileBloc.stream.listen((event) async {
       if (event is EditProfileLoadingState) {
         loadingDialog(context: context, showMessage: false);
       } else if (event is EditProfileErrorState) {
@@ -114,6 +113,9 @@ class _SettingsScreen extends State<SettingsScreen> {
         });
       } else if (event is EditProfileSuccessState) {
         dismissDialog(loadingDialogContext);
+        var user = (await User.fromLocal());
+        user.privateMobile = !showNumberPhoneForConsultant;
+        user.save();
       }
     });
   }
@@ -185,17 +187,8 @@ class _SettingsScreen extends State<SettingsScreen> {
           if (widget.user?.phone != null)
             item(
               title: "نمایش شماره همراه برای مشاوران",
-              widget: FlutterSwitch(
-                height: 20.0,
-                width: 40.0,
-                padding: 4.0,
-                toggleSize: 10.0,
-                borderRadius: 10.0,
-                activeColor: App.theme.primaryColor,
-                inactiveColor: Colors.grey.shade300,
+              widget: MySwitch(
                 value: showNumberPhoneForConsultant,
-                activeToggleColor: Colors.white,
-                inactiveToggleColor: App.theme.primaryColor,
                 onToggle: (value) {
                   setState(() {
                     showNumberPhoneForConsultant = value;

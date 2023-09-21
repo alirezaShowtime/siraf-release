@@ -20,7 +20,7 @@ import 'package:siraf3/main.dart';
 import '../widgets/my_app_bar.dart';
 
 class LearnScreen extends StatefulWidget {
-  const LearnScreen({super.key});
+  LearnScreen({super.key});
 
   @override
   State<LearnScreen> createState() => _LearnScreenState();
@@ -194,19 +194,25 @@ class _LearnScreenState extends State<LearnScreen> with AutomaticKeepAliveClient
       );
     }
 
-    return ListView(
-      controller: scrollController,
-      children: posts
-              .map<Widget>(
-                (e) => PostItem(
-                  post: e,
-                  onStartVideo: (vController) => onStartVideo(vController, e),
-                ),
-              )
-              .toList() +
-          [
-            if (_isLoadingMore) PaginationLoading(),
-          ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        getPosts();
+      },
+      color: Themes.primary,
+      child: ListView(
+        controller: scrollController,
+        children: posts
+                .map<Widget>(
+                  (e) => PostItem(
+                    post: e,
+                    onStartVideo: (vController) => onStartVideo(vController, e),
+                  ),
+                )
+                .toList() +
+            [
+              if (_isLoadingMore) PaginationLoading(),
+            ],
+      ),
     );
   }
 

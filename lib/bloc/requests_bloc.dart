@@ -1,13 +1,15 @@
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart';
+import 'package:siraf3/extensions/string_extension.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
 import 'package:siraf3/models/request.dart' as request;
 
 class RequestsEvent {
   String? sort;
+  bool? hasFilter;
 
-  RequestsEvent({this.sort});
+  RequestsEvent({this.sort, this.hasFilter});
 }
 
 class RequestsState {}
@@ -36,9 +38,9 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
   _onEvent(RequestsEvent event, Emitter<RequestsState> emit) async {
     emit(RequestsLoadingState());
 
-    var response = await http2.getWithToken(getEstateUrl(
-        "requestFile/myRequestFiles/" +
-            (event.sort != null ? "?sort=${event.sort}" : "")));
+    var sorting_key = (event.hasFilter ?? false) ? "filter" : "sort";
+
+    var response = await http2.getWithToken(getEstateUrl("requestFile/myRequestFiles/" + (event.sort != null ? "?$sorting_key=${event.sort}" : "")));
 
     if (isResponseOk(response)) {
       emit(

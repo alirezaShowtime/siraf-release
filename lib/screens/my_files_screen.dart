@@ -17,6 +17,7 @@ import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/empty.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
+import 'package:siraf3/widgets/my_badge.dart';
 import 'package:siraf3/widgets/my_file_horizontal_item.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_item.dart';
@@ -137,7 +138,7 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                   IconButton(
                     onPressed: selectedFiles.isNotEmpty
                         ? () {
-                      showDeleteDialog(selectedFiles.map((e) => e.id!).toList());
+                            showDeleteDialog(selectedFiles.map((e) => e.id!).toList());
                           }
                         : null,
                     icon: Icon(
@@ -193,19 +194,24 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                       currentSortType = value;
                     });
                   },
-                  iconData: CupertinoIcons.sort_down,
+                  child: MyCircleBadge(
+                    child: Icon(CupertinoIcons.sort_down, color: App.theme.iconTheme.color),
+                    isVisible: currentSortType != null && currentSortType != "new",
+                  ),
                 ),
                 MyPopupMenuButton(
                   itemBuilder: (context) {
                     return [
-                      if (selectedFiles.length < files.length) MyPopupMenuItem<int>(
-                        value: 0,
-                        label: "انتخاب همه",
-                      ),
-                      if (selectedFiles.length == files.length) MyPopupMenuItem<int>(
-                        value: 1,
-                        label: "لغو انتخاب همه",
-                      ),
+                      if (selectedFiles.length < files.length)
+                        MyPopupMenuItem<int>(
+                          value: 0,
+                          label: "انتخاب همه",
+                        ),
+                      if (selectedFiles.length == files.length)
+                        MyPopupMenuItem<int>(
+                          value: 1,
+                          label: "لغو انتخاب همه",
+                        ),
                     ];
                   },
                   onSelected: (value) {
@@ -265,30 +271,34 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (currentSortType != null && currentSortType != "new" && currentSortType != "old") Empty(
-              message: "فایلی پیدا نشد",
-            ),
-            if (currentSortType == null || currentSortType == "new" || currentSortType == "old") Text(
-              "فایلی پیدا نشد جهت ثبت فایل دکمه زیر را کلیک کنید",
-              style: TextStyle(
-                fontSize: 14,
+            if (currentSortType != null && currentSortType != "new" && currentSortType != "old")
+              Empty(
+                message: "فایلی پیدا نشد",
               ),
-            ),
-            if (currentSortType == null || currentSortType == "new" || currentSortType == "old") SizedBox(
-              height: 10,
-            ),
-            if (currentSortType == null || currentSortType == "new" || currentSortType == "old") RawMaterialButton(
-              onPressed: _addFile,
-              child: Text(
-                "ایجاد فایل",
+            if (currentSortType == null || currentSortType == "new" || currentSortType == "old")
+              Text(
+                "فایلی پیدا نشد جهت ثبت فایل دکمه زیر را کلیک کنید",
                 style: TextStyle(
-                  color: Colors.white,
+                  fontSize: 14,
                 ),
               ),
-              elevation: 0.2,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-              fillColor: App.theme.primaryColor,
-            ),
+            if (currentSortType == null || currentSortType == "new" || currentSortType == "old")
+              SizedBox(
+                height: 10,
+              ),
+            if (currentSortType == null || currentSortType == "new" || currentSortType == "old")
+              RawMaterialButton(
+                onPressed: _addFile,
+                child: Text(
+                  "ایجاد فایل",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                elevation: 0.2,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+                fillColor: App.theme.primaryColor,
+              ),
           ],
         ),
       );

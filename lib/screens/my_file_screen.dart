@@ -249,10 +249,11 @@ class _MyFileScreen extends State<MyFileScreen> {
                         ],
                       ),
                       actions: <Widget>[
-                            if (widget.progress == 7) IconButton(
-                              onPressed: () => shareFile(state.file.name!),
-                              icon: Icon(Icons.share_rounded),
-                            ),
+                            if (widget.progress == 7)
+                              IconButton(
+                                onPressed: () => shareFile(state.file.name!),
+                                icon: Icon(Icons.share_rounded),
+                              ),
                           ] +
                           (_isSliverAppBarCollapsed ? appBarActions(state.file, App.theme.textTheme.bodyLarge?.color ?? Themes.text) : <Widget>[]),
                     );
@@ -415,7 +416,7 @@ class _MyFileScreen extends State<MyFileScreen> {
                               borderRadius: BorderRadius.circular(15),
                             ),
                           ),
-                        if (state.file.rejectionDesc.isFill())
+                        if (state.file.rejectionDesc.isFill() && state.file.progress == 2)
                           Container(
                             clipBehavior: Clip.hardEdge,
                             margin: EdgeInsets.only(bottom: 5),
@@ -825,38 +826,35 @@ class _MyFileScreen extends State<MyFileScreen> {
 
   List<Widget> appBarActions(MyFileDetail file, Color color, {bool shadow = true}) {
     return [
-      Padding(
-        padding: EdgeInsets.only(left: 15),
-        child: MyPopupMenuButton(
-          child: Icon(
-            Icons.more_vert_rounded,
-            color: color,
-            shadows: !shadow || _isSliverAppBarCollapsed ? null : [BoxShadow(color: Colors.black87, blurRadius: 3)],
-          ),
-          itemBuilder: (_) => [
-            MyPopupMenuItem(
-              value: 0,
-              label: "ویرایش",
-              icon: Icons.edit_outlined,
-            ),
-            if (widget.progress == 7)
-              MyPopupMenuItem(
-                value: 1,
-                label: "آمار بازدید",
-                icon: Icons.visibility_outlined,
-              ),
-            MyPopupMenuItem(
-              value: 2,
-              label: "حذف",
-              icon: CupertinoIcons.delete,
-            ),
-          ],
-          onSelected: (v) {
-            if (v == 0) push(context, EditFileFirst(file: file));
-            if (v == 1) push(context, FileViewChartScreen(id: widget.id, fileTitle: file.name ?? ""));
-            if (v == 2) showDeleteDialog();
-          },
+      MyPopupMenuButton(
+        child: Icon(
+          Icons.more_vert_rounded,
+          color: color,
+          shadows: !shadow || _isSliverAppBarCollapsed ? null : [BoxShadow(color: Colors.black87, blurRadius: 3)],
         ),
+        itemBuilder: (_) => [
+          MyPopupMenuItem(
+            value: 0,
+            label: "ویرایش",
+            icon: Icons.edit_outlined,
+          ),
+          if (widget.progress == 7)
+            MyPopupMenuItem(
+              value: 1,
+              label: "آمار بازدید",
+              icon: Icons.visibility_outlined,
+            ),
+          MyPopupMenuItem(
+            value: 2,
+            label: "حذف",
+            icon: CupertinoIcons.delete,
+          ),
+        ],
+        onSelected: (v) {
+          if (v == 0) push(context, EditFileFirst(file: file));
+          if (v == 1) push(context, FileViewChartScreen(id: widget.id, fileTitle: file.name ?? ""));
+          if (v == 2) showDeleteDialog();
+        },
       ),
     ];
   }

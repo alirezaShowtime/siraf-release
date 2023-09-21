@@ -31,6 +31,7 @@ import 'package:siraf3/screens/consultant_profile_without_comment/consultant_pro
 import 'package:siraf3/screens/estate_profile_without_comment/estate_profile_screen.dart';
 import 'package:siraf3/screens/file_screen.dart';
 import 'package:siraf3/screens/filter_screen.dart';
+import 'package:siraf3/screens/learn_screen.dart';
 import 'package:siraf3/screens/menu_screen.dart';
 import 'package:siraf3/screens/my_file_screen.dart';
 import 'package:siraf3/screens/post_item.dart';
@@ -155,6 +156,9 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
     if (pStr == null) return;
     var payload = jsonDecode(pStr) as Map<String, dynamic>;
     if (!payload.containsKey("type")) return;
+
+    copy("___________PAYLOAD____________");
+    copy(jsonEncode(payload));
 
     switch (payload['type']) {
       case 'ticket':
@@ -598,6 +602,28 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
             context,
             EstateProfileScreen(estateId: int.parse(id)),
           );
+          return;
+        }
+
+        reg = new RegExp(r'https://siraf.app/contents/([0-9]+)');
+
+        if (reg.hasMatch(uri.toString())) {
+          var match = reg.firstMatch(uri.toString());
+          var id = match!.group(1);
+
+          if (id == null) {
+            return;
+          }
+
+          playingVideoController?.pause();
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => LearnScreen(),
+            ),
+          );
+
           return;
         }
       }

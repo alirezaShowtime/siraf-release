@@ -275,7 +275,7 @@ class MyFileDetail {
                 -1)
             : -2;
 
-    if (mater == -2) return "non";
+    if (mater == -2) return "توافقی";
 
     if (getPrice()?.value == null) {
       return "توافقی";

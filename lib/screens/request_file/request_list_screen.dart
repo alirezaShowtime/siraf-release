@@ -14,6 +14,7 @@ import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/confirm_dialog.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
+import 'package:siraf3/widgets/my_badge.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_item.dart';
 import 'package:siraf3/widgets/try_again.dart';
@@ -44,6 +45,16 @@ class _RequestListScreen extends State<RequestListScreen> {
     getRequests();
     deleteRequestBloc.stream.listen(_listenDelete);
   }
+
+  Map<String, String> menuItems = {
+    "newst": "جدیدترین",
+    "older": "قدیمی ترین",
+    "pending": "در انتظار تایید",
+    "accept": "تایید شده ",
+    "reject": "رد شده",
+    "acceptEstate": "پذیرش شده",
+    "rejectEstate": "پذیرش نشده",
+  };
 
   String? currentSortType;
 
@@ -104,51 +115,24 @@ class _RequestListScreen extends State<RequestListScreen> {
               Transform.translate(
                 offset: Offset(-10, 0),
                 child: MyPopupMenuButton(
-                  iconData: CupertinoIcons.sort_down,
-                  itemBuilder: (_) => [
-                    MyPopupMenuItem<String?>(
-                      value: "newest",
-                      label: "جدید ترین",
-                      withSpace: true,
-                      icon: currentSortType == "newest" ? Icons.check_rounded : null,
-                    ),
-                    MyPopupMenuItem<String?>(
-                      value: "older",
-                      label: "قدیمی ترین",
-                      withSpace: true,
-                      icon: currentSortType == "older" ? Icons.check_rounded : null,
-                    ),
-                    MyPopupMenuItem<String?>(
-                      value: "waitePending",
-                      label: "در انتظار تایید",
-                      withSpace: true,
-                      icon: currentSortType == "waitePending" ? Icons.check_rounded : null,
-                    ),
-                    MyPopupMenuItem<String?>(
-                      value: "waiteAccept",
-                      label: "در انتظار پذیرش",
-                      withSpace: true,
-                      icon: currentSortType == "waiteAccept" ? Icons.check_rounded : null,
-                    ),
-                    MyPopupMenuItem<String?>(
-                      value: "accepted",
-                      label: "پذیرش شده",
-                      withSpace: true,
-                      icon: currentSortType == "accepted" ? Icons.check_rounded : null,
-                    ),
-                    MyPopupMenuItem<String?>(
-                      value: "notAccept",
-                      label: "عدم پذیرش",
-                      withSpace: true,
-                      icon: currentSortType == "notAccept" ? Icons.check_rounded : null,
-                    ),
-                    MyPopupMenuItem<String?>(
-                      value: "fail",
-                      label: "رد شده",
-                      withSpace: true,
-                      icon: currentSortType == "fail" ? Icons.check_rounded : null,
-                    ),
-                  ],
+                  child: MyCircleBadge(
+                    child: Icon(CupertinoIcons.sort_down, color: App.theme.iconTheme.color),
+                    isVisible: currentSortType != null && currentSortType != "new",
+                  ),
+                  itemBuilder: (_) => menuItems
+                      .map<String, PopupMenuItem<String?>>(
+                        (key, value) => MapEntry(
+                          key,
+                          MyPopupMenuItem<String?>(
+                            value: key,
+                            label: value,
+                            withSpace: true,
+                            icon: currentSortType == key ? Icons.check_rounded : null,
+                          ),
+                        ),
+                      )
+                      .values
+                      .toList(),
                   onSelected: (value) {
                     setState(() {
                       currentSortType = value;
@@ -305,7 +289,7 @@ class _RequestListScreen extends State<RequestListScreen> {
   }
 
   void getRequests() {
-    requestsBloc.add(RequestsEvent(sort: currentSortType));
+    requestsBloc.add(RequestsEvent(sort: currentSortType, hasFilter: hasFilter()));
   }
 
   List<Request> requests = [];
@@ -332,13 +316,15 @@ class _RequestListScreen extends State<RequestListScreen> {
 
     requests = state.requests;
 
+    var message = hasFilter() ? "درخواستی پیدا نشد": "درخواستی ندارید جهت ثبت درخواست دکمه زیر را کلیک کنید";
+
     if (requests.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "درخواستی پیدا نشد جهت ثبت درخواست دکمه زیر را کلیک کنید",
+              message,
               style: TextStyle(
                 fontSize: 14,
               ),
@@ -346,15 +332,16 @@ class _RequestListScreen extends State<RequestListScreen> {
             SizedBox(
               height: 10,
             ),
-            RawMaterialButton(
+            if (!hasFilter()) RawMaterialButton(
               onPressed: requestFile,
               child: Text(
-                "ایجاد درخواست",
+                "ثبت درخواست",
                 style: TextStyle(
                   color: Colors.white,
                 ),
               ),
               elevation: 0.2,
+              padding: EdgeInsets.only(left: 5, right: 5),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
               fillColor: App.theme.primaryColor,
             ),
@@ -495,4 +482,6 @@ class _RequestListScreen extends State<RequestListScreen> {
       Navigator.pop(deleteDialogContext!);
     }
   }
+
+  bool hasFilter() => (currentSortType != null && currentSortType != "newst" && currentSortType != "older");
 }

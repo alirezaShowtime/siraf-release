@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siraf3/main.dart';
+import 'package:siraf3/themes.dart';
 
 class MyBadge extends StatefulWidget {
   @override
@@ -31,6 +32,30 @@ class _MyBadge extends State<MyBadge> {
           fontSize: 11,
         ),
       ),
+    );
+  }
+}
+
+class MyCircleBadge extends StatelessWidget {
+  AlignmentDirectional alignment;
+  Color color;
+  Widget child;
+  bool isVisible;
+
+  MyCircleBadge({
+    required this.child,
+    this.alignment = AlignmentDirectional.topStart,
+    this.color = Themes.primary,
+    this.isVisible = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Badge(
+      child: child,
+      backgroundColor: color,
+      alignment: alignment,
+      isLabelVisible: isVisible,
     );
   }
 }
