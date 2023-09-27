@@ -72,7 +72,6 @@ dependencies:
   audioplayers: ^4.1.0
   open_file: ^3.2.1
   shamsi_date: ^1.0.1
-  flutterfire: ^0.0.1
   firebase: ^9.0.3
   firebase_core: ^2.13.1
   firebase_messaging: ^14.6.2
