@@ -100,7 +100,7 @@ class TextFormField2 extends m.TextFormField {
             if (onTap != null) onTap();
           },
           onEditingComplete: onEditingComplete,
-          onFieldSubmitted: onFieldSubmitted,
+          onFieldSubmitted: onFieldSubmitted, 
           inputFormatters: inputFormatters,
           enabled: enabled,
           cursorWidth: cursorWidth,
