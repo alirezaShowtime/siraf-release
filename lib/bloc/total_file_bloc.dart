@@ -42,7 +42,7 @@ class TotalFileBloc extends Bloc<TotalFileGetEvent, TotalFileState> {
     var newUrl = Uri.parse(url + event.filterData.toQueryString() + "&total=true");
 
     var response =
-        await (event.withToken ? http2.get(newUrl) : http2.getWithToken(newUrl));
+        await (event.withToken ? http2.getWithToken(newUrl) : http2.get(newUrl));
 
     if (isResponseOk(response)) {
       emit(

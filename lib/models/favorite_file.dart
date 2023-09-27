@@ -133,12 +133,12 @@ class FileId {
 
   String getPricePerMeter() {
     if ((getFirstPriceInt() == -1 || getFirstPriceInt() == 0) || getMeter() == 0) {
-      return "توافقی";
+      return "";
     }
     var result = getFirstPriceInt() ~/ getMeter();
 
     if (result == 0) {
-      return "توافقی";
+      return "";
     }
 
     result = (result / 100000).round() * 100000;

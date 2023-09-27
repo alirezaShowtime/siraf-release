@@ -340,6 +340,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
           showSelected: false,
           saveCity: false,
           selectedCities: cities,
+          alert: false,
         ),
       ),
     );

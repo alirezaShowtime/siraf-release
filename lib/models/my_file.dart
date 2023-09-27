@@ -14,6 +14,7 @@ class MyFile {
   Category? category;
   String? city;
   City? cityObj;
+  int? expireDay;
 
   MyFile({this.id, this.progress, this.viewCount, this.name, this.description, this.images, this.favorite, this.publishedAgo, this.propertys, this.category, this.city});
 
@@ -59,6 +60,9 @@ class MyFile {
       cityObj = json['city'] == null ? null : City.fromJson(json['city']);
       city = cityObj?.name ?? city;
     }
+    if (json["expireDay"] is int) {
+      expireDay = json["expireDay"];
+    }
 
     if (progress != 7) {
       viewCount = 0;
@@ -98,12 +102,12 @@ class MyFile {
 
   String getPricePerMeter() {
     if ((getFirstPriceInt() == -1 || getFirstPriceInt() == 0) || getMeter() == 0) {
-      return "توافقی";
+      return "";
     }
     var result = getFirstPriceInt() ~/ getMeter();
 
     if (result == 0) {
-      return "توافقی";
+      return "";
     }
 
     result = (result / 100000).round() * 100000;
@@ -211,6 +215,8 @@ class MyFile {
   }
 
   bool isRental() => category?.fullCategory?.contains("اجاره") ?? false;
+
+  bool isExpired() => expireDay != null && expireDay! <= 3;
 }
 
 class Category {

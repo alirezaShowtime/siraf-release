@@ -1,4 +1,5 @@
 import 'package:siraf3/bloc/delete_file_bloc.dart';
+import 'package:siraf3/bloc/extension_file_bloc.dart';
 import 'package:siraf3/bloc/my_file_bloc.dart';
 import 'package:siraf3/config.dart';
 import 'package:siraf3/extensions/list_extension.dart';
@@ -55,6 +56,7 @@ class _MyFileScreen extends State<MyFileScreen> {
 
   MyFileBloc fileBloc = MyFileBloc();
   DeleteFileBloc deleteFileBloc = DeleteFileBloc();
+  ExtensionFileBloc expBloc = ExtensionFileBloc();
 
   Map<int, String> progressFa = {
     1: "در انتظار تایید",
@@ -120,7 +122,23 @@ class _MyFileScreen extends State<MyFileScreen> {
         Navigator.pop(context, "refresh");
       }
     });
+
+    expBloc.stream.listen((event) {
+      if (event is ExtensionFileLoadingState) {
+        loadingDialog(context: context);
+      } else if (event is ExtensionFileErrorState) {
+        dismissDialog(loadingDialogContext);
+        notify(event.message);
+      } else if (event is ExtensionFileSuccessState) {
+        notify("تمدید فایل با موفقیت انجام شد");
+        setState(() {
+          file.expireDay = (file.expireDay??0) + 30;
+        });
+      }
+    });
   }
+
+  late MyFileDetail file;
 
   @override
   void dispose() {
@@ -158,6 +176,8 @@ class _MyFileScreen extends State<MyFileScreen> {
             );
 
           state as MyFileLoadedState;
+
+          file = state.file;
 
           return NestedScrollView(
             controller: _scrollController,
@@ -414,6 +434,46 @@ class _MyFileScreen extends State<MyFileScreen> {
                               long: state.file.long!.toDouble(),
                               width: double.infinity,
                               borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 10),
+                            child: Text(
+                              file.isExpired() ? "${file.expireDay} روز تا انقضا فایل باقیمانده جهت تمدید دکمه زیر را کلیک کنید" : "${file.expireDay} روز تا انقضا فایل",
+                              style: TextStyle(
+                                fontSize: file.isExpired() ? 10 : 11,
+                                fontFamily: "IranSansBold",
+                                color: file.isExpired() ? Colors.red : null,
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (file.isExpired())
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Material(
+                              color: App.theme.primaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: InkWell(
+                                onTap: () => _tamdid(state.file.expireDay!),
+                                borderRadius: BorderRadius.circular(15),
+                                child: Container(
+                                  height: 50,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "تمدید فایل",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontFamily: "IranSansBold",
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         if (state.file.rejectionDesc.isFill() && state.file.progress == 2)
@@ -887,5 +947,22 @@ class _MyFileScreen extends State<MyFileScreen> {
         ],
       ),
     );
+  }
+
+  _tamdid(int expDay) {
+    animationDialog(
+        context: context,
+        builder: (dialogContext) {
+          return ConfirmDialog(
+            dialogContext: dialogContext,
+            title: "تمدید فایل",
+            content: "فایل شما ${expDay} روز دیگر منقضی می شود آیا میخواهید آن را تمدید کنید؟",
+            applyText: "بله",
+            cancelText: "خیر",
+            onApply: () {
+              expBloc.add(ExtensionFileEvent(id: widget.id));
+            },
+          );
+        });
   }
 }

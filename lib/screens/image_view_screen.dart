@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:siraf3/extensions/string_extension.dart';
+import 'package:siraf3/helpers.dart';
 import 'package:siraf3/widgets/app_bar_title.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 
@@ -19,7 +20,7 @@ class ImageViewScreen extends StatefulWidget {
     this.title,
     this.imageUrls,
     this.imageFiles,
-    this.index = 1,
+    this.index = 0,
   });
 
   @override
@@ -29,15 +30,19 @@ class ImageViewScreen extends StatefulWidget {
 class _ImageViewScreen extends State<ImageViewScreen> {
   int currentImageIndex = 0;
 
+
   @override
   void initState() {
     super.initState();
 
-    currentImageIndex = widget.index;
+    setState(() {
+      currentImageIndex = widget.index;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    PageController _pageController = PageController(initialPage: widget.index);
     return AnnotatedRegion(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -72,6 +77,7 @@ class _ImageViewScreen extends State<ImageViewScreen> {
                   ),
                 ),
               ),
+              pageController: _pageController,
             ),
             Container(
               height: 80,

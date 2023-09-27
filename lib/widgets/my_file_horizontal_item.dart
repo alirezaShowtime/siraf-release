@@ -41,8 +41,6 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
-      margin: EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
         color: App.theme.dialogBackgroundColor,
         borderRadius: BorderRadius.circular(13),
@@ -56,137 +54,160 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
         ],
       ),
       foregroundDecoration: BoxDecoration(
-        color: widget.isSelected ? App.theme.primaryColor.withOpacity(0.3) : Colors.transparent,
+        color: widget.isSelected ? Themes.blue.withOpacity(0.2) : Colors.transparent,
         borderRadius: BorderRadius.circular(13),
       ),
-      constraints: BoxConstraints(maxHeight: 140),
+      padding: EdgeInsets.all(10),
+      margin: EdgeInsets.symmetric(horizontal: 4, vertical: 3),
       width: double.infinity,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          MyImage(
-            borderRadius: BorderRadius.circular(10),
-            image: NetworkImage(widget.file.images?.first.path ?? ""),
-            width: 100,
-            height: 100,
-            fit: BoxFit.cover,
-            loadingWidget: loadingImage(),
-            errorWidget: loadingImage(),
-          ),
-          SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        widget.file.name!,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: App.theme.textTheme.bodyLarge?.color,
-                          fontSize: 14,
-                          fontFamily: 'IranSansBold',
-                        ),
-                      ),
-                      Row(
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              MyImage(
+                borderRadius: BorderRadius.circular(10),
+                image: NetworkImage(widget.file.images?.first.path ?? ""),
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+                loadingWidget: loadingImage(),
+                errorWidget: loadingImage(),
+              ),
+              SizedBox(width: 10),
+              SizedBox(
+                height: 120,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Text(
-                            widget.file.category?.getMainCategoryName() ?? "",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: App.theme.textTheme.bodyLarge?.color,
-                              fontSize: 11,
-                              fontFamily: 'IranSansMedium',
+                          SizedBox(
+                            width: 210,
+                            child: Text(
+                              widget.file.name!,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: App.theme.textTheme.bodyLarge?.color,
+                                fontSize: 14,
+                                fontFamily: 'IranSansBold',
+                              ),
                             ),
                           ),
-                          SizedBox(width: 5),
-                          Text(
-                            (widget.file.publishedAgo ?? "") + ' | ' + (widget.file.city ?? ""),
-                            style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontSize: 9,
-                              fontWeight: FontWeight.w400,
-                              fontFamily: 'IranSans',
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                widget.file.category?.getMainCategoryName() ?? "",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: App.theme.textTheme.bodyLarge?.color,
+                                  fontSize: 11,
+                                  fontFamily: 'IranSansMedium',
+                                ),
+                              ),
+                              SizedBox(width: 5),
+                              Text(
+                                (widget.file.publishedAgo ?? "") + ' | ' + (widget.file.city ?? ""),
+                                style: TextStyle(
+                                  color: Colors.grey.shade600,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: 'IranSans',
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.file.getFirstPrice(),
+                              style: TextStyle(
+                                color: App.theme.textTheme.bodyLarge?.color,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'IranSans',
+                              ),
+                            ),
+                            SizedBox(height: 3),
+                            if (widget.file.getSecondPrice().isFill())
+                              Text(
+                                widget.file.getSecondPrice(),
+                                style: TextStyle(
+                                  color: Colors.grey.shade600,
+                                  fontSize: 10.5,
+                                  fontFamily: 'IranSansMedium',
+                                ),
+                              ),
+                          ],
+                        ),
+                        Text(
+                          progress_fa[widget.file.progress] ?? "نامشخص",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: progress_color[widget.file.progress],
+                            fontSize: 11,
+                            fontFamily: 'IranSansMedium',
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 3),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          widget.file.getFirstPrice(),
+                          widget.file.publishedAgo ?? "",
                           style: TextStyle(
-                            color: App.theme.textTheme.bodyLarge?.color,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w400,
                             fontFamily: 'IranSans',
                           ),
                         ),
-                        SizedBox(height: 3),
-                        if (widget.file.getSecondPrice().isFill())
-                          Text(
-                            widget.file.getSecondPrice(),
-                            style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontSize: 10.5,
-                              fontFamily: 'IranSansMedium',
-                            ),
+                        Text(
+                          "کد فایل : ${widget.file.id}",
+                          style: TextStyle(
+                            color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'IranSans',
                           ),
+                        ),
                       ],
                     ),
-                    Text(
-                      progress_fa[widget.file.progress] ?? "نامشخص",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: progress_color[widget.file.progress],
-                        fontSize: 11,
-                        fontFamily: 'IranSansMedium',
-                      ),
-                    ),
                   ],
                 ),
-                SizedBox(height: 3),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      widget.file.publishedAgo ?? "",
-                      style: TextStyle(
-                        color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: 'IranSans',
-                      ),
-                    ),
-                    Text(
-                      "کد فایل : ${widget.file.id}",
-                      style: TextStyle(
-                        color: App.theme.textTheme.bodyLarge?.color ?? Themes.text,
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: 'IranSans',
-                      ),
-                    ),
-                  ],
+              ),
+            ],
+          ),
+          if (widget.file.isExpired())
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: Text(
+                "فایل در حال انقضا است جهت تمدید روی فایل کلیک کنید",
+                style: TextStyle(
+                  fontSize: 11,
+                  fontFamily: "IranSansBold",
+                  color: Colors.red,
                 ),
-              ],
+              ),
             ),
-          )
         ],
       ),
     );

@@ -267,6 +267,8 @@ class _FilterScreenState extends State<FilterScreen> {
                             _hasImage = false;
                             _hasVideo = false;
                             _hasTour = false;
+
+                            propFilters = {};
                           });
 
                           _onTapSubmit();
@@ -481,6 +483,8 @@ class _FilterScreenState extends State<FilterScreen> {
             onTap: () {
               setState(() {
                 setMainCat(category);
+
+                propFilters = {};
               });
 
               onChangeFilter();
@@ -520,6 +524,8 @@ class _FilterScreenState extends State<FilterScreen> {
               _subCategory = e;
 
               filters = Filters();
+
+              propFilters = {};
             });
             onChangeFilter();
 

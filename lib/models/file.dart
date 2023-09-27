@@ -77,6 +77,9 @@ class File {
     if (json["category"] is Map) {
       fullCategory = json["category"] == null ? null : FullCategory.fromJson(json["category"]);
     }
+    if (json["fullCategory"] is Map) {
+      fullCategory = json["fullCategory"] == null ? null : FullCategory.fromJson(json["fullCategory"]);
+    }
     if (json["city"] is Map) {
       city = json["city"] != null ? City.fromJson(json["city"]) : null;
     }

@@ -135,12 +135,12 @@ class FileDetail {
 
   String getPricePerMeter() {
     if (getFirstPriceInt() == 0 || getMeter() == 0) {
-      return "نامشخص";
+      return "توافقی";
     }
     var result = getFirstPriceInt() ~/ getMeter();
 
     if (result == 0) {
-      return "نامشخص";
+      return "توافقی";
     }
 
     var rounded_result = (result / 100000).round() * 100000;

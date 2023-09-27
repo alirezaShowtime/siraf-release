@@ -21,7 +21,7 @@ extension EventListener on _EstateProfileScreen {
       FilterScreen(
         originalFilterData: FilterData(cityIds: cities.map<int>((e) => e.id!).toList()),
         filterData: filterData,
-        total_url: getFileUrl('file/files/').toString(),
+        total_url: getFileUrl('file/filesEstate/').toString(),
       ),
     );
 

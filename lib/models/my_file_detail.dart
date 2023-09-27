@@ -34,6 +34,7 @@ class MyFileDetail {
   CityFull? cityFull;
   List<Estate>? estates;
   String? comment;
+  int? expireDay;
 
   MyFileDetail({
     this.id,
@@ -139,6 +140,9 @@ class MyFileDetail {
     }
     if (json["comment"] is String) {
       comment = json["comment"];
+    }
+    if (json["expireDay"] is int) {
+      expireDay = json["expireDay"];
     }
   }
 
@@ -305,6 +309,8 @@ class MyFileDetail {
   String getRentStr() {
     return getRent()?.value != null ? number_format(getRent()?.value) : "توافقی";
   }
+
+  bool isExpired() => expireDay != null && expireDay! <= 3;
 }
 
 class Propertys {

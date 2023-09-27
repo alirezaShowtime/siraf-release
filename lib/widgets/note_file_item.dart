@@ -112,14 +112,17 @@ class _NoteFileItemState extends State<NoteFileItem> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Text(
-                            widget.note.fileId!.name!,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: App.theme.textTheme.bodyLarge?.color,
-                              fontSize: 14,
-                              fontFamily: 'IranSansBold',
+                          SizedBox(
+                            width: 220,
+                            child: Text(
+                              widget.note.fileId!.name! + widget.note.fileId!.name!,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: App.theme.textTheme.bodyLarge?.color,
+                                fontSize: 14,
+                                fontFamily: 'IranSansBold',
+                              ),
                             ),
                           ),
                           Row(

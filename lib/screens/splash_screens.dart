@@ -179,8 +179,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                                   "پلتفرم دسترسی به املاک شهر",
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 14,
-                                    fontFamily: 'KalamehBlack',
+                                    fontSize: 11.3,
+                                    fontFamily: 'IranSansBold',
                                   ),
                                 ),
                               ],
