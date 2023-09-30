@@ -7,6 +7,7 @@ import 'package:siraf3/models/file_consultant.dart';
 import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/models/user.dart';
 import 'package:http/http.dart';
+import 'package:siraf3/models/estate.dart';
 
 class MyFileEvent {}
 
@@ -68,10 +69,16 @@ class MyFileBloc extends Bloc<MyFileEvent, MyFileState> {
           }
         }
 
+        var estates_response = await http2.get(getEstateUrl("estate/fileEstate/?fileId=${event.id}"));
+
         if (isResponseOk(response)) {
           var json = jDecode(response.body);
 
           var fileDetail = MyFileDetail.fromJson(json['data']);
+
+          if (isResponseOk(estates_response)) {
+            fileDetail.estates = Estate.fromList(jDecode(estates_response.body)['data']['estateInfo']);
+          }
 
           emit(
             MyFileLoadedState(
@@ -81,29 +88,7 @@ class MyFileBloc extends Bloc<MyFileEvent, MyFileState> {
             ),
           );
         } else {
-          var json = jDecode(response.body);
-
-          if (json['code'] == 205) {
-            User.remove();
-
-            response = await http2.get(url);
-
-            if (isResponseOk(response)) {
-              var json = jDecode(response.body);
-
-              emit(
-                MyFileLoadedState(
-                  file: MyFileDetail.fromJson(json['data']),
-                  favorite: json['data']['favorite'],
-                  consultants: consultants,
-                ),
-              );
-            } else {
-              emit(MyFileErrorState(response));
-            }
-          } else {
-            emit(MyFileErrorState(response));
-          }
+          emit(MyFileErrorState(response));
         }
       } on HttpException catch (e) {
         emit(MyFileErrorState());

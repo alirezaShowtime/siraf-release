@@ -65,10 +65,6 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
                 _controller.move(myLocationMarker!.point, getZoomLevel(3000));
               });
             });
-          } else if (event.search && event.estates.isNotEmpty) {
-            Future.delayed(Duration(milliseconds: 500), () {
-              _controller.move(toLatLng(event.estates.first.lat!, event.estates.first.long!), _controller.zoom);
-            });
           } else {
             move(event);
           }
@@ -396,7 +392,7 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
               child: FlutterMap(
                 mapController: _controller,
                 options: MapOptions(
-                  center: defaultLocation,
+                  center: mapCenter ?? defaultLocation,
                   interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                   zoom: 14.0,
                   onTap: (_, _1) {
@@ -978,12 +974,17 @@ class _EstateScreenState extends State<EstateScreen> with TickerProviderStateMix
         .toList();
   }
 
+  LatLng? mapCenter;
+
   void move(EstateLoadedState state) {
+    mapCenter = toLatLng(widget.city.lat, widget.city.long!);
     if (state.search && estates.isNotEmpty) {
-      animatedMapMove(_controller, toLatLng(estates[0].lat!, estates[0].long!), _controller.zoom, this);
+      mapCenter = toLatLng(estates[0].lat!, estates[0].long!);
+      animatedMapMove(_controller, mapCenter!, _controller.zoom, this);
+      return;
     }
 
-    animatedMapMove(_controller, toLatLng(widget.city.lat, widget.city.long!), 11, this);
+    mapMove(_controller, mapCenter!, 11);
   }
 
   LatLng toLatLng(lat, long) {

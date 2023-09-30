@@ -107,7 +107,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
               ),
               SizedBox(height: 10),
               Text(
-                "محدوده ${widget.request.isRent() ? 'ودیعه' : 'قیمت'} : " + (createLabel(widget.request.minPrice!, widget.request.maxPrice!, "تومان") ?? ""),
+                "محدوده ${widget.request.isRent() ? 'ودیعه' : 'قیمت'} : " + (createLabel(widget.request.minPrice, widget.request.maxPrice, "تومان") ?? ""),
                 style: TextStyle(
                   fontSize: 12,
                   fontFamily: "IranSansBold",
@@ -115,14 +115,14 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
               ),
               if (widget.request.isRent())
                 Text(
-                  "محدوده اجاره : " + (createLabel(widget.request.minRent!, widget.request.maxRent!, "تومان") ?? ""),
+                  "محدوده اجاره : " + (createLabel(widget.request.minRent, widget.request.maxRent, "تومان") ?? ""),
                   style: TextStyle(
                     fontSize: 12,
                     fontFamily: "IranSansBold",
                   ),
                 ),
               Text(
-                "محدوده متراژ: " + (createLabel(widget.request.minMeter!, widget.request.maxMeter!, "متر") ?? ""),
+                "محدوده متراژ: " + (createLabel(widget.request.minMeter, widget.request.maxMeter, "متر") ?? ""),
                 style: TextStyle(
                   fontSize: 12,
                   fontFamily: "IranSansBold",

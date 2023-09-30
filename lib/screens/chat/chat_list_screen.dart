@@ -376,6 +376,7 @@ class _ChatListScreen extends State<ChatListScreen> {
     }
 
     if (showSearchBoxWidget) {
+      chatListBloc.add(ChatListRequestEvent());
       chatSearchBloc.add(ChatSearchCancelEvent());
       setState(() => showSearchBoxWidget = false);
       searchController.clear();

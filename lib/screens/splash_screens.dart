@@ -176,7 +176,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "پلتفرم دسترسی به املاک شهر",
+                                  "پلتفرم دسترسی به املاک",
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 11.3,

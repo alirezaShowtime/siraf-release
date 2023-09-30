@@ -78,6 +78,7 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
               SizedBox(width: 10),
               SizedBox(
                 height: 120,
+                width: MediaQuery.of(context).size.width - 100 - 45,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

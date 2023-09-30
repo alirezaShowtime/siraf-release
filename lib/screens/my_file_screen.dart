@@ -436,6 +436,7 @@ class _MyFileScreen extends State<MyFileScreen> {
                               borderRadius: BorderRadius.circular(15),
                             ),
                           ),
+                        if (file.expireDay != null)
                         Align(
                           alignment: Alignment.center,
                           child: Padding(
