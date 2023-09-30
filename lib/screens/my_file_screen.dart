@@ -720,13 +720,9 @@ class _MyFileScreen extends State<MyFileScreen> {
               imageFit: BoxFit.cover,
               indicatorSelectedColor: App.theme.primaryColor,
               indicatorColor: Colors.white,
-              onPageChanged: (i) {
+              onPageChanged: (i, slide) {
                 setState(() {
-                  if (file.media!.image!.asMap().containsKey(i) && file.media!.image![i].name.isFill()) {
-                    imageName = file.media!.image![i].name!.trim();
-                  } else {
-                    imageName = "";
-                  }
+                  imageName = slide.name ?? "";
                 });
               },
               onImageTap: (s.Slider slider) {

@@ -81,8 +81,17 @@ class _AppBarChat extends State<AppBarChat> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(
+    return BlocConsumer(
       bloc: BlocProvider.of<ChatMessageBoxSearchStatusBloc>(context),
+      listener: (context, bool isOpen) {
+        if (isOpen) return;
+
+        BlocProvider.of<ChatMessageBoxSearchStatusBloc>(context).add(false);
+        BlocProvider.of<ChatMessageSearchBloc>(context).add(ChatMessageSearchCancelEvent());
+        showClearButton = false;
+        searchController.clear();
+        setState(() {});
+      },
       builder: (_, bool isOpen) {
         return MyAppBar(
           automaticallyImplyLeading: false,

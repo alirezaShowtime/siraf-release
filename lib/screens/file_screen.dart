@@ -72,7 +72,6 @@ class _FileScreen extends State<FileScreen> {
 
     _scrollController = ScrollController()..addListener(() => toolbarSetState?.call(() {}));
 
-    fileBloc.add(FileFetchEvent(id: widget.id));
     fileBloc.stream.listen((state) async {
       if (state is! FileLoadedState) return;
       setSliders(state.file);
@@ -471,13 +470,9 @@ class _FileScreen extends State<FileScreen> {
               indicatorSelectedColor: Themes.blue,
               indicatorColor: Colors.white,
               directPlay: true,
-              onPageChanged: (i) {
+              onPageChanged: (i, slide) {
                 setState(() {
-                  if (file.media!.images!.asMap().containsKey(i) && file.media!.images![i].name.isFill()) {
-                    imageName = file.media!.images![i].name!.trim();
-                  } else {
-                    imageName = "";
-                  }
+                  imageName = slide.name ?? "";
                 });
               },
               onImageTap: (s.Slider slider) {

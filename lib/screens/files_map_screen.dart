@@ -202,6 +202,8 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
               ),
               IconButton(
                 onPressed: () async {
+                  filterData.lat = myLocationData?.latitude;
+                  filterData.long = myLocationData?.longitude;
                   var result = await Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -608,6 +610,8 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
     return true;
   }
 
+  LocationData? myLocationData;
+
   Future<void> _onMyLocationClicked() async {
     if (!await getLocationPermissions()) {
       notify("دسترسی موقعیت مکانی رد شده است لطفا به برنامه دسترسی بدهید");
@@ -616,14 +620,14 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
 
     notify("درحال دریافت موقعیت مکانی ...");
 
-    LocationData locationData = await _location.getLocation();
+    myLocationData = await _location.getLocation();
 
-    if (locationData.latitude == null || locationData.longitude == null || locationData.latitude == 0 || locationData.longitude == 0) {
+    if (myLocationData?.latitude == null || myLocationData?.longitude == null || myLocationData?.latitude == 0 || myLocationData?.longitude == 0) {
       notify("موقعیت مکانی دریافت نشد");
       return;
     }
 
-    var position = LatLng(locationData.latitude!, locationData.longitude!);
+    var position = LatLng(myLocationData!.latitude!, myLocationData!.longitude!);
 
     setState(() {
       myLocationMarker = Marker(

@@ -258,11 +258,11 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                     listener: (context, state) {
                       if (state is! MessagesSuccess) return;
                       messages = state.messages;
-          
+
                       try {
                         lastMessage = messages.last;
                       } catch (e) {}
-          
+
                       for (ChatMessage message in messages) {
                         messageWidgets.add(
                           createDate: message.createDate!,
@@ -279,15 +279,15 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                     },
                     builder: (context, state) {
                       if (state is MessagesInitial) return Container();
-          
+
                       if (state is MessagesLoading) return Align(alignment: Alignment.center, child: Container(alignment: Alignment.center, child: Loading()));
-          
+
                       if (state is MessagesError) {
                         return Center(child: TryAgain(onPressed: _request, message: state.message));
                       }
-          
+
                       bool isEmptyMessageWidgets = messageWidgets.widgetLength() == 0;
-          
+
                       return Column(
                         children: [
                           headerChatWidget(),
@@ -307,9 +307,9 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                                 if (!isEmptyMessageWidgets)
                                   StatefulBuilder(builder: (context, setState) {
                                     listViewSetState = setState;
-          
+
                                     var list = generateList();
-          
+
                                     return NotificationListener(
                                       onNotification: onNotificationListView,
                                       child: ScrollablePositionedList.builder(

@@ -16,6 +16,8 @@ class FilterData {
   int? estateId;
   int? consultantId;
   Map<String, String>? propFilters = {};
+  double? lat;
+  double? long;
 
   FilterData({
     this.category,
@@ -28,6 +30,8 @@ class FilterData {
     this.estateId,
     this.consultantId,
     this.propFilters,
+    this.lat,
+    this.long,
   });
 
   String toQueryString({String? delimiter}) {
@@ -35,7 +39,7 @@ class FilterData {
 
     String Function(String) getDelimiter = (String str) {
       if (delimiter.isFill()) return delimiter!;
-      
+
       if (str.isEmpty) {
         return "?";
       }
@@ -147,6 +151,14 @@ class FilterData {
       if (filters!.rent!.asMap().containsKey(1)) {
         str += getDelimiter(str) + "maxRent=${filters!.rent![1]}";
       }
+    }
+
+    if (lat != null) {
+      str += getDelimiter(str) + "lat=$lat";
+    }
+
+    if (long != null) {
+      str += getDelimiter(str) + "long=$long";
     }
 
     propFilters?.forEach((key, value) {

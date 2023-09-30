@@ -29,7 +29,7 @@ class CarouselSliderCustom extends StatefulWidget {
   BoxFit? imageFit;
   bool indicatorsCenterAlign;
   Function(s.Slider)? onImageTap;
-  Function(int)? onPageChanged;
+  Function(int, slider.Slider slide)? onPageChanged;
   void Function(VideoPlayerController p1)? onStartVideo;
   bool directPlay;
   bool float;
@@ -134,7 +134,7 @@ class _CarouselSliderCustomState extends State<CarouselSliderCustom> with Automa
               });
             });
             if (widget.onPageChanged != null) {
-              widget.onPageChanged!(index);
+            widget.onPageChanged!(index, widget.sliders[index]);
             }
           },
         ),
@@ -309,6 +309,7 @@ class _CarouselSliderItemCustomState extends State<CarouselSliderItemCustom> wit
         thumbnail: widget.image,
         videoUrl: widget.slide.link!,
         key: videoKey,
+        name: widget.slide.name,
         onStartVideo: widget.onStartVideo,
         directPlay: widget.directPlay,
       ),

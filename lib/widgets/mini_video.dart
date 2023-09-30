@@ -14,11 +14,12 @@ class MiniVideo extends StatefulWidget {
   String videoUrl;
   bool autoReverse;
   Widget? playIcon;
+  String? name;
   double? width;
   bool directPlay;
   Function(VideoPlayerController)? onStartVideo;
 
-  MiniVideo({required this.thumbnail, required this.videoUrl, this.onStartVideo, this.imageFit, this.autoReverse = true, this.playIcon, this.width, this.directPlay = false, super.key});
+  MiniVideo({required this.thumbnail, required this.videoUrl, this.onStartVideo, this.imageFit, this.name, this.autoReverse = true, this.playIcon, this.width, this.directPlay = false, super.key});
 
   @override
   State<MiniVideo> createState() => MiniVideoState();
@@ -172,7 +173,7 @@ class MiniVideoState extends State<MiniVideo> with AutomaticKeepAliveClientMixin
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => VideoScreen(videoUrl: widget.videoUrl),
+        builder: (_) => VideoScreen(videoUrl: widget.videoUrl, title: widget.name),
       ),
     );
   }
