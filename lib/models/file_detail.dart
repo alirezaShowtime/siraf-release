@@ -195,7 +195,13 @@ class FileDetail {
   }
 
   String getRentStr() {
-    return getRent()?.value != null ? number_format(int.parse(getRent()!.value!)) : "توافقی";
+    return getRent()?.value != null ? rentText(getRent()!.value!) : "توافقی";
+  }
+  
+  String rentText(String? value) {
+    if (value == "0") return "رایگان";
+    
+    return number_format(value);
   }
 
   List<Property> getPrices() => property?.where((element) => element.section == 3).toList() ?? <Property>[];
@@ -470,6 +476,7 @@ class Property {
   String? name;
   String? key;
   String? value;
+  String? valueItem;
   int? section;
   int? weightSection;
 
@@ -479,14 +486,20 @@ class Property {
     if (json["name"] is String) {
       name = json["name"];
     }
-    if (json["key"] is String) {
-      key = json["key"];
-    }
     if (json["value"] is int) {
       value = json["value"].toString();
     }
     if (json["value"] is String) {
       value = json["value"];
+    }
+    if (json["valueItem"] is String) {
+      valueItem = json["valueItem"];
+    }
+    if (json["valueItem"] is int) {
+      valueItem = json["valueItem"].toString();
+    }
+    if (json["key"] is String) {
+      key = json["key"];
     }
     if (json["section"] is int) {
       section = json["section"];
@@ -494,12 +507,15 @@ class Property {
     if (json["weightSection"] is int) {
       weightSection = json["weightSection"];
     }
+
+    if (value == null) value = valueItem;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["name"] = name;
     _data["value"] = value;
+    _data["valueItem"] = valueItem;
     _data["section"] = section;
     _data["weightSection"] = weightSection;
     return _data;

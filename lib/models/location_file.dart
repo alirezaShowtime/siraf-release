@@ -361,7 +361,8 @@ class LocationFile {
 
 class Propertys {
   String? name;
-  String? value;
+  String? value;  
+  String? valueItem;
   bool? list;
   int? weightList;
 
@@ -371,8 +372,17 @@ class Propertys {
     if (json["name"] is String) {
       name = json["name"];
     }
-    if (json["value"] is int || json["value"] is double || json["value"] is String) {
+    if (json["value"] is int) {
       value = json["value"].toString();
+    }
+    if (json["value"] is String) {
+      value = json["value"];
+    }
+    if (json["valueItem"] is String) {
+      valueItem = json["valueItem"];
+    }
+    if (json["valueItem"] is int) {
+      valueItem = json["valueItem"].toString();
     }
     if (json["list"] is bool) {
       list = json["list"];
@@ -380,6 +390,8 @@ class Propertys {
     if (json["weightList"] is int) {
       weightList = json["weightList"];
     }
+    
+    if (value == null) value = valueItem;
   }
 
   Map<String, dynamic> toJson() {
@@ -388,6 +400,7 @@ class Propertys {
     _data["value"] = value;
     _data["list"] = list;
     _data["weightList"] = weightList;
+    _data["valueItem"] = valueItem;
     return _data;
   }
 }

@@ -307,17 +307,24 @@ class MyFileDetail {
   }
 
   String getRentStr() {
-    return getRent()?.value != null ? number_format(getRent()?.value) : "توافقی";
+    return getRent()?.value != null ? rentText(getRent()?.value) : "توافقی";
   }
 
   bool isExpired() => expireDay != null && expireDay! <= 3;
+  
+  String rentText(String? value) {
+    if (value == "0") return "رایگان";
+    
+    return number_format(value);
+  }
 }
 
 class Propertys {
   int? id;
   String? key;
   String? name;
-  String? value;
+  String? value;  
+  String? valueItem;
   int? section;
   int? weightSection;
 
@@ -330,20 +337,23 @@ class Propertys {
       this.weightSection});
 
   Propertys.fromJson(Map<String, dynamic> json) {
-    if (json["id"] is int) {
-      id = json["id"];
-    }
-    if (json["key"] is String) {
-      key = json["key"];
-    }
     if (json["name"] is String) {
       name = json["name"];
+    }
+    if (json["value"] is int) {
+      value = json["value"].toString();
     }
     if (json["value"] is String) {
       value = json["value"];
     }
-    if (json["value"] is int) {
-      value = json["value"].toString();
+    if (json["valueItem"] is String) {
+      valueItem = json["valueItem"];
+    }
+    if (json["valueItem"] is int) {
+      valueItem = json["valueItem"].toString();
+    }
+    if (json["key"] is String) {
+      key = json["key"];
     }
     if (json["section"] is int) {
       section = json["section"];
@@ -351,14 +361,17 @@ class Propertys {
     if (json["weightSection"] is int) {
       weightSection = json["weightSection"];
     }
+
+    if (value == null) value = valueItem;
+
+    print("$name : $value");
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["id"] = id;
-    _data["key"] = key;
     _data["name"] = name;
     _data["value"] = value;
+    _data["valueItem"] = valueItem;
     _data["section"] = section;
     _data["weightSection"] = weightSection;
     return _data;

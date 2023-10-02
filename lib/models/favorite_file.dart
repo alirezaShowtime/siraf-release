@@ -296,6 +296,7 @@ class Category {
 class Propertys {
   String? name;
   String? value;
+  String? valueItem;
   bool? list;
   int? weightList;
 
@@ -305,11 +306,17 @@ class Propertys {
     if (json["name"] is String) {
       name = json["name"];
     }
+    if (json["value"] is int) {
+      value = json["value"].toString();
+    }
     if (json["value"] is String) {
       value = json["value"];
     }
-    if (json["value"] is int) {
-      value = json["value"].toString();
+    if (json["valueItem"] is String) {
+      valueItem = json["valueItem"];
+    }
+    if (json["valueItem"] is int) {
+      valueItem = json["valueItem"].toString();
     }
     if (json["list"] is bool) {
       list = json["list"];
@@ -324,6 +331,7 @@ class Propertys {
     _data["name"] = name;
     _data["value"] = value;
     _data["list"] = list;
+    _data["valueItem"] = valueItem;
     _data["weightList"] = weightList;
     return _data;
   }

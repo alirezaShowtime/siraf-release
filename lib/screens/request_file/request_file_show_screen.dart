@@ -115,7 +115,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
               ),
               if (widget.request.isRent())
                 Text(
-                  "محدوده اجاره : " + (createLabel(widget.request.minRent, widget.request.maxRent, "تومان") ?? ""),
+                  "محدوده اجاره : " + (createLabel(widget.request.minRent, widget.request.maxRent, "تومان", emptyLabel: "توافقی") ?? ""),
                   style: TextStyle(
                     fontSize: 12,
                     fontFamily: "IranSansBold",
@@ -197,9 +197,9 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
     );
   }
 
-  String? createLabel(int? min, int? max, String label) {
-    if (min == null && max == null) {
-      return null;
+  String? createLabel(int? min, int? max, String label, {String emptyLabel = "_"}) {
+    if (min == null && max == null && min == 0 && max == 0) {
+      return emptyLabel;
     }
 
     String text = "";

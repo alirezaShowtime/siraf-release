@@ -258,8 +258,9 @@ class Category {
 
 class Propertys {
   String? name;
-  int? value;
+  String? value;
   bool? list;
+  String? valueItem;
   int? weightList;
 
   Propertys({this.name, this.value, this.list, this.weightList});
@@ -269,7 +270,16 @@ class Propertys {
       name = json["name"];
     }
     if (json["value"] is int) {
+      value = json["value"].toString();
+    }
+    if (json["value"] is String) {
       value = json["value"];
+    }
+    if (json["valueItem"] is String) {
+      valueItem = json["valueItem"];
+    }
+    if (json["valueItem"] is int) {
+      valueItem = json["valueItem"].toString();
     }
     if (json["list"] is bool) {
       list = json["list"];
@@ -277,6 +287,8 @@ class Propertys {
     if (json["weightList"] is int) {
       weightList = json["weightList"];
     }
+    
+    if (value == null) value = valueItem;
   }
 
   Map<String, dynamic> toJson() {
@@ -284,6 +296,7 @@ class Propertys {
     _data["name"] = name;
     _data["value"] = value;
     _data["list"] = list;
+    _data["valueItem"] = valueItem;
     _data["weightList"] = weightList;
     return _data;
   }

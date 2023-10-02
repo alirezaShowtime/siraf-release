@@ -288,28 +288,28 @@ class _EditFileFirstState extends State<EditFileFirst> {
       selectedMainProps = selectedProps.where((element) => element.insert == 1).toList().asMap().map(
             (key, value) => MapEntry(
               value.value ?? "",
-              widget.file.propertys!.firstWhere((element) => element.key! == (value.value ?? "")).value.toString(),
+              widget.file.propertys!.firstWhere((element) => element.key! == (value.value ?? "")).valueItem.toString(),
             ),
           );
 
       selectedMainFeatures = selectedProps.where((element) => element.insert == 2).toList().asMap().map(
             (key, value) => MapEntry(
               value.value ?? "",
-              widget.file.propertys!.firstWhere((element) => element.key! == (value.value ?? "")).value.toString(),
+              widget.file.propertys!.firstWhere((element) => element.key! == (value.value ?? "")).valueItem.toString(),
             ),
           );
 
       selectedOtherProps = selectedProps.where((element) => element.insert == 3).toList().asMap().map(
             (key, value) => MapEntry(
               value.value ?? "",
-              widget.file.propertys!.firstWhere((element) => element.key! == (value.value ?? "")).value.toString(),
+              widget.file.propertys!.firstWhere((element) => element.key! == (value.value ?? "")).valueItem.toString(),
             ),
           );
 
       selectedOtherFeatures = selectedProps.where((element) => element.insert == 4).toList().asMap().map(
             (key, value) => MapEntry(
               value.value ?? "",
-              widget.file.propertys!.firstWhere((element) => element.key! == (value.value ?? "")).value.toString(),
+              widget.file.propertys!.firstWhere((element) => element.key! == (value.value ?? "")).valueItem.toString(),
             ),
           );
 

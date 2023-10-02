@@ -182,9 +182,15 @@ class _MyFilesScreenState extends State<MyFilesScreen> {
                       ),
                       MyPopupMenuItem<String>(
                         value: "rejectReception",
-                        label: "رد شده",
+                        label: "عدم پذیرش",
                         withSpace: true,
                         icon: currentSortType == "rejectReception" ? Icons.check_rounded : null,
+                      ),
+                      MyPopupMenuItem<String>(
+                        value: "reject",
+                        label: "رد شده",
+                        withSpace: true,
+                        icon: currentSortType == "reject" ? Icons.check_rounded : null,
                       ),
                     ];
                   },

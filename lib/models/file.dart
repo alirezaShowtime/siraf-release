@@ -469,6 +469,7 @@ class Property {
   String? key;
   String? name;
   String? value;
+  String? valueItem;
   bool? list;
   int? weightList;
 
@@ -481,8 +482,17 @@ class Property {
     if (json["name"] is String) {
       name = json["name"];
     }
-    if (json["value"] is int || json["value"] is String) {
+    if (json["value"] is int) {
       value = json["value"].toString();
+    }
+    if (json["value"] is String) {
+      value = json["value"];
+    }
+    if (json["valueItem"] is String) {
+      valueItem = json["valueItem"];
+    }
+    if (json["valueItem"] is int) {
+      valueItem = json["valueItem"].toString();
     }
     if (json["list"] is bool) {
       list = json["list"];
@@ -490,13 +500,15 @@ class Property {
     if (json["weightList"] is int) {
       weightList = json["weightList"];
     }
+
+    if (value == null) value = valueItem;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["key"] = key;
     _data["name"] = name;
     _data["value"] = value;
+    _data["valueItem"] = valueItem;
     _data["list"] = list;
     _data["weightList"] = weightList;
     return _data;

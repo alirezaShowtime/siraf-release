@@ -268,10 +268,11 @@ class Propertys {
   String? name;
   String? key;
   String? value;
+  String? valueItem;
   bool? list;
   int? weightList;
 
-  Propertys({this.name, this.key, this.value, this.list, this.weightList});
+  Propertys({this.name, this.key, this.value, this.valueItem, this.list, this.weightList});
 
   Propertys.fromJson(Map<String, dynamic> json) {
     if (json["name"] is String) {
@@ -283,6 +284,12 @@ class Propertys {
     if (json["value"] is String) {
       value = json["value"];
     }
+    if (json["valueItem"] is String) {
+      valueItem = json["valueItem"];
+    }
+    if (json["valueItem"] is int) {
+      valueItem = json["valueItem"].toString();
+    }
     if (json["key"] is String) {
       key = json["key"];
     }
@@ -292,12 +299,15 @@ class Propertys {
     if (json["weightList"] is int) {
       weightList = json["weightList"];
     }
+
+    if (value == null) value = valueItem;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["name"] = name;
     _data["value"] = value;
+    _data["valueItem"] = valueItem;
     _data["list"] = list;
     _data["weightList"] = weightList;
     return _data;

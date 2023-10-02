@@ -329,7 +329,7 @@ class _EstateProfileScreen extends State<EstateProfileScreen> {
             image: NetworkImage(images[index].image ?? ""),
             height: 50,
             width: 70,
-            fit: BoxFit.fill,
+            fit: BoxFit.cover,
             withSaveState: true,
             errorWidget: MyImage.defaultErrorImageWidget(50, 70, "خطا!"),
             loadingWidget: MyImage.defaultErrorImageWidget(50, 70, "درحال بارگزاری.."),
