@@ -380,7 +380,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                   if (category!.name!.contains("روز")) {
                     text = "اجاره روزانه : " + text;
                   } else {
-                    text = "اجاره ماهیانه : " + text;
+                    text = "اجاره : " + text;
                   }
                 } else if (e.value == "age") {
                   text = "سال " + text;
@@ -451,7 +451,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                   if (category!.name!.contains("روز")) {
                     text = "اجاره روزانه : " + text;
                   } else {
-                    text = "اجاره ماهیانه : " + text;
+                    text = "اجاره : " + text;
                   }
                 } else if (e.value == "age") {
                   text = "سال " + text;
@@ -986,7 +986,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                           if (category!.name!.contains("روز")) {
                             text = "اجاره روزانه : " + text;
                           } else {
-                            text = "اجاره ماهیانه : " + text;
+                            text = "اجاره : " + text;
                           }
                         } else if (property.value == "age") {
                           text = "سال " + text;
@@ -1247,7 +1247,7 @@ class _EditFileFirstState extends State<EditFileFirst> {
                           if (category!.name!.contains("روز")) {
                             text = "اجاره روزانه : " + text;
                           } else {
-                            text = "اجاره ماهیانه : " + text;
+                            text = "اجاره : " + text;
                           }
                         } else if (property.value == "age") {
                           text = "سال " + text;

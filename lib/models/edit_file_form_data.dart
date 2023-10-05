@@ -47,6 +47,13 @@ class EditFileFormData {
   });
 
   Future<FormData> getFormData() async {
+    var new_properties = properties.map<String, int?>(
+      (key, value) => MapEntry(
+        key,
+        value.isNotEmpty ? int.parse(value) : null,
+      ),
+    );
+    copy(jsonEncode(new_properties));
     return FormData.fromMap({
       'name': title,
       'long': location.longitude.toString(),
@@ -54,7 +61,7 @@ class EditFileFormData {
       'address': address,
       'city_id': city.id!.toString(),
       'category_id': category.id!.toString(),
-      'fetcher': jsonEncode(properties),
+      'fetcher': jsonEncode(new_properties),
       'description': description,
       if (visitPhone.isFill()) 'visitPhoneNumber': visitPhone,
       'ownerPhoneNumber': ownerPhone,

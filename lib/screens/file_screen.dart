@@ -232,7 +232,7 @@ class _FileScreen extends State<FileScreen> {
                           ),
                         ),
                         Text(
-                          "${state.file.isRental() ? 'اجاره ماهانه' : 'قیمت هر متر'} : ${state.file.isRental() ? state.file.getRentStr() : state.file.getPricePerMeter()}",
+                          "${state.file.isRental() ? 'اجاره' : 'قیمت هر متر'} : ${state.file.isRental() ? state.file.getRentStr() : state.file.getPricePerMeter()}",
                           style: TextStyle(
                             fontSize: 12,
                             fontFamily: "IranSansBold",
