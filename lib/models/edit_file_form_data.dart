@@ -53,7 +53,6 @@ class EditFileFormData {
         value.isNotEmpty ? int.parse(value) : null,
       ),
     );
-    copy(jsonEncode(new_properties));
     return FormData.fromMap({
       'name': title,
       'long': location.longitude.toString(),
