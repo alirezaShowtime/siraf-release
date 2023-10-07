@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:siraf3/bloc/categories_bloc.dart';
 import 'package:siraf3/bloc/files_list_bloc.dart';
@@ -169,37 +168,35 @@ class App extends State<AppStf> {
       child: Consumer<DarkThemeProvider>(builder: (BuildContext context, value, Widget? child) {
         isDark = value.darkTheme;
         theme = value.darkTheme ? darkTheme : lightTheme;
-        return OKToast(
-          child: MaterialApp(
-            title: 'سیراف',
-            localizationsDelegates: const [
-              GlobalCupertinoLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-            ],
-            supportedLocales: const [
-              Locale("fa", "IR"),
-            ],
-            locale: Locale("fa", "IR"),
-            theme: lightTheme,
-            darkTheme: darkTheme,
-            themeMode: value.darkTheme ? ThemeMode.dark : ThemeMode.light,
-            debugShowCheckedModeBanner: false,
-            builder: (context, child) {
-              HttpOverrides.global = MyHttpOverrides();
-              return MediaQuery(
-                child: ScrollConfiguration(
-                  behavior: MyBehavior(),
-                  child: child!,
-                ),
-                data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-              );
-            },
-            routes: {
-              '/': (_) => SplashScreen(),
-              '/home': (_) => HomeScreen(),
-            },
-          ),
+        return MaterialApp(
+          title: 'سیراف',
+          localizationsDelegates: const [
+            GlobalCupertinoLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale("fa", "IR"),
+          ],
+          locale: Locale("fa", "IR"),
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          themeMode: value.darkTheme ? ThemeMode.dark : ThemeMode.light,
+          debugShowCheckedModeBanner: false,
+          builder: (context, child) {
+            HttpOverrides.global = MyHttpOverrides();
+            return MediaQuery(
+              child: ScrollConfiguration(
+                behavior: MyBehavior(),
+                child: child!,
+              ),
+              data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            );
+          },
+          routes: {
+            '/': (_) => SplashScreen(),
+            '/home': (_) => HomeScreen(),
+          },
         );
       }),
     );

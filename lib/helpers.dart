@@ -5,10 +5,10 @@ import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart' as fr;
-import 'package:oktoast/oktoast.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:siraf3/config.dart';
@@ -26,26 +26,15 @@ copy(String text) async {
 
 void notify(String? msg, {TextDirection textDirection = TextDirection.rtl, Duration? duration = null}) {
   if (msg == null) return;
-  showToast(
-    msg,
-    textDirection: textDirection,
-    duration: duration,
-    radius: 10,
-    dismissOtherToast: true,
-    margin: EdgeInsets.only(bottom: 10, left: 10, right: 10),
-    constraints: BoxConstraints(minWidth: double.infinity),
-    backgroundColor: Color(0xff333333),
-    textPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-    position: ToastPosition(align: Alignment.bottomCenter),
-    textAlign: TextAlign.right,
-    textMaxLines: 2,
-    textOverflow: TextOverflow.ellipsis,
-    textStyle: TextStyle(
-      fontFamily: 'IranSansMedium',
-      color: Colors.white,
-      fontSize: 12,
-    ),
-  );
+  var toastLength = (duration?.inSeconds ?? 1) >= 3 ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;
+  Fluttertoast.showToast(
+        msg: msg,
+        toastLength: toastLength,
+        timeInSecForIosWeb: duration?.inSeconds ?? 1,
+        backgroundColor: Color.fromARGB(255, 37, 37, 37),
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
 }
 
 bool checkImageExtension(String path) {

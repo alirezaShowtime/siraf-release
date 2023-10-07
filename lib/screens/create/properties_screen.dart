@@ -543,7 +543,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: App.theme.dialogBackgroundColor,
+          backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -554,9 +554,10 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                   children: <Widget>[
                     SizedBox(
                       height: 200,
-                      child: ListView(
-                        physics: BouncingScrollPhysics(),
-                        children: property.items!.map<Widget>((e) => buildListItem(e, property)).toList(),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: property.items!.map<Widget>((e) => buildListItem(e, property)).toList(),
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -575,7 +576,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: App.theme.primaryColor,
+                              color: Themes.primary,
                               elevation: 1,
                               height: 50,
                               child: Text(
@@ -805,7 +806,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: App.theme.dialogBackgroundColor,
+          backgroundColor: Themes.background,
           content: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -816,9 +817,10 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                   children: <Widget>[
                     SizedBox(
                       height: 200,
-                      child: ListView(
-                        physics: BouncingScrollPhysics(),
-                        children: property.items!.map<Widget>((e) => buildListItem(e, property, isProp: false)).toList(),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: property.items!.map<Widget>((e) => buildListItem(e, property, isProp: false)).toList(),
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -829,7 +831,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                           Expanded(
                             child: MaterialButton(
                               onPressed: () {
-                                dismissFeatureListDialog();
+                                dismissListDialog();
                               },
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
@@ -837,7 +839,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              color: App.theme.primaryColor,
+                              color: Themes.primary,
                               elevation: 1,
                               height: 50,
                               child: Text(
