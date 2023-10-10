@@ -211,7 +211,7 @@ class _RequestListScreen extends State<RequestListScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              request.categoryId!.getMainCategoryName()! + " | ${request.title}",
+              request.categoryId!.fullCategory! + " | ${request.title}",
               style: TextStyle(
                 fontSize: 13,
                 fontFamily: "IranSansBold",

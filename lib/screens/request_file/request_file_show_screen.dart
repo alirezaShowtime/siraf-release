@@ -99,7 +99,7 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.request.categoryId!.getMainCategoryName()! + " | ${widget.request.title}",
+                widget.request.categoryId!.fullCategory! + " | ${widget.request.title}",
                 style: TextStyle(
                   fontSize: 14,
                   fontFamily: "IranSansBold",
@@ -198,16 +198,12 @@ class _RequestFileShowScreen extends State<RequestFileShowScreen> {
   }
 
   String? createLabel(int? min, int? max, String label, {String emptyLabel = "_"}) {
-    if (min == null && max == null && min == 0 && max == 0) {
-      return emptyLabel;
-    }
+    if ((min == null && max == null) || (min == 0 && max == null) || (max == 0 && min == null) || (min == 0 && max == 0)) return emptyLabel;
 
     String text = "";
 
-    if (min != 0 && min != null) {
+    if (min != null) {
       text += "از " + number_format(min);
-    } else if (min != null) {
-      text += "از صفر";
     }
 
     if (max != 0 && max != null) {

@@ -302,8 +302,18 @@ class MyFileDetail {
     return number_format(result);
   }
   
+  String toPrice(dynamic value) {
+    if (value.toString() == "0") {
+      return "رایگان";
+    }
+
+    var v = int.parse(value.toString());
+
+    return number_format(v);
+  }
+  
   String getPriceStr() {
-    return getPrice()?.value != null ? number_format(getPrice()!.value) : "توافقی";
+    return getPrice()?.value != null ? toPrice(getPrice()!.value) : "توافقی";
   }
 
   String getRentStr() {

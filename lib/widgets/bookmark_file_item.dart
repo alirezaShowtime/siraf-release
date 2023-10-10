@@ -123,7 +123,7 @@ class _BookmarkFileItemState extends State<BookmarkFileItem> {
                       Row(
                         children: [
                           Text(
-                            widget.file.fileId!.category?.getMainCategoryName() ?? "",
+                            widget.file.fileId!.category?.fullCategory ?? "",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(

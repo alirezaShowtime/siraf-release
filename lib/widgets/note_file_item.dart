@@ -128,7 +128,7 @@ class _NoteFileItemState extends State<NoteFileItem> {
                           Row(
                             children: [
                               Text(
-                                widget.note.fileId!.category?.getMainCategoryName() ?? "",
+                                widget.note.fileId!.category?.fullCategory ?? "",
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(

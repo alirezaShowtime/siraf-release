@@ -94,7 +94,7 @@ class _LocationFileItemState extends State<LocationFileItem> {
                       Row(
                         children: [
                           Text(
-                            widget.locationFile.category?.getMainCategoryName() ?? "",
+                            widget.locationFile.category?.fullCategory ?? "",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(

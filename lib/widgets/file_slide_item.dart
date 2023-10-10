@@ -190,7 +190,7 @@ class _FileSlideItemState extends State<FileSlideItem> with AutomaticKeepAliveCl
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          (widget.file.fullCategory != null ? widget.file.fullCategory!.getMainCategoryName().toString().trim() + " | " : "") + widget.file.name!.trim(),
+                          (widget.file.fullCategory != null ? widget.file.fullCategory!.fullCategory.toString().trim() + " | " : "") + widget.file.name!.trim(),
                           style: TextStyle(
                             color: App.theme.textTheme.bodyLarge?.color,
                             fontFamily: "IranSansMedium",

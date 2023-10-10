@@ -130,7 +130,7 @@ class FileDetail {
   }
 
   String getPriceStr() {
-    return getPrice()?.value != null ? number_format(int.parse(getPrice()!.value!)) : "توافقی";
+    return getPrice()?.value != null ? toPrice(int.parse(getPrice()!.value!)) : "توافقی";
   }
 
   String getPricePerMeter() {
@@ -148,6 +148,16 @@ class FileDetail {
     if (rounded_result != 0) result = rounded_result;
 
     return number_format(result);
+  }
+  
+  String toPrice(dynamic value) {
+    if (value.toString() == "0") {
+      return "رایگان";
+    }
+
+    var v = int.parse(value.toString());
+
+    return number_format(v);
   }
 
   int getMeter() {
@@ -183,7 +193,7 @@ class FileDetail {
   }
 
   String getVadieStr() {
-    return getVadie()?.value != null ? number_format(int.parse(getVadie()!.value!)) : "توافقی";
+    return getVadie()?.value != null ? toPrice(int.parse(getVadie()!.value!)) : "توافقی";
   }
 
   Property? getRent() {

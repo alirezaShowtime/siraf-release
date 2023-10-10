@@ -71,7 +71,7 @@ class _FileHorizontalItemState2 extends State<FileHorizontalItem> {
                       Row(
                         children: [
                           Text(
-                            widget.file.fullCategory?.getMainCategoryName() ?? "",
+                            widget.file.fullCategory?.fullCategory ?? "",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
