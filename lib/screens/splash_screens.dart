@@ -285,10 +285,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   void goNextScreen() async {
     var sharedPreferences = await SharedPreferences.getInstance();
 
-    if (!((await sharedPreferences.getBool("IS_INTRO_SHOW")) ?? false)) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => IntroScreen()));
-      return;
-    }
+    // if (!((await sharedPreferences.getBool("IS_INTRO_SHOW")) ?? false)) {
+    //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => IntroScreen()));
+    //   return;
+    // }
 
     Navigator.pushReplacement(
       context,

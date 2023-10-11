@@ -157,9 +157,6 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
     var payload = jsonDecode(pStr) as Map<String, dynamic>;
     if (!payload.containsKey("type")) return;
 
-    copy("___________PAYLOAD____________");
-    copy(jsonEncode(payload));
-
     switch (payload['type']) {
       case 'ticket':
         var data = jsonDecode(jsonEncode(payload['ticket_id']));

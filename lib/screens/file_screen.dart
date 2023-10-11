@@ -187,13 +187,28 @@ class _FileScreen extends State<FileScreen> {
                                   fontFamily: "IranSansBold",
                                 ),
                               ),
-                              Text(
-                                "${state.file.city!.name} | ${state.file.publishedAgo} ",
-                                style: TextStyle(
-                                  color: App.theme.tooltipTheme.textStyle?.color,
-                                  fontFamily: "IranSansMedium",
-                                  fontSize: _isSliverAppBarCollapsed ? 9 : 10,
-                                ),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 5),
+                                    child: Text(
+                                      state.file.fullCategory?.fullCategory ?? "",
+                                      style: TextStyle(
+                                        color: App.theme.textTheme.bodyLarge?.color,
+                                        fontFamily: "IranSansMedium",
+                                        fontSize: _isSliverAppBarCollapsed ? 10 : 11,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    "${state.file.city!.name} | ${state.file.publishedAgo} ",
+                                    style: TextStyle(
+                                      color: App.theme.tooltipTheme.textStyle?.color,
+                                      fontFamily: "IranSansMedium",
+                                      fontSize: _isSliverAppBarCollapsed ? 9 : 10,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),

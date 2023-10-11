@@ -132,7 +132,7 @@ class _MyFileScreen extends State<MyFileScreen> {
       } else if (event is ExtensionFileSuccessState) {
         notify("تمدید فایل با موفقیت انجام شد");
         setState(() {
-          file.expireDay = (file.expireDay??0) + 30;
+          file.expireDay = (file.expireDay ?? 0) + 30;
         });
       }
     });
@@ -253,6 +253,17 @@ class _MyFileScreen extends State<MyFileScreen> {
                                       ),
                                     ),
                                     SizedBox(width: 5),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 5),
+                                      child: Text(
+                                        state.file.category?.fullCategory ?? "",
+                                        style: TextStyle(
+                                          color: App.theme.textTheme.bodyLarge?.color,
+                                          fontFamily: "IranSansMedium",
+                                          fontSize: _isSliverAppBarCollapsed ? 10 : 11,
+                                        ),
+                                      ),
+                                    ),
                                     Text(
                                       "${state.file.city} | ${state.file.publishedAgo}" + (widget.progress == 7 ? "\nبازدید : ${state.file.viewCount}" : ""),
                                       style: TextStyle(
@@ -437,20 +448,20 @@ class _MyFileScreen extends State<MyFileScreen> {
                             ),
                           ),
                         if (file.expireDay != null)
-                        Align(
-                          alignment: Alignment.center,
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 10),
-                            child: Text(
-                              file.isExpired() ? "${file.expireDay} روز تا انقضا فایل باقیمانده جهت تمدید دکمه زیر را کلیک کنید" : "${file.expireDay} روز تا انقضا فایل",
-                              style: TextStyle(
-                                fontSize: file.isExpired() ? 10 : 11,
-                                fontFamily: "IranSansBold",
-                                color: file.isExpired() ? Colors.red : null,
+                          Align(
+                            alignment: Alignment.center,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Text(
+                                file.isExpired() ? "${file.expireDay} روز تا انقضا فایل باقیمانده جهت تمدید دکمه زیر را کلیک کنید" : "${file.expireDay} روز تا انقضا فایل",
+                                style: TextStyle(
+                                  fontSize: file.isExpired() ? 10 : 11,
+                                  fontFamily: "IranSansBold",
+                                  color: file.isExpired() ? Colors.red : null,
+                                ),
                               ),
                             ),
                           ),
-                        ),
                         if (file.isExpired())
                           Padding(
                             padding: const EdgeInsets.only(top: 8),

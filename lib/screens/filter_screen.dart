@@ -82,7 +82,7 @@ class _FilterScreenState extends State<FilterScreen> {
             systemStatusBarContrastEnforced: false,
           ),
         );
-        categories = event.categories;
+      categories = event.categories;
 
         if (widget.filterData.category != null) {
           setMainCat(widget.filterData.mainCategory);

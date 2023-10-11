@@ -70,14 +70,16 @@ class _FileHorizontalItemState2 extends State<FileHorizontalItem> {
                       ),
                       Row(
                         children: [
-                          Text(
-                            widget.file.fullCategory?.fullCategory ?? "",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: App.theme.textTheme.bodyLarge?.color,
-                              fontSize: 11,
-                              fontFamily: 'IranSansMedium',
+                          Flexible(
+                            child: Text(
+                              widget.file.fullCategory?.fullCategory ?? "",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: App.theme.textTheme.bodyLarge?.color,
+                                fontSize: 11,
+                                fontFamily: 'IranSansMedium',
+                              ),
                             ),
                           ),
                           SizedBox(width: 5),
