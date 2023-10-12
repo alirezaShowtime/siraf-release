@@ -151,7 +151,7 @@ class _ConsultantShareScreen extends State<ConsultantShareScreen> {
     }
     
     if (qrImage != null) {
-      final f = DateFormat("yyyy_MM_dd");
+      final f = DateFormat("yyyy_MM_dd_H_i_s");
       var name = 'siraf_share_qrcode_${f.format(DateTime.now())}.png';
       String downloadPath = (await getDownloadPath())!;
       var path = downloadPath + "/Siraf/Share/$name";

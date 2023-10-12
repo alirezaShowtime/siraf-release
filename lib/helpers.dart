@@ -107,7 +107,7 @@ callToSupport() async {
   if (await canLaunch(url)) {
     await launch(url);
   } else {
-    notify('نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_MOBILE + 'تماس بگیرید');
+    notify('نتوانستیم تلفن را بازکنیم با شماره ' + SUPPORT_MOBILE + 'تماس بگیرید', duration: Duration(seconds: 5));
   }
 }
 
@@ -116,7 +116,7 @@ callTo(String number) async {
   if (await canLaunch(url)) {
     await launch(url);
   } else {
-    notify('نتوانستیم تلفن را بازکنیم با شماره ' + number + 'تماس بگیرید');
+    notify('نتوانستیم تلفن را بازکنیم با شماره ' + number + 'تماس بگیرید', duration: Duration(seconds: 5));
   }
 }
 
@@ -430,4 +430,39 @@ String noneOr(value) {
   if (value == null || value == 0 || value == .0 || value == "0") return "ندارد";
 
   return value.toString();
+}
+
+convertPersianNumberToEn(String value) {
+  var persianNumbers = [
+    '۰',
+    '۱',
+    '۲',
+    '۳',
+    '۴',
+    '۵',
+    '۶',
+    '۷',
+    '۸',
+    '۹', 
+  ];
+
+  var enNumbers = [
+    '0',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+  ];
+
+  persianNumbers.forEach((element) {
+    value = value.replaceAll(element, enNumbers[persianNumbers.indexOf(element)]);
+  });
+
+
+  return value;
 }

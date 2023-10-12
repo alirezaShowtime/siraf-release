@@ -456,6 +456,7 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                         cursorColor: App.theme.primaryColor,
                         maxLines: 1,
                         validator: (value) {
+                          value = convertPersianNumberToEn(value ?? "");
                           if (value == null || value.isEmpty) {
                             return "شماره تماس مالک را وارد کنید";
                           }
@@ -626,6 +627,8 @@ class _CreateFileSecondState extends State<CreateFileSecond> {
                         cursorColor: App.theme.primaryColor,
                         maxLines: 1,
                         validator: (value) {
+                          value = convertPersianNumberToEn(value ?? "");
+                          
                           if (value == null || value.trim().isEmpty) {
                             return null;
                           }

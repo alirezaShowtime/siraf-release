@@ -285,6 +285,10 @@ class MyFileDetail {
       return "توافقی";
     }
 
+    if (getPrice()?.value == "0") {
+      return "رایگان";
+    }
+
     if (mater == -1 || mater == null) {
       return "متراژ نامشخص";
     }

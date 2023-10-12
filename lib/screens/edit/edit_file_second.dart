@@ -541,6 +541,8 @@ class _EditFileSecondState extends State<EditFileSecond> {
                           cursorColor: App.theme.primaryColor,
                           maxLines: 1,
                           validator: (value) {
+                            value = convertPersianNumberToEn(value ?? "");
+
                             if (value == null || value.isEmpty) {
                               return "شماره تماس مالک را وارد کنید";
                             }
@@ -708,6 +710,8 @@ class _EditFileSecondState extends State<EditFileSecond> {
                             });
                           },
                           validator: (value) {
+                            value = convertPersianNumberToEn(value ?? "");
+
                             if (!value.isFill()) {
                               return null;
                             }

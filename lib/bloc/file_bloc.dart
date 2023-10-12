@@ -23,10 +23,10 @@ class FileLoadedState extends FileState {
   late FileDetail file;
   bool favorite = false;
 
-  FileLoadedState(Response res) {
+  FileLoadedState(Response res, bool favorite) {
     var data = jDecode(res.body);
     file = FileDetail.fromJson(data['data']);
-    favorite = data['data']['favorite'] ?? false;
+    this.favorite = favorite;
   }
 }
 
@@ -46,12 +46,23 @@ class FileBloc extends Bloc<FileEvent, FileState> {
   _onEvent(event, emit) async {
     emit(FileLoadingState());
 
-    var url = getFileUrl('file/file/' + event.id.toString());
+    var url = getFileUrl('file/file/${event.id}/');
 
-    var res = (await User.hasToken()) ? await http2.getWithToken(url) : await http2.get(url);
+    var isLoggedIn = (await User.hasToken());
+
+    var res = isLoggedIn ? await http2.getWithToken(url) : await http2.get(url);
+
+    bool favorite = false;
+
+    if (isLoggedIn) {
+      var resp = await http2.getWithToken(getFileUrl("file/checkFavorite/${event.id}/"));
+      
+      if (isResponseOk(resp))
+        favorite = (jDecode(resp.body)['data'] as bool);
+    }
 
     if (isResponseOk(res)) {
-      return emit(FileLoadedState(res));
+      return emit(FileLoadedState(res, favorite));
     }
 
     var json = jDecode(res.body);
@@ -65,7 +76,7 @@ class FileBloc extends Bloc<FileEvent, FileState> {
     res = await http2.get(url);
 
     if (isResponseOk(res)) {
-      return emit(FileLoadedState(res));
+      return emit(FileLoadedState(res, false));
     }
     return emit(FileErrorState(res));
   }
