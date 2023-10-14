@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="app.siraf">
 
    <uses-permission android:name="android.permission.INTERNET" /> 
@@ -8,6 +9,8 @@
    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
    <uses-permission android:name="android.permission.VIBRATE" />
+
+   <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" tools:node="remove"/>
 
    <queries>
    <!-- If your app checks for SMS support -->
@@ -60,15 +63,18 @@
                 <!-- Accepts URIs that begin with https://YOUR_HOST -->
                 <data
                 android:scheme="https"
-                android:host="siraf.app" />
+                android:host="siraf.app"
+                android:pathPrefix="/files" />
             </intent-filter>
-            <!-- Deep Links --> 
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" /> 
-                <category android:name="android.intent.category.BROWSABLE" /> 
-                <!-- Accepts URIs that begin with YOUR_SCHEME://YOUR_HOST --> 
-                <data android:scheme="logrckt" android:host="siraf.app" /> 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with https://YOUR_HOST -->
+                <data
+                android:scheme="https"
+                android:host="siraf.app"
+                android:pathPrefix="/real-estate" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
