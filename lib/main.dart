@@ -162,7 +162,7 @@ class App extends State<AppStf> {
     theme = isDark ? darkTheme : lightTheme;
 
     return ChangeNotifierProvider(
-      create: (_) {
+      create: (_) { 
         return themeChangeProvider;
       },
       child: Consumer<DarkThemeProvider>(builder: (BuildContext context, value, Widget? child) {
