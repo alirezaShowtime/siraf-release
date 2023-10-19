@@ -426,7 +426,7 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
   }
 
   Widget _accordionCityItem(City city) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         setState(() {
           if (selectedCities.any((element) => element.id == city.id)) {
@@ -441,7 +441,8 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
           }
         });
       },
-      child: Padding(
+      child: Container(
+        constraints: BoxConstraints(minWidth: 60),
         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         child: Row(
           children: [

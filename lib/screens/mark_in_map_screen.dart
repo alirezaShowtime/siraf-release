@@ -50,12 +50,22 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> with SingleTickerProv
     }
   }
 
-  Widget _buildMapMarker(_) {
-    return Image(
-      image: AssetImage('assets/images/map_marker.png'),
+  Marker _buildMapMarker(latLng) {
+    return Marker(
+      point: latLng,
+      builder: (_) => Container(
+        height: 60,
+        width: 30,
+        alignment: Alignment.topCenter,
+        child: Image(
+          image: AssetImage('assets/images/map_marker.png'),
+          width: 30,
+          height: 30,
+          fit: BoxFit.fill,
+        ),
+      ),
       width: 30,
-      height: 40,
-      fit: BoxFit.contain,
+      height: 60,
     );
   }
 
@@ -275,7 +285,7 @@ class _MarkInMapScreenState extends State<MarkInMapScreen> with SingleTickerProv
 
   void _setMarker(_, LatLng latLng) {
     setState(() {
-      markers = [Marker(point: latLng, builder: _buildMapMarker)];
+      markers = [_buildMapMarker(latLng)];
     });
   }
 

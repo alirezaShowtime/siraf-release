@@ -152,7 +152,7 @@ class _AppBarChat extends State<AppBarChat> {
                       if (!isBlock)
                         MyPopupMenuItem(
                           value: 2,
-                          label: "مسدود کردن",
+                          label: "بستن گفتگو",
                           icon: Icons.block,
                           enable: !widget.isDisable,
                         ),
@@ -276,8 +276,8 @@ class _AppBarChat extends State<AppBarChat> {
       builder: (dialogContext) {
         return ConfirmDialog(
           dialogContext: dialogContext,
-          title: "مسدود کردن",
-          content: "آیا واقعا قصد مسدود کردن کاربر را دارید؟",
+          title: "بستن گفتگو",
+          content: "آیا واقعا قصد بستن گفتگو را دارید؟",
           onApply: () {
             dismissDialog(dialogContext);
             BlocProvider.of<ChatBlockBloc>(context).add(ChatBlockRequestEvent([widget.chatId!], true));

@@ -45,6 +45,8 @@ class RelatedFilesBloc extends Bloc<RelatedFilesEvent, RelatedFilesState> {
 
       var files = File.fromList(json['data']);
 
+      files.removeWhere((element) => element.id == event.id);
+
       emit(RelatedFilesLoadedState(files: files));
     } else {
       emit(RelatedFilesErrorState(response: response));

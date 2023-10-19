@@ -331,8 +331,8 @@ class _ChatScreen extends State<ChatScreen> with TickerProviderStateMixin, Autom
                             builder: (context, bool state) {
                               if (state) return searchControllerWidget();
                               if (isDeleted) return notifChatWidget("حذف شده");
-                              if (isBlockByMe) return notifChatWidget("رفع مسدودیت", onTap: onClickUnblock);
-                              if (blockByHer && !isBlockByMe) return notifChatWidget("شما مسدود شداید");
+                              if (isBlockByMe) return notifChatWidget("بازکردن گفتگو", onTap: onClickUnblock);
+                              if (blockByHer && !isBlockByMe) return notifChatWidget("این گفتگو از طرف مشاور بسته شده است");
                               if (!isBlockByMe && !isDeleted && !blockByHer)
                                 return ChatMessageEditor(
                                   onClickSendMessage: sendMessage,

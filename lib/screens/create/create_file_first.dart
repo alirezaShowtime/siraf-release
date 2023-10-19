@@ -826,7 +826,7 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                           inputFormatters: [
                             if (property.value != "age") MoneyInputFormatter(mantissaLength: 0),
                             if (property.value == "age") FilteringTextInputFormatter(RegExp("^[0,2,3,4,5,6,7,8,9]"), allow: false),
-                            if (property.value == "age") FilteringTextInputFormatter(RegExp("^1[0,1,2,5,6,7,8,9]"), allow: false, replacementString: '1'),
+                            if (property.value == "age") FilteringTextInputFormatter(RegExp("^1[0,1,5,6,7,8,9]"), allow: false, replacementString: '1'),
                           ],
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,

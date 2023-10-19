@@ -83,6 +83,9 @@ class File {
     if (json["city"] is Map) {
       city = json["city"] != null ? City.fromJson(json["city"]) : null;
     }
+    if (json["cityFull"] is Map) {
+      city = json["cityFull"] != null ? City.fromJson(json["cityFull"]) : null;
+    }
 
     if (propertys != null) {
       propertys = propertys!.where((element) => element.weightList != null).toList();
@@ -499,6 +502,9 @@ class Property {
     }
     if (json["weightList"] is int) {
       weightList = json["weightList"];
+    }
+    if (weightList == null && json["weightSection"] is int) {
+      weightList = json["weightSection"];
     }
 
     if (value == null) value = valueItem;

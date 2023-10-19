@@ -101,6 +101,7 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                             ),
                           ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
                                 widget.file.category?.fullCategory ?? "",

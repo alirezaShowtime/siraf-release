@@ -69,6 +69,7 @@ class _FileHorizontalItemState2 extends State<FileHorizontalItem> {
                         ),
                       ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Flexible(
                             child: Text(
