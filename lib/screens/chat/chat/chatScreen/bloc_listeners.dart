@@ -148,7 +148,7 @@ extension BlocListeners on _ChatScreen {
 
       if (state is ChatDeleteSuccess) {
         dismissDialog(loadingDialogContext);
-        back(context, {
+        Navigator.pop(context, {
           "chatId": widget.chatId,
           "deleted": true,
         });
@@ -164,7 +164,7 @@ extension BlocListeners on _ChatScreen {
 
       if (state is ChatBlockError) {
         dismissDialog(loadingDialogContext);
-        errorDialog(context: context);
+        errorDialog(context: context, message: state.message);
       }
 
       if (state is ChatBlockSuccess) {

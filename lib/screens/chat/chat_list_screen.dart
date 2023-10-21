@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dart_amqp/dart_amqp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +58,9 @@ class _ChatListScreen extends State<ChatListScreen> {
       }
       if (state is ChatDeleteSuccess) {
         dismissDialog(loadingDialogContext);
+        chats.removeWhere((e) => selectedChats.any((element) => element.id == e.id));
         selectedChats = [];
+        isSelectable = false;
         try {
           setState(() {});
         } catch (e) {}
@@ -427,13 +431,16 @@ class _ChatListScreen extends State<ChatListScreen> {
 
     listenRabbit();
 
+    copy(jsonEncode(result), );
+
     if (result is Map) {
       if (!result.containsKey("chatId") || chatItem.id != result["chatId"]) return;
 
       var index = chats.indexOf(chatItem);
 
       if (result.containsKey("deleted") && result["deleted"]) {
-        chats.removeAt(index);
+        chats.removeWhere((element) => element.id == chatItem.id);
+        setState(() {});
         return;
       }
       if (result.containsKey("isBlockByMe")) {

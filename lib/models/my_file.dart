@@ -12,6 +12,7 @@ class MyFile {
   String? publishedAgo;
   List<Propertys>? propertys;
   Category? category;
+  Category? fullCategory;
   String? city;
   City? cityObj;
   int? expireDay;
@@ -67,6 +68,8 @@ class MyFile {
     if (progress != 7) {
       viewCount = 0;
     }
+
+    fullCategory = category;
   }
 
   Map<String, dynamic> toJson() {
@@ -110,7 +113,9 @@ class MyFile {
       return "";
     }
 
-    result = (result / 100000).round() * 100000;
+    var rounded_result = (result / 100000).round() * 100000;
+
+    if (rounded_result != 0) result = rounded_result;
 
     return "قیمت هر متر " + number_format(result);
   }
@@ -131,8 +136,9 @@ class MyFile {
   }
 
   int getMeter() {
-    if (propertys!.where((element) => element.weightList == 1).isNotEmpty) {
-      var prop = propertys!.firstWhere((element) => element.weightList == 1);
+    var list = propertys!.where((element) => meterCondition(element));
+    if (list.isNotEmpty) {
+      var prop = list.first;
 
       if (prop.value == null || prop.name == null) return 0;
 
@@ -143,8 +149,9 @@ class MyFile {
   }
 
   int getFirstPriceInt() {
-    if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
-      var prop = propertys!.firstWhere((element) => element.weightList == 5);
+    var list = propertys!.where((element) => priceCondition(element));
+    if (list.isNotEmpty) {
+      var prop = list.first;
 
       if (prop.value == null || prop.name == null) return -1;
 
@@ -155,8 +162,9 @@ class MyFile {
   }
 
   int getSecondPriceInt() {
-    if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
-      var prop = propertys!.firstWhere((element) => element.weightList == 6);
+    var list = propertys!.where((element) => rentCondition(element));
+    if (list.isNotEmpty) {
+      var prop = list.first;
 
       if (prop.value == null || prop.name == null) return -1;
 
@@ -167,31 +175,38 @@ class MyFile {
   }
 
   String getFirstPrice() {
-    if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
-      var prop = propertys!.firstWhere((element) => element.weightList == 5);
+    var list = propertys!.where((element) => priceCondition(element));
+
+    if (list.isNotEmpty) {
+      var prop = list.first;
 
       if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
 
       return toPrice(prop.value!, prop.name!);
     } else {
-      return adaptivePrice("");
+      var name = "";
+      if (isRent()) name = "ودیعه";
+      if (fullCategory?.name?.contains("روزانه") ?? false) name = "اجاره روزانه";
+      
+      return adaptivePrice("", name: name);
     }
   }
 
   String getSecondPrice() {
-    if (!isRental()) {
-      return getPricePerMeter();
-    }
-    if (fullAdaptive()) return "";
+    if (!isRent()) return getPricePerMeter();
+    
+    var list = propertys!.where((element) => rentCondition(element));
 
-    if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
-      var prop = propertys!.firstWhere((element) => element.weightList == 6);
+    if (list.isNotEmpty) {
+      var prop = list.first;
 
       if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
 
       return toPrice(prop.value!, prop.name!);
     } else {
-      return adaptivePrice("");
+      if (fullCategory?.name?.contains("روزانه") ?? false) return "";
+      
+      return adaptivePrice("", name: "اجاره");
     }
   }
 
@@ -199,7 +214,7 @@ class MyFile {
     if (value.toString() == "0") {
       return "رایگان";
     }
-    return (name != null && !fullAdaptive() ? "$name " : "") + "توافقی";
+    return (name != null ? "$name " : "") + "توافقی";
   }
 
   String toPrice(dynamic value, String name) {
@@ -207,11 +222,25 @@ class MyFile {
       return "$name رایگان";
     }
 
-    return "$name ${number_format(value)}";
-  }
+    var v = int.parse(value.toString());
 
+    return "$name ${number_format(v)}";
+  }
+  
   bool fullAdaptive() {
     return (getFirstPriceInt() == -1 && getSecondPriceInt() == -1);
+  }
+
+  bool isRent() => fullCategory?.fullCategory?.contains("اجاره") ?? false;
+
+  bool priceCondition(Propertys property) {
+    return property.weightList == 5;
+  }
+  bool rentCondition(Propertys property) {
+    return property.weightList == 6;
+  }
+  bool meterCondition(Propertys property) {
+    return property.weightList == 1;
   }
 
   bool isRental() => category?.fullCategory?.contains("اجاره") ?? false;
@@ -270,6 +299,7 @@ class Propertys {
   String? value;
   String? valueItem;
   bool? list;
+  int? section;
   int? weightList;
 
   Propertys({this.name, this.key, this.value, this.valueItem, this.list, this.weightList});
@@ -296,8 +326,14 @@ class Propertys {
     if (json["list"] is bool) {
       list = json["list"];
     }
+    if (json["section"] is int) {
+      section = json["section"];
+    }
     if (json["weightList"] is int) {
       weightList = json["weightList"];
+    }
+    if (weightList == null && json["weightSection"] is int) {
+      weightList = json["weightSection"];
     }
 
     if (value == null) value = valueItem;

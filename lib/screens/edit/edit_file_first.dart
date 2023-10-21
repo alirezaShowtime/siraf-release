@@ -925,7 +925,9 @@ class _EditFileFirstState extends State<EditFileFirst> {
                               fontSize: 13,
                               fontFamily: "IranSans",
                             ),
+                            counterStyle: TextStyle(fontSize: 0.1),
                           ),
+                          maxLength: property.value == "age" ? 4 : null,
                           onChanged: (v) {
                             persianNumberText.add(v.toWord());
                             value.add(v);
@@ -1017,13 +1019,16 @@ class _EditFileFirstState extends State<EditFileFirst> {
                           Expanded(
                             child: MaterialButton(
                               onPressed: () {
-                                setState(() {
-                                  if (_controller.text.trim().isNotEmpty) {
-                                    selectedMainProps[property.value!] = _controller.text.trim().replaceAll(',', '');
-                                  } else {
-                                    selectedMainProps.remove(property.value!);
+                                if (_controller.text.trim().isNotEmpty) {
+                                  if (property.value == "age" && _controller.text.length != 4) {
+                                    return notify("سال ساخت باید چهار رقم باشد");
                                   }
-                                });
+                                  selectedMainProps[property.value!] = _controller.text.trim().replaceAll(',', '');
+                                } else {
+                                  selectedMainProps.remove(property.value!);
+                                }
+
+                                setState(() {});
 
                                 dismissNumberDialog();
                               },

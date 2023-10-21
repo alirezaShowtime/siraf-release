@@ -18,6 +18,7 @@ import 'package:siraf3/models/property_insert.dart';
 import 'package:siraf3/money_input_formatter.dart';
 import 'package:siraf3/screens/create/create_file_second.dart';
 import 'package:siraf3/screens/create/properties_screen.dart';
+import 'package:siraf3/screens/create/second_page_data.dart';
 import 'package:siraf3/screens/mark_in_map_screen.dart';
 import 'package:siraf3/screens/select_category_screen.dart';
 import 'package:siraf3/screens/select_city_screen.dart';
@@ -55,6 +56,8 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
 
   Map<String, String> selectedMainFeatures = {};
   Map<String, String> selectedOtherFeatures = {};
+
+  SecondPageData secondPageData = SecondPageData();
 
   @override
   void dispose() {
@@ -534,7 +537,6 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
   }
 
   next() {
-
     if (category == null) return notify("دسته بندی را انتخاب نمایید");
     if (city == null) return notify("شهر را انتخاب نمایید");
     if (location == null) return notify("موقعیت را روی نقشه انتخاب کنید");
@@ -592,12 +594,21 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
   }
 
   push(formData) async {
-    await Navigator.push(
+    var result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => CreateFileSecond(formData: formData),
+        builder: (_) => CreateFileSecond(
+          formData: formData,
+          secondPageData: secondPageData,
+        ),
       ),
     );
+
+    if (result is SecondPageData) {
+      setState(() {
+        secondPageData = result;
+      });
+    }
 
     if (resetCreateFileForm) {
       _resetData();
@@ -910,13 +921,16 @@ class _CreateFileFirstState extends State<CreateFileFirst> {
                           Expanded(
                             child: MaterialButton(
                               onPressed: () {
-                                setState(() {
-                                  if (_controller.text.trim().isNotEmpty) {
-                                    selectedMainProps[property.value!] = _controller.text.trim().replaceAll(',', '');
-                                  } else {
-                                    selectedMainProps.remove(property.value!);
+                                if (_controller.text.trim().isNotEmpty) {
+                                  if (property.value == "age" && _controller.text.length != 4) {
+                                    return notify("سال ساخت باید چهار رقم باشد");
                                   }
-                                });
+                                  selectedMainProps[property.value!] = _controller.text.trim().replaceAll(',', '');
+                                } else {
+                                  selectedMainProps.remove(property.value!);
+                                }
+
+                                setState(() {});
 
                                 dismissNumberDialog();
                               },

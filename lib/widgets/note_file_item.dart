@@ -112,20 +112,18 @@ class _NoteFileItemState extends State<NoteFileItem> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          SizedBox(
-                            width: 220,
-                            child: Text(
-                              widget.note.fileId!.name! + widget.note.fileId!.name!,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: App.theme.textTheme.bodyLarge?.color,
-                                fontSize: 14,
-                                fontFamily: 'IranSansBold',
-                              ),
+                          Text(
+                            widget.note.fileId!.name!,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: App.theme.textTheme.bodyLarge?.color,
+                              fontSize: 14,
+                              fontFamily: 'IranSansBold',
                             ),
                           ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
                                 widget.note.fileId!.category?.fullCategory ?? "",
@@ -141,7 +139,7 @@ class _NoteFileItemState extends State<NoteFileItem> {
                               Text(
                                 (widget.note.fileId!.publishedAgo ?? "") + ' | ' + (widget.note.fileId!.city?.name ?? ""),
                                 style: TextStyle(
-                                  color: Colors.grey.shade600,
+                                  color: App.theme.tooltipTheme.textStyle?.color,
                                   fontSize: 9,
                                   fontWeight: FontWeight.w400,
                                   fontFamily: 'IranSans',

@@ -11,7 +11,9 @@ class ChatBlockError extends ChatBlockState {
   String? message;
 
   ChatBlockError(Response response) {
-    message = jDecode(response.body)["message"];
+    if (jDecode(response.body) is Map && (jDecode(response.body) as Map<String, dynamic>).containsKey("message")) {
+      message = jDecode(response.body)["message"];
+    }
   }
 }
 

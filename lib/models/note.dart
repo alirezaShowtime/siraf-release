@@ -66,6 +66,7 @@ class FileId {
   String? publishedAgo;
   List<Propertys>? propertys;
   Category? category;
+  Category? fullCategory;
   City? city;
   bool? status;
   bool? consultantSeen;
@@ -126,6 +127,8 @@ class FileId {
       consultantSeen = json["consultantSeen"];
     }
     viewCount = json["viewCount"];
+
+    fullCategory = category;
   }
 
   Map<String, dynamic> toJson() {
@@ -155,26 +158,144 @@ class FileId {
     return _data;
   }
   
-  String getFirstPrice() {
-    if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
-      var prop = propertys!.firstWhere((element) => element.weightList == 5);
-
-      if (prop.value == null || prop.name == null) return "";
-
-      return number_format(prop.value!) + " " + prop.name!;
-    } else {
+  String getPricePerMeter() {
+    if ((getFirstPriceInt() == -1 || getFirstPriceInt() == 0) || getMeter() == 0) {
       return "";
+    }
+    var result = getFirstPriceInt() ~/ getMeter();
+
+    if (result == 0) {
+      return "";
+    }
+
+    var rounded_result = (result / 100000).round() * 100000;
+
+    if (rounded_result != 0) result = rounded_result;
+
+    return "قیمت هر متر " + number_format(result);
+  }
+
+  int getPricePerMeterInt() {
+    if ((getFirstPriceInt() == -1 || getFirstPriceInt() == 0) || getMeter() == 0) {
+      return -1;
+    }
+    var result = getFirstPriceInt() ~/ getMeter();
+
+    if (result == 0) {
+      return -1;
+    }
+
+    result = (result / 100000).round() * 100000;
+
+    return result;
+  }
+
+  int getMeter() {
+    var list = propertys!.where((element) => meterCondition(element));
+    if (list.isNotEmpty) {
+      var prop = list.first;
+
+      if (prop.value == null || prop.name == null) return 0;
+
+      return int.parse(prop.value!);
+    } else {
+      return 0;
+    }
+  }
+
+  int getFirstPriceInt() {
+    var list = propertys!.where((element) => priceCondition(element));
+    if (list.isNotEmpty) {
+      var prop = list.first;
+
+      if (prop.value == null || prop.name == null) return -1;
+
+      return int.parse(prop.value!);
+    } else {
+      return -1;
+    }
+  }
+
+  int getSecondPriceInt() {
+    var list = propertys!.where((element) => rentCondition(element));
+    if (list.isNotEmpty) {
+      var prop = list.first;
+
+      if (prop.value == null || prop.name == null) return -1;
+
+      return int.parse(prop.value!);
+    } else {
+      return -1;
+    }
+  }
+
+  String getFirstPrice() {
+    var list = propertys!.where((element) => priceCondition(element));
+
+    if (list.isNotEmpty) {
+      var prop = list.first;
+
+      if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
+
+      return toPrice(prop.value!, prop.name!);
+    } else {
+      var name = "";
+      if (isRent()) name = "ودیعه";
+      if (fullCategory?.name?.contains("روزانه") ?? false) name = "اجاره روزانه";
+      
+      return adaptivePrice("", name: name);
     }
   }
 
   String getSecondPrice() {
-    if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
-      var prop = propertys!.firstWhere((element) => element.weightList == 6);
+    if (!isRent()) return getPricePerMeter();
+    
+    var list = propertys!.where((element) => rentCondition(element));
 
-      return number_format(prop.value!) + " " + prop.name!;
+    if (list.isNotEmpty) {
+      var prop = list.first;
+
+      if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
+
+      return toPrice(prop.value!, prop.name!);
     } else {
-      return "";
+      if (fullCategory?.name?.contains("روزانه") ?? false) return "";
+      
+      return adaptivePrice("", name: "اجاره");
     }
+  }
+
+  String adaptivePrice(value, {String? name}) {
+    if (value.toString() == "0") {
+      return "رایگان";
+    }
+    return (name != null ? "$name " : "") + "توافقی";
+  }
+
+  String toPrice(dynamic value, String name) {
+    if (value.toString() == "0") {
+      return "$name رایگان";
+    }
+
+    var v = int.parse(value.toString());
+
+    return "$name ${number_format(v)}";
+  }
+  
+  bool fullAdaptive() {
+    return (getFirstPriceInt() == -1 && getSecondPriceInt() == -1);
+  }
+
+  bool isRent() => fullCategory?.fullCategory?.contains("اجاره") ?? false;
+
+  bool priceCondition(Propertys property) {
+    return property.weightList == 5;
+  }
+  bool rentCondition(Propertys property) {
+    return property.weightList == 6;
+  }
+  bool meterCondition(Propertys property) {
+    return property.weightList == 1;
   }
 }
 
@@ -261,6 +382,7 @@ class Propertys {
   String? value;
   bool? list;
   String? valueItem;
+  int? section;
   int? weightList;
 
   Propertys({this.name, this.value, this.list, this.weightList});
@@ -284,8 +406,14 @@ class Propertys {
     if (json["list"] is bool) {
       list = json["list"];
     }
+    if (json["section"] is int) {
+      section = json["section"];
+    }
     if (json["weightList"] is int) {
       weightList = json["weightList"];
+    }
+    if (weightList == null && json["weightSection"] is int) {
+      weightList = json["weightSection"];
     }
     
     if (value == null) value = valueItem;

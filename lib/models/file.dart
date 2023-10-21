@@ -161,8 +161,9 @@ class File {
   }
 
   int getMeter() {
-    if (propertys!.where((element) => element.weightList == 1).isNotEmpty) {
-      var prop = propertys!.firstWhere((element) => element.weightList == 1);
+    var list = propertys!.where((element) => meterCondition(element));
+    if (list.isNotEmpty) {
+      var prop = list.first;
 
       if (prop.value == null || prop.name == null) return 0;
 
@@ -173,8 +174,9 @@ class File {
   }
 
   int getFirstPriceInt() {
-    if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
-      var prop = propertys!.firstWhere((element) => element.weightList == 5);
+    var list = propertys!.where((element) => priceCondition(element));
+    if (list.isNotEmpty) {
+      var prop = list.first;
 
       if (prop.value == null || prop.name == null) return -1;
 
@@ -185,8 +187,9 @@ class File {
   }
 
   int getSecondPriceInt() {
-    if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
-      var prop = propertys!.firstWhere((element) => element.weightList == 6);
+    var list = propertys!.where((element) => rentCondition(element));
+    if (list.isNotEmpty) {
+      var prop = list.first;
 
       if (prop.value == null || prop.name == null) return -1;
 
@@ -197,8 +200,10 @@ class File {
   }
 
   String getFirstPrice() {
-    if (propertys!.where((element) => element.weightList == 5).isNotEmpty) {
-      var prop = propertys!.firstWhere((element) => element.weightList == 5);
+    var list = propertys!.where((element) => priceCondition(element));
+
+    if (list.isNotEmpty) {
+      var prop = list.first;
 
       if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
 
@@ -214,9 +219,11 @@ class File {
 
   String getSecondPrice() {
     if (!isRent()) return getPricePerMeter();
+    
+    var list = propertys!.where((element) => rentCondition(element));
 
-    if (propertys!.where((element) => element.weightList == 6).isNotEmpty) {
-      var prop = propertys!.firstWhere((element) => element.weightList == 6);
+    if (list.isNotEmpty) {
+      var prop = list.first;
 
       if (prop.value == null || prop.name == null) return adaptivePrice(prop.value, name: prop.name);
 
@@ -243,6 +250,22 @@ class File {
     var v = int.parse(value.toString());
 
     return "$name ${number_format(v)}";
+  }
+  
+  bool fullAdaptive() {
+    return (getFirstPriceInt() == -1 && getSecondPriceInt() == -1);
+  }
+
+  bool isRent() => fullCategory?.fullCategory?.contains("اجاره") ?? false;
+
+  bool priceCondition(Property property) {
+    return property.section == 3  && property.weightList == 5;
+  }
+  bool rentCondition(Property property) {
+    return property.section == 3  && property.weightList == 6;
+  }
+  bool meterCondition(Property property) {
+    return property.section == 1 && property.weightList == 1;
   }
 
   Future<List<s.Slider>> getSliders() async {
@@ -287,12 +310,6 @@ class File {
 
     return slide_images; // + videos + virtualTours
   }
-
-  bool fullAdaptive() {
-    return (getFirstPriceInt() == -1 && getSecondPriceInt() == -1);
-  }
-
-  bool isRent() => fullCategory?.fullCategory?.contains("اجاره") ?? false;
 }
 
 class Media {
@@ -474,6 +491,7 @@ class Property {
   String? value;
   String? valueItem;
   bool? list;
+  int? section;
   int? weightList;
 
   Property({this.name, this.value, this.list, this.weightList});
@@ -500,6 +518,9 @@ class Property {
     if (json["list"] is bool) {
       list = json["list"];
     }
+    if (json["section"] is int) {
+      section = json["section"];
+    }
     if (json["weightList"] is int) {
       weightList = json["weightList"];
     }
@@ -516,7 +537,9 @@ class Property {
     _data["value"] = value;
     _data["valueItem"] = valueItem;
     _data["list"] = list;
+    _data["section"] = list;
     _data["weightList"] = weightList;
+    _data["weightSection"] = weightList;
     return _data;
   }
 }
