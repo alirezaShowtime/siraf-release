@@ -259,13 +259,13 @@ class File {
   bool isRent() => fullCategory?.fullCategory?.contains("اجاره") ?? false;
 
   bool priceCondition(Property property) {
-    return property.section == 3  && property.weightList == 5;
+    return property.weightList == 5;
   }
   bool rentCondition(Property property) {
-    return property.section == 3  && property.weightList == 6;
+    return property.weightList == 6;
   }
   bool meterCondition(Property property) {
-    return property.section == 1 && property.weightList == 1;
+    return property.weightList == 1;
   }
 
   Future<List<s.Slider>> getSliders() async {

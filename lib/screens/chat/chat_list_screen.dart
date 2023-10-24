@@ -431,8 +431,6 @@ class _ChatListScreen extends State<ChatListScreen> {
 
     listenRabbit();
 
-    copy(jsonEncode(result), );
-
     if (result is Map) {
       if (!result.containsKey("chatId") || chatItem.id != result["chatId"]) return;
 

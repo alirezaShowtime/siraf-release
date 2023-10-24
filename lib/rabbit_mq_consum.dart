@@ -16,6 +16,7 @@ consumRabbitMq() async {
       host: "188.121.106.229",
       port: 5672,
       authProvider: PlainAuthenticator("admin", "admin"),
+      tuningSettings: TuningSettings(heartbeatPeriod: Duration(seconds: 1),),
     ),
   );
 
