@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:siraf3/bloc/commission_bloc.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/extensions/string_extension.dart';
@@ -137,8 +136,6 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
     );
   }
 
-  String? totalPriceHelpText;
-
   void determineTotalPrice() {
     showDialog2(
       context: context,
@@ -150,12 +147,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
           inputFormatters: [
             MoneyInputFormatter(mantissaLength: 0),
           ],
-          helperText: totalPriceHelpText,
-          onChanged: (value) {
-            setState(() {
-              totalPriceHelpText = value.isNotEmpty ? value.toWord() : null;
-            });
-          },
+          helperSuffix: "تومان",
           onPressed: () {
             if (!totalPriceController.text.isFill()) {
               totalPrice = null;
@@ -180,6 +172,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
           inputFormatters: [
             MoneyInputFormatter(mantissaLength: 0),
           ],
+          helperSuffix: "تومان",
           onPressed: () {
             if (!depositController.text.isFill()) {
               deposit = null;
@@ -202,6 +195,7 @@ class _CommissionCalculatorScreen extends State<CommissionCalculatorScreen> {
           numberFieldController: rentController,
           keyboardType: TextInputType.number,
           hintText: "مبلغ اجاره را وارد کنید",
+          helperSuffix: "تومان",
           inputFormatters: [
             MoneyInputFormatter(mantissaLength: 0),
           ],

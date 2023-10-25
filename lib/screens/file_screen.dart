@@ -21,6 +21,7 @@ import 'package:siraf3/themes.dart';
 import 'package:siraf3/widgets/collapsable.dart';
 import 'package:siraf3/widgets/custom_slider.dart';
 import 'package:siraf3/widgets/file_horizontal_item.dart';
+import 'package:siraf3/widgets/file_related_item.dart';
 import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_icon_button.dart';
@@ -332,14 +333,9 @@ class _FileScreen extends State<FileScreen> {
                               borderRadius: BorderRadius.circular(15),
                             ),
                           ),
-                        BlocConsumer(
+                        BlocBuilder(
                           bloc: relatedFilesBloc,
                           builder: _buildRelatedBloc,
-                          listener: (_, state) {
-                            if (state is! RelatedFilesLoadedState) return;
-
-                            relatedFiles = state.files;
-                          },
                         ),
                         Container(
                           width: double.infinity,
@@ -627,9 +623,11 @@ class _FileScreen extends State<FileScreen> {
 
     if (state is RelatedFilesErrorState) return Container();
 
-    if (relatedFiles.isEmpty) return SizedBox();
+    state = (state as RelatedFilesLoadedState);
 
-    // return Container(color: Colors.red, width: 100, height: 100,);
+    relatedFiles = state.files;
+
+    if (relatedFiles.isEmpty) return SizedBox();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -650,14 +648,16 @@ class _FileScreen extends State<FileScreen> {
             children: [
               for (var relatedFile in relatedFiles)
                 Container(
-                  height: 150,
+                  height: 140,
                   width: MediaQuery.of(context).size.width - 50,
                   padding: EdgeInsets.symmetric(horizontal: 5),
                   child: GestureDetector(
                     onTap: () => push(context, FileScreen(id: relatedFile.id!)),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: FileHorizontalItem(file: relatedFile),
+                      child: FileRelatedItem(
+                        file: relatedFile,
+                      ),
                     ),
                   ),
                 ),

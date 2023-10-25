@@ -209,7 +209,7 @@ class _CompareItemState extends State<_CompareItem> {
         widget = Padding(
           padding: const EdgeInsets.symmetric(vertical: 7.5),
           child: Text(
-            property.value ?? '-',
+            property.getValue(),
             style: TextStyle(
               color: App.theme.tooltipTheme.textStyle?.color,
               fontSize: 12,

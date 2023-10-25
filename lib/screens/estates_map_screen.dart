@@ -266,7 +266,8 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                 alignment: Alignment.center,
                 padding: EdgeInsets.all(7),
                 child: InkWell(
-                  onTap: _onMyLocationClicked,
+                  // onTap: _onMyLocationClicked,
+                  onTap: _onlyOnMyLocation,
                   child: Center(
                     child: Icon(
                       Icons.my_location_outlined,
@@ -276,56 +277,41 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
                 ),
               ),
             ),
-            Positioned(
-              bottom: 20,
-              right: 80,
-              child: GestureDetector(
-                onTap: () async {
-                  setState(() {
-                    _showFileOnMyLocation = !_showFileOnMyLocation;
-                  });
-                  if (!_showFileOnMyLocation) {
-                    setState(() {
-                      circles.removeAt(1);
-                      myLocationMarker = null;
-                    });
-
-                    getEstates();
-                    return;
-                  }
-
-                  getEstatesFirstTime();
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: _showFileOnMyLocation ? App.theme.primaryColor : App.theme.dialogBackgroundColor,
-                    borderRadius: BorderRadius.circular(100),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(-2, 2),
-                        blurRadius: 4,
-                      ),
-                      BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(2, -2),
-                        blurRadius: 4,
-                      ),
-                    ],
-                  ),
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.all(10),
-                  child: Text(
-                    "فقط اطراف من",
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontFamily: "IranSansMedium",
-                      color: _showFileOnMyLocation ? App.theme.canvasColor : null,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            // Positioned(
+            //   bottom: 20,
+            //   right: 80,
+            //   child: GestureDetector(
+            //     onTap: _onlyOnMyLocation,
+            //     child: Container(
+            //       decoration: BoxDecoration(
+            //         color: _showFileOnMyLocation ? App.theme.primaryColor : App.theme.dialogBackgroundColor,
+            //         borderRadius: BorderRadius.circular(100),
+            //         boxShadow: [
+            //           BoxShadow(
+            //             color: Colors.black12,
+            //             offset: Offset(-2, 2),
+            //             blurRadius: 4,
+            //           ),
+            //           BoxShadow(
+            //             color: Colors.black12,
+            //             offset: Offset(2, -2),
+            //             blurRadius: 4,
+            //           ),
+            //         ],
+            //       ),
+            //       alignment: Alignment.center,
+            //       padding: EdgeInsets.all(10),
+            //       child: Text(
+            //         "فقط اطراف من",
+            //         style: TextStyle(
+            //           fontSize: 15,
+            //           fontFamily: "IranSansMedium",
+            //           color: _showFileOnMyLocation ? App.theme.canvasColor : null,
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -881,7 +867,7 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
 
       return;
     }
-    
+
     animatedMapMove(_controller, toLatLng(cities[0].lat, cities[0].long), 13.5, this);
   }
 
@@ -914,5 +900,22 @@ class _EstatesMapScreenState extends State<EstatesMapScreen> with TickerProvider
     });
 
     return total / map.length;
+  }
+
+  void _onlyOnMyLocation() async {
+    setState(() {
+      _showFileOnMyLocation = !_showFileOnMyLocation;
+    });
+    if (!_showFileOnMyLocation) {
+      setState(() {
+        circles.removeAt(1);
+        myLocationMarker = null;
+      });
+
+      getEstates();
+      return;
+    }
+
+    getEstatesFirstTime();
   }
 }

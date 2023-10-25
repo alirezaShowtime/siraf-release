@@ -20,7 +20,7 @@ extension SearchBar on _ConsultantProfileScreen {
                 controller: searchController,
                 maxLines: 1,
                 decoration: InputDecoration(
-                  hintText: "جستجو در $estateName",
+                  hintText: "جستجو در فایل های مشاور",
                   border: InputBorder.none,
                   isDense: true,
                   hintStyle: TextStyle(color: Colors.grey, fontSize: 11, fontFamily: "IranSansMedium"),

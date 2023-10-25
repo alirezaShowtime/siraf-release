@@ -253,14 +253,16 @@ class _MyFileScreen extends State<MyFileScreen> {
                                       ),
                                     ),
                                     SizedBox(width: 5),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 5),
-                                      child: Text(
-                                        state.file.category?.fullCategory ?? "",
-                                        style: TextStyle(
-                                          color: App.theme.textTheme.bodyLarge?.color,
-                                          fontFamily: "IranSansMedium",
-                                          fontSize: _isSliverAppBarCollapsed ? 10 : 11,
+                                    Flexible(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 5),
+                                        child: Text(
+                                          state.file.category?.fullCategory ?? "",
+                                          style: TextStyle(
+                                            color: App.theme.textTheme.bodyLarge?.color,
+                                            fontFamily: "IranSansMedium",
+                                            fontSize: _isSliverAppBarCollapsed ? 10 : 11,
+                                          ),
                                         ),
                                       ),
                                     ),

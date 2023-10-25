@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:siraf3/main.dart';
 import 'package:siraf3/widgets/text_field_2.dart';
+import 'package:persian_number_utility/persian_number_utility.dart';
 
 import '../themes.dart';
 
@@ -15,7 +18,7 @@ class FieldDialog extends StatefulWidget {
   Function()? onPressed;
   TextInputType? keyboardType;
   List<TextInputFormatter>? inputFormatters;
-  String? helperText;
+  String? helperSuffix;
 
   FieldDialog({
     required this.numberFieldController,
@@ -24,11 +27,21 @@ class FieldDialog extends StatefulWidget {
     this.onPressed,
     this.inputFormatters,
     this.keyboardType,
-    this.helperText,
+    this.helperSuffix,
   });
 }
 
 class _FieldDialog extends State<FieldDialog> {
+  StreamController<String> numberStream = StreamController();
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    numberStream.add(widget.numberFieldController.text);
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -67,23 +80,42 @@ class _FieldDialog extends State<FieldDialog> {
                         fontSize: 13,
                         fontFamily: "IranSansMedium",
                       ),
-                      onChanged: widget.onChanged,
+                      onChanged: (v) {
+                        numberStream.add(v);
+
+                        widget.onChanged?.call(v);
+                      },
                       keyboardType: widget.keyboardType,
                       textAlign: TextAlign.center,
                     ),
                   ),
                 ),
-                Container(
-                  alignment: Alignment.center,
-                  height: 20,
-                  child: Text(
-                    widget.helperText ?? "",
-                    style: TextStyle(
-                      color: App.theme.textTheme.bodyLarge?.color,
-                      fontSize: 11,
-                      fontFamily: "IranSansMedium",
-                    ),
-                  ),
+                StreamBuilder<String>(
+                  stream: numberStream.stream,
+                  builder: (context, snapshot) {
+                    var text = "";
+
+                    if (snapshot.hasData) {
+                      text = (snapshot.data != null ? snapshot.data!.toWord() : "");
+                      if (text.trim().isNotEmpty) {
+                        text = text + " ${widget.helperSuffix ?? ""}";
+                        text = text.trim();
+                      }
+                    }
+
+                    return Container(
+                      alignment: Alignment.center,
+                      height: 20,
+                      child: Text(
+                        text,
+                        style: TextStyle(
+                          color: App.theme.textTheme.bodyLarge?.color,
+                          fontSize: 11,
+                          fontFamily: "IranSansMedium",
+                        ),
+                      ),
+                    );
+                  }
                 ),
                 MaterialButton(
                   onPressed: () {

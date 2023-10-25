@@ -1,4 +1,5 @@
 
+import 'package:siraf3/helpers.dart';
 import 'package:siraf3/models/file.dart';
 
 class FileCompare {
@@ -49,6 +50,7 @@ class Property {
   String? value;
   int? section;
   int? weightSection;
+  String? valueItem;
 
   Property({this.name, this.value, this.section, this.weightSection});
 
@@ -65,12 +67,20 @@ class Property {
     if(json["value"] is String) {
       value = json["value"];
     }
+    if (json["valueItem"] is String) {
+      valueItem = json["valueItem"];
+    }
+    if (json["valueItem"] is int) {
+      valueItem = json["valueItem"].toString();
+    }
     if(json["section"] is int) {
       section = json["section"];
     }
     if(json["weightSection"] is int) {
       weightSection = json["weightSection"];
     }
+    
+    if (value == null) value = valueItem;
   }
 
   Map<String, dynamic> toJson() {
@@ -80,5 +90,15 @@ class Property {
     _data["section"] = section;
     _data["weightSection"] = weightSection;
     return _data;
+  }
+
+  String getValue() {
+    if (value == null) return "-";
+
+    if (isNumeric(value)) {
+      return number_format(value);
+    }
+
+    return value!;
   }
 }

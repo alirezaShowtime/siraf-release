@@ -129,7 +129,7 @@ class _PostItemState extends State<PostItem> with AutomaticKeepAliveClientMixin 
               float: true,
               indicatorMargin: EdgeInsets.only(left: 0, right: 0, bottom: 18),
               itemBorderRadius: BorderRadius.zero,
-              imageFit: BoxFit.fitHeight,
+              imageFit: BoxFit.fitWidth,
               indicatorSelectedColor: App.theme.primaryColor,
               indicatorColor: Colors.grey,
               onStartVideo: widget.onStartVideo,

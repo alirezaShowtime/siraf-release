@@ -329,7 +329,8 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                   alignment: Alignment.center,
                   padding: EdgeInsets.all(7),
                   child: InkWell(
-                    onTap: _onMyLocationClicked,
+                    // onTap: _onMyLocationClicked,
+                    onTap: _onlyOnMyLocation,
                     child: Center(
                       child: Icon(
                         Icons.my_location_outlined,
@@ -339,56 +340,41 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
                   ),
                 ),
               ),
-              Positioned(
-                top: 10,
-                right: 60,
-                child: GestureDetector(
-                  onTap: () async {
-                    setState(() {
-                      _showFileOnMyLocation = !_showFileOnMyLocation;
-                    });
-                    if (!_showFileOnMyLocation) {
-                      setState(() {
-                        circles.removeAt(1);
-                        myLocationMarker = null;
-                      });
-
-                      getFiles();
-                      return;
-                    }
-
-                    getFilesFirstTime();
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: _showFileOnMyLocation ? App.theme.primaryColor : App.theme.dialogBackgroundColor,
-                      borderRadius: BorderRadius.circular(100),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(-2, 2),
-                          blurRadius: 4,
-                        ),
-                        BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(2, -2),
-                          blurRadius: 4,
-                        ),
-                      ],
-                    ),
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      "فقط اطراف من",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: "IranSansMedium",
-                        color: _showFileOnMyLocation ? App.theme.canvasColor : null,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              // Positioned(
+              //   top: 10,
+              //   right: 60,
+              //   child: GestureDetector(
+              //     onTap: _onlyOnMyLocation,
+              //     child: Container(
+              //       decoration: BoxDecoration(
+              //         color: _showFileOnMyLocation ? App.theme.primaryColor : App.theme.dialogBackgroundColor,
+              //         borderRadius: BorderRadius.circular(100),
+              //         boxShadow: [
+              //           BoxShadow(
+              //             color: Colors.black12,
+              //             offset: Offset(-2, 2),
+              //             blurRadius: 4,
+              //           ),
+              //           BoxShadow(
+              //             color: Colors.black12,
+              //             offset: Offset(2, -2),
+              //             blurRadius: 4,
+              //           ),
+              //         ],
+              //       ),
+              //       alignment: Alignment.center,
+              //       padding: EdgeInsets.all(10),
+              //       child: Text(
+              //         "فقط اطراف من",
+              //         style: TextStyle(
+              //           fontSize: 14,
+              //           fontFamily: "IranSansMedium",
+              //           color: _showFileOnMyLocation ? App.theme.canvasColor : null,
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
               Visibility(
                 visible: selectedFile != null,
                 child: Positioned(
@@ -435,6 +421,23 @@ class _FilesMapScreenState extends State<FilesMapScreen> with TickerProviderStat
         ),
       ),
     );
+  }
+
+  _onlyOnMyLocation() async {
+    setState(() {
+      _showFileOnMyLocation = !_showFileOnMyLocation;
+    });
+    if (!_showFileOnMyLocation) {
+      setState(() {
+        circles.removeAt(1);
+        myLocationMarker = null;
+      });
+
+      getFiles();
+      return;
+    }
+
+    getFilesFirstTime();
   }
 
   LocationFile? selectedFile;
