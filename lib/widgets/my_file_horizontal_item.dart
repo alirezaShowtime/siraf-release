@@ -22,7 +22,7 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
     1: "در انتظار تایید",
     2: "رد شده",
     3: "رد شده",
-    4: "تایید شده",
+    4: "در انتظار پذیرش",
     5: "در انتظار پذیرش",
     6: "پذیرش نشده",
     7: "پذیرش شده",
@@ -103,14 +103,16 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                widget.file.category?.fullCategory ?? "",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: App.theme.textTheme.bodyLarge?.color,
-                                  fontSize: 11,
-                                  fontFamily: 'IranSansMedium',
+                              Flexible(
+                                child: Text(
+                                  widget.file.category?.fullCategory ?? "",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: App.theme.textTheme.bodyLarge?.color,
+                                    fontSize: 11,
+                                    fontFamily: 'IranSansMedium',
+                                  ),
                                 ),
                               ),
                               SizedBox(width: 5),

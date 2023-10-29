@@ -8,7 +8,7 @@ import 'package:siraf3/bloc/chat/create/create_chat_bloc.dart';
 import 'package:siraf3/bloc/file_consulants_bloc.dart';
 import 'package:siraf3/dialog.dart';
 import 'package:siraf3/main.dart';
-import 'package:siraf3/models/file_consulant.dart';
+import 'package:siraf3/models/file_consultant.dart';
 import 'package:siraf3/models/file_detail.dart' as file_detail;
 import 'package:siraf3/models/user.dart';
 import 'package:siraf3/screens/consultant_profile_without_comment/consultant_profile_screen.dart';

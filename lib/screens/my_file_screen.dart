@@ -1,3 +1,4 @@
+import 'package:siraf3/bloc/chat/create/create_chat_bloc.dart';
 import 'package:siraf3/bloc/delete_file_bloc.dart';
 import 'package:siraf3/bloc/extension_file_bloc.dart';
 import 'package:siraf3/bloc/my_file_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:siraf3/models/file_consultant.dart';
 import 'package:siraf3/models/file_detail.dart';
 import 'package:siraf3/models/my_file_detail.dart';
 import 'package:siraf3/models/user.dart';
+import 'package:siraf3/screens/chat/chat/chatScreen/chat_screen.dart';
 import 'package:siraf3/screens/file_images_screen.dart';
 import 'package:siraf3/screens/edit/edit_file_first.dart';
 import 'package:siraf3/screens/webview_screen.dart';
@@ -57,12 +59,13 @@ class _MyFileScreen extends State<MyFileScreen> {
   MyFileBloc fileBloc = MyFileBloc();
   DeleteFileBloc deleteFileBloc = DeleteFileBloc();
   ExtensionFileBloc expBloc = ExtensionFileBloc();
+  CreateChatBloc createChatBloc = CreateChatBloc();
 
   Map<int, String> progressFa = {
     1: "در انتظار تایید",
     2: "رد شده",
     3: "رد شده",
-    4: "تایید شده",
+    4: "در انتظار پذیرش",
     5: "در انتظار پذیرش",
     6: "پذیرش نشده",
     7: "پذیرش شده",
@@ -134,6 +137,38 @@ class _MyFileScreen extends State<MyFileScreen> {
         setState(() {
           file.expireDay = (file.expireDay ?? 0) + 30;
         });
+      }
+    });
+
+    createChatBloc.stream.listen((state) {
+      if (state is CreateChatLoading) {
+        dismissDialog(errorDialogContext);
+        loadingDialog(context: context);
+      }
+
+      if (state is CreateChatError) {
+        dismissDialog(loadingDialogContext);
+        errorDialog(context: context);
+      }
+
+      if (state is CreateChatSuccess) {
+        dismissDialog(loadingDialogContext);
+        doWithLogin(
+          context,
+          () => push(
+            context,
+            ChatScreen(
+              chatId: state.chatId,
+              consultantId: state.fileConsultant.consultantId?.id,
+              consultantImage: state.fileConsultant.consultantId?.avatar,
+              consultantName: state.fileConsultant.consultantId?.name,
+              fileId: state.file.id,
+              fileTitle: state.file.name,
+              fileImage: state.file.firstImage?.path,
+              fileAddress: state.file.address,
+            ),
+          ),
+        );
       }
     });
   }
@@ -320,6 +355,19 @@ class _MyFileScreen extends State<MyFileScreen> {
                           padding: const EdgeInsets.only(top: 20, bottom: 20),
                           child: _buildMainProps(state.file),
                         ),
+                        if (state.file.progress == 6)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              """متاسفانه فایل شما جهت پیگیری پذیرفته نشد. این موضوع می تواند به دالیل مختلفی مانند غیر واقعی بودن فایل و 
+توضیحات مبهم رخ داده باشد. در صورت تمایل فایل خود را جهت رسیدگی مجدد ویرایش نمایید.""",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontFamily: "IranSansMedium",
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
                         _destWithTitle(title: "آدرس", desc: state.file.address ?? "بدون آدرس"),
                         if (state.file.description.isFill()) _destWithTitle(title: "توضیحات", desc: state.file.description!),
                         if (state.file.secDescription.isFill())
@@ -566,9 +614,9 @@ class _MyFileScreen extends State<MyFileScreen> {
                             height: 60,
                             child: ListView.separated(
                               physics: BouncingScrollPhysics(),
-                              scrollDirection: Axis.horizontal,
+                              scrollDirection: Axis.vertical,
                               itemCount: state.consultants.length,
-                              itemBuilder: (context, i) => itemConsultant(state.consultants[i]),
+                              itemBuilder: (context, i) => _item(state.consultants[i]),
                               separatorBuilder: (_, _2) => Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 8),
                                 child: VerticalDivider(width: 25),
@@ -828,6 +876,99 @@ class _MyFileScreen extends State<MyFileScreen> {
       linkUrl: FILE_URL + widget.id.toString(),
       chooserTitle: 'اشتراک گذاری در',
     );
+  }
+
+  Widget _item(FileConsultant item) {
+    return GestureDetector(
+      onTap: () {
+        push(
+            context,
+            ConsultantProfileScreen(
+              consultantId: item.consultantId!.id!,
+              consultantName: item.consultantId!.name,
+            ));
+      },
+      child: Container(
+        height: 80,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: App.theme.dialogBackgroundColor,
+          border: Border(
+            bottom: BorderSide(color: (App.theme.tooltipTheme.textStyle?.color ?? Themes.textGrey).withOpacity(0.2), width: 1),
+          ),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Avatar(
+                  imagePath: item.consultantId?.avatar ?? "",
+                  errorImage: AssetImage("assets/images/profile.jpg"),
+                  loadingImage: AssetImage("assets/images/profile.jpg"),
+                  size: 50,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        item.consultantId?.name ?? "؟؟؟",
+                        style: TextStyle(
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        "(${item.estateName.toString()})",
+                        style: TextStyle(
+                          color: App.theme.tooltipTheme.textStyle?.color,
+                          fontSize: 10,
+                        ),
+                      ),
+                      StaticStar(rating: item.consultantId?.rate ?? 0)
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                MyIconButton(
+                  onTap: () async {
+                    doWithLogin(context, () => createChat(item, file));
+                  },
+                  icon: Icon(
+                    CupertinoIcons.chat_bubble_2,
+                    size: 30,
+                    color: App.isDark ? App.theme.iconTheme.color : App.theme.primaryColor,
+                  ),
+                ),
+                SizedBox(width: 20),
+                MyIconButton(
+                  onTap: () {
+                    callTo(item.consultantId!.phone!);
+                  },
+                  icon: Icon(
+                    CupertinoIcons.phone_circle,
+                    size: 30,
+                    color: App.isDark ? App.theme.iconTheme.color : App.theme.primaryColor,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  createChat(FileConsultant consultant, file) async {
+    createChatBloc.add(CreateChatRequestEvent(fileConsultant: consultant, file: file));
   }
 
   Widget itemConsultant(FileConsultant consultant) {

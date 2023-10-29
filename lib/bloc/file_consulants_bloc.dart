@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:http/http.dart';
 import 'package:siraf3/helpers.dart';
 import 'package:siraf3/http2.dart' as http2;
-import 'package:siraf3/models/file_consulant.dart';
+import 'package:siraf3/models/file_consultant.dart';
 
 class FileConsulantsEvent {
   int id;
