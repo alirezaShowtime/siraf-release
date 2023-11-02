@@ -16,6 +16,7 @@ class MyFile {
   String? city;
   City? cityObj;
   int? expireDay;
+  String? progressPresian;
 
   MyFile({this.id, this.progress, this.viewCount, this.name, this.description, this.images, this.favorite, this.publishedAgo, this.propertys, this.category, this.city});
 
@@ -63,6 +64,9 @@ class MyFile {
     }
     if (json["expireDay"] is int) {
       expireDay = json["expireDay"];
+    }
+    if (json['progressPresian'] is String) {
+      progressPresian = json['progressPresian'];
     }
 
     if (progress != 7) {

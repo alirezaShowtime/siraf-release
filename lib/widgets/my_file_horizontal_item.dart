@@ -18,15 +18,15 @@ class MyFileHorizontalItem extends StatefulWidget {
 }
 
 class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
-  Map<int, String> progress_fa = {
-    1: "در انتظار تایید",
-    2: "رد شده",
-    3: "رد شده",
-    4: "در انتظار پذیرش",
-    5: "در انتظار پذیرش",
-    6: "پذیرش نشده",
-    7: "پذیرش شده",
-  };
+  // Map<int, String> progress_fa = {
+  //   1: "در انتظار تایید",
+  //   2: "رد شده",
+  //   3: "رد شده",
+  //   4: "در انتظار پذیرش",
+  //   5: "در انتظار پذیرش",
+  //   6: "پذیرش نشده",
+  //   7: "پذیرش شده",
+  // };
 
   Map<int, Color> progress_color = {
     1: App.theme.textTheme.bodyLarge?.color ?? Themes.textGrey,
@@ -160,7 +160,7 @@ class _MyFileHorizontalItemState extends State<MyFileHorizontalItem> {
                           ],
                         ),
                         Text(
-                          progress_fa[widget.file.progress] ?? "نامشخص",
+                          widget.file.progressPresian ?? "نامشخص",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
