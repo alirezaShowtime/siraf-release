@@ -13,6 +13,7 @@ import 'package:siraf3/widgets/loading.dart';
 import 'package:siraf3/widgets/my_back_button.dart';
 import 'package:siraf3/widgets/my_popup_menu_button.dart';
 import 'package:siraf3/widgets/try_again.dart';
+import 'package:flutter/cupertino.dart';
 
 class NotesScreen extends StatefulWidget {
   @override
@@ -164,7 +165,7 @@ class _NotesScreen extends State<NotesScreen> {
                     height: 35,
                   ),
                 ],
-                iconData: Icons.sort_rounded,
+                iconData: CupertinoIcons.sort_down,
                 onSelected: (val) {
                   setState(() {
                     sort = val;
